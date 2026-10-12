@@ -159,10 +159,10 @@ to be resumed:
 
 - `readable/` — pinned prettier 3.9.6 (module API, default options) rendered
   `app.js`, `boot.js`, `style.css`, `__mb/app/worker.js` and the four
-  `workers/*.js`, plus the 17 inline content blocks of `index.html` (3),
-  `shell.html` and `shell-index.html` (5 each → 7 files each, css/js) to 25
-  pretties, with `index-inline-map.json` recording byte ranges + sha256 for the
-  blocks. All 25 pretties re-render byte-exact under the pinned version.
+  `workers/*.js`, plus the 17 inline content blocks of `index.html` (3 script
+  blocks) and `shell.html` / `shell-index.html` (7 each — 5 script + 2 style
+  blocks) to 25 pretties, with `index-inline-map.json` recording byte ranges +
+  sha256 for the blocks. All 25 pretties re-render byte-exact under the pinned version.
 - `src/` — 417 statement-aligned slices with exact 2-line provenance headers,
   recorded in `split-spec.json` (441 sections): 417/417 parse standalone
   (`node --input-type=module --check -`) and round-trip byte-exact to their
