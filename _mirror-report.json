@@ -1,0 +1,2213 @@
+{
+  "start": "https://mindblown.ai/games/teleoperator",
+  "origin": "https://teleoperator.mindblown.ai",
+  "gated": false,
+  "sessionRenewal": "none",
+  "requests": 283,
+  "fetched": 410,
+  "bytes": 171250625,
+  "paths": [
+    "__mb/app/icon-180.png",
+    "__mb/app/icon-192.png",
+    "__mb/app/icon-512.png",
+    "__mb/app/manifest.webmanifest",
+    "__mb/app/worker.js",
+    "app.js",
+    "apple-touch-icon.png",
+    "assets/audio/airflow.mp3",
+    "assets/audio/apex/collision-impact.wav",
+    "assets/audio/apex/collision-scrape.wav",
+    "assets/audio/apex/engine-2000.wav",
+    "assets/audio/apex/engine-3500.wav",
+    "assets/audio/apex/engine-5500.wav",
+    "assets/audio/apex/engine-8000.wav",
+    "assets/audio/apex/engine-coast.wav",
+    "assets/audio/apex/engine-idle.wav",
+    "assets/audio/apex/recorded-road.wav",
+    "assets/audio/apex/recorded-skid.wav",
+    "assets/audio/audio.json",
+    "assets/audio/backfire.mp3",
+    "assets/audio/backfire_1.mp3",
+    "assets/audio/backfire_2.mp3",
+    "assets/audio/bay_bed.mp3",
+    "assets/audio/bell.mp3",
+    "assets/audio/bell_1.mp3",
+    "assets/audio/brake_dive.mp3",
+    "assets/audio/brake_dive_1.mp3",
+    "assets/audio/brake_firm.mp3",
+    "assets/audio/brake_lock.mp3",
+    "assets/audio/car_door.mp3",
+    "assets/audio/cc_avas.mp3",
+    "assets/audio/cc_bump.mp3",
+    "assets/audio/cc_bump_1.mp3",
+    "assets/audio/cc_bump_2.mp3",
+    "assets/audio/cc_mot_hi.mp3",
+    "assets/audio/cc_mot_lo.mp3",
+    "assets/audio/cc_mot_mid.mp3",
+    "assets/audio/cc_regen.mp3",
+    "assets/audio/cc_regen_1.mp3",
+    "assets/audio/cc_tyre_hi.mp3",
+    "assets/audio/cc_tyre_lo.mp3",
+    "assets/audio/cc_tyre_mid.mp3",
+    "assets/audio/cc_wind.mp3",
+    "assets/audio/city_bed.mp3",
+    "assets/audio/cop_chirp.mp3",
+    "assets/audio/cop_horn.mp3",
+    "assets/audio/cop_pa.mp3",
+    "assets/audio/cop_pa_1.mp3",
+    "assets/audio/cop_pa_2.mp3",
+    "assets/audio/cop_radio.mp3",
+    "assets/audio/cop_wail.mp3",
+    "assets/audio/cop_yelp.mp3",
+    "assets/audio/crack.mp3",
+    "assets/audio/crack_1.mp3",
+    "assets/audio/crack_2.mp3",
+    "assets/audio/crk.mp3",
+    "assets/audio/crk_1.mp3",
+    "assets/audio/crk_2.mp3",
+    "assets/audio/crk_3.mp3",
+    "assets/audio/ct_avas.mp3",
+    "assets/audio/ct_bump.mp3",
+    "assets/audio/ct_bump_1.mp3",
+    "assets/audio/ct_bump_2.mp3",
+    "assets/audio/ct_mot_hi.mp3",
+    "assets/audio/ct_mot_lo.mp3",
+    "assets/audio/ct_mot_mid.mp3",
+    "assets/audio/ct_regen.mp3",
+    "assets/audio/ct_regen_1.mp3",
+    "assets/audio/ct_tyre_hi.mp3",
+    "assets/audio/ct_tyre_lo.mp3",
+    "assets/audio/ct_tyre_mid.mp3",
+    "assets/audio/ct_wind.mp3",
+    "assets/audio/dsl_coast.mp3",
+    "assets/audio/dsl_high.mp3",
+    "assets/audio/dsl_idle.mp3",
+    "assets/audio/dsl_mid.mp3",
+    "assets/audio/ev_avas.mp3",
+    "assets/audio/ev_bump.mp3",
+    "assets/audio/ev_bump_1.mp3",
+    "assets/audio/ev_bump_2.mp3",
+    "assets/audio/ev_crash.mp3",
+    "assets/audio/ev_crash_1.mp3",
+    "assets/audio/ev_crash_2.mp3",
+    "assets/audio/ev_mot_hi.mp3",
+    "assets/audio/ev_mot_lo.mp3",
+    "assets/audio/ev_mot_mid.mp3",
+    "assets/audio/ev_regen2.mp3",
+    "assets/audio/ev_regen2_1.mp3",
+    "assets/audio/ev_scrape.mp3",
+    "assets/audio/ev_scrape_1.mp3",
+    "assets/audio/ev_squeal.mp3",
+    "assets/audio/ev_tyre_hi.mp3",
+    "assets/audio/ev_tyre_lo.mp3",
+    "assets/audio/ev_tyre_mid.mp3",
+    "assets/audio/ev_wind2.mp3",
+    "assets/audio/f6_3500.mp3",
+    "assets/audio/f6_5000.mp3",
+    "assets/audio/f6_coast.mp3",
+    "assets/audio/f6_idle.mp3",
+    "assets/audio/fare_ding.mp3",
+    "assets/audio/foghorn.mp3",
+    "assets/audio/gull.mp3",
+    "assets/audio/gull_1.mp3",
+    "assets/audio/heli_loop.mp3",
+    "assets/audio/heli_near.mp3",
+    "assets/audio/horn_a.mp3",
+    "assets/audio/horn_a_1.mp3",
+    "assets/audio/horn_b.mp3",
+    "assets/audio/horn_b_1.mp3",
+    "assets/audio/ir_street.wav",
+    "assets/audio/ir_tunnel.wav",
+    "assets/audio/irr_street.wav",
+    "assets/audio/irr_tunnel.wav",
+    "assets/audio/p39_bed.mp3",
+    "assets/audio/p39_lions.mp3",
+    "assets/audio/pass_car.mp3",
+    "assets/audio/pass_truck.mp3",
+    "assets/audio/rain.mp3",
+    "assets/audio/sml_coast.mp3",
+    "assets/audio/sml_high.mp3",
+    "assets/audio/sml_idle.mp3",
+    "assets/audio/sml_mid.mp3",
+    "assets/audio/spray.mp3",
+    "assets/audio/taxi_chime.mp3",
+    "assets/audio/taxi_done.mp3",
+    "assets/audio/title.mp3",
+    "assets/audio/track_1.mp3",
+    "assets/audio/track_2.mp3",
+    "assets/audio/track_3.mp3",
+    "assets/audio/track_4.mp3",
+    "assets/audio/track_5.mp3",
+    "assets/audio/track_6.mp3",
+    "assets/audio/track_7.mp3",
+    "assets/audio/tunnel_amb.mp3",
+    "assets/audio/tyre_corner.mp3",
+    "assets/audio/tyre_drift.mp3",
+    "assets/audio/tyre_scrub.mp3",
+    "assets/audio/tyre_squeal.mp3",
+    "assets/audio/ui_click.mp3",
+    "assets/audio/ui_close.mp3",
+    "assets/audio/ui_open.mp3",
+    "assets/audio/v12_coast.mp3",
+    "assets/audio/v12_high.mp3",
+    "assets/audio/v12_idle.mp3",
+    "assets/audio/v12_mid.mp3",
+    "assets/audio/whoosh.mp3",
+    "assets/audio/whoosh_1.mp3",
+    "assets/audio/whoosh_2.mp3",
+    "assets/audio/zr_2000.mp3",
+    "assets/audio/zr_3500.mp3",
+    "assets/audio/zr_5500.mp3",
+    "assets/audio/zr_7500.mp3",
+    "assets/audio/zr_coast.mp3",
+    "assets/audio/zr_idle.mp3",
+    "assets/car/ao_plain.bin.gz",
+    "assets/car/ao_subd.bin.gz",
+    "assets/car/scene.json",
+    "assets/car/scene_plain.glb.gz",
+    "assets/car/scene_subd.glb.gz",
+    "assets/car/tire.webp",
+    "assets/car/turntable.webp",
+    "assets/cars/bus.glb.gz",
+    "assets/cars/bus_lod1.glb.gz",
+    "assets/cars/cablecar.glb.gz",
+    "assets/cars/cablecar_lod1.glb.gz",
+    "assets/cars/hatch.glb.gz",
+    "assets/cars/hatch_2k.webp",
+    "assets/cars/hatch_lod1.glb.gz",
+    "assets/cars/pickup.glb.gz",
+    "assets/cars/pickup_2k.webp",
+    "assets/cars/pickup_lod1.glb.gz",
+    "assets/cars/sedan.glb.gz",
+    "assets/cars/sedan_2k.webp",
+    "assets/cars/sedan_lod1.glb.gz",
+    "assets/cars/suv.glb.gz",
+    "assets/cars/suv_2k.webp",
+    "assets/cars/suv_lod1.glb.gz",
+    "assets/cars/taxi.glb.gz",
+    "assets/cars/taxi_2k.webp",
+    "assets/cars/taxi_lod1.glb.gz",
+    "assets/cars/van.glb.gz",
+    "assets/cars/van_2k.webp",
+    "assets/cars/van_lod1.glb.gz",
+    "assets/corvette/corvette.glb.gz",
+    "assets/corvette/corvette.json",
+    "assets/corvette/turntable.webp",
+    "assets/cybercab/cybercab.glb.gz",
+    "assets/cybercab/cybercab.json",
+    "assets/cybercab/cybercab_cover.webp",
+    "assets/cybercab/turntable.webp",
+    "assets/cybertruck/cybertruck.glb.gz",
+    "assets/cybertruck/cybertruck.json",
+    "assets/cybertruck/turntable.webp",
+    "assets/lm/revolution.bin.gz",
+    "assets/osm/downtown.json",
+    "assets/plates.webp",
+    "assets/real/btags.bin.gz",
+    "assets/real/buildings.bin.gz",
+    "assets/real/coast.bin.gz",
+    "assets/real/green.bin.gz",
+    "assets/real/ground.bin.gz",
+    "assets/real/marin/buildings.bin.gz",
+    "assets/real/marin/docks.bin.gz",
+    "assets/real/marin/green.bin.gz",
+    "assets/real/marin/ground.bin.gz",
+    "assets/real/marin/props.bin.gz",
+    "assets/real/marin/terrain.bin.gz",
+    "assets/real/props.bin.gz",
+    "assets/real/rails.bin.gz",
+    "assets/real/roads.bin.gz",
+    "assets/real/sky.bin.gz",
+    "assets/real/sky_field.bin.gz",
+    "assets/real/terrain.bin.gz",
+    "assets/real/west/buildings.bin.gz",
+    "assets/real/west/props.bin.gz",
+    "assets/real/west/terrain.bin.gz",
+    "assets/teleop_title.webp",
+    "assets/teleop_title_portrait.webp",
+    "assets/teleop_title_square.webp",
+    "assets/tex/asphalt_hd.lq.webp",
+    "assets/tex/asphalt_hd.webp",
+    "assets/tex/asphalt_hd_lo.lq.webp",
+    "assets/tex/asphalt_hd_lo.webp",
+    "assets/tex/asphalt_hd_n.lq.webp",
+    "assets/tex/asphalt_hd_n.webp",
+    "assets/tex/asphalt_old.lq.webp",
+    "assets/tex/asphalt_old.webp",
+    "assets/tex/asphalt_old_lo.lq.webp",
+    "assets/tex/asphalt_old_lo.webp",
+    "assets/tex/asphalt_old_n.lq.webp",
+    "assets/tex/asphalt_old_n.webp",
+    "assets/tex/bark.lq.webp",
+    "assets/tex/bark.webp",
+    "assets/tex/bark_cyp.lq.webp",
+    "assets/tex/bark_cyp.webp",
+    "assets/tex/bark_cyp_n.lq.webp",
+    "assets/tex/bark_cyp_n.webp",
+    "assets/tex/bark_euc.lq.webp",
+    "assets/tex/bark_euc.webp",
+    "assets/tex/bark_euc_n.lq.webp",
+    "assets/tex/bark_euc_n.webp",
+    "assets/tex/bark_fan.lq.webp",
+    "assets/tex/bark_fan.webp",
+    "assets/tex/bark_fan_n.lq.webp",
+    "assets/tex/bark_fan_n.webp",
+    "assets/tex/bark_head.lq.webp",
+    "assets/tex/bark_head.webp",
+    "assets/tex/bark_head_n.lq.webp",
+    "assets/tex/bark_head_n.webp",
+    "assets/tex/bark_n.lq.webp",
+    "assets/tex/bark_n.webp",
+    "assets/tex/bark_palm.lq.webp",
+    "assets/tex/bark_palm.webp",
+    "assets/tex/bark_palm_n.lq.webp",
+    "assets/tex/bark_palm_n.webp",
+    "assets/tex/billboards.lq.webp",
+    "assets/tex/billboards.webp",
+    "assets/tex/brick.lq.webp",
+    "assets/tex/brick.webp",
+    "assets/tex/concrete.lq.webp",
+    "assets/tex/concrete.webp",
+    "assets/tex/decals.lq.webp",
+    "assets/tex/decals.webp",
+    "assets/tex/decals_n.lq.webp",
+    "assets/tex/decals_n.webp",
+    "assets/tex/dress_grate.lq.webp",
+    "assets/tex/dress_grate.webp",
+    "assets/tex/dress_rail.lq.webp",
+    "assets/tex/dress_rail.webp",
+    "assets/tex/dress_signs.lq.webp",
+    "assets/tex/dress_signs.webp",
+    "assets/tex/foliage.lq.webp",
+    "assets/tex/foliage.webp",
+    "assets/tex/fronts_apt.lq.webp",
+    "assets/tex/fronts_apt.webp",
+    "assets/tex/fronts_apt_lo.lq.webp",
+    "assets/tex/fronts_apt_lo.webp",
+    "assets/tex/fronts_apt_mask.lq.webp",
+    "assets/tex/fronts_apt_mask.webp",
+    "assets/tex/fronts_brk.lq.webp",
+    "assets/tex/fronts_brk.webp",
+    "assets/tex/fronts_brk_lo.lq.webp",
+    "assets/tex/fronts_brk_lo.webp",
+    "assets/tex/fronts_brk_mask.lq.webp",
+    "assets/tex/fronts_brk_mask.webp",
+    "assets/tex/fronts_edw.lq.webp",
+    "assets/tex/fronts_edw.webp",
+    "assets/tex/fronts_edw_lo.lq.webp",
+    "assets/tex/fronts_edw_lo.webp",
+    "assets/tex/fronts_edw_mask.lq.webp",
+    "assets/tex/fronts_edw_mask.webp",
+    "assets/tex/fronts_mix.lq.webp",
+    "assets/tex/fronts_mix.webp",
+    "assets/tex/fronts_mix_lo.lq.webp",
+    "assets/tex/fronts_mix_lo.webp",
+    "assets/tex/fronts_mix_mask.lq.webp",
+    "assets/tex/fronts_mix_mask.webp",
+    "assets/tex/fronts_shop.lq.webp",
+    "assets/tex/fronts_shop.webp",
+    "assets/tex/fronts_shop_lo.lq.webp",
+    "assets/tex/fronts_shop_lo.webp",
+    "assets/tex/fronts_shop_mask.lq.webp",
+    "assets/tex/fronts_shop_mask.webp",
+    "assets/tex/fronts_vic.lq.webp",
+    "assets/tex/fronts_vic.webp",
+    "assets/tex/fronts_vic_lo.lq.webp",
+    "assets/tex/fronts_vic_lo.webp",
+    "assets/tex/fronts_vic_mask.lq.webp",
+    "assets/tex/fronts_vic_mask.webp",
+    "assets/tex/furniture.lq.webp",
+    "assets/tex/furniture.webp",
+    "assets/tex/ground_a.lq.webp",
+    "assets/tex/ground_a.webp",
+    "assets/tex/ground_a_n.lq.webp",
+    "assets/tex/ground_a_n.webp",
+    "assets/tex/ground_b.lq.webp",
+    "assets/tex/ground_b.webp",
+    "assets/tex/ground_b_n.lq.webp",
+    "assets/tex/ground_b_n.webp",
+    "assets/tex/impostors.json",
+    "assets/tex/impostors.lq.webp",
+    "assets/tex/impostors.webp",
+    "assets/tex/leaves.lq.webp",
+    "assets/tex/leaves.webp",
+    "assets/tex/lm/fortmason/facades.lq.webp",
+    "assets/tex/lm/fortmason/facades.webp",
+    "assets/tex/lm/fortmason/facades_mask.lq.webp",
+    "assets/tex/lm/fortmason/facades_mask.webp",
+    "assets/tex/lm/lombard_gg/elev.lq.webp",
+    "assets/tex/lm/lombard_gg/elev.webp",
+    "assets/tex/lm/lombard_gg/foliage.lq.webp",
+    "assets/tex/lm/lombard_gg/foliage.webp",
+    "assets/tex/lm/lombard_gg/ground.lq.webp",
+    "assets/tex/lm/lombard_gg/ground.webp",
+    "assets/tex/lm/lombard_gg/ground_n.lq.webp",
+    "assets/tex/lm/lombard_gg/ground_n.webp",
+    "assets/tex/lm/lombard_gg/wall.lq.webp",
+    "assets/tex/lm/lombard_gg/wall.webp",
+    "assets/tex/lm/lombard_gg/wall_n.lq.webp",
+    "assets/tex/lm/lombard_gg/wall_n.webp",
+    "assets/tex/lm/pier39/facades.lq.webp",
+    "assets/tex/lm/pier39/facades.webp",
+    "assets/tex/lm/pier39/facades_mask.lq.webp",
+    "assets/tex/lm/pier39/facades_mask.webp",
+    "assets/tex/lm/skyline/elev.lq.webp",
+    "assets/tex/lm/skyline/elev.webp",
+    "assets/tex/lm/skyline/tiles.lq.webp",
+    "assets/tex/lm/skyline/tiles.webp",
+    "assets/tex/lm/waterfront/crab.lq.webp",
+    "assets/tex/lm/waterfront/crab.webp",
+    "assets/tex/lm/waterfront/facades.lq.webp",
+    "assets/tex/lm/waterfront/facades.webp",
+    "assets/tex/lm/waterfront/facades_mask.lq.webp",
+    "assets/tex/lm/waterfront/facades_mask.webp",
+    "assets/tex/lm/waterfront/tiles.lq.webp",
+    "assets/tex/lm/waterfront/tiles.webp",
+    "assets/tex/murals.lq.webp",
+    "assets/tex/murals.webp",
+    "assets/tex/office.lq.webp",
+    "assets/tex/office.webp",
+    "assets/tex/office_lo.lq.webp",
+    "assets/tex/office_lo.webp",
+    "assets/tex/office_mask.lq.webp",
+    "assets/tex/office_mask.webp",
+    "assets/tex/palms.lq.webp",
+    "assets/tex/palms.webp",
+    "assets/tex/peds.lq.webp",
+    "assets/tex/peds.webp",
+    "assets/tex/roof.lq.webp",
+    "assets/tex/roof.webp",
+    "assets/tex/shrubs.lq.webp",
+    "assets/tex/shrubs.webp",
+    "assets/tex/shrubs_n.lq.webp",
+    "assets/tex/shrubs_n.webp",
+    "assets/tex/sidewalk_c.lq.webp",
+    "assets/tex/sidewalk_c.webp",
+    "assets/tex/siding.lq.webp",
+    "assets/tex/siding.webp",
+    "assets/tex/stucco.lq.webp",
+    "assets/tex/stucco.webp",
+    "assets/tex/tex.json",
+    "assets/tex/twigs.lq.webp",
+    "assets/tex/twigs.webp",
+    "assets/tex/twigs_n.lq.webp",
+    "assets/tex/twigs_n.webp",
+    "assets/veg/trees.bin.gz",
+    "assets/veg/yards.bin.gz",
+    "assets/waymo/turntable.webp",
+    "assets/waymo/waymo.glb.gz",
+    "assets/waymo/waymo.json",
+    "assets/waymo/waymo_albedo.webp",
+    "assets/waymo/waymo_emit.webp",
+    "assets/waymo/waymo_orm.webp",
+    "assets/waymo/waymo_traffic.glb.gz",
+    "boot.js",
+    "fonts/Archivo-300-800.woff2",
+    "fonts/JetBrainsMono-600.woff2",
+    "icon.webp",
+    "index.html",
+    "robots.txt",
+    "shell-index.html",
+    "shell.html",
+    "slots.json",
+    "style.css",
+    "thumb.webp",
+    "tune.json",
+    "workers/car.js",
+    "workers/img.js",
+    "workers/lod.js",
+    "workers/sky.js"
+  ],
+  "unresolved": [
+    {
+      "path": "/__mb/sound?on=0|1",
+      "kind": "dynamic-endpoint",
+      "note": "POST-only same-origin endpoint (204) the game uses to persist the sound switch server-side; a static mirror cannot serve it — the cookie/localStorage path in index.html covers it."
+    }
+  ],
+  "unreachable": [
+    {
+      "status": 405,
+      "path": "/__mb/sound",
+      "probes": 1,
+      "note": "dynamic POST endpoint (204 on POST); 405 on GET"
+    },
+    {
+      "status": 404,
+      "path": "/_2k.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/_i=mt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/.well-known/security.txt",
+      "probes": 1,
+      "note": "root route probe"
+    },
+    {
+      "status": 404,
+      "path": "/2CV.wav",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/3008gtrevving.wav",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/a.image.data,this._indirectTexture.image.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/a.type,a.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ao_plain.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ao_subd.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/ao_lod1.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/ao_plain.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/ao_subd.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/interior.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/plate.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/scene_lod1.glb.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/scene_plain.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/car/scene_subd.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/bus.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/cablecar.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/hatch_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/hatch_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/hatch_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/hatch_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/hatch_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/hatch.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/pickup_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/pickup_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/pickup_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/pickup_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/pickup_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/pickup.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/sedan_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/sedan_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/sedan_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/sedan_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/sedan_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/sedan.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/suv_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/suv_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/suv_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/suv_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/suv_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/suv.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/taxi_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/taxi_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/taxi_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/taxi_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/taxi_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/taxi.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/van_albedo.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/van_emit.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/van_lod1_2k.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/van_lod1.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/van_orm.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cars/van.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/corvette/corvette_lod1.glb.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/corvette/corvette.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cybercab/cybercab_lod1.glb.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cybercab/cybercab.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cybertruck/cybertruck_lod1.glb.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/cybertruck/cybertruck.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/index-75Lm9zGz.js",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/index-BC0u9bVl.css",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/lm/revolution.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/manifest.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/btags.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/buildings.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/coast.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/green.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/ground.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/lm/revolution.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/btags.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/buildings.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/coast.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/docks.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/green.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/ground.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/props.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/rails.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/roads.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/sky.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/marin/terrain.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/props.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/rails.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/roads.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/sky_field.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/sky.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/terrain.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/btags.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/buildings.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/coast.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/green.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/ground.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/props.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/rails.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/roads.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/sky.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/real/west/terrain.bin",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm.json",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/alcatraz/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/alcatraz/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/alcatraz/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/alcatraz/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/alcatraz/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/baybridge/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/baybridge/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/baybridge/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/baybridge/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/baybridge/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/cityhall/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/cityhall/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/cityhall/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/cityhall/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/cityhall/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/coit/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/coit/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/coit/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/coit/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/coit/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ferry/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ferry/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ferry/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ferry/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ferry/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/fortmason/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/fortmason/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ggbridge/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ggbridge/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ggbridge/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ggbridge/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/ggbridge/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/oracle/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/oracle/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/oracle/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/oracle/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/oracle/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/pier39/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/pier39/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/transamerica/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/transamerica/facades_mask.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/transamerica/facades.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/transamerica/ground.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/transamerica/tiles.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/waterfront/crab_n.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/lm/waterfront/elev.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/plates.lq.webp",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/tex/plates.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/title_sf.webp",
+      "probes": 2,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/veg/grass.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/veg/plants.bin.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/veg/trees.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/veg/yards.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/waymo/waymo_lod1.glb.gz",
+      "probes": 1,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/assets/waymo/waymo_traffic.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/assets/waymo/waymo.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/audio.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/billboards.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Bt,ie,zt,ft,kt,te,Qt,ge,Ft,Gt,St.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Bt,ie,zt,ft,kt,te,Qt,ge,Ft,St.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/btags.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/buildings.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/car/waymoModel.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Central_Freeway,_San_Francisco.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/cities.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/coast.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/config.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/corvette.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/corvette.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/crab.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ct.TEXTURE_2D,ie,zt,ft,St.width,St.height,Ft,St.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ct.TEXTURE_2D,ie,zt,ft,te,Qt,Ft,Gt,St.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/cybercab_cover.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/cybercab.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/cybercab.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/cybertruck.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/cybertruck.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/e.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/elev.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Et.dir+Et.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/F.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/facades_mask.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/facades.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/favicon.ico",
+      "probes": 2,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/foliage.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/green.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ground_n.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ground.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ground.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/gtm.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Ht.dir+Ht.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/I-280_ramp_over_Mariposa_Street,_February_2021.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/I-80_Bay_Bridge_approach.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D_ARRAY,0,0,0,0,qt.width,qt.height,qt.depth,Zt,he,qt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D_ARRAY,0,ee,qt.width,qt.height,qt.depth,0,Zt,he,qt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D_ARRAY,pe,0,0,0,Xt.width,Xt.height,qt.depth,Zt,he,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D_ARRAY,pe,0,0,0,Xt.width,Xt.height,qt.depth,Zt,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D_ARRAY,pe,ee,Xt.width,Xt.height,qt.depth,0,Zt,he,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,0,0,0,at.width,at.height,yt,vt,at.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,0,ee,qt.width,qt.height,0,Zt,he,qt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,0,os,Dt,qe,pe,yt,vt,at.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,pe,0,0,Xt.width,Xt.height,Zt,he,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,pe,0,0,Xt.width,Xt.height,Zt,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,pe,ee,Xt.width,Xt.height,0,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_2D,pe,ee,Xt.width,Xt.height,0,Zt,he,Xt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_3D,0,0,0,0,qt.width,qt.height,qt.depth,Zt,he,qt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_3D,0,ee,qt.width,qt.height,qt.depth,0,Zt,he,qt.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_CUBE_MAP_POSITIVE_X+Le,de,0,0,Ie.width,Ie.height,me,Ie.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_CUBE_MAP_POSITIVE_X+Le,de,0,0,Ie.width,Ie.height,me,re,Ie.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_CUBE_MAP_POSITIVE_X+Le,de,os,Ie.width,Ie.height,0,Ie.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_CUBE_MAP_POSITIVE_X+Le,de,os,Ie.width,Ie.height,0,me,re,Ie.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_CUBE_MAP_POSITIVE_X+Le,de+1,0,0,ps.width,ps.height,me,re,ps.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/i.TEXTURE_CUBE_MAP_POSITIVE_X+Le,de+1,os,ps.width,ps.height,0,me,re,ps.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Interstate80westernend.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/kit.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/l.image.data,this._colorsTexture.image.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/l.type,l.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/manifest.webmanifest",
+      "probes": 2,
+      "note": "variant probe"
+    },
+    {
+      "status": 404,
+      "path": "/MISC_Police_PA_Officer_Speaking_001.wav",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/murals.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/net/multiplayer.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/O.data=H.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ot.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/P-s.gx,I-s.gz",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/porsche_911.wav",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/props.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/r.image.data,this._matricesTexture.image.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/r=r.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/rails.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/real/green.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/real/ground.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/roads.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/s.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/s.gx,s.gz",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/San_Francisco_Bayshore_Freeway_Route_101_6015052908.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/San_Francisco--Oakland_Bay_Bridge_-_Rincon_Hill_Abutment_Looking_West.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/San_Francisco--Oakland_Bay_Bridge_-_Rincon_Hill_Anchorage.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/San_Francisco-Octavia_Boulevard.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/scene_plain.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/scene_subd.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/scene.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/SF_Cable_Car_22_at_Market_Street_turnaround_20250920.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/sitemap.xml",
+      "probes": 1,
+      "note": "root route probe"
+    },
+    {
+      "status": 404,
+      "path": "/sky.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/South_portal_of_the_Stockton_Tunnel,_San_Francisco_at_night_dllu.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/src/city/real/district.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/src/ui/ds.css",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/Stockton_Street_Tunnel,_San_Francisco_2021-11-16.jpg",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/sw.js",
+      "probes": 1,
+      "note": "root route probe"
+    },
+    {
+      "status": 404,
+      "path": "/t.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/t.data,p.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/t.data,x.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/t.gx,t.gz",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/t.gx+f.off,t.gz",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/t.image.width=e.width,t.image.height=e.height,t.image.data=e.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/terrain.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/this._sunBuf,0,t.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/this.data",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/three.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/tiles.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/tire.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/title.mp3",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/tools/real/seeds/round39_bake.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/tools/real/skyvis.mjs",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/turntable.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ui/citypick.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ui/garage.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ui/pause.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/ui/picker.js",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/wall_n.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/wall.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/waymo_albedo.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/waymo_emit.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/waymo_orm.webp",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/waymo_traffic.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/waymo.glb",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/waymo.json",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    },
+    {
+      "status": 404,
+      "path": "/weights.bin",
+      "probes": 1,
+      "note": "static-scan probe (some are scanner false positives)"
+    }
+  ],
+  "external": [
+    {
+      "pattern": "https://api.mindblown.ai/pod.js",
+      "kind": "platform-sdk",
+      "note": "mindblown platform script (saves, accounts, rooms, leaderboard, events). Loaded by the entry document; stays external. Without it the page queues saves and rejects them 'STORAGE_UNAVAILABLE' after 20 s — play itself is unaffected."
+    },
+    {
+      "pattern": "https://api.mindblown.ai/events",
+      "kind": "telemetry",
+      "note": "event beacons sent by pod.js (observed in the session network log)."
+    },
+    {
+      "pattern": "https://www.googletagmanager.com (GTM-5N29FV6R), https://www.googletagmanager.com/gtag/js (G-CCGP4QQJTZ), https://connect.facebook.net, https://www.facebook.com",
+      "kind": "analytics",
+      "note": "load only in the feed shell (shell.html at /); the game document itself loads none of these."
+    },
+    {
+      "pattern": "https://mindblown.ai/embed/session + mindblown.ai portal",
+      "kind": "portal",
+      "note": "the publisher portal wraps the game host in a cross-origin iframe; out of scope — the mirror captures the game host."
+    }
+  ],
+  "notes": [
+    "Closure method: (a) static fixpoint scan — every path-like literal in all 21 captured text files resolved against the manifest at capture-root-relative, ./relative and assets/-prefixed bases (unresolved: dynamic fragments, credits text, source-take names — recorded below); (b) opencli browser network logs from two live sessions (previous agent's 290-request log + this session's 76 entries) cross-checked against the manifest — 100% of same-origin responses were captured files, zero uncaptured 200s; (c) systematic twin sweep over every captured path (base/.lq.webp twins, .bin/.glb source twins) probed live.",
+    "Closure gaps found and fixed 2026-10-13 (previous crawl incomplete): 14 existing-but-uncaptured .lq.webp texture variants (assets/tex/*_lo.lq.webp, lm/fortmason/*, lm/pier39/*) — fetched and added; plus the served root routes /robots.txt (200, 1,248 B) and /index.html (the feed shell's /index.html-flavoured twin, 51,907 B, captured as shell-index.html). Capture grew 394 -> 410 files.",
+    "Genuine upstream 404s (recorded, not captured): the un-gzipped .bin/.glb source twins of every dist .gz (the origin serves only the .gz), and the .lq.webp variants of assets that never had them (turntables, car _2k maps, waymo maps, titles, icons). List in unreachable.",
+    "Audio closure is exact: assets/audio/audio.json names 146 files, all 146 captured, and every captured audio file is named in it.",
+    "The 9 un-gzipped /assets/real/*.bin and /assets/real/{marin,west}/*.bin probes 404 upstream (dist ships .gz only).",
+    "Boot test: mirror served on loopback (directory-index-capable), game reached actual gameplay (Waymo driving in San Francisco, HUD live), docs/cover.png + docs/boot-evidence.png captured from gameplay, listener killed, port proven closed.",
+    "Drift probe tools/update.mjs: up to date — 410 captured files identical upstream (routes: /?mb=game -> index.html byte-exact; / -> shell.html byte-exact; /index.html -> shell-index.html byte-exact; every asset byte-exact)."
+  ]
+}

@@ -1,0 +1,312 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0f0f10;
+  overscroll-behavior: none;
+}
+/* THE FEED IS THE PAGE. The game the link named is the first thing on it and
+   the rest of the shelf is under it, one screen each.
+   SCROLL-SNAP AND NOT A SCRIPT: the browser does the paging, so a flick lands
+   on a game rather than between two, and a slow drag comes back to where it
+   started without anything of ours running per frame. */
+#mb-feed {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+.mb-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #0f0f10;
+}
+/* THE HEIGHT IS COMPUTED, NOT INFERRED FROM top AND bottom. An iframe is a
+   REPLACED element: with height:auto it takes its intrinsic 150px and the
+   bottom offset is dropped as over-constrained. Written that way this frame was
+   150px tall on a 664px screen -- measured, and it looked like a broken game
+   rather than a broken rule. */
+/* AND IT ENDS ABOVE THE BAR. On a phone the rail is a strip across the bottom,
+   and it used to be laid OVER the game: an iframe is a rectangle and takes
+   every tap inside it, so that strip owned the bottom of the screen whatever
+   the game drew there. Measured on 2d.mindblown.ai, iPhone 13: 96 of 96 hit
+   tests in that band answered to the rail and none to the game.
+   The rail is in THIS document (spec 38): its bundle measures the bar it draws
+   and writes --mb-rail-h on the root, and this is what reads it. UNSET IS
+   ZERO, which is a game that fills the window: a desktop, and a build with no
+   rail. */
+.mb-slide iframe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: calc(100% - var(--mb-rail-h, 0px));
+  border: 0;
+  display: block;
+}
+/* A SLIDE THAT IS NOT LOADED YET is its own name on the shelf. It is not a
+   picture: the pictures live on another origin and img-src does not admit it,
+   and a feed that widened this page's policy to show a thumbnail would be a
+   poor trade. The frame arrives as the slide comes into reach. */
+.mb-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  color: #fff1cf;
+  font:
+    600 19px/1.25 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+.mb-card span {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.62;
+}
+/* THE LOADING SCREEN, over the first slide only. POINTER-EVENTS:NONE FROM THE
+   FIRST FRAME, and it never changes: there is nothing on it to tap, and a
+   decorative layer that could take a tap would sit over the game eating every
+   touch if the hide below ever failed.
+   FIRST IN THE BODY, and that is the whole of why it works. The pod.js tag
+   below is a render-blocking classic script fetched from ANOTHER ORIGIN: the
+   parser stops at it until the API answers, so anything after it does not exist
+   yet. Measured on the live page 2026-09-06 with this div placed after the tag
+   -- at 250ms mb-splash was not in the DOM at all.
+   NO BACKTICKS IN HERE: this comment sits inside a template literal. */
+#mb-splash {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: #0f0f10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  opacity: 1;
+  transition: opacity 0.32s ease;
+}
+#mb-splash.mb-gone {
+  opacity: 0;
+}
+/* A LIGHT BEHIND THE MARK, breathing. It is one radial gradient on a pseudo
+   element rather than a box-shadow on the logo: a shadow that size repaints the
+   mark every frame, a scaled gradient is composited. */
+#mb-splash:before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: min(70vmin, 420px);
+  height: min(70vmin, 420px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 90, 24, 0.34),
+    rgba(255, 90, 24, 0) 68%
+  );
+  animation: mb-breathe 3.4s ease-in-out infinite;
+}
+/* THE GAME'S OWN FACE, and the house mark under it.
+ *
+ * Every game's loading screen was the same screen: our mark, the game's name,
+ * and five blocks on one orange. The name was the only per-game thing on it.
+ *
+ * /icon.webp is the game's own 256px mark, written by the publish and served
+ * FROM THIS ORIGIN -- so img-src 'self' already admits it and no policy has
+ * to widen. It is drawn twice from one fetch: sharp at 84px as the subject, and
+ * blown up and blurred behind everything as the ground, which is what gives
+ * each game its own colour without a colour ever being computed or stored.
+ *
+ * 256px AND NOT card.webp. The card is 1000x1000 and the share image 1200x675;
+ * either would be a few hundred KB racing the game's own boot for bandwidth on
+ * the one screen that exists because the game has not booted. The icon is the
+ * smallest of the three, it is the right size for 84 CSS px at 3x, and blur
+ * makes its resolution irrelevant to the half of the job that scales it up.
+ *
+ * IT IS NOT IN THE FIRST FRAME AND DOES NOT NEED TO BE. The ground, the name
+ * and the blocks paint with zero network exactly as before; the art fades in
+ * behind them when it arrives. A game whose icon 404s -- anything published
+ * before the publish made one -- shows what it shows today, minus a mark that
+ * has moved to the corner. */
+#mb-art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  transform: scale(1.25);
+  filter: blur(38px) saturate(1.5) brightness(0.52);
+}
+#mb-art.mb-on {
+  opacity: 1;
+}
+/* THE HOUSE GLOW STANDS DOWN WHEN THE GAME HAS ITS OWN. It exists to give a
+   flat ground something to do; over the game's own colours it is one orange
+   wash making every game look a little more like every other, which is the
+   thing this screen was changed to stop. */
+#mb-splash.mb-lit:before {
+  opacity: 0;
+}
+#mb-face {
+  width: 84px;
+  height: 84px;
+  display: block;
+  position: relative;
+  z-index: 2;
+  border-radius: 18px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  animation: mb-float 3.4s ease-in-out infinite;
+}
+#mb-face.mb-on {
+  opacity: 1;
+}
+/* GONE, NOT EMPTY, when there is no icon: an 84px hole above the name is worse
+   than a name on its own. */
+#mb-face.mb-no {
+  display: none;
+}
+/* THE HOUSE MARK, under the game's. It was the 84px subject of this screen and
+   the game is the subject now -- this is the publisher's mark on a title card,
+   which is where it belongs when the card finally has a title. */
+#mb-mark {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  display: block;
+  z-index: 2;
+  opacity: 0.5;
+}
+#mb-splash p {
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  font:
+    700 20px/1.25 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: 0.01em;
+  color: #fff1cf;
+  max-width: 76vw;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* THE BLOCKS ARE THE POINT. Five of them, rising in sequence and settling --
+   a thing being BUILT, which is what the wait actually is, and it rhymes with
+   the voxel worlds most of these games are made of.
+   TRANSFORM AND OPACITY ONLY: this sits over a frame that is booting a 3D
+   engine, and anything that forces layout here is stolen from that. */
+#mb-blocks {
+  display: flex;
+  gap: 7px;
+  position: relative;
+  z-index: 2;
+  height: 14px;
+  align-items: flex-end;
+}
+#mb-blocks i {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: block;
+  transform: translateY(6px) scale(0.7);
+  opacity: 0.25;
+  animation: mb-build 1.5s cubic-bezier(0.22, 0.8, 0.28, 1) infinite;
+}
+#mb-blocks i:nth-child(1) {
+  background: #ff5a18;
+  animation-delay: 0s;
+}
+#mb-blocks i:nth-child(2) {
+  background: #ffd229;
+  animation-delay: 0.12s;
+}
+#mb-blocks i:nth-child(3) {
+  background: #fff1cf;
+  animation-delay: 0.24s;
+}
+#mb-blocks i:nth-child(4) {
+  background: #3fe6ff;
+  animation-delay: 0.36s;
+}
+#mb-blocks i:nth-child(5) {
+  background: #d62817;
+  animation-delay: 0.48s;
+}
+@keyframes mb-build {
+  0%,
+  64%,
+  100% {
+    transform: translateY(6px) scale(0.7);
+    opacity: 0.25;
+  }
+  22%,
+  42% {
+    transform: translateY(-6px) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes mb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes mb-breathe {
+  0%,
+  100% {
+    transform: scale(0.86);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.9;
+  }
+}
+/* STILL, NOT BLANK. Everything above is decoration on a wait; with motion
+   turned down the wait still has to look like one, so the blocks stay in their
+   settled state rather than disappearing. */
+@media (prefers-reduced-motion: reduce) {
+  #mb-splash {
+    transition: none;
+  }
+  #mb-splash:before,
+  #mb-face {
+    animation: none;
+  }
+  #mb-blocks i {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  #mb-feed {
+    scroll-behavior: auto;
+  }
+}

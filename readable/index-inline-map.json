@@ -1,0 +1,198 @@
+{
+  "capture": [
+    "index.html",
+    "shell-index.html",
+    "shell.html"
+  ],
+  "generated": "2026-10-13",
+  "note": "byte ranges + sha256 of every inline <script>/<style> content block in the captured HTML documents; twins are the prettified (prettier 3.9.6, module API) renderings and are never shipped to a browser.",
+  "blocks": [
+    {
+      "file": "readable/index-inline-1.pretty.js",
+      "source": "index.html",
+      "section": "index-inline-1.js",
+      "kind": "script",
+      "block": 1,
+      "byteStart": 47,
+      "byteEnd": 7425,
+      "bytes": 7378,
+      "sha256": "400e4f566d0e2e25a846d0a67571c0c6d71b7192a5b1b8531e312c76960d025b"
+    },
+    {
+      "file": "readable/index-inline-2.pretty.js",
+      "source": "index.html",
+      "section": "index-inline-2.js",
+      "kind": "script",
+      "block": 2,
+      "byteStart": 7442,
+      "byteEnd": 8214,
+      "bytes": 772,
+      "sha256": "d94829027ac09b54bc5a60439d9130c1607603f8233838cd3782fc30fcf41fa5"
+    },
+    {
+      "file": "readable/index-inline-3.pretty.js",
+      "source": "index.html",
+      "section": "index-inline-3.js",
+      "kind": "script",
+      "block": 3,
+      "byteStart": 8231,
+      "byteEnd": 8675,
+      "bytes": 444,
+      "sha256": "4451dadc45ff2698161b0044f2cfdcb203f5ea80810f0f028ddcac79e0340c41"
+    },
+    {
+      "file": "readable/shell-index-inline-1.pretty.js",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-1.js",
+      "kind": "script",
+      "block": 1,
+      "byteStart": 611,
+      "byteEnd": 1003,
+      "bytes": 392,
+      "sha256": "7f0374e4c637b05eb8ad36faa341d76bf7d8f3634110ee6221c480bb0303562a"
+    },
+    {
+      "file": "readable/shell-index-inline-2.pretty.js",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-2.js",
+      "kind": "script",
+      "block": 2,
+      "byteStart": 1021,
+      "byteEnd": 8399,
+      "bytes": 7378,
+      "sha256": "400e4f566d0e2e25a846d0a67571c0c6d71b7192a5b1b8531e312c76960d025b"
+    },
+    {
+      "file": "readable/shell-index-inline-3.pretty.js",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-3.js",
+      "kind": "script",
+      "block": 3,
+      "byteStart": 11698,
+      "byteEnd": 12036,
+      "bytes": 338,
+      "sha256": "1751cd280cba74ea80c323bd71877a6a05f24c4c73023b8ecf0586f5ab022207"
+    },
+    {
+      "file": "readable/shell-index-inline-4.pretty.js",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-4.js",
+      "kind": "script",
+      "block": 4,
+      "byteStart": 12053,
+      "byteEnd": 12483,
+      "bytes": 430,
+      "sha256": "271dfea9cebdb353e92ee2427cfa997db9343cc9955b8db0661badea8c49b0ec"
+    },
+    {
+      "file": "readable/shell-index-inline-1.pretty.css",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-1.css",
+      "kind": "style",
+      "block": 1,
+      "byteStart": 12500,
+      "byteEnd": 20869,
+      "bytes": 8369,
+      "sha256": "3cd1d1ecc4298eb992043bb6540299f7a1dd394cafef29e11cfaa90e8671e183"
+    },
+    {
+      "file": "readable/shell-index-inline-2.pretty.css",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-2.css",
+      "kind": "style",
+      "block": 2,
+      "byteStart": 20885,
+      "byteEnd": 23619,
+      "bytes": 2734,
+      "sha256": "be2a6e5cca24e4b2f2c407f71c6b2e391eee716dd68594c6f3479fa76894c2d3"
+    },
+    {
+      "file": "readable/shell-index-inline-5.pretty.js",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-5.js",
+      "kind": "script",
+      "block": 5,
+      "byteStart": 47494,
+      "byteEnd": 51541,
+      "bytes": 4047,
+      "sha256": "298a3a417b80dbe6300856dedfd0fddd795eb685c16c82e3b45994afb017a0bf"
+    },
+    {
+      "file": "readable/shell-inline-1.pretty.js",
+      "source": "shell.html",
+      "section": "shell-inline-1.js",
+      "kind": "script",
+      "block": 1,
+      "byteStart": 611,
+      "byteEnd": 1003,
+      "bytes": 392,
+      "sha256": "7f0374e4c637b05eb8ad36faa341d76bf7d8f3634110ee6221c480bb0303562a"
+    },
+    {
+      "file": "readable/shell-inline-2.pretty.js",
+      "source": "shell.html",
+      "section": "shell-inline-2.js",
+      "kind": "script",
+      "block": 2,
+      "byteStart": 1021,
+      "byteEnd": 8399,
+      "bytes": 7378,
+      "sha256": "400e4f566d0e2e25a846d0a67571c0c6d71b7192a5b1b8531e312c76960d025b"
+    },
+    {
+      "file": "readable/shell-inline-3.pretty.js",
+      "source": "shell.html",
+      "section": "shell-inline-3.js",
+      "kind": "script",
+      "block": 3,
+      "byteStart": 11688,
+      "byteEnd": 12026,
+      "bytes": 338,
+      "sha256": "1751cd280cba74ea80c323bd71877a6a05f24c4c73023b8ecf0586f5ab022207"
+    },
+    {
+      "file": "readable/shell-inline-4.pretty.js",
+      "source": "shell.html",
+      "section": "shell-inline-4.js",
+      "kind": "script",
+      "block": 4,
+      "byteStart": 12043,
+      "byteEnd": 12473,
+      "bytes": 430,
+      "sha256": "271dfea9cebdb353e92ee2427cfa997db9343cc9955b8db0661badea8c49b0ec"
+    },
+    {
+      "file": "readable/shell-inline-1.pretty.css",
+      "source": "shell.html",
+      "section": "shell-inline-1.css",
+      "kind": "style",
+      "block": 1,
+      "byteStart": 12490,
+      "byteEnd": 20859,
+      "bytes": 8369,
+      "sha256": "3cd1d1ecc4298eb992043bb6540299f7a1dd394cafef29e11cfaa90e8671e183"
+    },
+    {
+      "file": "readable/shell-inline-2.pretty.css",
+      "source": "shell.html",
+      "section": "shell-inline-2.css",
+      "kind": "style",
+      "block": 2,
+      "byteStart": 20875,
+      "byteEnd": 23609,
+      "bytes": 2734,
+      "sha256": "be2a6e5cca24e4b2f2c407f71c6b2e391eee716dd68594c6f3479fa76894c2d3"
+    },
+    {
+      "file": "readable/shell-inline-5.pretty.js",
+      "source": "shell.html",
+      "section": "shell-inline-5.js",
+      "kind": "script",
+      "block": 5,
+      "byteStart": 47464,
+      "byteEnd": 51511,
+      "bytes": 4047,
+      "sha256": "298a3a417b80dbe6300856dedfd0fddd795eb685c16c82e3b45994afb017a0bf"
+    }
+  ]
+}
