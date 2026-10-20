@@ -130,6 +130,7 @@ the upstream `/` shell is preserved as `shell.html`).
 ```
 node tools/verify.mjs     # re-hash the capture against the manifest
 node tools/audit.js       # derived-layer integrity gate
+node tools/check-exports.mjs  # the derived layer still exports every public name
 ```
 
 Last run: `410 files checked, 0 problems` and `AUDIT PASS` (441 spec sections,
