@@ -131,6 +131,7 @@ the upstream `/` shell is preserved as `shell.html`).
 node tools/verify.mjs     # re-hash the capture against the manifest
 node tools/audit.js       # derived-layer integrity gate
 node tools/check-exports.mjs   # the derived layer still exports every public name
+node tools/derive.mjs --check          # the derived layer is current? (compares a fresh rebuild; writes NOTHING)
 ```
 
 Last run: `410 files checked, 0 problems` and `AUDIT PASS` (441 spec sections,
