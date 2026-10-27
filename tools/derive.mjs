@@ -98,12 +98,26 @@ const prettyRelFor = (capRel) =>
   "readable/" + tagOf(capRel) + (/\.css$/i.test(capRel) ? ".pretty.css" : ".pretty.js");
 
 // ── pinned prettier (module API, exactly 3.9.6) ─────────────────────────
-async function loadPrettier() {
-  const candidates = [
+// The renderer is VENDORED in this mirror — tools/vendor/prettier/, byte-identical
+// to the published prettier-3.9.6.tgz (see tools/vendor/prettier/VENDOR-README.md).
+// It used to be resolved out of ANOTHER mirror's `node_modules/`, which is
+// gitignored and committed nowhere: a clean checkout or a disk cleanup broke
+// the derive of every mirror that reached into it at once, and the failure
+// looked like a broken tool rather than a missing dependency.
+const VENDORED_PRETTIER = path.join(here, "vendor", "prettier", "index.mjs");
+
+// every path the loader tries, in order — the "not found" message lists them
+// all, so a missing renderer is a one-line fix and not a hunt
+function prettierCandidates() {
+  return [
     process.env.PRETTIER_MJS,
+    VENDORED_PRETTIER,
     path.join(proj, "node_modules", "prettier", "index.mjs"),
-    "D:/repos/mirrors/metropolygonia/node_modules/prettier/index.mjs",
   ].filter(Boolean);
+}
+
+async function loadPrettier() {
+  const candidates = prettierCandidates();
   for (const c of candidates) {
     if (!fs.existsSync(c)) continue;
     try {
@@ -115,7 +129,15 @@ async function loadPrettier() {
       /* try next */
     }
   }
-  throw new Error(`pinned prettier ${PINNED} not found (set PRETTIER_MJS to its index.mjs)`);
+  throw new Error(
+    `pinned prettier ${PINNED} not found.\n` +
+      `tried:\n` +
+      candidates.map((c) => `  - ${c}`).join("\n") +
+      `\nrecovery: restore the vendored copy — git checkout -- tools/vendor/prettier\n` +
+      `  (or extract package/{index.mjs,doc.mjs,plugins/*.mjs,LICENSE,THIRD-PARTY-NOTICES.md} ` +
+      `from prettier-3.9.6.tgz into tools/vendor/prettier/, or point $PRETTIER_MJS at a local ` +
+      `prettier ${PINNED} install — its package.json must report version "${PINNED}")`,
+  );
 }
 
 // single pass + idempotency proof: prettier output must be a fixed point of

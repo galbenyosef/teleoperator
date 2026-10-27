@@ -85,6 +85,11 @@ Live multiplayer rooms are served by `api.mindblown.ai` and are not mirrorable.
 - `tools/verify.mjs` — re-hash the capture against the manifest
 - `tools/update.mjs` — read-only drift probe against the live game host
 - `tools/audit.js` — integrity gate for the derived layers (`AUDIT PASS`)
+- `tools/vendor/prettier/` — the pinned renderer itself, vendored **into this
+  mirror** (prettier 3.9.6 module API, byte-identical to the published
+  `prettier-3.9.6.tgz`); `derive.mjs` and `audit.js` resolve `$PRETTIER_MJS` →
+  this copy → a local `node_modules`, so neither ever reaches into a sibling
+  mirror's uncommitted tree
 - `docs/cover.png`, `docs/boot-2026-10-13.png` — cover + boot evidence from
   the served mirror (actual gameplay)
 
@@ -136,7 +141,15 @@ node tools/derive.mjs --check          # the derived layer is current? (compares
 
 Last run: `410 files checked, 0 problems` and `AUDIT PASS` (441 spec sections,
 417/417 src↔pretty round-trips byte-exact, 25/25 pretties re-render byte-exact
-under pinned prettier 3.9.6, 17 inline content blocks with twins + map).
+under pinned prettier 3.9.6, 17 inline content blocks with twins + map), plus
+`DERIVE CHECK PASS` (two consecutive `--check` runs: `readable` + `src` current
+under the documented chain, byte-identical, nothing written).
+
+`check-exports` reports `0 export table(s) checked` **by construction**: the
+capture is one minified, side-effect-only module bundle (no `export` statement
+anywhere, no import specifiers) plus classic-script workers, the platform PWA
+worker and a stylesheet — it has no public ES-module export surface to compare.
+The green is an honest zero, not a vacuous pass over an unreached surface.
 
 ## Updating from upstream
 

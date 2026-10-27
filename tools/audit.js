@@ -529,10 +529,13 @@ if (manifest) {
 }
 
 // ── best-effort: re-render every pretty with the pinned prettier 3.9.6 ─
+// the pinned renderer is VENDORED in this mirror (tools/vendor/prettier/, byte-identical to
+// the published prettier-3.9.6.tgz) — the derive and this gate must never reach into
+// another mirror's uncommitted node_modules
 const prettierCandidates = [
   process.env.PRETTIER_MJS,
+  path.join(proj, "tools", "vendor", "prettier", "index.mjs"),
   path.join(proj, "node_modules", "prettier", "index.mjs"),
-  "D:/repos/mirrors/metropolygonia/node_modules/prettier/index.mjs",
 ].filter(Boolean);
 function loadPinnedPrettier() {
   for (const c of prettierCandidates) {
