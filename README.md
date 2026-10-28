@@ -215,6 +215,15 @@ to be resumed:
   game document (`index.html`), and both shell documents are preserved as
   `shell.html` / `shell-index.html`.
 
+## Boot test (2026-10-27)
+
+- Entry: `http://127.0.0.1:4984/?mb=game` served by `tools/serve.mjs` with the network blocked (`MAP * 127.0.0.1`).
+- Outcome: **rendered** — the WebGPU San Francisco build booted to the garage screen, and after one click on `DRIVE` the Waymo taxi drove down Marina streets with the courier HUD, minimap, speedometer and a live 81 fps counter.
+- Evidence: body 458 chars; canvas 1262x568 (plus HUD canvases); 0 console errors (0 page errors, 4 `STORAGE_UNAVAILABLE` profile warnings); 0 failed same-origin requests, 1 blocked cross-origin (`api.mindblown.ai/pod.js`); screenshot `docs/boot-2026-10-27.png`.
+- Gaps seen: none — 133 same-origin requests, every one 200 (city `.bin.gz` payloads, textures, traffic models, audio).
+
+The capture's "playable" claim is confirmed: the static mirror alone boots and drives offline; only the external platform pod (and the multiplayer rooms it carries) is absent.
+
 ## Fleet status
 
 <!-- mirror-status:start — feeds _standard/REPO-INDEX.md. Update ONLY your own mirror's block; never edit the shared index (PLAN §8). Rebuild: node _standard/build-index.mjs -->
