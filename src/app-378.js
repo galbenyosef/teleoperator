@@ -1,647 +1,468 @@
-// app 378 — dataset
-// Lines 188271-188915 of readable/app.pretty.js (statement-aligned).
-var mE = class {
-  constructor(t, { onPause: e, onResume: s, audio: n, carId: o } = {}) {
-    ((this.v = t),
-      (this.paused = !1),
-      (this.onPause = e),
-      (this.onResume = s),
-      (this.audio = n || (() => null)),
-      (this.carId = o || (() => "free")),
-      (this.hooks = {}));
-    for (let p of document.querySelectorAll("[data-level]"))
-      p.onclick = () => {
-        this.setLevel(p.dataset.level);
-      };
-    for (let p of document.querySelectorAll("[data-l5profile]"))
-      p.onclick = () => {
-        if (!t.da) return;
-        let m = p.dataset.l5profile === "chill" ? "chill" : "madmax";
-        ((t.da.profile = m), (t.da.prof = Im[m]), OZ(m), this.sync());
-      };
-    let a = document.querySelector("[data-dassist-all]");
-    a &&
-      (a.onclick = () => {
-        let p = Uw();
-        ((p.all = p.all ? null : t.da?.mode || "manual"),
-          p.all || (p.cars[this.carId()] = t.da?.mode || "manual"),
-          QI(p),
-          this.sync());
-      });
-    let r = vM();
-    (Object.assign(t.assists, r.assists), (t.manual = r.manual));
-    for (let p of document.querySelectorAll("[data-assist]"))
-      p.onclick = () => {
-        let m = p.dataset.assist;
-        ((t.assists[m] = !t.assists[m]), this.resetAids(), net(t), this.sync());
-      };
-    for (let p of document.querySelectorAll("[data-transmission]"))
-      p.onclick = () => {
-        let m = p.dataset.transmission === "manual";
-        (m !== t.manual && ((t.manual = m), (t._shiftReq = 0), net(t)),
-          this.sync());
-      };
-    for (let p of document.querySelectorAll("[data-units]"))
-      p.onclick = () => {
-        (this.hooks.setUnits
-          ? this.hooks.setUnits(p.dataset.units)
-          : this.hooks.setMph?.(p.dataset.units === "mph"),
-          this.sync());
-      };
-    this.prefs = yM();
-    for (let p of document.querySelectorAll("input[data-prefnum]"))
-      p.oninput = () => this.setPref(p.dataset.prefnum, +p.value);
-    for (let p of document.querySelectorAll("[data-pref]"))
-      p.onclick = () => {
-        let m = p.dataset.pref,
-          g = p.dataset.v ?? (this.prefs[m] === "on" ? "off" : "on");
-        this.setPref(m, g);
-      };
-    for (let p of document.querySelectorAll("[data-ridestyle]"))
-      p.onclick = () => {
-        let m = p.dataset.ridestyle;
-        (this.hooks.setRideStyle ? this.hooks.setRideStyle(m) : gE(m),
-          this.sync());
-      };
-    for (let p of document.querySelectorAll("[data-cam]"))
-      p.onclick = () => {
-        (this.hooks.setCam?.(+p.dataset.cam), this.sync());
-      };
-    for (let p of document.querySelectorAll("[data-tod]"))
-      p.onclick = () => {
-        (this.hooks.setTod?.(p.dataset.tod), this.sync());
-      };
-    this.ask = null;
-    for (let p of document.querySelectorAll("[data-gfx]"))
-      p.onclick = () => {
-        let m = p.dataset.gfx,
-          g = globalThis.SF_GFX || {};
-        if (m === (g.choice || "auto") && !g.url && !globalThis.SF_TIER_NOTE)
-          return this.sync();
-        let b = globalThis.SF_BOOT?.pick ? globalThis.SF_BOOT.pick(m) : m;
-        if (!globalThis.SF_BOOT?.pick) {
-          try {
-            localStorage.setItem("sf-drive.gfx", m);
-          } catch {}
-          globalThis.SF_GFX = { ...g, choice: m, lvl: b };
-        }
-        let x = window.__sf?.applyGfx ? window.__sf.applyGfx(b) : !0;
-        ((this.ask = x ? m : null), this.sync());
-      };
-    (gi("gfxNo")?.addEventListener("click", () => {
-      ((this.ask = null), this.sync());
-    }),
-      gi("gfxGo")?.addEventListener("click", () => {
-        globalThis.SF_BOOT?.restart
-          ? globalThis.SF_BOOT.restart()
-          : location.reload();
-      }));
-    for (let p of document.querySelectorAll("[data-fps]"))
-      p.onclick = () => {
-        let m = +p.dataset.fps;
-        globalThis.SF_FPS = m;
-        try {
-          let g = JSON.parse(localStorage.getItem(wf) || "{}") || {};
-          ((g.fps = m), localStorage.setItem(wf, JSON.stringify(g)));
-        } catch {}
-        this.sync();
-      };
-    let l = document.querySelector("[data-music]"),
-      c = gi("musicVol");
-    l &&
-      (l.onclick = () => {
-        let p = ev(),
-          m = this.audio();
-        (m ? m.setMusic(!m.musicOn) : Km(!p.on, p.vol), this.sync());
-      });
-    let h = gi("masterVol");
-    (h &&
-      (h.oninput = () => {
-        let p = +h.value / 100,
-          m = this.audio();
-        (m ? m.setMasterVol(p) : UF(p), this.sync());
-      }),
-      c &&
-        (c.oninput = () => {
-          let p = +c.value / 100,
-            m = this.audio();
-          (m ? m.setMusicVol(p) : Km(ev().on, p), this.sync());
-        }),
-      gi("nextTrack")?.addEventListener("click", () => {
-        let p = this.audio();
-        p?.musicOn && p.next();
-      }),
-      gi("radioStation")?.addEventListener("click", () => {
-        let p = this.audio();
-        if (p) p.cycleStation();
-        else {
-          let m = ev();
-          m.on
-            ? m.station >= qu.length - 1
-              ? Km(!1, m.vol)
-              : uM(m.station + 1)
-            : (uM(0), Km(!0, m.vol));
-        }
-        this.sync();
-      }),
-      gi("setRoomOpen")?.addEventListener("click", () => {
-        let p = this.hooks.mp?.();
-        p && (this.set(!1), p.show(!0));
-      }),
-      gi("resume")?.addEventListener("click", () => this.set(!1)),
-      gi("setX")?.addEventListener("click", () => this.set(!1)),
-      gi("bPause")?.addEventListener("click", () => this.set(!this.paused)),
-      (this.tabs = [...document.querySelectorAll("#setSide [data-tab]")]));
-    for (let p of this.tabs) p.onclick = () => this.show(p.dataset.tab);
-    let f = "autopilot";
-    try {
-      f = localStorage.getItem(set) || f;
-    } catch {}
-    this.tab = f;
-    let u = gi("setKeys"),
-      d = document.querySelector("#help .card");
-    (u && d && ((u.innerHTML = d.innerHTML), u.querySelector("h2")?.remove()),
-      addEventListener("keydown", (p) => this.key(p), !0),
-      (this.blockedShown = 0),
-      this.sync());
+// app 378 — math
+// Lines 186281-186746 of readable/app.pretty.js (statement-aligned).
+var Xv = class {
+  constructor(t) {
+    (Object.assign(this, t),
+      (this.on = !1),
+      (this.leaving = 0),
+      (this.sees = !1),
+      (this.x = 0),
+      (this.y = 0),
+      (this.z = 0),
+      (this.vx = 0),
+      (this.vy = 0),
+      (this.vz = 0),
+      (this.h = 0),
+      (this.bank = 0),
+      (this.pitch = 0),
+      (this.rot = 0),
+      (this.seeT = 0),
+      (this.light = 0),
+      (this.t = 0),
+      (this.lostAt = null),
+      (this.orbit = 0),
+      (this.roof = -1e4),
+      (this.roofT = 0),
+      (this.mode = "track"),
+      (this.sweepT = 12),
+      (this.sweepN = 0),
+      (this.phT = 0),
+      (this.side = 1),
+      this.build());
   }
-  show(t, e = !1) {
-    let s =
-      this.tabs.find((a) => a.dataset.tab === t && dE(a)) ||
-      this.tabs.find(dE) ||
-      this.tabs[0];
-    if (!s) return;
-    this.tab = s.dataset.tab;
-    try {
-      localStorage.setItem(set, this.tab);
-    } catch {}
-    for (let a of this.tabs) {
-      let r = a === s;
-      (a.setAttribute("aria-selected", String(r)), (a.tabIndex = r ? 0 : -1));
-    }
-    for (let a of document.querySelectorAll("#setPane .sec"))
-      a.classList.toggle("on", a.dataset.sec === this.tab);
-    let n = gi("setTitle");
-    n && (n.textContent = s.textContent.trim());
-    let o = gi("setPane");
-    (o && (o.scrollTop = 0),
-      s.scrollIntoView?.({ block: "nearest", inline: "nearest" }),
-      this.syncLive(),
-      e && s.focus({ preventScroll: !0 }));
-  }
-  rows() {
-    let t = document.querySelector("#setPane .sec.on");
-    if (!t) return [];
-    let e = [];
-    for (let s of t.querySelectorAll("button, input")) {
-      if (!dE(s) || s.disabled) continue;
-      let n = s.closest(".seg"),
-        o = e[e.length - 1];
-      n && o && o.g === n ? o.els.push(s) : e.push({ g: n, els: [s] });
-    }
-    return e;
-  }
-  nav(t) {
-    let e = document.activeElement,
-      s = gi("setSide"),
-      n = gi("setPane"),
-      o = this.tabs.filter(dE),
-      a = o.find((u) => u.dataset.tab === this.tab) || o[0],
-      r = n?.contains(e) && e !== n,
-      l = s?.contains(e);
-    if (!r && !l) {
-      if (t === "back") return this.set(!1);
-      a?.focus({ preventScroll: !0 });
-      return;
-    }
-    if (l) {
-      if (e === gi("resume")) {
-        t === "up"
-          ? o[o.length - 1]?.focus()
-          : t === "ok"
-            ? e.click()
-            : t === "back" && this.set(!1);
-        return;
-      }
-      let u = o.indexOf(e);
-      if (t === "up" || t === "down") {
-        let d = u + (t === "up" ? -1 : 1);
-        if (d >= o.length) {
-          gi("resume")?.focus();
-          return;
-        }
-        let p = o[Math.max(0, d)];
-        p && this.show(p.dataset.tab, !0);
-      } else if (t === "right" || t === "ok") {
-        let d = this.rows()[0],
-          p =
-            d &&
-            (d.els.find((m) => m.getAttribute("aria-checked") === "true") ||
-              d.els[0]);
-        p && p.focus();
-      } else t === "back" && this.set(!1);
-      return;
-    }
-    let c = this.rows(),
-      h = c.findIndex((u) => u.els.includes(e)),
-      f = c[h];
-    if (
-      t === "back" ||
-      (t === "left" &&
-        (!f || (!f.g && e.type !== "range") || (f.g && f.els.indexOf(e) === 0)))
-    ) {
-      a?.focus();
-      return;
-    }
-    if (t === "ok") {
-      e.tagName === "BUTTON" && e.click();
-      return;
-    }
-    if (t === "left" || t === "right") {
-      if (e.type === "range") {
-        let u = +e.step || 1;
-        ((e.value = Math.min(
-          +e.max,
-          Math.max(+e.min, +e.value + (t === "left" ? -u : u)),
-        )),
-          e.dispatchEvent(new Event("input", { bubbles: !0 })));
-        return;
-      }
-      if (f?.g) {
-        let u = f.els.indexOf(e) + (t === "left" ? -1 : 1);
-        f.els[u]?.focus();
-      }
-      return;
-    }
-    if (t === "up" || t === "down") {
-      let u = h + (t === "up" ? -1 : 1);
-      if (u < 0) {
-        gi("setX")?.focus();
-        return;
-      }
-      let d = c[u];
-      if (!d) return;
-      let p =
-        d.els.find((m) => m.getAttribute("aria-checked") === "true") ||
-        d.els[0];
-      (p.focus(), p.scrollIntoView?.({ block: "nearest" }));
-    }
-  }
-  key(t) {
-    if (!this.paused || document.body.classList.contains("picking")) return;
-    let e = {
-      ArrowUp: "up",
-      ArrowDown: "down",
-      ArrowLeft: "left",
-      ArrowRight: "right",
-      Enter: "ok",
-      Space: "ok",
-    }[t.code];
-    e &&
-      ((e === "ok" && document.activeElement?.tagName !== "BUTTON") ||
-        (t.preventDefault(), this.nav(e)));
-  }
-  pad() {
-    if (!this.paused) {
-      this.padOn = !1;
-      return;
-    }
-    requestAnimationFrame(() => this.pad());
-    let t = [...(navigator.getGamepads?.() || [])].find(
-      (l) => l && l.connected,
-    );
-    if (!t) return;
-    let e = performance.now(),
-      s = t.axes[0] || 0,
-      n = t.axes[1] || 0,
-      o = (l) => !!t.buttons[l]?.pressed,
-      a = {
-        up: o(12) || n < -0.6,
-        down: o(13) || n > 0.6,
-        left: o(14) || s < -0.6,
-        right: o(15) || s > 0.6,
-        ok: o(0),
-        back: o(1),
-        start: o(9),
-      },
-      r = this.padPrev || a;
-    this.padPrev = a;
-    for (let l of ["up", "down", "left", "right"])
-      a[l] && !r[l]
-        ? ((this.padRep = e + 400), this.nav(l))
-        : a[l] &&
-          e > (this.padRep || 0) &&
-          ((this.padRep = e + 130), this.nav(l));
-    if ((a.ok && !r.ok && this.nav("ok"), a.back && !r.back)) {
-      let l = document.activeElement;
-      gi("setPane")?.contains(l) && l !== gi("setPane")
-        ? this.nav("back")
-        : (this.closeUp = !0);
-    }
-    (a.start && !r.start && (this.closeUp = !0),
-      this.closeUp &&
-        !a.start &&
-        !a.back &&
-        ((this.closeUp = !1), this.set(!1)));
-  }
-  setLevel(t) {
-    let e = this.v;
-    if (!e.da || !rf.includes(t)) return e.da?.mode || "manual";
-    let s = Uw();
-    return (
-      s.all ? (s.all = t) : (s.cars[this.carId()] = t),
-      QI(s),
-      e.da.setMode(tF() ? t : Gw(this.carId())),
-      e.da.mode !== t && e.da.setMode(t),
-      this.sync(),
-      e.da.mode
-    );
-  }
-  cycleAssist() {
-    let t = this.v;
-    return t.da
-      ? t.da.takeover
-        ? (t.da.reengage(), this.sync(), "l5")
-        : this.setLevel(BZ(t.da.mode))
-      : "manual";
-  }
-  resetAids() {
-    let t = this.v;
-    (t.absP.fill(1), t.tcsCut.fill(0), t.espB.fill(0), (t.espEngine = 1));
-  }
-  set(t) {
-    t !== this.paused &&
-      ((this.paused = t),
-      document.body.classList.toggle("paused", t),
-      t
-        ? (document.body.classList.remove("help"),
-          this.sync(),
-          this.show(this.tab),
-          this.onPause?.(),
-          (this.padPrev = null),
-          (this.closeUp = !1),
-          this.padOn ||
-            ((this.padOn = !0), requestAnimationFrame(() => this.pad())),
-          clearInterval(this.liveT),
-          (this.liveT = setInterval(() => this.syncLive(), 700)))
-        : (clearInterval(this.liveT),
-          document.activeElement?.blur?.(),
-          this.onResume?.()));
-  }
-  toggle() {
-    this.set(!this.paused);
-  }
-  setPref(t, e) {
-    ((this.prefs[t] = e), mwt(t, e), this.hooks.onPref?.(t, e), this.sync());
-  }
-  sync() {
-    let t = this.v;
-    for (let r of document.querySelectorAll("[data-assist]")) {
-      let l = t.assists[r.dataset.assist];
-      (r.setAttribute("aria-pressed", String(l)),
-        (r.querySelector("b").textContent = l ? "ON" : "OFF"));
-    }
-    let e = t.da?.mode || "manual";
-    for (let r of document.querySelectorAll("[data-level]"))
-      r.setAttribute("aria-checked", String(r.dataset.level === e));
-    {
-      let r = gi("lvlNote");
-      r &&
-        (r.textContent =
-          (Fm[e]?.name || "") +
-          " \xB7 " +
-          (Fm[e]?.sub || "") +
-          (t.da?.takeover
-            ? " \xB7 Taken over: I or the chip re-engages L5"
-            : ""));
-    }
-    {
-      let r = t.da?.profile === "chill" ? "chill" : "madmax";
-      for (let l of document.querySelectorAll("[data-l5profile]"))
-        l.setAttribute("aria-checked", String(l.dataset.l5profile === r));
-    }
-    let s = document.querySelector("[data-dassist-all]");
-    if (s) {
-      let r = !!Uw().all;
-      (s.setAttribute("aria-pressed", String(r)),
-        (s.querySelector("b").textContent = r ? "ON" : "OFF"));
-    }
-    for (let r of document.querySelectorAll("[data-transmission]"))
-      r.setAttribute(
-        "aria-checked",
-        String((r.dataset.transmission === "manual") == !!t.manual),
-      );
-    gi("manualHint")?.classList.toggle("on", t.manual);
-    {
-      let r = this.hooks.mph ? this.hooks.mph() : !0,
-        l = this.hooks.units?.();
-      for (let c of document.querySelectorAll("[data-units]"))
-        c.setAttribute(
-          "aria-checked",
-          String(l ? c.dataset.units === l : (c.dataset.units === "mph") === r),
+  build() {
+    let t = !!this.mobile,
+      e = t ? 10 : 18,
+      s = new me({ color: 1186342, metalness: 0.45, roughness: 0.38 }),
+      n = new me({ color: 15659508, metalness: 0.2, roughness: 0.4 }),
+      i = new me({ color: 727594, metalness: 0.6, roughness: 0.08 }),
+      a = new me({ color: 1776928, metalness: 0.5, roughness: 0.6 }),
+      r = new me({ color: 1382170, metalness: 0.3, roughness: 0.55 }),
+      l = (this.root = new le());
+    ((l.name = "policeHeli"), (l.visible = !1));
+    let c = (v, x, y, M, S, w = 1, _ = 1, z = 1) => {
+        let A = new ye(v, x);
+        return (
+          A.position.set(y, M, S),
+          A.scale.set(w, _, z),
+          (A.castShadow = !t),
+          l.add(A),
+          A
         );
-    }
-    {
-      let r = this.hooks.rideStyle?.() || vM().rideStyle;
-      for (let l of document.querySelectorAll("[data-ridestyle]"))
-        l.setAttribute("aria-checked", String(l.dataset.ridestyle === r));
-    }
-    for (let r of document.querySelectorAll("input[data-prefnum]")) {
-      let l = r.dataset.prefnum,
-        c = +(this.prefs?.[l] ?? iet[l]),
-        h = +r.min,
-        f = +r.max;
-      (document.activeElement !== r && (r.value = c),
-        r.style.setProperty(
-          "--p",
-          (((c - h) / (f - h)) * 100).toFixed(1) + "%",
-        ));
-      let u = gi(l + "V");
-      u &&
-        (u.textContent =
-          (l === "fovAdd" && c > 0 ? "+" : "") + c + (r.dataset.unit || ""));
-    }
-    for (let r of document.querySelectorAll("[data-pref]")) {
-      let l = this.prefs?.[r.dataset.pref];
-      if (r.dataset.v !== void 0)
-        r.setAttribute("aria-checked", String(r.dataset.v === l));
-      else {
-        r.setAttribute("aria-pressed", String(l === "on"));
-        let c = r.querySelector("b");
-        c && (c.textContent = l === "on" ? "ON" : "OFF");
+      },
+      h = new Er(1, e, Math.round(e * 0.6));
+    (c(h, s, 0, 1.55, 0.1, 1.2, 1.15, 2.35),
+      c(h, i, 0, 1.8, -1.05, 1.06, 0.92, 1.45),
+      c(h, n, 0, 1.35, 0.15, 1.235, 0.62, 1.9));
+    let f = c(new vs(0.2, 0.42, 5.4, t ? 6 : 10), s, 0, 1.85, 4.3);
+    ((f.rotation.x = Math.PI / 2),
+      c(new Is(0.12, 1.5, 0.95), s, 0, 2.45, 6.85),
+      c(new Is(2, 0.07, 0.42), s, 0, 1.85, 6),
+      c(new Is(0.95, 0.55, 1.9), s, 0, 2.62, 0.75),
+      c(new vs(0.09, 0.11, 0.55, 6), a, 0, 3.05, 0.4));
+    let u = new vs(0.06, 0.06, 3.7, 6),
+      d = new vs(0.05, 0.05, 0.75, 6);
+    for (let v of [-1, 1]) {
+      let x = c(u, a, v * 1, 0.08, 0.2);
+      x.rotation.x = Math.PI / 2;
+      for (let y of [-0.7, 1]) {
+        let M = c(d, a, v * 0.85, 0.42, y);
+        M.rotation.z = v * 0.35;
       }
     }
-    (this.syncGfx(),
-      gi("gmode") && (gi("gmode").textContent = t.manual ? "M" : "A"));
-    let n = ev(),
-      o = document.querySelector("[data-music]");
-    (o &&
-      (o.setAttribute("aria-pressed", String(n.on)),
-      (o.querySelector("b").textContent = n.on ? "ON" : "OFF")),
-      gi("radioStation") &&
-        (gi("radioStation").textContent =
-          "Station: " + (n.on ? qu[n.station].name : "Off")));
-    let a = (r, l) => {
-      let c = gi(r);
-      c &&
-        ((c.value = l),
-        c.style.setProperty("--p", l + "%"),
-        (gi(r + "V").textContent = l));
-    };
-    (a("masterVol", Math.round(DF() * 100)),
-      a("musicVol", Math.round(n.vol * 100)),
-      this.syncLive());
-  }
-  syncLive() {
-    {
-      let o = this.hooks.cam?.();
-      for (let a of document.querySelectorAll("[data-cam]"))
-        a.setAttribute("aria-checked", String(+a.dataset.cam === o));
-    }
-    let t = this.hooks.tod?.();
-    for (let o of document.querySelectorAll("[data-tod]"))
-      o.setAttribute("aria-checked", String(o.dataset.tod === t));
-    let e = window.__sf || {},
-      s = e.profile,
-      n = this.hooks.mp?.();
-    if (
-      (document.body.classList.toggle("hasProfile", !!s),
-      s && this.tab === "profile" && this.paused)
-    ) {
-      let o = s.p,
-        a = e.rides || s.rides,
-        r = e.police || s.police,
-        c = [
-          [pE(s.wallet()), "Wallet"],
-          [pE(a?.total ?? o.taxi.total), "Fares earned"],
-          [String(a?.rides ?? o.taxi.rides), "Rides"],
-          [pE(o.race.money), "Race prizes"],
-          [String(o.race.played), "Races"],
-          [o.race.wins + " / " + o.race.podiums, "Wins / podiums"],
-          [String(r?.escapes ?? o.police.escapes), "Police escapes"],
-          [String(r?.busts ?? o.police.busts), "Busted"],
-          [(o.km || 0).toFixed(1) + " km", "Driven"],
-          [pE(o.earned), "Earned, all time"],
-          [
-            (this.hooks.mph?.() ?? !0)
-              ? Math.round((o.best?.kmh || 0) / 1.609) + " mph"
-              : Math.round(o.best?.kmh || 0) + " km/h",
-            "Top speed",
-          ],
-          [(o.best?.drift || 0).toFixed(1) + " s", "Longest drift"],
-          [Math.round(o.best?.bounty || 0).toLocaleString(), "Biggest bounty"],
-        ]
-          .map(
-            ([u, d]) => `<div class="stat"><b>${u}</b><span>${d}</span></div>`,
-          )
-          .join(""),
-        h = gi("setStats");
-      h && h._h !== c && ((h._h = c), (h.innerHTML = c));
-      let f = gi("setStatsNote");
-      f &&
-        (f.textContent =
-          (s.scope === "account"
-            ? "Saved to your mindblown account"
-            : "Saved in this browser \xB7 sign in to keep it on every device (it joins your account)") +
-          (s.pending ? " \xB7 not synced yet, retrying" : "") +
-          ((s.pendingCash?.() || 0) > 0.5
-            ? " \xB7 $" +
-              Math.round(s.pendingCash()) +
-              " pending (over the plausible rate - released as the limit refills)"
-            : ""));
-    }
-    if (
-      (s?.board &&
-        this.tab === "leaderboard" &&
-        this.paused &&
-        s.board.render(),
-      n && this.paused)
-    ) {
-      let o = document.querySelector("#mpPanel .mpRoomName")?.textContent || "",
-        a = document.querySelector("#mpPanel .mpStat span")?.textContent || "",
-        r = gi("setRoomName"),
-        l = gi("setRoomStat");
-      if (r && l) {
-        let c = !!n.ch;
-        ((r.firstChild.textContent = c ? o : "Not in a room"),
-          (l.textContent = c
-            ? a
-            : "Open a room and send the link. Up to 8 drivers."));
+    c(new vs(0.17, 0.2, 0.32, 8), a, 0, 0.55, -1.75);
+    let p = m6t();
+    if (p) {
+      let v = new me({
+          map: p,
+          roughness: 0.45,
+          polygonOffset: !0,
+          polygonOffsetFactor: -2,
+        }),
+        x = new Yn(2.3, 0.58);
+      for (let y of [-1, 1]) {
+        let M = new ye(x, v);
+        (M.position.set(y * 1.215, 1.42, 0.35),
+          (M.rotation.y = (y * Math.PI) / 2),
+          l.add(M));
       }
     }
-  }
-  syncGfx() {
-    let t = globalThis.SF_GFX || {
-        choice: "auto",
-        lvl: globalThis.SF_LITE ? "mobile" : globalThis.SF_Q || "high",
-        own: globalThis.SF_LITE ? "mobile" : "high",
-        names: {},
-      },
-      e = {
-        saver: "Battery saver",
-        mobile: "Mobile",
-        perf: "Performance",
-        high: "High",
-        ultra: "Ultra",
-        ...t.names,
-      },
-      s = ["saver", "mobile", "perf", "high", "ultra"];
-    for (let a of document.querySelectorAll("[data-gfx]")) {
-      let r = a.dataset.gfx,
-        l = r === t.choice;
-      a.setAttribute("aria-checked", String(l));
-      let c = a.querySelector("b");
-      (c &&
-        (c.textContent =
-          r === "auto" ? e[t.own] || "" : l && t.lvl !== r ? "Capped" : ""),
-        a.classList.toggle(
-          "risk",
-          r !== "auto" &&
-            s.indexOf(r) > s.indexOf(t.own) &&
-            s.indexOf(t.own) <= 1,
-        ));
+    ((this.main = new le()),
+      this.main.position.set(0, 3.32, 0.4),
+      l.add(this.main));
+    let m = new Is(0.3, 0.05, 5.3);
+    for (let v = 0; v < 4; v++) {
+      let x = new ye(m, r);
+      (x.position.set(
+        Math.sin((v * Math.PI) / 2) * 2.65,
+        0,
+        Math.cos((v * Math.PI) / 2) * 2.65,
+      ),
+        (x.rotation.y = (v * Math.PI) / 2),
+        (x.castShadow = !t),
+        this.main.add(x));
     }
-    let n = gi("gfxNote");
-    n &&
-      (n.textContent =
-        globalThis.SF_TIER_NOTE ||
-        "Running: " +
-          e[t.lvl] +
-          (t.choice === "auto"
-            ? " (auto, this device)"
-            : t.url
-              ? " (from the URL)"
-              : "") +
-          (({ saver: "safe", mobile: "mobile" }[t.lvl] || "desktop") !==
-          globalThis.SF_TIER
-            ? " \xB7 the city's detail on next start"
-            : ""));
-    let o = gi("gfxAsk");
-    o &&
-      (o.classList.toggle("on", !!this.ask),
-      this.ask &&
-        (o.querySelector("span").textContent =
-          "Resolution, shadows, effects and traffic switched. Some changes (the city's detail, textures) apply on next start."));
-    for (let a of document.querySelectorAll("[data-fps]"))
-      a.setAttribute(
-        "aria-checked",
-        String(+a.dataset.fps === (globalThis.SF_FPS | 0)),
+    ((this.disc = new ye(
+      new da(5.3, t ? 16 : 32),
+      new Ys({
+        color: 1711136,
+        transparent: !0,
+        opacity: 0.16,
+        depthWrite: !1,
+        side: ls,
+      }),
+    )),
+      (this.disc.rotation.x = -Math.PI / 2),
+      this.disc.position.set(0, 3.3, 0.4),
+      l.add(this.disc),
+      (this.tail = new le()),
+      this.tail.position.set(0.22, 2.5, 6.85),
+      l.add(this.tail));
+    let g = new Is(0.04, 1.4, 0.13);
+    for (let v = 0; v < 2; v++) {
+      let x = new ye(g, r);
+      ((x.rotation.x = (v * Math.PI) / 2), this.tail.add(x));
+    }
+    ((this.beaconM = new me({
+      color: 4194304,
+      emissive: 16718352,
+      emissiveIntensity: 0,
+    })),
+      c(new Er(0.1, 6, 4), this.beaconM, 0, 3, 1.6));
+    let b = new fr(1, 1, t ? 12 : 24, 1, !0);
+    (b.translate(0, -0.5, 0),
+      b.rotateX(Math.PI),
+      (this.cone = new ye(
+        b,
+        new Ys({
+          color: 16774364,
+          transparent: !0,
+          opacity: 0,
+          blending: $o,
+          depthWrite: !1,
+          side: ls,
+        }),
+      )),
+      (this.cone.frustumCulled = !1),
+      (this.cone.visible = !1),
+      (this.pool = new ye(
+        new da(1, t ? 16 : 32),
+        new Ys({
+          map: g6t(),
+          color: 16777215,
+          transparent: !0,
+          opacity: 0,
+          blending: $o,
+          depthWrite: !1,
+          polygonOffset: !0,
+          polygonOffsetFactor: -4,
+        }),
+      )),
+      (this.pool.rotation.x = -Math.PI / 2),
+      (this.pool.frustumCulled = !1),
+      (this.pool.visible = !1),
+      this.scene?.add(l, this.cone, this.pool),
+      (this.lx = 0),
+      (this.lz = 0));
+  }
+  roofAt(t, e, s = 0) {
+    let n = this.heights?.();
+    if (!n) return -1e4;
+    let { w: i, h: a, H: r, cell: l, x0: c, z0: h } = n,
+      f = Math.ceil(s / l),
+      u = -1e4,
+      d = Math.round((t - c) / l),
+      p = Math.round((e - h) / l);
+    for (let m = p - f; m <= p + f; m += Math.max(1, f))
+      for (let g = d - f; g <= d + f; g += Math.max(1, f))
+        if (g >= 0 && m >= 0 && g < i && m < a) {
+          let b = r[m * i + g];
+          b > u && (u = b);
+        }
+    return u;
+  }
+  roofAhead() {
+    let t = this.roofAt(this.x, this.z, 10);
+    for (let e of [0.6, 1.2, 2, 3, 4])
+      t = Math.max(
+        t,
+        this.roofAt(this.x + this.vx * e, this.z + this.vz * e, 14),
       );
+    return t;
   }
-  hud() {
-    let t = this.v;
-    for (let [n, o, a] of [
-      ["aABS", "abs", t.aid.abs],
-      ["aTCS", "tcs", t.aid.tcs],
-      ["aESP", "esp", t.aid.esp],
-    ]) {
-      let r = gi(n);
-      r &&
-        (r.classList.toggle("off", !t.assists[o]),
-        r.classList.toggle("act", t.assists[o] && a > 0.05));
+  ground(t, e, s) {
+    let n = this.L?.driveHeight?.(t, e, null, s);
+    return Number.isFinite(n) ? n : s;
+  }
+  covered(t) {
+    let e = this.L;
+    if (!e?.roadAt) return !1;
+    let s = e.roadAt(t.x, t.z, 2, t.y);
+    if (
+      s?.E?.tunnel ||
+      (s?.E?.covered && s.s > s.E.covered[0] && s.s < s.E.covered[1])
+    )
+      return !0;
+    for (let n of [7, 13, 21, 32]) {
+      let i = e.roadAt(t.x, t.z, 1, t.y + n);
+      if (i && i.dd <= 0.5 && i.y - t.y > 4) return !0;
     }
-    let e = t.shiftBlocked > 0,
-      s = this.blockedShown;
-    return ((this.blockedShown = e), e && !s);
+    {
+      let n = mj(t.x, t.z) - t.y;
+      if (n > 3 && n < 40) return !0;
+    }
+    if (this.heights?.()) {
+      let n = 1e9;
+      for (let [i, a] of [
+        [0, 0],
+        [2.5, 0],
+        [-2.5, 0],
+        [0, 2.5],
+        [0, -2.5],
+      ])
+        n = Math.min(n, this.roofAt(t.x + i, t.z + a));
+      if (n > t.y + 6) return !0;
+    }
+    return !1;
+  }
+  update(t, e, s, n, i, a = 0, r = null) {
+    if (
+      ((this.t += t),
+      n && (!this.on || this.leaving)
+        ? this.enter(e, s)
+        : !n && this.on && !this.leaving && (this.leaving = 0.01),
+      !this.on)
+    ) {
+      this.sees = !1;
+      return;
+    }
+    this.leaving && (this.leaving += t);
+    let l = Math.hypot(this.x - e.x, this.z - e.z);
+    (this.seeT -= t) <= 0 &&
+      ((this.seeT = 0.25),
+      (this.sees = !this.leaving && l < p6t && !this.covered(e)),
+      this.sees
+        ? ((this.lostAt = null), (this.found = !0))
+        : !this.lostAt &&
+          i &&
+          this.found &&
+          (this.lostAt = { x: i.x, z: i.z, y: i.y ?? e.y }));
+    let c = Math.hypot(s.x, s.z),
+      h =
+        c > 3
+          ? { x: s.x / c, z: s.z / c }
+          : r || { x: -Math.sin(this.h), z: -Math.cos(this.h) },
+      f = { x: -h.z, z: h.x };
+    this.sees && !this.leaving
+      ? this.mode === "track" &&
+        (this.sweepT -= t) <= 0 &&
+        ((this.mode = "set"),
+        (this.side = Math.random() < 0.5 ? -1 : 1),
+        (this.phT = 0))
+      : this.mode !== "track" && (this.mode = "track");
+    let u,
+      d,
+      p,
+      m = null;
+    if (this.leaving) {
+      let P = Math.atan2(this.z - e.z, this.x - e.x);
+      ((u = this.x + Math.cos(P) * 400),
+        (d = this.z + Math.sin(P) * 400),
+        (p = this.y + 60));
+    } else if (this.sees || !this.lostAt)
+      if (this.mode === "track") {
+        let P = Math.max(e.y, this.ground(e.x + h.x * 90, e.z + h.z * 90, e.y)),
+          C = Math.max(36, (this.roof > -1e3 ? this.roof + pT + 8 : 0) - P),
+          I = Zf(Math.max(70 + c * 0.6, C / 0.36), 70, 220);
+        ((u = e.x + h.x * I + s.x * 0.5),
+          (d = e.z + h.z * I + s.z * 0.5),
+          (p = P + 36));
+      } else if (this.mode === "set") {
+        this.phT += t;
+        let P = 60 + c * 1.3;
+        ((u = e.x + h.x * P + f.x * this.side * 110 + s.x * 0.8),
+          (d = e.z + h.z * P + f.z * this.side * 110 + s.z * 0.8),
+          (p = Math.max(e.y, this.ground(u, d, e.y)) + 32),
+          (Math.hypot(u - this.x, d - this.z) < 35 || this.phT > 7) &&
+            ((this.mode = "cross"),
+            (this.phT = 0),
+            (this.c0 = { x: this.x, y: this.y, z: this.z })));
+      } else {
+        this.phT += t;
+        let P = 4.5,
+          C = Zf(this.phT / P, 0, 1),
+          I = C * C * (3 - 2 * C),
+          L = 55 + c * 1,
+          F = this.side * 110 * (1 - 2 * I),
+          O = e.x + h.x * L + f.x * F,
+          B = e.z + h.z * L + f.z * F,
+          H = Math.max(e.y, this.ground(O, B, e.y)) + 28;
+        this.roof > -1e3 && (H = Math.max(H, this.roofAt(O, B, 10) + pT + 2));
+        let N = Zf(this.phT / 1.2, 0, 1),
+          D = N * N * (3 - 2 * N);
+        ((m = {
+          x: this.c0.x + (O - this.c0.x) * D,
+          y: this.c0.y + (H - this.c0.y) * D,
+          z: this.c0.z + (B - this.c0.z) * D,
+        }),
+          C >= 1 &&
+            ((this.mode = "track"),
+            (this.sweepT = 20 + Math.random() * 20),
+            this.sweepN++));
+      }
+    else {
+      this.orbit += t * 0.35;
+      let P = this.lostAt;
+      ((u = P.x + Math.cos(this.orbit) * 45),
+        (d = P.z + Math.sin(this.orbit) * 45),
+        (p = P.y + WB + 8));
+    }
+    (this.roofT -= t) <= 0 &&
+      ((this.roofT = 0.2), (this.roof = this.roofAhead()));
+    let g, b, v;
+    if (m) {
+      let P = 1 / Math.max(t, 0.001),
+        C = (m.x - this.x) * P,
+        I = (m.y - this.y) * P,
+        L = (m.z - this.z) * P;
+      ((g = Zf((C - this.vx) * P, -30, 30)),
+        (b = Zf((L - this.vz) * P, -30, 30)),
+        (v = 0),
+        (this.vx = C),
+        (this.vy = I),
+        (this.vz = L),
+        (this.x = m.x),
+        (this.y = m.y),
+        (this.z = m.z));
+    } else {
+      this.roof > -1e3 && (p = Math.max(p, this.roof + pT + 8));
+      let P = 0.9,
+        C = 1.9;
+      ((g = (u - this.x) * P - this.vx * C),
+        (b = (d - this.z) * P - this.vz * C),
+        (v = (p - this.y) * 1.2 - this.vy * 2.2),
+        !this.leaving &&
+          this.sees &&
+          ((g += s.x * C * 0.9), (b += s.z * C * 0.9)));
+      let I = Math.hypot(g, b),
+        L = 18;
+      (I > L && ((g *= L / I), (b *= L / I)),
+        (v = Zf(v, -6, 10)),
+        (this.vx += g * t),
+        (this.vz += b * t),
+        (this.vy += v * t));
+      let F = Math.hypot(this.vx, this.vz);
+      (F > qB && ((this.vx *= qB / F), (this.vz *= qB / F)),
+        (this.x += this.vx * t),
+        (this.z += this.vz * t),
+        (this.y += this.vy * t));
+    }
+    let x = Math.hypot(this.vx, this.vz);
+    {
+      let P = this.ground(this.x, this.z, this.y - WB),
+        C = Math.max(P, this.roofAt(this.x, this.z, 9)) + pT;
+      this.y < C + 4 &&
+        ((this.vy = Math.max(this.vy, Math.min(20, (C + 4 - this.y) * 3))),
+        this.y < C && (this.y = C));
+    }
+    let y =
+      x > 6
+        ? Math.atan2(-this.vx, -this.vz)
+        : Math.atan2(-(e.x - this.x), -(e.z - this.z));
+    this.h = Gnt(this.h + Zf(Gnt(y - this.h), -1.1 * t, 1.1 * t));
+    let M = -Math.sin(this.h),
+      S = -Math.cos(this.h),
+      w = -S,
+      _ = M,
+      z = g * M + b * S,
+      A = g * w + b * _;
+    ((this.bank +=
+      (Zf((-A / 9.8) * 0.9, m ? -0.7 : -0.5, m ? 0.7 : 0.5) - this.bank) *
+      Math.min(1, t * (m ? 4 : 2.5))),
+      (this.pitch +=
+        (Zf((-z / 9.8) * 0.5 - x * 0.0045, -0.42, 0.2) - this.pitch) *
+        Math.min(1, t * 2)));
+    let T = this.root;
+    ((T.visible = !0),
+      T.position.set(this.x, this.y, this.z),
+      T.rotation.set(this.pitch, this.h, this.bank, "YXZ"),
+      (this.rot += t * 42),
+      (this.main.rotation.y = this.rot),
+      (this.tail.rotation.x = this.rot * 1.7),
+      (this.beaconM.emissiveIntensity = this.t % 1.1 < 0.12 ? 6 : 0));
+    let E = Zf((a - 0.25) / 0.35, 0, 1);
+    this.light +=
+      (E * (this.leaving ? 0 : 1) - this.light) * Math.min(1, t * 1.5);
+    let R = this.light > 0.02;
+    if (((this.cone.visible = this.pool.visible = R), R)) {
+      let P, C;
+      (this.sees || !this.lostAt
+        ? ((P = e.x + Math.sin(this.t * 0.7) * 2.5),
+          (C = e.z + Math.cos(this.t * 0.9) * 2.5))
+        : ((P = this.lostAt.x + Math.sin(this.t * 0.6) * 22),
+          (C = this.lostAt.z + Math.cos(this.t * 0.45) * 22)),
+        (this.lx += (P - this.lx) * Math.min(1, t * 3)),
+        (this.lz += (C - this.lz) * Math.min(1, t * 3)));
+      let I = this.ground(this.lx, this.lz, e.y),
+        L = this.x + M * 1.75,
+        F = this.y + 0.5,
+        O = this.z + S * 1.75,
+        B = this.lx - L,
+        H = I - F,
+        N = this.lz - O,
+        D = Math.hypot(B, H, N) || 1,
+        U = 0.11 * D;
+      (this.cone.position.set(L, F, O),
+        this.cone.scale.set(U, D, U),
+        (this._q0 ||= new dt(0, 1, 0)),
+        (this._q1 ||= new dt()).set(B / D, H / D, N / D),
+        this.cone.quaternion.setFromUnitVectors(this._q0, this._q1),
+        (this.cone.material.opacity = 0.075 * this.light),
+        this.pool.position.set(this.lx, I + 0.12, this.lz),
+        this.pool.scale.setScalar(U * 1.15),
+        (this.pool.material.opacity = 0.75 * this.light));
+    }
+    (this.leaving > 14 || (this.leaving && l > 650)) && this.hide();
+  }
+  enter(t, e) {
+    if (this.on && this.leaving) {
+      this.leaving = 0;
+      return;
+    }
+    let s = Math.hypot(e.x, e.z),
+      n = s > 2 ? e.x / s : 1,
+      i = s > 2 ? e.z / s : 0,
+      a = Math.random() < 0.5 ? -1 : 1;
+    ((this.x = t.x - n * 380 - i * 120 * a),
+      (this.z = t.z - i * 380 + n * 120 * a),
+      (this.y = t.y + WB + 40),
+      (this.vx = e.x),
+      (this.vz = e.z),
+      (this.vy = 0),
+      (this.h = Math.atan2(-n, -i)),
+      (this.lx = t.x),
+      (this.lz = t.z),
+      (this.on = !0),
+      (this.leaving = 0),
+      (this.sees = !1),
+      (this.lostAt = null),
+      (this.seeT = 0),
+      (this.found = !1),
+      (this.mode = "track"),
+      (this.sweepT = 9 + Math.random() * 6),
+      (this.sweepN = this.sweepN || 0));
+  }
+  hide() {
+    ((this.on = !1),
+      (this.leaving = 0),
+      (this.sees = !1),
+      (this.root.visible = !1),
+      (this.cone.visible = this.pool.visible = !1));
+  }
+  dispose() {
+    (this.hide(),
+      this.root.removeFromParent(),
+      this.cone.removeFromParent(),
+      this.pool.removeFromParent());
   }
 };

@@ -1,263 +1,425 @@
 // app 221 — math
-// Lines 116712-116972 of readable/app.pretty.js (statement-aligned).
-function FX(i, t, e, s, n) {
-  let o = Ei(e, s),
-    a = Ca(e, s),
-    r = ka(e * 977 + s * 131),
-    l = [],
-    c = (E, A, C, P) => {
-      let I = E,
-        L = 0;
-      for (; I < A - 4;) {
-        let F = C[Math.floor(r() * C.length)];
-        (A - I - F < 6 && (F = A - I), P(I, I + F, L++), (I += F));
-      }
-    },
-    h = 2.4,
-    f = 16.5,
-    u = 13.5,
-    d = n === "s" ? o.z1 - h : o.z0 + h,
-    p = n === "s" ? d - f : d + f;
-  c(o.x0, o.x1, [7.6, 8.4, 9.2, 10.5], (E, A, C) =>
-    l.push({
-      x0: E,
-      x1: A,
-      z0: Math.min(d, p),
-      z1: Math.max(d, p),
-      front: n,
-      h: 12 + r() * 3,
-      grp: r() < 0.55 ? "vic" : "edw",
-      seed: r(),
-      street: { w: E <= o.x0 + 0.01, e: A >= o.x1 - 0.01 },
-      color: Jb[Math.floor(r() * Jb.length)],
-      lomb: !0,
-    }),
-  );
-  let m = n === "s" ? o.z0 : o.z1 - u,
-    g = n === "s" ? o.z0 + u : o.z1,
-    b = n === "s" ? "n" : "s";
-  c(o.x0, o.x1, [7.6, 7.6, 8.4, 9.5], (E, A) =>
-    l.push({
-      x0: E,
-      x1: A,
-      z0: m,
-      z1: g,
-      front: b,
-      h: 9.5 + r() * 3,
-      grp: r() < 0.6 ? "vic" : "edw",
-      seed: r(),
-      street: { w: E <= o.x0 + 0.01, e: A >= o.x1 - 0.01 },
-      color: Jb[Math.floor(r() * Jb.length)],
-    }),
-  );
-  let x = n === "s" ? g : p,
-    v = n === "s" ? p : m;
-  for (let [E, A, C] of [
-    [o.x0, o.x0 + u, "w"],
-    [o.x1 - u, o.x1, "e"],
-  ])
-    c(x, v, [7.6, 8.4, 9.5], (P, I) =>
-      l.push({
-        x0: E,
-        x1: A,
-        z0: P,
-        z1: I,
-        front: C,
-        h: 9.5 + r() * 3,
-        grp: r() < 0.6 ? "vic" : "edw",
-        seed: r(),
-        street: {},
-        color: Jb[Math.floor(r() * Jb.length)],
-      }),
-    );
-  for (let E of l) c2t(i, t, E);
-  i.colliders.push({ t: "box", x0: o.x0, z0: o.z0, x1: o.x1, z1: o.z1 });
-  let y = t.G("lombard", "ground"),
-    M = t.G("lombard", "wall"),
-    S = t.G("lombard", "foliage");
-  Aa(
-    y,
-    o.x0,
-    o.z0,
-    o.x1,
-    o.z1,
-    2.5,
-    () => 1,
-    (E, A) => Yt(E, A) + Ke + 0.04,
-    [0.5, 0.56, 0.42, To.lawn],
-  );
-  let w = n === "s" ? o.z1 - 0.25 : o.z0 + 0.25,
-    z = Math.min(w, d),
-    _ = Math.max(w, d);
-  Aa(
-    y,
-    o.x0,
-    z,
-    o.x1,
-    _,
-    0.6,
-    () => 1,
-    (E, A) => Yt(E, A) + Ke + 0.12,
-    [0.95, 0.95, 0.95, To.bed],
-  );
-  let R = [0.66, 0.36, 0.3, hi.brick];
-  for (let E = o.x0; E < o.x1 - 0.01; E += 1) {
-    let A = Math.min(E + 1, o.x1),
-      C = Math.min(Yt(E, w), Yt(A, w)) + Ke - 0.05,
-      P = Yt(E, w) + Ke + 0.75,
-      I = Yt(A, w) + Ke + 0.75;
-    if (
-      (Ne(
-        M,
-        (E + A) / 2,
-        w,
-        1,
-        0,
-        (A - E) / 2,
-        0.2,
-        C,
-        (P + I) / 2,
-        R,
-        [0, 0, 1, 1, 1, 0],
-      ),
-      Math.floor(E) % 11 !== 5)
-    )
-      for (let L = 0; L < 2; L++)
-        Ga(
-          S,
-          [E + 0.5, (P + I) / 2 - 0.2, w + (n === "s" ? -0.55 : 0.55)],
-          L * 1.2 + E,
-          1.3,
+// Lines 117229-117651 of readable/app.pretty.js (statement-aligned).
+function Iz(o, t) {
+  UY = Qe.hwy ?? 11.5;
+  let e = Qe.towerTop,
+    s = (l) => ff("gg", l),
+    n = t.G("ggTower", "orange"),
+    i = t.G("ggTower", "glow");
+  for (let l of [Qe.sTowerS, Qe.sTowerN]) {
+    let c = s(l),
+      h = c.ux,
+      f = c.uz,
+      u = -f,
+      d = h,
+      p = [
+        [-2, 72, 6, 5.2],
+        [72, 125, 5.4, 4.7],
+        [125, 172, 4.9, 4.2],
+        [172, e, 4.3, 3.7],
+      ];
+    for (let x of [-1, 1]) {
+      let y = c.x + u * Ll * x,
+        M = c.z + d * Ll * x;
+      (p.forEach(([S, w, _, z], A) => {
+        let T = S + 9,
+          E = Math.min(e, w + 9);
+        (Ge(n, y, M, h, f, _ + 0.05, z + 0.05, T, E, Rf, [
           1,
-          Wa(Ws(Math.floor(E / 3), s) < 0.5 ? 0 : 1),
-          [0.9, 0.9, 0.9, 1],
+          1,
+          1,
+          1,
+          A === 3 ? 0 : 1,
+          0,
+        ]),
+          A < 3 &&
+            (Ge(n, y, M, h, f, _ + 0.4, z + 0.4, E - 1.6, E - 0.7, sd),
+            Ge(n, y, M, h, f, _ + 0.22, z + 0.22, E - 0.7, E, Rf)));
+        let R = T + (A ? 1.2 : 4),
+          P = E - (A < 3 ? 2.2 : 6);
+        for (let C of [-1, 1]) {
+          for (let I = -z + 0.8; I <= z - 0.79; I += 1.25)
+            Ge(
+              n,
+              y + h * (_ + 0.2) * C + u * I,
+              M + f * (_ + 0.2) * C + d * I,
+              h,
+              f,
+              0.2,
+              0.22,
+              R,
+              P,
+              gc,
+              [1, 1, 1, 1, 1, 0],
+            );
+          for (let I = -_ + 0.8; I <= _ - 0.79; I += 1.25)
+            Ge(
+              n,
+              y + u * (z + 0.2) * C + h * I,
+              M + d * (z + 0.2) * C + f * I,
+              h,
+              f,
+              0.22,
+              0.2,
+              R,
+              P,
+              gc,
+              [1, 1, 1, 1, 1, 0],
+            );
+        }
+        for (let C of [-1, 1])
+          for (let I of [-1, 1])
+            (Ge(
+              n,
+              y + h * (_ - 0.15) * C + u * (z - 0.15) * I,
+              M + f * (_ - 0.15) * C + d * (z - 0.15) * I,
+              h,
+              f,
+              0.42,
+              0.42,
+              T + (A ? 0.4 : 2),
+              E - (A < 3 ? 1.6 : 0.4),
+              sd,
+              [1, 1, 1, 1, 1, 0],
+            ),
+              Ge(
+                n,
+                y + h * (_ + 0.12) * C + u * (z + 0.12) * I,
+                M + f * (_ + 0.12) * C + d * (z + 0.12) * I,
+                h,
+                f,
+                0.2,
+                0.2,
+                T + (A ? 0.4 : 2),
+                E - (A < 3 ? 1.6 : 0.4),
+                Rf,
+                [1, 1, 1, 1, 1, 0],
+              ));
+      }),
+        Ge(n, y, M, h, f, 4.7, 4.1, e - 7.5, e - 5.5, sd),
+        Ge(n, y, M, h, f, 4.5, 3.9, e - 1.2, e + 0.4, sd),
+        Ge(n, y, M, h, f, 3.6, 2.6, e + 0.4, e + 3.1, gc),
+        Ge(n, y, M, h, f, 2.8, 1.9, e + 3.1, e + 4.3, Rf));
+      for (let S of [-1.9, 1.9])
+        (Ge(n, y + h * S, M + f * S, h, f, 0.18, 0.18, e + 4.3, e + 5.3, gc),
+          Ge(
+            i,
+            y + h * S,
+            M + f * S,
+            h,
+            f,
+            0.55,
+            0.55,
+            e + 5.3,
+            e + 6.4,
+            [1, 0.04, 0.02, 0.9],
+            [1, 1, 1, 1, 1, 1],
+          ));
+      for (let S of [112, 170])
+        Ge(
+          i,
+          y + u * (4.9 + 0.45) * x,
+          M + d * (4.9 + 0.45) * x,
+          h,
+          f,
+          0.5,
+          0.45,
+          S,
+          S + 1,
+          [1, 0.04, 0.02, 0.9],
+          [1, 1, 1, 1, 1, 1],
+        );
+    }
+    for (let [x, y] of [
+      [e - 7, 7],
+      [186, 9],
+      [142, 8],
+      [102, 8],
+    ]) {
+      let M = x - y / 2,
+        S = x + y / 2,
+        w = Ll - 3.5;
+      Ge(n, c.x, c.z, h, f, 3.25, w, M, S, Rf, [1, 1, 0, 0, 1, 1]);
+      for (let z of [-1, 1]) {
+        let A = c.x + h * 3.45 * z,
+          T = c.z + f * 3.45 * z;
+        (Ge(n, A, T, h, f, 0.22, w, M, M + 0.8, sd, [1, 1, 0, 0, 1, 1]),
+          Ge(n, A, T, h, f, 0.22, w, S - 0.9, S, sd, [1, 1, 0, 0, 1, 1]));
+        for (let E = -w + 0.9; E <= w - 0.9; E += 1.45)
+          Ge(
+            n,
+            A + u * E,
+            T + d * E,
+            h,
+            f,
+            0.16,
+            0.2,
+            M + 0.8,
+            S - 0.9,
+            gc,
+            [1, 1, 1, 1, 0, 0],
+          );
+        for (let [E, R] of [
+          [0, 3.6],
+          [1, 2.4],
+          [2, 1.2],
+        ])
+          Ge(
+            n,
+            A + h * 0.08 * z,
+            T + f * 0.08 * z,
+            h,
+            f,
+            0.2,
+            R,
+            S - 0.9 - (E + 1) * 0.7,
+            S - 0.9 - E * 0.7,
+            E % 2 ? gc : sd,
+            [1, 1, 1, 1, 1, 1],
+          );
+      }
+      let _ = (z) =>
+        (z < 81 ? 5.2 : z < 134 ? 4.7 : z < 181 ? 4.2 : 3.7) + 0.05;
+      for (let z of [-1, 1]) {
+        let A = Ll - _(M - 1);
+        for (let [T, E] of [
+          [0, 3],
+          [1, 2],
+          [2, 1],
+        ]) {
+          let R = (A - E / 2) * z;
+          Ge(
+            n,
+            c.x + u * R,
+            c.z + d * R,
+            h,
+            f,
+            3.1,
+            E / 2,
+            M - (T + 1) * 1.1,
+            M - T * 1.1,
+            T % 2 ? Rf : sd,
+            [1, 1, 1, 1, 0, 1],
+          );
+        }
+      }
+    }
+    let m = c.y - 12,
+      g = [11, (11 + m - 3) / 2, m - 3],
+      b = (x) => [c.x - u * (Ll - 4.8), x, c.z - d * (Ll - 4.8)],
+      v = (x) => [c.x + u * (Ll - 4.8), x, c.z + d * (Ll - 4.8)];
+    for (let x = 0; x + 1 < g.length; x++) {
+      (ci(n, b(g[x]), v(g[x + 1]), 1.8, 1.6, gc),
+        ci(n, v(g[x]), b(g[x + 1]), 1.8, 1.6, gc),
+        Ge(
+          n,
+          c.x,
+          c.z,
+          h,
+          f,
+          2.4,
+          Ll - 4.5,
+          g[x + 1] - 1.2,
+          g[x + 1] + 1.2,
+          Rf,
+        ));
+      let y = (g[x] + g[x + 1]) / 2;
+      for (let M of [-1, 1]) {
+        let S = (w, _) => [w[0] + h * M * _, w[1], w[2] + f * M * _];
+        (ci(n, S(b(g[x]), 1), S(v(g[x + 1]), 1), 0.3, 2, Rf),
+          ci(n, S(v(g[x]), 1), S(b(g[x + 1]), 1), 0.3, 2, Rf),
+          Ge(
+            n,
+            c.x + h * M * 1.2,
+            c.z + f * M * 1.2,
+            h,
+            f,
+            0.12,
+            3.2,
+            y - 3.2,
+            y + 3.2,
+            sd,
+            [1, 1, 1, 1, 1, 1],
+          ));
+        for (let w = -(Ll - 6); w < Ll - 6 - 2.3; w += 2.4)
+          ci(
+            n,
+            [
+              c.x + u * w + h * M * 2.45,
+              g[x + 1] - 1,
+              c.z + d * w + f * M * 2.45,
+            ],
+            [
+              c.x + u * (w + 2.4) + h * M * 2.45,
+              g[x + 1] + 1,
+              c.z + d * (w + 2.4) + f * M * 2.45,
+            ],
+            0.18,
+            0.18,
+            gc,
+          );
+      }
+    }
+    for (let x of [-1, 1])
+      for (let y of [-1, 1])
+        Ge(
+          i,
+          c.x + h * 31 * x + u * 33 * y,
+          c.z + f * 31 * x + d * 33 * y,
+          h,
+          f,
+          0.3,
+          0.3,
+          9.2,
+          10,
+          [1, 0.05, 0.02, 0.15],
+          [1, 1, 1, 1, 1, 1],
         );
   }
-  let T = [
-    [a.x0 + 0.6, a.z0 + 4, a.x0 + 0.6, a.z1 - 4, -1, 0],
-    [a.x1 - 0.6, a.z0 + 4, a.x1 - 0.6, a.z1 - 4, 1, 0],
-    n === "s"
-      ? [a.x0 + 4, a.z0 + 0.6, a.x1 - 4, a.z0 + 0.6, 0, -1]
-      : [a.x0 + 4, a.z1 - 0.6, a.x1 - 4, a.z1 - 0.6, 0, 1],
-  ];
-  for (let [E, A, C, P, I, L] of T) {
-    let F = Math.hypot(C - E, P - A),
-      N = Math.atan2(I, L);
-    for (let B = 6 + r() * 6; B < F - 2; B += 30 + r() * 6) {
-      let H = B / F,
-        O = E + (C - E) * H,
-        D = A + (P - A) * H;
-      (i.inst.push({ kind: "lamp", x: O, y: Yt(O, D) + Ke, z: D, rot: N }),
-        i.colliders.push({ t: "circ", x: O, z: D, r: 0.18 }));
+  for (let l of [-1, 1]) {
+    let c = [],
+      h = null;
+    for (let f = Qe.sAnchS; f <= Qe.sAnchN + 0.1; f += 4) {
+      let u = s(f),
+        d = Ixt(f),
+        p = [u.x - u.uz * Ll * l, d, u.z + u.ux * Ll * l];
+      (d > 115 || (h && h[1] > 115)
+        ? (!c.length && h && c.push(h), c.push(p))
+        : c.length && (c.push(p), Ox(n, c, 0.48, 14, DY), (c = [])),
+        (h = p));
     }
-    for (let B = 3 + r() * 5; B < F - 2; B += 9 + r() * 9) {
-      if (r() > 0.6) continue;
-      let H = B / F,
-        O = E + (C - E) * H + I * 0.2,
-        D = A + (P - A) * H + L * 0.2;
-      (i.inst.push({
-        kind: "tree",
-        x: O,
-        y: Yt(O, D) + Ke,
-        z: D,
-        rot: r() * 6.28,
-        scale: 0.7 + r() * 0.5,
-      }),
-        i.colliders.push({ t: "circ", x: O, z: D, r: 0.25 }));
-    }
-    for (let B = 9 + r() * 4; B < F - 8; B += 5.6 + r() * 2.5) {
-      if (r() < 0.25) {
-        B += 4;
-        continue;
+    c.length && Ox(n, c, 0.48, 14, DY);
+  }
+  {
+    let l = s((Qe.sTowerS + Qe.sTowerN) / 2);
+    for (let c of [-1, 1])
+      Ge(
+        i,
+        l.x - l.uz * 15 * c,
+        l.z + l.ux * 15 * c,
+        l.ux,
+        l.uz,
+        0.35,
+        0.35,
+        l.y - 9.8,
+        l.y - 9,
+        [0.05, 1, 0.25, 0.3],
+        [1, 1, 1, 1, 1, 1],
+      );
+  }
+  let a = t.G("ggDeck", "gpaint"),
+    r = t.G("ggDeck", "glow");
+  for (
+    let l = Qe.lampS0 ?? Qe.sAnchS - 40;
+    l <= (Qe.lampS1 ?? Qe.sAnchN + 30);
+    l += 30.48
+  ) {
+    let c = s(l);
+    for (let h of [-1, 1]) {
+      let f = (UY + 0.62) * h,
+        u = c.x - c.uz * f,
+        d = c.z + c.ux * f,
+        p = c.y;
+      (To(
+        a,
+        u,
+        d,
+        [
+          [0.3, p],
+          [0.3, p + 0.5],
+          [0.2, p + 0.65],
+          [0.16, p + 1.2],
+          [0.12, p + 6.6],
+          [0.16, p + 6.9],
+          [0.1, p + 7.1],
+        ],
+        8,
+        [0.6, 0.1, 0.035, 0.55],
+      ),
+        Ge(
+          a,
+          u,
+          d,
+          c.ux,
+          c.uz,
+          0.36,
+          0.36,
+          p - 0.05,
+          p + 0.18,
+          [0.55, 0.09, 0.032, 0.55],
+          [1, 1, 1, 1, 1, 0],
+        ),
+        Ge(
+          a,
+          u,
+          d,
+          c.ux,
+          c.uz,
+          0.33,
+          0.33,
+          p + 0.18,
+          p + 0.42,
+          [0.62, 0.1, 0.036, 0.55],
+          [1, 1, 1, 1, 1, 0],
+        ));
+      for (let y = 0; y < 8; y++) {
+        let M = (y / 8) * Math.PI * 2 + Math.PI / 8,
+          S = Math.cos(M),
+          w = Math.sin(M);
+        ci(
+          a,
+          [u + S * 0.165, p + 1.25, d + w * 0.165],
+          [u + S * 0.125, p + 6.5, d + w * 0.125],
+          0.04,
+          0.04,
+          [0.5, 0.08, 0.03, 0.55],
+        );
       }
-      let H = B / F,
-        O = E + (C - E) * H + I * 1.78,
-        D = A + (P - A) * H + L * 1.78,
-        U = Math.atan2(C - E, P - A) + (r() < 0.5 ? Math.PI : 0),
-        G = Math.sin(U) * 2,
-        q = Math.cos(U) * 2,
-        W = (Yt(O + G, D + q) - Yt(O - G, D - q)) / 4;
-      (i.inst.push({
-        kind: "car",
-        x: O,
-        y: Yt(O, D) + 0.02,
-        z: D,
-        rot: U,
-        pitch: -Math.atan(W),
-        color: r(),
-        type: [0, 0, 0, 1, 1, 2, 2, 3][Math.floor(r() * 8)],
-      }),
-        i.colliders.push({
-          t: "obb",
-          x: O,
-          z: D,
-          hx: 0.93,
-          hz: 2.35,
-          c: Math.cos(U),
-          s: Math.sin(U),
-          parked: !0,
-        }));
+      To(
+        a,
+        u,
+        d,
+        [
+          [0.13, p + 6.1],
+          [0.19, p + 6.18],
+          [0.19, p + 6.3],
+          [0.13, p + 6.38],
+        ],
+        8,
+        [0.66, 0.12, 0.04, 0.5],
+      );
+      let m = -(-c.uz * h),
+        g = -(c.ux * h),
+        b = [u, p + 6.8, d],
+        v = [u + m * 1.1, p + 7.35, d + g * 1.1],
+        x = [u + m * 1.7, p + 7.25, d + g * 1.7];
+      (ci(a, b, v, 0.09, 0.09, [0.6, 0.1, 0.035, 0.55]),
+        ci(a, v, x, 0.09, 0.09, [0.6, 0.1, 0.035, 0.55]),
+        To(
+          a,
+          x[0],
+          x[2],
+          [
+            [0.05, p + 7.2],
+            [0.36, p + 7.05],
+            [0.3, p + 6.95],
+          ],
+          8,
+          [0.5, 0.08, 0.03, 0.5],
+        ),
+        To(
+          r,
+          x[0],
+          x[2],
+          [
+            [0.28, p + 6.96],
+            [0.22, p + 6.72],
+            [0.02, p + 6.66],
+          ],
+          8,
+          [1, 0.52, 0.16, 0],
+        ));
     }
-    {
-      let B = F * (0.2 + 0.6 * r()),
-        H = B / F,
-        O = E + (C - E) * H,
-        D = A + (P - A) * H;
-      (i.inst.push({ kind: "hydrant", x: O, y: Yt(O, D) + Ke, z: D, rot: N }),
-        i.colliders.push({ t: "circ", x: O, z: D, r: 0.2 }));
-    }
   }
-  for (let [E, A, C, P] of [
-    [a.x0 + 0.7, a.z0 + 0.7, e, s],
-    [a.x1 - 0.7, a.z0 + 0.7, e + 1, s],
-    [a.x0 + 0.7, a.z1 - 0.7, e, s + 1],
-    [a.x1 - 0.7, a.z1 - 0.7, e + 1, s + 1],
-  ])
-    (n === "s" && P === s + 1) ||
-      (n === "n" && P === s) ||
-      (i.inst.push({
-        kind: "stop",
-        x: E,
-        y: Yt(E, A) + Ke,
-        z: A,
-        rot: Math.atan2(ae[C] - E, fe[P] - A),
-      }),
-      i.colliders.push({ t: "circ", x: E, z: A, r: 0.16 }));
-  for (let E = 0; E < 7; E++) {
-    let A = o.x0 + 16 + r() * (o.x1 - o.x0 - 32),
-      C = (n === "s" ? g + 3 : p + 3) + r() * Math.max(1, Math.abs(v - x) - 6);
-    i.inst.push({
-      kind: "tree",
-      x: A,
-      y: Yt(A, C) + Ke,
-      z: C,
-      rot: r() * 6.28,
-      scale: 1 + r() * 0.6,
-    });
-  }
-}
-En();
-var Yh = [0.62, 0.1, 0.035, 0],
-  Kl = [0.5, 0.075, 0.027, 0],
-  wu = [0.68, 0.12, 0.045, 0],
-  BX = [0.62, 0.1, 0.035, 0.4],
-  fl = 17.5,
-  OX = 11.5;
-function h2t(i) {
-  let t = (c) => Fh("gg", c),
-    e = Ye.towerTop,
-    { sAnchS: s, sTowerS: n, sTowerN: o, sAnchN: a } = Ye,
-    r = t((n + o) / 2).y + 3;
-  if (i <= n) {
-    let c = (i - s) / (n - s),
-      h = t(s).y + 4;
-    return h + (e - h) * c - 72 * c * (1 - c);
-  }
-  if (i >= o) {
-    let c = (i - o) / (a - o),
-      h = t(a).y + 4;
-    return e + (h - e) * c - 72 * c * (1 - c);
-  }
-  let l = ((i - n) / (o - n)) * 2 - 1;
-  return r + (e - r) * l * l;
+  (Bxt(o, t), Nxt(o, t), Hxt(o, t));
 }

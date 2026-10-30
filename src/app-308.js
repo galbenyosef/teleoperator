@@ -1,311 +1,198 @@
 // app 308 — math
-// Lines 148422-148730 of readable/app.pretty.js (statement-aligned).
-var Qc = 9.81,
-  th = {
-    mass: 1480,
-    izz: 2150,
-    a: 1.52,
-    b: 1.13,
-    track: 1.7,
-    hcg: 0.46,
-    wheelR: 0.345,
-    wheelI: 1.2,
-    rearI: 1.8,
-    idle: 1e3,
-    redline: 9e3,
-    limiter: 9200,
-    gears: [3.08, 2.19, 1.63, 1.29, 1.03, 0.84, 0.69],
-    reverse: 2.9,
-    final: 4.44,
-    driveEff: 0.87,
-    upshift: 8500,
-    upshift1: 7200,
-    shiftUp: 0.15,
-    shiftDown: 0.12,
-    engineI: 0.22,
-    cutFloor: 0.08,
-    kickMax: 0.3,
-    kickTau: 0.1,
-    rpmFall: 26e3,
-    rpmRise: 3e4,
-    launchRpm: 5500,
-    launchSlip: 0.08,
-    biteTime: 0.35,
-    muDrive: 0.9,
-    engBrake: [25, 60],
-    cdA: 0.72,
-    crr: 0.012,
-    downforce: 0.4,
-    brakeF: 2700,
-    brakeR: 1450,
-    handbrake: 2600,
-    espBrake: 2400,
-    mu: 1.42,
-    muRearDrift: 0.6,
-    rearGrip: 1.1,
-    latMu: 1.06,
-    latMuR: 1.09,
-    steerMax: 0.62,
-    steerMaxHigh: 0.085,
-    steerRate: 14,
-    steerReturn: 16,
-    holdTurn: 18,
-    nitroForce: 7600,
-    nitroMax: 1,
-    nitroUse: 0.22,
-    nitroFill: 0.05,
-    rideHz: 2,
-    rideZeta: 0.7,
-    gVert: 2.4,
-    gAir: 3.4,
-    gStick: 6,
-    stickKmh: [105, 175],
-    droop: 0.12,
-    bump: 0.07,
-    bumpMax: 0.16,
-    arb: 1.1,
-    damperV: 0.9,
-    ipitch: 2100,
-    iroll: 620,
-    lean: 0.9,
-    leanPitch: 1.5,
-  },
-  Evt = 31e4,
-  Tvt = 800,
-  Rx = {
-    ...th,
-    mass: 2300,
-    izz: 4200,
-    a: 1.495,
-    b: 1.495,
-    track: 1.64,
-    hcg: 0.52,
-    wheelR: 0.352,
-    wheelI: 1.6,
-    rearI: 1.9,
-    ev: !0,
-    awd: !0,
-    frontShare: 0.45,
-    idle: 0,
-    redline: 13650,
-    limiter: 13700,
-    gears: [1],
-    reverse: 1,
-    final: 9.04,
-    driveEff: 0.92,
-    torque: (i) => {
-      let t = Math.max(i, 1) / W_;
-      return Math.min(Tvt, Evt / t) * OI((13640 - i) / 120, 0, 1);
-    },
-    engineI: 0.05,
-    kickMax: 0,
-    launchRpm: 0,
-    launchSlip: 0.05,
-    biteTime: 0.06,
-    muDrive: 0.92,
-    regen: 620,
-    comfortBrake: 5,
-    cdA: 0.85,
-    crr: 0.012,
-    downforce: 0.05,
-    brakeF: 3600,
-    brakeR: 2600,
-    handbrake: 2600,
-    espBrake: 3e3,
-    mu: 1.32,
-    rearGrip: 1.08,
-    steerMax: 0.6,
-    steerMaxHigh: 0.09,
-    nitroForce: 0,
-    nitroMax: 0,
-    rideHz: 1.6,
-    rideZeta: 0.72,
-    arb: 1.3,
-    bump: 0.08,
-    ipitch: 3800,
-    iroll: 1100,
-    lean: 0.75,
-    leanPitch: 1.2,
-  },
-  Avt = 25e4,
-  Rvt = 480,
-  G_ = {
-    ...Rx,
-    mass: 1520,
-    izz: 1750,
-    a: 1.34,
-    b: 1.34,
-    track: 1.48,
-    hcg: 0.47,
-    wheelR: 0.4,
-    wheelI: 1.4,
-    rearI: 1.7,
-    awd: !1,
-    frontShare: 0,
-    redline: 13400,
-    limiter: 13450,
-    final: 10.4,
-    torque: (i) => {
-      let t = Math.max(i, 1) / W_;
-      return Math.min(Rvt, Avt / t) * OI((13390 - i) / 120, 0, 1);
-    },
-    muDrive: 0.95,
-    regen: 480,
-    cdA: 0.58,
-    crr: 0.011,
-    downforce: 0.06,
-    brakeF: 2900,
-    brakeR: 1900,
-    espBrake: 2600,
-    mu: 1.36,
-    rearGrip: 1.06,
-    latMuR: 1.12,
-    steerMax: 0.72,
-    steerMaxHigh: 0.1,
-    steerRate: 16,
-    steerReturn: 18,
-    rideHz: 1.9,
-    rideZeta: 0.7,
-    arb: 1.2,
-    bump: 0.07,
-    ipitch: 2300,
-    iroll: 700,
-    lean: 0.8,
-    leanPitch: 1.3,
-  },
-  Pvt = 79e4,
-  Cvt = 1750,
-  Px = {
-    ...Rx,
-    mass: 3100,
-    izz: 8e3,
-    a: 1.8175,
-    b: 1.8175,
-    track: 1.72,
-    hcg: 0.62,
-    wheelR: 0.44,
-    wheelI: 2.6,
-    rearI: 2.9,
-    awd: !0,
-    frontShare: 0.34,
-    redline: 13650,
-    limiter: 13700,
-    final: 10.8,
-    torque: (i) => {
-      let t = Math.max(i, 1) / W_;
-      return Math.min(Cvt, Pvt / t) * OI((13640 - i) / 120, 0, 1);
-    },
-    muDrive: 0.95,
-    regen: 1040,
-    zoneBrake: 0.2,
-    box: { hx: 1, hz: 2.82, off: -0.05 },
-    cdA: 0.95,
-    crr: 0.013,
-    downforce: 0.04,
-    brakeF: 4700,
-    brakeR: 3300,
-    handbrake: 3600,
-    espBrake: 4200,
-    mu: 1.24,
-    rearGrip: 1.08,
-    steerMax: 0.62,
-    steerMaxHigh: 0.085,
-    rideHz: 1.35,
-    rideZeta: 0.82,
-    arb: 1.6,
-    bump: 0.09,
-    ipitch: 7600,
-    iroll: 1600,
-    lean: 0.6,
-    leanPitch: 0.9,
-  },
-  mZ = { ...th, comfortBrake: 5 },
-  Lvt = 14e4;
-function Ivt(i) {
-  let t = i / 1e3,
-    e =
-      t < 1.5
-        ? 520
-        : t < 3.2
-          ? 520 + 600 * Fvt((t - 1.5) / 1.7)
-          : t < 6.2
-            ? 1120
-            : 1120 - 70 * (t - 6.2) * (t - 6.2),
-    s = Math.max(i, 400) / W_,
-    n = Math.min(330, Lvt / s);
-  return e + n;
+// Lines 149076-149271 of readable/app.pretty.js (statement-aligned).
+function mO(o, t) {
+  let e = 0,
+    s = 0,
+    n = 0,
+    i = 0,
+    a = {},
+    r = {};
+  for (let c = 0; c < o.length; c++) {
+    let h = o[c],
+      f = h.E;
+    if (
+      ((e += Math.abs(h.sb - h.sa)),
+      (n = Math.max(n, pO(f))),
+      Ot(f, h.sa, a),
+      Ot(f, h.sb, r),
+      (i += Math.max(0, r.y - a.y)),
+      c)
+    ) {
+      let u = o[c - 1],
+        d = {},
+        p = {},
+        m = {},
+        g = {};
+      (Ot(
+        u.E,
+        u.sb - (u.sb > u.sa ? 1 : -1) * Math.min(8, Math.abs(u.sb - u.sa)),
+        d,
+      ),
+        Ot(u.E, u.sb, p),
+        Ot(f, h.sa, m),
+        Ot(
+          f,
+          h.sa + (h.sb > h.sa ? 1 : -1) * Math.min(8, Math.abs(h.sb - h.sa)),
+          g,
+        ));
+      let b = p.x - d.x,
+        v = p.z - d.z,
+        x = g.x - m.x,
+        y = g.z - m.z,
+        M = (b * x + v * y) / (Math.hypot(b, v) * Math.hypot(x, y) || 1);
+      M < 0.85 && (s += M < 0.3 ? 2 : 1);
+    }
+  }
+  let l = Math.max(0.2, e / 1e3);
+  return {
+    cost:
+      s / l +
+      Math.max(0, n - 0.06) * 100 +
+      (i / l) * 0.03 +
+      (Math.max(0, t * 0.85 - e) / t) * 6,
+    turns: s,
+    gmax: +n.toFixed(3),
+    climb: Math.round(i),
+    L: Math.round(e),
+  };
 }
-var Fvt = (i) => ((i = i < 0 ? 0 : i > 1 ? 1 : i), i * i * (3 - 2 * i)),
-  gZ = {
-    ...th,
-    mass: 1810,
-    izz: 2550,
-    a: 1.63,
-    b: 1.09,
-    track: 1.63,
-    hcg: 0.43,
-    wheelR: 0.345,
-    wheelI: 1.3,
-    rearI: 2,
-    awd: !0,
-    frontShare: 0.28,
-    idle: 900,
-    redline: 8e3,
-    limiter: 8200,
-    upshift: 7600,
-    upshift1: 6600,
-    launchRpm: 4200,
-    launchSlip: 0.09,
-    gears: [2.91, 1.76, 1.22, 0.95, 0.75, 0.62, 0.53, 0.46],
-    reverse: 2.9,
-    final: 5.17,
-    driveEff: 0.88,
-    torque: Ivt,
-    engineI: 0.2,
-    muDrive: 0.8,
-    cdA: 1.62,
-    crr: 0.012,
-    downforce: 0.9,
-    brakeF: 3300,
-    brakeR: 1900,
-    handbrake: 2800,
-    espBrake: 2600,
-    mu: 1.45,
-    rearGrip: 1.1,
-    latMuR: 1.12,
-    nitroForce: 7e3,
-    rideHz: 2.1,
-    ipitch: 2300,
-    iroll: 700,
-    comfortBrake: 5,
-  },
-  W_ = 60 / (2 * Math.PI),
-  OI = (i, t, e) => (i < t ? t : i > e ? e : i),
-  Nvt = [
-    [-1.5, 1 / 16],
-    [-1, 2 / 16],
-    [-0.5, 3 / 16],
-    [0, 4 / 16],
-    [0.5, 3 / 16],
-    [1, 2 / 16],
-    [1.5, 1 / 16],
-  ],
-  NI = 0.5,
-  pZ = 0.85,
-  HI = Object.freeze({ tcs: !0, esp: !0, steering: !0, abs: !0 });
-function BI(i, t = 13, e = 1.45, s = 0.2) {
-  let n = t * i;
-  return Math.sin(e * Math.atan(n - s * (n - Math.atan(n))));
+function Mtt(o, { seed: t, x: e, z: s, psi: n, len: i }, a = null) {
+  let r = o.D,
+    l = o.L.roadAt(e, s, 40);
+  if (!l || !O_(l.E)) return null;
+  let c = (S, w) => dO(S, a ? { ...a, L: a.L || o.L } : null, w),
+    h = nwt(t),
+    f = l.E,
+    u = Ot(f, l.s, {}),
+    d = -Math.sin(n),
+    p = -Math.cos(n),
+    m = u.dx * d + u.dz * p >= 0 ? 1 : -1;
+  f.oneway && (m = 1);
+  let g = Math.min(f.s1 - 1, Math.max(f.s0 + 1, l.s)),
+    b = [{ E: f, dir: m, sa: g, sb: m > 0 ? f.s1 : f.s0 }],
+    v = new Set([m > 0 ? f.ja : f.jb]),
+    x = Math.abs(b[0].sb - g),
+    y = f,
+    M = [];
+  for (; x < i;) {
+    let S = r.juns[m > 0 ? y.jb : y.ja];
+    if (!S || !S.tl) break;
+    v.add(S.id);
+    let w = m > 0 ? "b" : "a",
+      _ = S.tl.find((P) => P.E === y && P.end === w);
+    if (!_) break;
+    let z = -_.hx,
+      A = -_.hz,
+      T = [];
+    for (let P of S.tl) {
+      let C = P.E;
+      if ((C === y && P.end === w) || !O_(C)) continue;
+      let I = P.end === "a" ? 1 : -1;
+      if (C.oneway && I < 0) continue;
+      let L = I > 0 ? C.jb : C.ja;
+      if (v.has(L) || !c(C, I)) continue;
+      let F = z * P.hx + A * P.hz;
+      if (F < -0.2 || (x + (C.s1 - C.s0) < i && iwt(r.juns[L], C, c) === 0))
+        continue;
+      let O = pO(C),
+        B = M.filter((H) => x - H < 350).length;
+      T.push([
+        (F > 0.85 ? 3 * (B >= 2 ? 2.5 : 1) : F > 0.4 ? 1.3 : 0.6) *
+          (ytt.has(C.cls) ? 2.2 : 1) *
+          (C.lanes > 1 ? 1.3 : 1) *
+          (O > 0.15 ? 0.03 : O > 0.12 ? 0.12 : O > 0.08 ? 0.5 : 1),
+        C,
+        I,
+        F,
+      ]);
+    }
+    if (!T.length) break;
+    let E = h() * T.reduce((P, C) => P + C[0], 0),
+      R = T[0];
+    for (let P of T)
+      if ((E -= P[0]) <= 0) {
+        R = P;
+        break;
+      }
+    ((y = R[1]),
+      (m = R[2]),
+      R[3] < 0.85 && M.push(x),
+      b.push({
+        E: y,
+        dir: m,
+        sa: m > 0 ? y.s0 : y.s1,
+        sb: m > 0 ? y.s1 : y.s0,
+      }),
+      (x += y.s1 - y.s0));
+  }
+  return x >= i * 0.6 ? b : null;
 }
-var Bvt = (i) => BI(i, 12, 1.6, 0.3),
-  _s = (i, t, e) => (i < t ? t : i > e ? e : i),
-  sr = (i, t, e) => i + (t - i) * e,
-  Pm = (i) => ((i = _s(i, 0, 1)), i * i * (3 - 2 * i));
-function Tx(i) {
-  let t = i / 1e3;
-  return t < 1
-    ? 300
-    : t < 6
-      ? 300 + 240 * Math.sin((((t - 1) / 5) * Math.PI) / 2)
-      : 540 - ((20 * (t - 6) * (t - 6)) / 3) * 1;
+function Stt(o, t, e, s = null) {
+  let n = ([a, r]) => {
+      let l = null,
+        c = 1e9;
+      for (let h of o.D.juns) {
+        if (!h.legs.length) continue;
+        let f = Math.hypot(h.x - a, h.z - r);
+        f < c && ((c = f), (l = h));
+      }
+      return l;
+    },
+    i = o.path(n(t), n(e));
+  return !i ||
+    !i.length ||
+    (s && i.some(({ E: a, dir: r }) => !dO(a, { ...s, L: s.L || o.L }, r)))
+    ? null
+    : i.map(({ E: a, dir: r }) => ({
+        E: a,
+        dir: r,
+        sa: r > 0 ? a.s0 : a.s1,
+        sb: r > 0 ? a.s1 : a.s0,
+      }));
+}
+function owt() {
+  let o = document.createElement("canvas");
+  ((o.width = 128), (o.height = 64));
+  let t = o.getContext("2d");
+  ((t.fillStyle = "rgba(20,24,30,0.22)"),
+    t.fillRect(0, 0, 128, 64),
+    (t.fillStyle = "rgba(255,150,40,0.85)"));
+  for (let s of [8, 72])
+    (t.beginPath(),
+      t.moveTo(s, 6),
+      t.lineTo(s + 22, 6),
+      t.lineTo(s + 48, 32),
+      t.lineTo(s + 22, 58),
+      t.lineTo(s, 58),
+      t.lineTo(s + 26, 32),
+      t.closePath(),
+      t.fill());
+  ((t.fillStyle = "rgba(255,255,255,0.8)"),
+    t.fillRect(0, 0, 128, 3),
+    t.fillRect(0, 61, 128, 3));
+  let e = new Sn(o);
+  return ((e.colorSpace = Je), (e.wrapS = oi), e);
+}
+function vtt(o) {
+  let t = document.createElement("canvas");
+  ((t.width = 64), (t.height = 128));
+  let e = t.getContext("2d");
+  if (o)
+    for (let n = 0; n < 8; n++)
+      for (let i = 0; i < 4; i++)
+        ((e.fillStyle =
+          (i + n) % 2 ? "rgba(255,255,255,0.9)" : "rgba(10,10,10,0.75)"),
+          e.fillRect(i * 16, n * 16, 16, 16));
+  else {
+    let n = e.createLinearGradient(0, 128, 0, 0);
+    (n.addColorStop(0, "rgba(80,220,255,0.75)"),
+      n.addColorStop(0.5, "rgba(80,220,255,0.25)"),
+      n.addColorStop(1, "rgba(80,220,255,0)"),
+      (e.fillStyle = n),
+      e.fillRect(0, 0, 64, 128),
+      (e.fillStyle = "rgba(200,250,255,0.9)"),
+      e.fillRect(0, 124, 64, 4));
+  }
+  let s = new Sn(t);
+  return ((s.colorSpace = Je), (s.wrapS = oi), s);
 }

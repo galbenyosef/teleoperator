@@ -1,343 +1,245 @@
 // app 178 — math
-// Lines 103595-103935 of readable/app.pretty.js (statement-aligned).
-function gpt(i, t, e, s) {
-  let n = i.E,
-    o = i.seed + s * 13,
-    a = i.g("dress");
-  if (!i.gy || Math.abs(i.gy((t + e) / 2) - i.gF) > 0.7) return;
-  let r = Math.min(e - t - 0.6, 4.6);
-  if (r < 1.6) return;
-  let l = (t + e) / 2 - r / 2,
-    c = 0.48,
-    h = Math.floor(r / c),
-    f = Yi.PAINT;
-  {
-    let m = Dy(i, (t + e) / 2) + 0.5;
-    if (i.solid && ![l, l + r / 2, l + r].every((g) => hk(i, g, m, -99, 3)))
-      return;
-  }
-  let u = co([0.06, 0.06, 0.06], Yi.STEEL),
-    d = co([0.42, 0.33, 0.22], f),
-    p = co([0.52, 0.42, 0.3], f);
-  for (let m = 0; m < h; m++) {
-    let g = l + m * (r / h) + 0.02,
-      b = l + (m + 1) * (r / h) - 0.02,
-      x = Dy(i, l + r / 2);
-    if (!(Math.abs(i.gy((g + b) / 2) - i.gF) > 0.7)) {
-      for (let [v, y, M] of [
-        [0.15, 0.68, 0.95],
-        [0.68, 1.28, 0.72],
-      ]) {
-        let S = dV[Math.floor(Ri(o + m * 7, 230 + M * 10) * dV.length)],
-          w = 0.9 + 0.2 * Ri(o + m, 231 + M * 10);
-        (N0(
-          a,
-          n,
-          g,
-          b,
-          x + M - 0.2,
-          x + M - 0.04,
-          v + 0.02,
-          y - 0.02,
-          p,
-          !1,
-          !1,
-        ),
-          N0(
-            a,
-            n,
-            g + 0.03,
-            b - 0.03,
-            x + M - 0.04,
-            x + M + 0.03 + 0.04 * Ri(o + m, 232),
-            v + 0.05,
-            y - 0.05,
-            co([S[0] * w, S[1] * w, S[2] * w], f),
-            !1,
-            !1,
-          ));
-      }
-      if (m === 0 || m === h - 1)
-        for (let v of [0.25, 1.15])
-          N0(
-            a,
-            n,
-            (m === 0 ? g : b) - 0.04,
-            (m === 0 ? g : b) + 0.04,
-            x,
-            x + 0.75,
-            v - 0.04,
-            v + 0.04,
-            u,
-          );
-    }
-  }
-  if (
-    (N0(
-      a,
-      n,
-      l,
-      l + r,
-      Dy(i, l + r / 2) + 0.49,
-      Dy(i, l + r / 2) + 0.52,
-      0.12,
-      1.3,
-      d,
-    ),
-    Ri(o, 233) < 0.6)
-  ) {
-    let m = Ri(o, 234) < 0.5 ? l - 0.05 : l + r + 0.6,
-      g = Dy(i, m);
-    if (m - 0.55 > 0.05 && m < n.l - 0.05)
-      for (let b = 0; b < 2 + Math.floor(Ri(o, 235) * 3); b++)
-        N0(
-          a,
-          n,
-          m - 0.55,
-          m - 0.05,
-          g + b * 0.32,
-          g + b * 0.32 + 0.3,
-          0.2 + 0.06 * (b % 2),
-          0.75 + 0.06 * (b % 2),
-          p,
-        );
-  }
-}
-var Dy = (i, t) => i.gy(t);
-function bpt(i, t) {
-  let e = i.E,
-    s = i.seed,
-    n = e.l / Math.max(0.001, i.uB - i.uA),
-    o = i.gF;
-  if (i.top - o < 5.5) return;
-  let a = [0];
-  for (let c = Math.ceil(i.uA + 0.001); c < i.uB - 0.001; c++)
-    a.push((c - i.uA) * n);
-  a.push(e.l);
-  let r = 0;
-  if (i.L && !i.flank) {
-    let c = (i.ax + i.bx) / 2 + e.nx * 5,
-      h = (i.az + i.bz) / 2 + e.nz * 5,
-      f = i.L.roadAt(c, h, 14);
-    r = (f && mpt[f.E.name]) || 0;
-  }
-  if (r)
-    for (let c = 0; c + 1 < a.length; c++)
-      a[c + 1] - a[c] >= 2.2 &&
-        Ri(s + c * 13, 236) < r &&
-        gpt(i, a[c], a[c + 1], c);
-  let l = (t?.awnings?.length || 0) + (t?.eaves?.length || 0) > 0;
-  for (let c = 0; c + 1 < a.length; c++) {
-    let h = a[c],
-      f = a[c + 1],
-      u = f - h;
-    if (u < 2.2) continue;
-    if (Ri(s + c * 13, 201) < 0.85) {
-      let p = Math.min(u - 0.5, 5.5),
-        m = (h + f) / 2;
-      ppt(
-        i,
-        m - p / 2,
-        m + p / 2,
-        o + 3,
-        o + 3 + Math.min(0.95, p * 0.24),
-        10 + Math.floor(Ri(s + c, 202) * 6),
+// Lines 104172-104414 of readable/app.pretty.js (statement-aligned).
+var Ow = (o) => {
+    let t = parseInt(o.slice(1), 16),
+      e = (s) => (
+        (s /= 255),
+        s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)
       );
-    }
-    if (
-      (!l &&
-        Ri(s + c * 13, 203) < 0.75 &&
-        xP(i, h + 0.3, f - 0.3, o + 2.3, o + 2.85, {
-          lc: uV[Math.floor(Ri(s + c, 204) * uV.length)],
-        }),
-      Ri(s + c * 13, 205) < 0.6 && i.top - o > 7)
-    ) {
-      let p = 2.4 + 1 * Ri(s + c, 206);
-      fk(
-        i,
-        (h + f) / 2 + (Ri(s + c, 207) - 0.5) * 1.2,
-        o + 4,
-        Math.min(p, i.top - o - 4.6),
-        0.66,
-        0.3,
-        Math.floor(Ri(s + c, 208) * 10),
-        Yi.CSIGN,
-      );
-    }
-  }
-  for (let c = 1; c + 1 < a.length; c++)
-    Ri(s + c * 17, 210) < 0.4 &&
-      i.top - o > 10.5 &&
-      fk(
-        i,
-        a[c],
-        o + 7.3,
-        2.4 + 0.6 * Ri(s + c, 211),
-        0.6,
-        0.3,
-        Math.floor(Ri(s + c, 212) * 10),
-        Yi.CSIGN,
-      );
-}
-var xpt = new Set(["chn"]),
-  vpt = new Set(["mix", "nb", "chn"]);
-function wV(i) {
-  let t = i.cell.dress,
-    e = (i.E = pV(i.ax, i.az, i.bx, i.bz)),
-    s = xpt.has(i.cell.style),
-    n = i.seed;
-  i.dn = Ai((i.ax + i.bx) / 2, (i.az + i.bz) / 2);
-  let o = !i.flank && !i.cut && i.dn === "chinatown";
-  if (t) {
-    t.cornice != null && i.cornice && rpt(i, t.cornice, t.cc);
-    for (let r of t.bays || [])
-      for (let [l, c] of om(i, r.r[0], r.r[1])) apt(i, l, c, r);
-    let a = (r) => Math.max(0, i.gF + 2.3 - r[0]);
-    for (let r of t.awnings || [])
-      for (let [l, c] of om(i, r.r[0], r.r[1]))
-        for (let h of Bb(i, r.r[2], r.r[3]))
-          h[4] &&
-            h[5] &&
-            h[0] > i.gF + 1 &&
-            xP(i, l, c, h[0] + a(h), h[1] + a(h), r);
-    for (let r of t.eaves || [])
-      for (let [l, c] of om(i, r.r[0], r.r[1]))
-        for (let h of Bb(i, r.r[2], r.r[3]))
-          h[4] &&
-            h[5] &&
-            h[0] > i.gF + 1 &&
-            mV(i, l, c, h[0] + a(h), h[1] + a(h), r);
-    for (let r of t.fire || [])
-      for (let [l, c] of om(i, r.r[0], r.r[1])) lpt(i, l, c, r, s);
-    for (let r of t.balc || [])
-      for (let [l, c] of om(i, r.r[0], r.r[1]))
-        cpt(i, l, c, r, s || (r.lc && r.lc[0] > 0.08 && r.lc[0] > 2 * r.lc[2]));
-    for (let [r, l] of t.lanterns || [])
-      for (let [c, , h] of om(i, r, r))
-        for (let f of Xh(i, l))
-          f > i.gF + 2.6 &&
-            f < i.gF + 11 &&
-            Ri(n + h * 7, Math.round(f * 3 + r * 50)) < 0.6 &&
-            hpt(i, c, f, 0.45);
-    if (t.wins && i.st !== 0 && i.st !== 1) {
-      let r =
-        i.cell.style === "pal" || i.cell.style === "bank"
-          ? 0.02
-          : s
-            ? 0.1
-            : 0.06;
-      t.wins.forEach((l, c) => {
-        for (let [h, f, u] of om(i, l[0], l[1]))
-          for (let d of Xh(i, l[2]))
-            d < i.gF + 4.5 ||
-              d > i.top - 2 ||
-              f - h < 0.55 ||
-              Ri(n + u * 131 + Math.round(d), c) > r ||
-              (t.fire || []).some(
-                (p) =>
-                  l[0] < p.r[1] &&
-                  l[1] > p.r[0] &&
-                  l[2] < p.r[3] &&
-                  l[3] > p.r[2],
-              ) ||
-              fpt(i, (h + f) / 2, d + 0.02);
-      });
-    }
-  }
-  if (
-    (o && bpt(i, t),
-    (vpt.has(i.cell.style) || i.shop || o) && !i.flank && !i.cut)
-  )
-    for (let a = Math.ceil(i.uA + 0.001); a < i.uB - 0.001; a++) {
-      let r = ((a - i.uA) / (i.uB - i.uA)) * e.l;
-      if (
-        r < 0.8 ||
-        r > e.l - 0.8 ||
-        Ri(n + a * 17, 77) >
-          (o ? 0.85 : s ? 0.75 : (upt[i.dn] ?? (yV[i.dn] > 0.45 ? 0.62 : 0.45)))
-      )
-        continue;
-      let l = Ri(n + a * 17, 78),
-        c = t?.balc?.length > 0,
-        h = s || o ? 2.2 + 0.8 * l : 1.1 + 0.6 * l,
-        f = s || o ? 0.6 : 0.7 + 0.25 * l,
-        u = i.gF + (s || o ? 3.8 : 3.3 + 0.4 * l) + (i.shop ? 2.2 : 0);
-      if (u + h > i.top - 0.5) continue;
-      let d = o
-        ? Math.floor(Ri(n + a, 79) * 10)
-        : s
-          ? 8 + Math.floor(Ri(n + a, 79) * 7)
-          : [0, 1, 2, 3, 4, 5, 6, 7, 15][Math.floor(Ri(n + a, 79) * 9)];
-      fk(i, r, u, h, f, c ? 0.95 : 0.25, d, o ? Yi.CSIGN : Yi.SIGN);
-    }
-  if (i.pipe && i.st !== 0 && !i.cut) {
-    let a = i.pipe > 0 ? 0.18 : e.l - 0.18;
-    (qr(
-      i.g("dress"),
-      e.P(a, i.gF, 0.09),
-      e.P(a, i.top - 0.15, 0.09),
-      0.05,
-      co(
-        Ri(n, 90) < 0.5
-          ? [0.05, 0.05, 0.05]
-          : i.fcol.slice(0, 3).map((r) => r * 0.25),
-        Yi.STEEL,
-      ),
-    ),
-      N0(
-        i.g("dress"),
-        e,
-        a - 0.12,
-        a + 0.12,
-        i.top - 0.45,
-        i.top - 0.15,
-        0,
-        0.22,
-        co([0.06, 0.06, 0.06], Yi.STEEL),
-      ));
-  }
-  if (i.flag && !i.cut && (i.cell.style === "pal" || i.cell.style === "bank")) {
-    let a = e.l / 2;
-    i.top - i.gF > 12 && dpt(i, a, i.gF + 5.4, Math.floor(Ri(n, 91) * 4));
-  }
-}
-function MV(i, t, e, s, n, o, a, r, l, c = null, h = null) {
-  let f = a.dress,
-    u = pV(t, e, s, n),
-    d = {
-      g: i,
-      E: u,
-      gy: c,
-      solid: h,
-      dn: Ai((t + s) / 2, (e + n) / 2),
-      uA: 0,
-      uB: 1,
-      u0: 0,
-      nm: 1,
-      mirror: 0,
-      secs: [[o, o + 4.8, 0, 1]],
-      cell: a,
-      gF: o,
-      top: o + 4.8,
-      st: 2,
-      seed: r,
-    };
-  if (f) {
-    for (let p of f.awnings || [])
-      xP(d, p.r[0] * u.l, p.r[1] * u.l, o + p.r[2] * 4.8, o + p.r[3] * 4.8, p);
-    for (let p of f.eaves || [])
-      mV(d, p.r[0] * u.l, p.r[1] * u.l, o + p.r[2] * 4.8, o + p.r[3] * 4.8, p);
-  }
-  if (!l && Ri(r, 55) < 0.5) {
-    let p = Ri(r, 56);
-    fk(
-      d,
-      0,
-      o + 3.4 + 0.3 * p,
-      1.1 + 0.5 * p,
-      0.75,
-      0.25,
-      [0, 1, 2, 3, 4, 5, 6, 7, 15][Math.floor(Ri(r, 57) * 9)],
+    return [e(t >> 16), e((t >> 8) & 255), e(t & 255)];
+  },
+  _X = [
+    "#8fb3c9",
+    "#a7c4a0",
+    "#e8d9a8",
+    "#d9a7a0",
+    "#c6c8cc",
+    "#f1ede4",
+    "#7d9bb5",
+    "#b6a3c7",
+    "#e0c07a",
+    "#9cb8a9",
+    "#d7b8a2",
+    "#5f7d8e",
+    "#c9d6df",
+    "#e6cfd4",
+    "#bfb08f",
+    "#86a3a0",
+    "#d4c5a8",
+    "#f2e6c9",
+  ].map(Ow),
+  EX = [
+    "#e9e1d0",
+    "#ddd3bf",
+    "#efe8da",
+    "#d5cab4",
+    "#e7d6c0",
+    "#cfc7b8",
+    "#e3dccf",
+    "#d9c3a5",
+    "#c9beaa",
+    "#f0eadf",
+  ].map(Ow),
+  W2t = ["#8a4a36", "#7b3f2e", "#94583f", "#6f3a2b", "#a0624a"].map(Ow),
+  q2t = [
+    "#c7c2b6",
+    "#b8b2a4",
+    "#d6d0c2",
+    "#9d9a92",
+    "#a9a295",
+    "#8e8a82",
+    "#cfc8b8",
+  ].map(Ow),
+  XX = [
+    [0.8, 0.79, 0.75],
+    [0.75, 0.74, 0.7],
+    [0.62, 0.6, 0.55],
+  ],
+  Jm = (o, t) => o[Math.floor(t * o.length) % o.length],
+  Bn = (o, t = 0) => {
+    let e = Math.imul(o | 0, 374761393) ^ Math.imul(t | 0, 668265263);
+    return (
+      (e = Math.imul(e ^ (e >>> 13), 1274126177)),
+      ((e ^ (e >>> 16)) >>> 0) / 4294967296
     );
+  },
+  j2t = {
+    vic: [0.35, 0.67],
+    edw: [0.35, 0.67],
+    mar: [0.35, 0.67],
+    apt: [0.3, 0.61],
+    pal: [0.3, 0.62],
+    bank: [0.3, 0.7],
+    mix: [0.36, 0.64],
+    nb: [0.36, 0.64],
+    chn: [0.36, 0.64],
+    brk: [0.34, 0.67],
+    jsq: [0.34, 0.67],
+    wrf: [0.3, 0.7],
+  },
+  uz = {
+    0: ["w_siding", "w_stucco"],
+    1: ["w_stucco", "w_siding"],
+    2: ["w_stucco", "w_brick"],
+    3: ["w_stucco", "w_brick"],
+    4: ["w_stucco", "w_stucco"],
+    5: ["w_brick", "w_brick"],
+    7: ["w_concrete", "w_stucco"],
+    8: ["w_stucco", "w_concrete"],
+  },
+  KX = { 0: 0, 1: 9, 2: 1, 3: 2, 4: 10, 5: 6, 6: 3, 7: 7, 8: 8 },
+  TX = new Set([0, 1, 2, 3, 4, 5]);
+function er(o, t) {
+  pc = o;
+  let e = o.bld,
+    s = [],
+    n = [];
+  for (let c = e.bRing[t]; c < e.bRing[t + 1]; c++)
+    (s.push(e.pts.subarray(e.rStart[c] * 2, e.rStart[c + 1] * 2)),
+      n.push(e.front.subarray(e.rStart[c], e.rStart[c + 1])));
+  let i = [e.bB[t * 5 + 1], e.bB[t * 5 + 2], e.bB[t * 5 + 3]],
+    a = e.roof ? e.roof[t] : 0,
+    r = a ? e.roofH[t] : 0,
+    l = {
+      i: t,
+      rings: s,
+      fronts: n,
+      base: e.bF[t * 3],
+      top: e.bF[t * 3 + 1],
+      minh: e.bF[t * 3 + 2],
+      st: e.bB[t * 5],
+      col: i[0] + i[1] + i[2] ? i.map((c) => Math.pow(c / 255, 2.2)) : null,
+      mat: e.bB[t * 5 + 4],
+      seed: e.seed[t],
+      rs: r > 0.5 ? a : 0,
+      rh: r > 0.5 ? r : 0,
+    };
+  {
+    let c = gz(o);
+    (c.hide[t] && (l.hide = !0),
+      c.cut[t] > 0 && (l.cut = c.cut[t]),
+      c.tcut[t] > 0 && (l.tcut = c.tcut[t]));
   }
+  if (s.length === 1 && l.minh <= 0) {
+    let c = s[0],
+      [h, f] = Ef(c),
+      u = Di(h, f),
+      d = u === "seacliff" && l.st !== 8,
+      p = u === "sausalito" && (l.st === 0 || l.st === 1);
+    if ((f < 700 && u === "presidio") || d || p) {
+      (p || (l.tile = !0),
+        d && Bn(l.seed, 77) < 0.15 && ((l.tile = !1), (l.roofCol = iK)),
+        p && (l.roofCol = RX[Math.floor(Bn(l.seed, 78) * RX.length)]));
+      let m = l.top - l.base,
+        g = 1e9,
+        b = -1e9,
+        v = 1e9,
+        x = -1e9;
+      for (let y = 0; y < c.length; y += 2)
+        ((g = Math.min(g, c[y])),
+          (b = Math.max(b, c[y])),
+          (v = Math.min(v, c[y + 1])),
+          (x = Math.max(x, c[y + 1])));
+      if (
+        !l.rs &&
+        m > 3 &&
+        m < 22 &&
+        c.length <= 40 &&
+        (!p || (b - g) * (x - v) < 600)
+      ) {
+        let y = Math.min(b - g, x - v);
+        ((l.rh = Math.max(1.5, Math.min(p ? 3.6 : 4.5, y * (p ? 0.3 : 0.25)))),
+          (l.rs = 2),
+          (l.top += l.rh));
+      }
+    }
+  }
+  return l;
+}
+var YX = [1, 0.43, 0.27, 1 / 5],
+  RX = [
+    [0.36, 0.3, 0.25, 1 / 5],
+    [0.3, 0.3, 0.31, 1 / 5],
+    [0.42, 0.36, 0.3, 1 / 5],
+    [0.24, 0.24, 0.25, 1 / 5],
+  ];
+function Ef(o) {
+  let t = 0,
+    e = 0,
+    s = o.length / 2;
+  for (let n = 0; n < s; n++) ((t += o[n * 2]), (e += o[n * 2 + 1]));
+  return [t / s, e / s];
+}
+var AX = new WeakMap();
+function JX(o, t) {
+  let e = o?.btags;
+  if (!e) return 0;
+  let s = AX.get(o);
+  if (!s) {
+    let a =
+      e instanceof Uint8Array
+        ? e
+        : new Uint8Array(e.buffer || e, e.byteOffset || 0, e.byteLength);
+    a.byteOffset % 4 && (a = a.slice());
+    let r = new DataView(a.buffer, a.byteOffset).getUint32(0, !0),
+      l = a.byteOffset + 4;
+    ((s = {
+      ids: new Uint32Array(a.buffer, l, r),
+      info: new Uint8Array(a.buffer, l + r * 4, r),
+      shops: new Uint8Array(a.buffer, l + r * 5, r),
+    }),
+      AX.set(o, s));
+  }
+  let n = 0,
+    i = s.ids.length - 1;
+  for (; n <= i;) {
+    let a = (n + i) >> 1,
+      r = s.ids[a];
+    if (r === t) return s.info[a] | (s.shops[a] << 8);
+    r < t ? (n = a + 1) : (i = a - 1);
+  }
+  return 0;
+}
+var $2t = new Set([
+    "nob",
+    "russian",
+    "pacific",
+    "marina",
+    "cowhollow",
+    "western",
+    "richmond",
+    "telegraph",
+    "tenderloin",
+    "northbeach",
+    "hayes",
+    "mission",
+    "castro",
+    "dolores",
+    "noe",
+    "twinpeaks",
+    "haight",
+  ]),
+  PX = new Set(["union", "fidi", "chinatown", "northbeach", "tenderloin"]);
+function ZX(o, t, e, s, n, i) {
+  let a = s & 7,
+    r = s >> 8;
+  return (
+    o === 6 &&
+      t < 46 &&
+      !n &&
+      $2t.has(e) &&
+      a !== 4 &&
+      i < 0.75 &&
+      (o = i < 0.5 ? 2 : 5),
+    o === 0 &&
+      (e === "marina" || e === "seacliff" || (e === "cowhollow" && i < 0.4)) &&
+      (o = 1),
+    (o === 0 || o === 1) && t < 15 && (r > 0 || a === 3) && (o = 3),
+    (o === 0 || o === 1) && t > 16 && (o = 2),
+    o === 2 && t > 48 && (o = 6),
+    (o === 3 || o === 4) && t > 26 && (o = 2),
+    (o === 5 || o === 7) && t > 36 && (o = 6),
+    o !== 6 && o !== 8 && t < 4.5 && (o = 8),
+    o
+  );
 }

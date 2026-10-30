@@ -1,339 +1,318 @@
-// app 268 — geo
-// Lines 133918-134254 of readable/app.pretty.js (statement-aligned).
-function EY(i, t) {
-  zY(i);
-  let e = i.attributes.position,
-    s = new Uint32Array(e.array.buffer, e.array.byteOffset, e.array.length),
-    n = new Uint8Array(e.count);
-  for (let o = 0; o < e.count; o++) n[o] = s[o * 3] & 7;
-  i.scale(...t);
-  for (let o = 0; o < e.count; o++) s[o * 3] = (s[o * 3] & -8) | n[o];
-}
-var vY = ["sedan", "hatch", "suv", "pickup", "van"],
-  pbt = ["taxi", "bus"],
-  mbt = { bus: 1, cablecar: 1, waymo: 1 },
-  TY = { bus: 1, cablecar: 1 },
-  AY = { bus: [0.74, 1, 1] },
-  gbt = [
-    ["#d2d2cf", 6],
-    ["#cdcac2", 2],
-    ["#aeb2b6", 5],
-    ["#8e9297", 4],
-    ["#5a5e63", 4],
-    ["#3b3e42", 3],
-    ["#151618", 6],
-    ["#0d0e10", 2],
-    ["#1c2f52", 2],
-    ["#141d33", 1.5],
-    ["#3a5a82", 1],
-    ["#7c1518", 1.5],
-    ["#4e1115", 1],
-    ["#23392c", 1],
-    ["#b8ad96", 1],
-    ["#4a3b2f", 0.5],
-  ],
-  Yc = [];
-for (let [i, t] of gbt) for (let e = 0; e < t * 2; e++) Yc.push(new $t(i));
-var fx = new $t(1, 1, 1);
-function ux(i) {
-  let t = Math.abs(Math.sin(i.x * 12.9898 + i.z * 78.233) * 43758.5453) % 1,
-    e = ["sedan", "hatch", "suv", "van"][i.type] || "sedan";
-  return e === "sedan" && t < 0.22 ? "pickup" : e;
-}
-var u_ = (i) => Yc[Math.floor(i * Yc.length) % Yc.length],
-  RY = {
-    police: 2200,
-    sedan: 1500,
-    hatch: 1300,
-    suv: 2100,
-    pickup: 2200,
-    van: 2400,
-    taxi: 1600,
-    bus: 13e3,
-    cablecar: 7e3,
-    waymo: 2200,
-    boxtruck: 7500,
-    stepvan: 4500,
-    garbage: 14e3,
-    semi: 16e3,
-    moto: 250,
-  };
-for (let i = 0; i < 4; i++) RY["streetcar" + i] = 17e3;
-var zm = (i) => RY[i] || 1500,
-  PY = ["sedan", "hatch", "suv", "van"];
-function WL(i, t, e = !0) {
-  let s = (o, a) => Math.round(o * 100) * 4e6 + Math.round(a * 100),
-    n = new Map();
-  for (let o of i) o.kind === "car" && n.set(s(o.x, o.z), o);
-  for (let o of t) {
-    if (!o.parked) continue;
-    let a = n.get(s(o.x, o.z));
-    if (a && ((o.p = a), (o.kind = ux(a)), e)) {
-      let r = Ko[o.kind];
-      ((o.hx = r.bw / 2), (o.hz = r.L / 2));
-    }
-  }
-}
-var CY = (i) => {
-  for (let t of Object.keys(i.attributes))
-    ["position", "normal", "uv"].includes(t) || i.deleteAttribute(t);
-  return (i.computeBoundingSphere(), i);
-};
-function LY(i, t) {
-  let e = ho[i] && t.index ? t.toNonIndexed() : t,
-    s = e.attributes.position,
-    n = e.attributes.normal,
-    o = Ko[i],
-    a = new Float32Array(s.count * 4);
-  for (let r = 0; r < s.count; r++) {
-    let l = Math.abs(s.getX(r)),
-      c = s.getY(r),
-      h = s.getZ(r),
-      f =
-        !TY[i] &&
-        h > o.L / 2 - 0.55 &&
-        (!n || n.getZ(r) > 0.25) &&
-        c > 0.5 &&
-        c < 1.08 &&
-        l > o.bw * 0.2 &&
-        l < o.bw / 2 + 0.02;
-    ((a[r * 4] = a[r * 4 + 1] = a[r * 4 + 2] = 1),
-      (a[r * 4 + 3] = f ? 0.25 : 1));
-  }
-  if (ho[i])
-    for (let r = 0; r < s.count; r++)
-      ubt(ho[i], s.getX(r), s.getY(r), s.getZ(r), 0.03) && (a[r * 4 + 3] = 1.5);
-  return (e.setAttribute("color", new Te(a, 4)), e);
-}
-var IY = (i, t) => async (e) => {
-    let s = await i.parseAsync(await io(t + e), t),
-      n = null;
-    if (
-      (s.scene.traverse((o) => {
-        o.isMesh && !n && (n = o);
-      }),
-      !n)
-    )
-      throw new Error(e + ": no mesh");
-    return (zY(n.geometry), n);
-  },
-  FY = () => {
+// app 268 — attributes
+// Lines 134526-134841 of readable/app.pretty.js (statement-aligned).
+async function UZ(o, t, e = 150) {
+  let s = o && gF.get(o);
+  if (!s) return 0;
+  gF.delete(o);
+  let n = BZ(s.loader, s.base),
+    i = 0;
+  for (let a of s.names) {
     try {
-      return new URLSearchParams(location.search).has("oldwheels");
-    } catch {
-      return !1;
-    }
-  },
-  DL = new WeakMap(),
-  NY = (i) => {
-    let t = (n) => {
-        let o = xbt(n);
-        return wbt(bw(o, kbt(o)), ybt());
-      },
-      e = t(i.geo),
-      s = i.geo1 && i.geo1 !== i.geo ? t(i.geo1) : i.geo1 ? e : null;
-    return [e, s];
-  };
-function UL(i, t, e) {
-  if (
-    FY() ||
-    !Qk[i] ||
-    !ho[i] ||
-    Object.values(_m[i] || {}).some((n) => n.bad)
-  ) {
-    ((t.geo = e), (t.geoP = void 0));
-    return;
-  }
-  let s = !globalThis.SF_LITE;
-  ((t.geo = mL(e, pL(i, ho[i], s ? 0 : 2), ho[i])),
-    (t.geoP = s ? mL(e, pL(i, ho[i], 1), ho[i]) : t.geo));
-}
-async function BY(i = "assets/cars/", { late: t = !1 } = {}) {
-  try {
-    let e = new Vr(),
-      s = IY(e, i),
-      n = {},
-      o = [],
-      a = io(lx + "waymo_traffic.glb");
-    (a.catch(() => {}),
-      await Promise.all(
-        hbt.map(async (r) => {
-          let l = vY.includes(r) || pbt.includes(r),
-            c = (!!globalThis.SF_LITE || t) && l;
-          c && !globalThis.SF_LITE && o.push(r);
-          let [h, f] = await Promise.all([
-              c ? null : s(r + ".glb"),
-              l ? s(r + "_lod1.glb") : null,
-            ]),
-            u = (h || f).material,
-            d = new Ee({
-              color: 16777215,
-              map: u.map,
-              roughness: 1,
-              metalness: 0,
-              side: Ss,
-              vertexColors: !0,
-            });
-          ((d.userData.mbAlbedo = tx),
-            (d.userData.mbTrafficFallback = !0),
-            (u.metalnessMap || u.roughnessMap) &&
-              (d.userData.mbExtraMap = u.metalnessMap || u.roughnessMap),
-            (d.userData.carLamps = !TY[r]),
-            (d.userData.masked = !!fbt[r]),
-            (d.name = "car_" + r),
-            ho[r] && (d.userData.mbWheels = NL(ho[r])),
-            u.map && (u.map.anisotropy = 8));
-          let p = CY,
-            m = (x) => LY(r, x),
-            g = AY[r];
-          if (g)
-            for (let x of [h, f])
-              x && (EY(x.geometry, g), x.geometry.computeBoundingSphere());
-          let b = f ? m(p(f.geometry)) : null;
-          if (
-            ((n[r] = {
-              geo: h ? m(p(h.geometry)) : b,
-              geo1: b,
-              geo2: f && vY.includes(r) ? _bt(r) : null,
-              mat: d,
-              livery: !!mbt[r],
-              V: Ko[r],
-            }),
-            r === "bus")
-          ) {
-            for (let x of h ? ["geo", "geo1"] : ["geo"])
-              n.bus[x] && (n.bus[x] = bw(n.bus[x], DY(n.bus.geo)));
-            h || (n.bus.geo1 = n.bus.geo);
-          }
-        }),
-      ));
-    try {
-      let r = await e.parseAsync(await a, lx),
-        l = {};
-      r.scene.traverse((d) => {
-        d.isMesh && (l[d.name] = d.geometry);
-      });
-      let c = new Ee({
-        color: 16777215,
-        map: h_("waymo_albedo.webp", !0),
-        roughness: 1,
-        metalness: 0,
-        side: Ss,
-        vertexColors: !0,
-      });
-      ((c.userData.mbAlbedo = tx),
-        (c.userData.mbTrafficFallback = !0),
-        (c.userData.mbExtraMap = h_("waymo_orm.webp", !1)),
-        (c.userData.carLamps = !0),
-        (c.userData.waymo = !0),
-        (c.name = "car_waymo"),
-        (c.userData.mbWheels = NL(ho.waymo)));
-      let h = "waymo",
-        f = Ko.waymo,
-        u = (d) => {
-          let p = d.attributes.position,
-            m = d.attributes.normal,
-            g = new Float32Array(p.count * 4);
-          for (let b = 0; b < p.count; b++) {
-            let x = Math.abs(p.getX(b)),
-              v = p.getY(b),
-              y = p.getZ(b);
-            ((g[b * 4] = g[b * 4 + 1] = g[b * 4 + 2] = 1),
-              (g[b * 4 + 3] =
-                y > f.L / 2 - 0.45 &&
-                m.getZ(b) > 0.25 &&
-                v > 0.6 &&
-                v < 0.95 &&
-                x > 0.45 &&
-                x < f.bw / 2 + 0.02
-                  ? 0.25
-                  : 1));
-          }
-          return (
-            d.setAttribute("color", new Te(g, 4)),
-            d.computeBoundingSphere(),
-            dbt(d, ho.waymo)
-          );
-        };
-      n[h] = {
-        geo: u(l.LOD0.index ? l.LOD0.toNonIndexed() : l.LOD0),
-        geo1: l.LOD1 ? u(l.LOD1.index ? l.LOD1.toNonIndexed() : l.LOD1) : null,
-        geo2: null,
-        mat: c,
-        livery: !0,
-        V: f,
-      };
+      let r = o[a];
+      if (!r) continue;
+      let l = await n(a + ".glb"),
+        c = CZ[a];
+      c && (AZ(l.geometry, c), l.geometry.computeBoundingSphere());
+      let h = OZ(a, FZ(l.geometry));
+      if (
+        (a === "bus" && (h = dM(h, VZ(h))),
+        !r.mat.userData.mbExtraMap &&
+          (l.material.metalnessMap || l.material.roughnessMap) &&
+          (r.mat.userData.mbExtraMap =
+            l.material.metalnessMap || l.material.roughnessMap),
+        ro[a]
+          ? (d2[a] = { ...(d2[a] || {}), geo: mF(h, ro[a]) }).geo.bad &&
+            (console.warn("car wheels: stray tags, wheels kept still", a),
+            uM(h))
+          : !Ux[a] && h.attributes.position.array && uM(h),
+        (r.base = h),
+        bF(a, r, h),
+        t?.(a, r),
+        i++,
+        a === "suv" && o.police)
+      ) {
+        let f = o.police,
+          [u] = HZ({ geo: h, geo1: r.geo1 });
+        (ro.police &&
+          (d2.police = { ...(d2.police || {}), geo: mF(u, ro.police) }).geo
+            .bad &&
+          uM(u),
+          (f.base = u),
+          bF("police", f, u),
+          t?.("police", f));
+      }
     } catch (r) {
-      (console.warn("the Waymo: the SUV with a sensor kit instead", r),
-        n.suv &&
-          (n.waymo = {
-            geo: bw(n.suv.geo, wY()),
-            geo1: n.suv.geo1 ? bw(n.suv.geo1, wY()) : null,
-            geo2: null,
-            mat: n.suv.mat,
-            livery: !0,
-            V: { ...Ko.suv, H: Ko.suv.H + 0.42 },
-          }));
+      console.warn("cars: no full mesh", a, r?.message || r);
     }
-    if (n.suv) {
-      let r = n.suv,
-        l = "police",
-        c = new Ee({
-          color: 16777215,
-          map: r.mat.map,
-          roughness: 1,
-          metalness: 0,
-          side: Ss,
-          vertexColors: !0,
-        });
-      ((c.userData = {
-        ...r.mat.userData,
-        mbAlbedo: cbt,
-        mbWheels: NL(ho.police),
-      }),
-        (c.name = "car_" + l));
-      let [h, f] = NY(r);
-      n[l] = { geo: h, geo1: f, geo2: null, mat: c, livery: !1, V: Ko[l] };
-    }
-    for (let [r, l] of Object.entries(n)) {
-      if (!ho[r]) {
-        if (!ex[r])
-          for (let h of ["geo", "geo1"])
-            l[h]?.attributes.position.array && gw(l[h]);
-        continue;
-      }
-      let c = (_m[r] = Object.fromEntries(
-        ["geo", "geo1"]
-          .filter((h) => l[h] && (h === "geo" || l.geo1 !== l.geo))
-          .map((h) => [h, HL(l[h], ho[r])]),
-      ));
-      if (Object.values(c).some((h) => h.bad)) {
-        console.warn(
-          "car wheels: stray tags, wheels kept still",
-          r,
-          JSON.stringify(c),
-        );
-        for (let h of ["geo", "geo1"]) l[h] && gw(l[h]);
-      }
-    }
-    for (let [r, l] of Object.entries(n))
-      ((l.base = l.geo),
-        !(
-          FY() ||
-          !Qk[r] ||
-          !ho[r] ||
-          Object.values(_m[r] || {}).some((c) => c.bad)
-        ) && UL(r, l, l.geo));
-    return (
-      Object.assign(n, YK(tx)),
-      qL(n, 0),
-      o.length && DL.set(n, { names: o, base: i, loader: e }),
-      n
-    );
-  } catch (e) {
-    return (
-      console.warn("car models: falling back to the lofted cars", e),
-      null
-    );
+    await new Promise((r) => setTimeout(r, e));
   }
+  return i;
+}
+var U3t = ["sedan", "suv", "hatch", "taxi", "pickup", "van"];
+function GZ(o, t = "assets/cars/", e = 700) {
+  if (!o) return Promise.resolve(0);
+  let s = 0;
+  return U3t.reduce(
+    (n, i) =>
+      n.then(async () => {
+        let a = o[i]?.mat?.map;
+        if (a) {
+          try {
+            let r = await ap(t + i + "_2k.webp", "low");
+            ((a.image = r), (a.needsUpdate = !0), s++);
+          } catch {
+            console.warn("cars: no 2k albedo", i);
+          }
+          await new Promise((r) => setTimeout(r, e));
+        }
+      }),
+    Promise.resolve(),
+  ).then(() => s);
+}
+var Xx = (o, t, e = null) => {
+  o = o.index ? o.toNonIndexed() : o;
+  for (let i of Object.keys(o.attributes))
+    ["position", "normal", "uv"].includes(i) || o.deleteAttribute(i);
+  let s = o.attributes.position.count,
+    n = new Float32Array(s * 4);
+  for (let i = 0; i < s; i++)
+    ((n[i * 4] = n[i * 4 + 1] = n[i * 4 + 2] = 1),
+      (n[i * 4 + 3] = e ?? (t < 0.2 ? 3.5 : 2.5)));
+  (o.setAttribute("color", new Te(n, 4)),
+    o.attributes.uv ||
+      o.setAttribute("uv", new Te(new Float32Array(s * 2), 2)));
+  for (let i = 0; i < s; i++) xF(o.attributes.position, i, 0);
+  return o;
+};
+function gM(o) {
+  let t = new Le();
+  for (let [e, s] of Object.entries(o.attributes)) {
+    let n = s.count,
+      i = s.itemSize,
+      a = new Float32Array(n * i);
+    for (let r = 0; r < n; r++)
+      for (let l = 0; l < i; l++)
+        a[r * i + l] = s.getComponent
+          ? s.getComponent(r, l)
+          : [s.getX, s.getY, s.getZ, s.getW][l].call(s, r);
+    t.setAttribute(e, new Te(a, i));
+  }
+  return (o.index && t.setIndex(new Te(Uint32Array.from(o.index.array), 1)), t);
+}
+function dM(o, t) {
+  let e = (i) => {
+      let a = i.attributes.position.array,
+        r = new Uint32Array(a.buffer, a.byteOffset, a.length);
+      for (let l = 0; l < r.length; l += 3) r[l] &= -8;
+      return i;
+    },
+    s = t.map((i) => {
+      let a = e(gM(i));
+      return (
+        o.index && a.setIndex([...Array(a.attributes.position.count).keys()]),
+        a
+      );
+    }),
+    n = wi([gM(o), ...s]);
+  return n
+    ? (n.computeBoundingSphere(), n)
+    : (console.warn("car decals: attributes differ"), o);
+}
+function VZ(o) {
+  let t = o.attributes.position,
+    e = [
+      [
+        [0, 0],
+        [0, 0.8],
+        [0.15, 1],
+        [0.35, 1],
+        [0.5, 0.8],
+        [0.5, 0],
+        [0.5, 0.8],
+        [0.65, 1],
+        [0.85, 1],
+        [1, 0.8],
+        [1, 0],
+      ],
+      [
+        [1.25, 1],
+        [1.25, 0.2],
+        [1.4, 0],
+        [1.6, 0],
+        [1.75, 0.2],
+        [1.75, 1],
+      ],
+      [
+        [1.75, 0.2],
+        [1.75, 0],
+      ],
+      [
+        [2, 0],
+        [2, 0.8],
+        [2.15, 1],
+        [2.35, 1],
+        [2.5, 0.8],
+        [2.5, 0],
+      ],
+      [
+        [2.75, 0],
+        [2.75, 1],
+      ],
+      [
+        [2.75, 1.22],
+        [2.75, 1.36],
+      ],
+    ],
+    s = 0.5,
+    n = 0.085,
+    i = 0.72,
+    a = -2.2,
+    r = [];
+  for (let l of [1, -1]) {
+    let h =
+        ((m, g) => {
+          let b = 0;
+          for (let v = 0; v < t.count; v++) {
+            let x = t.getX(v) * l;
+            x > b &&
+              Math.abs(t.getY(v) - m) < 0.2 &&
+              Math.abs(t.getZ(v) - g) < 0.2 &&
+              (b = x);
+          }
+          return b;
+        })(i + 0.25, a) + 0.012,
+      f = (m) => a - l * (m - 1.38) * s,
+      u = [],
+      d = [];
+    for (let m of e)
+      for (let g = 0; g + 1 < m.length; g++) {
+        let [b, v] = m[g],
+          [x, y] = m[g + 1],
+          M = f(b),
+          S = f(x),
+          w = i + v * s,
+          _ = i + y * s,
+          z = S - M,
+          A = _ - w,
+          T = Math.hypot(z, A) || 1,
+          E = ((-A / T) * n) / 2,
+          R = ((z / T) * n) / 2,
+          P = ((z / T) * n) / 2,
+          C = ((A / T) * n) / 2,
+          I = [
+            [M - E - P, w - R - C],
+            [S - E + P, _ - R + C],
+            [S + E + P, _ + R + C],
+            [M + E - P, w + R - C],
+          ],
+          L = l > 0 ? [0, 2, 1, 0, 3, 2] : [0, 1, 2, 0, 2, 3],
+          F = (U) => [h * l, I[U][1], I[U][0]],
+          O = F(0),
+          B = F(1),
+          H = F(2),
+          D =
+            ((B[1] - O[1]) * (H[2] - O[2]) - (B[2] - O[2]) * (H[1] - O[1])) *
+              l >
+            0
+              ? [0, 1, 2, 0, 2, 3]
+              : [0, 2, 1, 0, 3, 2];
+        for (let U of D) (u.push(...F(U)), d.push(l, 0, 0));
+      }
+    let p = new Le();
+    (p.setAttribute("position", new Te(new Float32Array(u), 3)),
+      p.setAttribute("normal", new Te(new Float32Array(d), 3)),
+      r.push(Xx(p, 0.3)));
+  }
+  return r;
+}
+var dF = (o, t, e) => {
+  let s = Math.min(1, Math.max(0, (e - o) / (t - o)));
+  return s * s * (3 - 2 * s);
+};
+function pF(o, t, e, s) {
+  (e < -1.3 && (e = -1.3 + (e - -1.3) * (1 + 0.27 * dF(1.36, 1.56, t))),
+    (t += 0.1 * dF(1, 2.25, e) * dF(0.8, 1.05, t)));
+  let i = 0.95;
+  return (
+    (e = Math.abs(e) < i ? (e * (i + mM)) / i : e + Math.sign(e) * mM),
+    (s[0] = o),
+    (s[1] = t),
+    (s[2] = e),
+    s
+  );
+}
+var Kx = 0.05,
+  pM = [-1.1, 1.08],
+  SZ = 1.2 + Kx;
+function G3t(o) {
+  let t = gM(o.index ? o.toNonIndexed() : o),
+    e = t.attributes.position.array,
+    s = t.attributes.normal?.array,
+    n = new Uint32Array(e.buffer, e.byteOffset, e.length),
+    i = [0, 0, 0],
+    a = [0, 0, 0],
+    r = [0, 0, 0],
+    l = 0.001,
+    c = [[], [], []];
+  for (let m = 0; m < e.length; m += 3) {
+    let g = e[m],
+      b = e[m + 1],
+      v = e[m + 2];
+    if (n[m] & 7) {
+      e[m + 2] = v + Math.sign(v) * mM;
+      continue;
+    }
+    if (s) {
+      for (let T = 0; T < 3; T++) {
+        let E = [0, 0, 0];
+        ((E[T] = l),
+          pF(g + E[0], b + E[1], v + E[2], a),
+          pF(g - E[0], b - E[1], v - E[2], r));
+        for (let R = 0; R < 3; R++) c[R][T] = (a[R] - r[R]) / (2 * l);
+      }
+      let x = s[m],
+        y = s[m + 1],
+        M = s[m + 2],
+        S = [
+          c[1][1] * c[2][2] - c[1][2] * c[2][1],
+          c[1][2] * c[2][0] - c[1][0] * c[2][2],
+          c[1][0] * c[2][1] - c[1][1] * c[2][0],
+          c[0][2] * c[2][1] - c[0][1] * c[2][2],
+          c[0][0] * c[2][2] - c[0][2] * c[2][0],
+          c[0][1] * c[2][0] - c[0][0] * c[2][1],
+          c[0][1] * c[1][2] - c[0][2] * c[1][1],
+          c[0][2] * c[1][0] - c[0][0] * c[1][2],
+          c[0][0] * c[1][1] - c[0][1] * c[1][0],
+        ],
+        w = S[0] * x + S[3] * y + S[6] * M,
+        _ = S[1] * x + S[4] * y + S[7] * M,
+        z = S[2] * x + S[5] * y + S[8] * M,
+        A = Math.hypot(w, _, z) || 1;
+      ((s[m] = w / A), (s[m + 1] = _ / A), (s[m + 2] = z / A));
+    }
+    (pF(g, b, v, i), (e[m + 1] = i[1] + Kx), (e[m + 2] = i[2]));
+  }
+  let h = V3t(t, [
+      [2, pM[0]],
+      [2, pM[1]],
+      [1, SZ],
+    ]),
+    f = h.attributes.position.array,
+    u = h.attributes.color.array,
+    [d, p] = pM;
+  for (let m = 0; m < f.length; m += 9) {
+    let g = (f[m] + f[m + 3] + f[m + 6]) / 3,
+      b = (f[m + 1] + f[m + 4] + f[m + 7]) / 3,
+      v = (f[m + 2] + f[m + 5] + f[m + 8]) / 3,
+      x = new Uint32Array(f.buffer, f.byteOffset + m * 4, 1)[0] & 7,
+      y = 0;
+    if (
+      (v > d && v < p && b > 0.25 && b < SZ && Math.abs(g) > 0.7
+        ? (y = 7.5)
+        : !x && v > 2.05 && b < 1.12 + Kx && (y = 8.5),
+      y)
+    )
+      for (let M = 0; M < 3; M++) u[(m / 3 + M) * 4 + 3] = y;
+  }
+  return (h.computeBoundingSphere(), h);
 }

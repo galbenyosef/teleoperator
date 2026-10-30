@@ -1,260 +1,266 @@
 // app 310 — math
-// Lines 150148-150405 of readable/app.pretty.js (statement-aligned).
-En();
-En();
-var UI = 9.81,
-  Ovt = 12,
-  Hvt = 0.28,
-  yZ = 0.8,
-  bZ = 6,
-  Dvt = 1.5,
-  xZ = 0.28,
-  vZ = 0.1,
-  q_ = 0.14,
-  Cx = (i, t, e) => (i < t ? t : i > e ? e : i),
-  DI = (i, t) => (i > t ? i - t : i < -t ? i + t : 0);
-function Iu(i, t, e, s, n, o, a, r = 1, l = 1) {
-  let c = s - i.x,
-    h = n - i.z,
-    f = s - t.x,
-    u = n - t.z,
-    d = i.vx + i.w * h - (t.vx + t.w * u),
-    p = i.vz - i.w * c - (t.vz - t.w * f),
-    m = d * e.x + p * e.z;
-  if (m >= 0) return 0;
-  let g = 1 / i.m,
-    b = 1 / t.m,
-    x = 1 / i.I,
-    v = 1 / t.I,
-    y = h * e.x - c * e.z,
-    M = u * e.x - f * e.z,
-    S = (-(1 + o) * m) / (g + b + y * y * x + M * M * v),
-    w = -e.z,
-    z = e.x,
-    _ = d * w + p * z,
-    R = h * w - c * z,
-    T = u * w - f * z,
-    E = Cx(-_ / (g + b + R * R * x + T * T * v), -a * S, a * S),
-    A = S * e.x + E * w,
-    C = S * e.z + E * z;
-  return (
-    (i.vx += A * g),
-    (i.vz += C * g),
-    (i.w += (S * y * r + E * R * r * 0.5) * x),
-    (t.vx -= A * b),
-    (t.vz -= C * b),
-    (t.w -= (S * M * l + E * T * l) * v),
-    S
-  );
-}
-function GI(i, t, e, s, n, o, a, r = "w") {
-  let l = e,
-    c = -t,
-    h = i.vx * t + i.vz * e,
-    f = i.vx * l + i.vz * c,
-    u = DI(h, n * UI * s * Math.min(1, 0.35 + Math.abs(h) / 3)),
-    d = DI(f, o * UI * s * Math.min(1, 0.35 + Math.abs(f) / 3));
-  ((i.vx = u * t + d * l), (i.vz = u * e + d * c), (i[r] = DI(i[r], a * s)));
-}
-var WI = (i, t, e = yZ) => (e * UI * 3 * i) / (i * i + t * t),
-  j_ = class {
-    constructor(t) {
-      ((this.world = t),
-        (this.awake = []),
-        (this.moved = new Set()),
-        (this.woken = 0));
-    }
-    wake(t, e = null) {
-      if (t.b) return t.b;
-      if (this.awake.length >= Ovt) {
-        let l = null,
-          c = 1 / 0;
-        for (let h of this.awake) {
-          if (h === e) continue;
-          let f = Math.hypot(h.b.vx, h.b.vz) + Math.abs(h.b.w) - h.b.rest;
-          f < c && ((c = f), (l = h));
-        }
-        this.sleep(l);
-      }
-      let s = t.kind || PY[t.type] || "sedan",
-        n = zm(s),
-        o = 2 * t.hz,
-        a = 2 * t.hx,
-        r = (n * (o * o + a * a)) / 12;
-      if (!t.pose) {
-        let l = t.p?.y ?? (t.y0 !== void 0 ? t.y0 + 1.5 : eo(t.x, t.z));
-        t.pose = { y: l, pitch: t.p?.pitch || 0, roll: 0, dy: 0, flash: !1 };
-        let c = this.ground(t, l);
-        t.pose.dy = Cx(l - c.y, -0.3, 0.3);
-      }
-      return (
-        (t.b = {
-          m: n,
-          I: r,
-          vx: 0,
-          vz: 0,
-          w: 0,
-          x: 0,
-          z: 0,
-          aw: WI(o, a),
-          wp: 0,
-          wpd: 0,
-          wr: 0,
-          wrd: 0,
-          rest: 0,
-          alarm: bZ,
-          moving: !0,
-        }),
-        this.world.unindex(t),
-        this.awake.push(t),
-        this.woken++,
-        t.b
-      );
-    }
-    sleep(t) {
-      let e = this.awake.indexOf(t);
-      (e >= 0 && this.awake.splice(e, 1),
-        (t.b = null),
-        (t.pose.flash = !1),
-        this.world.index(t),
-        this.moved.add(t));
-    }
-    view(t) {
-      let e = t.b;
-      return ((e.x = t.x), (e.z = t.z), e);
-    }
-    kick(t, e, s) {
-      let n = t.b;
-      if (!n) return;
-      let o = (e * t.s + s * t.c) / n.m,
-        a = (e * t.c - s * t.s) / n.m;
-      ((n.wpd = Cx(n.wpd - o * vZ, -1.5, 1.5)),
-        (n.wrd = Cx(n.wrd + a * vZ, -1.5, 1.5)),
-        (n.alarm = bZ),
-        (n.rest = 0),
-        (n.moving = !0));
-    }
-    ground(t, e) {
-      let s = t.hz * 0.6,
-        n = t.hx * 0.9,
-        o = t.s,
-        a = t.c,
-        r = t.c,
-        l = -t.s,
-        c = (m, g) => eo(m, g, null, e),
-        h = c(t.x + o * s, t.z + a * s),
-        f = c(t.x - o * s, t.z - a * s),
-        u = c(t.x + r * n, t.z + l * n),
-        d = c(t.x - r * n, t.z - l * n),
-        p = this._g || (this._g = {});
-      return (
-        (p.y = Math.max(c(t.x, t.z), (h + f + u + d) / 4)),
-        (p.pitch = -Math.atan((h - f) / (2 * s))),
-        (p.roll = Math.atan((u - d) / (2 * n))),
-        p
-      );
-    }
-    step(t) {
-      for (let e = this.awake.length - 1; e >= 0; e--) {
-        let s = this.awake[e],
-          n = s.b;
-        if (n.moving) {
-          if (
-            (GI(n, s.s, s.c, t, Hvt, yZ, n.aw),
-            (s.x += n.vx * t),
-            (s.z += n.vz * t),
-            n.w)
-          ) {
-            let c = Math.atan2(s.s, s.c) + n.w * t;
-            ((s.c = Math.cos(c)), (s.s = Math.sin(c)));
-          }
-          this.contacts(s);
-          let o = 2 * Math.PI * Dvt;
-          ((n.wpd += (-o * o * n.wp - 2 * xZ * o * n.wpd) * t),
-            (n.wp = Cx(n.wp + n.wpd * t, -q_, q_)),
-            (n.wrd += (-o * o * n.wr - 2 * xZ * o * n.wrd) * t),
-            (n.wr = Cx(n.wr + n.wrd * t, -q_, q_)));
-          let a = this.ground(s, s.pose.y),
-            r = s.pose;
-          ((r.y = a.y + r.dy),
-            (r.pitch = a.pitch + n.wp),
-            (r.roll = a.roll + n.wr),
-            s.y0 !== void 0 && ((s.y0 = r.y - 1.5), (s.y1 = r.y + 2.5)));
-          let l =
-            n.vx * n.vx + n.vz * n.vz < 0.003 &&
-            Math.abs(n.w) < 0.03 &&
-            Math.abs(n.wp) + Math.abs(n.wr) < 0.004 &&
-            Math.abs(n.wpd) + Math.abs(n.wrd) < 0.04;
-          ((n.rest = l ? n.rest + t : 0),
-            n.rest > 0.25 &&
-              ((n.moving = !1),
-              (n.vx = n.vz = n.w = 0),
-              (r.pitch = a.pitch),
-              (r.roll = a.roll)));
-        }
-        ((n.alarm -= t),
-          (s.pose.flash = n.alarm > 0 && (n.alarm * 2.2) % 1 < 0.5),
-          this.moved.add(s),
-          !n.moving && n.alarm <= 0 && this.sleep(s));
-      }
-    }
-    contacts(t) {
-      let e = this.world,
-        s = t.b,
-        n = { x: t.c, z: -t.s },
-        o = { x: t.s, z: t.c },
-        a = t.pose.y;
-      for (let r = 0; r < 2; r++) {
-        let l = e.near(t.x, t.z, t.hz + 1);
-        for (let u of this.awake)
-          u !== t &&
-            Math.abs(u.x - t.x) < 8 &&
-            Math.abs(u.z - t.z) < 8 &&
-            l.add(u);
-        for (let u of e.dynamic)
-          Math.abs(u.x - t.x) < 10 && Math.abs(u.z - t.z) < 10 && l.add(u);
-        let c = null;
-        for (let u of l) {
-          if (
-            u === t ||
-            u.dead ||
-            (u.y1 !== void 0 && (a > u.y1 + 0.3 || a + 1.4 < u.y0))
-          )
-            continue;
-          let d = e.test(u, t.x, t.z, n, o, t.hx, t.hz);
-          d && (!c || d.d > c.d) && ((c = d), (d.c = u));
-        }
-        if (!c) break;
-        let h = c.c,
-          f = c.n;
-        if (h.parked) {
-          let u = this.wake(h, t),
-            d = this.view(t),
-            p = this.view(h),
-            m = 1 / d.m / (1 / d.m + 1 / p.m);
-          ((t.x += f.x * c.d * m),
-            (t.z += f.z * c.d * m),
-            (h.x -= f.x * c.d * (1 - m)),
-            (h.z -= f.z * c.d * (1 - m)));
-          let g = Iu(d, p, f, c.px, c.pz, 0.15, 0.3);
-          (g &&
-            (this.kick(t, g * f.x, g * f.z), this.kick(h, -g * f.x, -g * f.z)),
-            (u.moving = !0),
-            this.moved.add(h));
-        } else if (h.traffic) {
-          ((t.x += f.x * c.d), (t.z += f.z * c.d));
-          let u = e.trafficView(h.traffic),
-            d = Iu(this.view(t), u, f, c.px, c.pz, 0.15, 0.3);
-          d &&
-            (this.kick(t, d * f.x, d * f.z),
-            u.m < 1 / 0 &&
-              e.onShove?.(h.traffic, d * f.x, d * f.z, c.px, c.pz));
-        } else {
-          ((t.x += f.x * (c.d + 0.002)), (t.z += f.z * (c.d + 0.002)));
-          let u = Iu(this.view(t), Uvt, f, c.px, c.pz, 0.1, 0.3);
-          u && this.kick(t, u * f.x, u * f.z);
-        }
-      }
-    }
+// Lines 149810-150073 of readable/app.pretty.js (statement-aligned).
+var awt = 30,
+  rwt = 6,
+  gO = "#ff5a1f",
+  lwt = (o) => {
+    let t = Math.floor(o / 6e4),
+      e = (o % 6e4) / 1e3;
+    return t + ":" + e.toFixed(2).padStart(5, "0");
   },
-  Uvt = { m: 1 / 0, I: 1 / 0, vx: 0, vz: 0, w: 0, x: 0, z: 0 };
+  H_ = class {
+    constructor(t) {
+      if (
+        (Object.assign(this, t),
+        (this.near = null),
+        (this.list = t1.map((s) => ({
+          id: s.id,
+          name: s.name,
+          sub: s.sub,
+          x: s.from[0],
+          z: s.from[1],
+          T: s,
+        }))),
+        typeof document > "u")
+      )
+        return;
+      let e = (this.hint = document.createElement("div"));
+      ((e.id = "raceHint"),
+        e.addEventListener("click", (s) => {
+          s.target.closest("[data-go]") && (s.stopPropagation(), this.start());
+        }),
+        (e.className = "ds-panel ds-prompt ds-pop"),
+        e.style.setProperty("--c", gO),
+        aa("bc", e, 0),
+        Th(
+          "raceHintCss",
+          "#raceHint small { color: var(--ink-3); font-weight: 600; margin-left: 6px; } body.hud-off #raceHint, body.photo #raceHint, body.racing #raceHint, body.cine #raceHint { visibility: hidden; }",
+        ));
+    }
+    best(t) {
+      return this.race?.best?.(t) || 0;
+    }
+    markers() {
+      return this.list.map((t) => ({
+        x: t.x,
+        z: t.z,
+        kind: "flag",
+        col: gO,
+        name: "Road race \xB7 " + t.name,
+        stars: 0,
+      }));
+    }
+    candidates() {
+      return this.list.map((t) => ({
+        id: "r:" + t.id,
+        x: t.x,
+        z: t.z,
+        kind: "race",
+        label: "Road race",
+        name: t.name,
+        col: gO,
+        glyph: "\u2691",
+        isDone: () => this.best(t.id) > 0,
+      }));
+    }
+    update(t) {
+      let e = this.v,
+        s = Math.abs(e.speed ?? 0),
+        n = null;
+      if (t && s < rwt) {
+        let i = awt;
+        for (let a of this.list) {
+          let r = Math.hypot(a.x - e.pos.x, a.z - e.pos.z);
+          r < i && ((i = r), (n = a));
+        }
+      }
+      if (n !== this.near && this.hint) {
+        if (n) {
+          let i = this.best(n.id);
+          this.hint.innerHTML = `${Br("race", "sm")}<span class="ds-eyebrow">Road race</span><span>${Or(n.name)}<small>${i ? "best " + lwt(i) : Or(n.sub || "")}</small></span><button type="button" class="primary" data-go>${this.touch ? "" : '<span class="ds-key">E</span>'}Start</button>`;
+        }
+        this.hint.classList.toggle("on", !!n);
+      }
+      return ((this.near = n), n);
+    }
+    start(t = this.near) {
+      return !t || !this.race || this.race.S
+        ? !1
+        : (this.hint?.classList.remove("on"),
+          (this.near = null),
+          this.race.startSolo({ kind: "path", ...t.T }),
+          !0);
+    }
+  };
+es();
+var mv = 600,
+  cwt = 3.2,
+  hwt = 9.8,
+  bO = [0.82, 0.9, 0.95],
+  fwt = [0.05, 0.05, 0.06];
+function uwt() {
+  if (typeof document > "u") return null;
+  let o = 32,
+    t = document.createElement("canvas");
+  t.width = t.height = o;
+  let e = t.getContext("2d");
+  ((e.fillStyle = "#fff"),
+    e.beginPath(),
+    e.moveTo(o * 0.5, o * 0.08),
+    e.lineTo(o * 0.9, o * 0.55),
+    e.lineTo(o * 0.42, o * 0.92),
+    e.lineTo(o * 0.12, o * 0.4),
+    e.closePath(),
+    e.fill());
+  let s = new Sn(t);
+  return ((s.colorSpace = Je), s);
+}
+var D_ = class {
+  constructor(t, { ground: e = null, paint: s = null } = {}) {
+    ((this.ground = e),
+      (this.paint = s),
+      (this.p = []),
+      (this.seen = -1),
+      (this.spawned = 0));
+    let n = new Le();
+    (n.setAttribute("position", new Te(new Float32Array(mv * 3), 3)),
+      n.setAttribute("color", new Te(new Float32Array(mv * 4), 4)),
+      n.setDrawRange(0, 0));
+    let i = new _r({
+      size: 0.075,
+      map: uwt(),
+      transparent: !0,
+      depthWrite: !1,
+      vertexColors: !0,
+      sizeAttenuation: !0,
+      alphaTest: 0.05,
+    });
+    ((this.pts = new Zr(n, i)),
+      (this.pts.frustumCulled = !1),
+      (this.pts.name = "Debris"),
+      (this.pts.renderOrder = 3),
+      t?.add(this.pts));
+  }
+  burst(t, e, s, n, i, a) {
+    let r = Math.round(Math.min(70, 12 + n * 70)),
+      l = this.paint?.() || [0.6, 0.05, 0.04];
+    for (let c = 0; c < r; c++) {
+      let h = Math.random(),
+        f = h < 0.45 ? bO : h < 0.75 ? fwt : l,
+        u = Math.random() * Math.PI * 2,
+        d = 1.5 + Math.random() * 4.5 * (0.5 + n);
+      this.p.push({
+        x: t,
+        y: e + Math.random() * 0.5,
+        z: s,
+        vx: i * (0.25 + Math.random() * 0.35) + Math.cos(u) * d,
+        vy: 1.2 + Math.random() * (2.5 + 3 * n),
+        vz: a * (0.25 + Math.random() * 0.35) + Math.sin(u) * d,
+        age: 0,
+        life: cwt * (0.6 + Math.random() * 0.4),
+        c: f,
+        glint: f === bO ? 0.6 + Math.random() * 0.8 : 0,
+        rest: !1,
+        bounces: 0,
+      });
+    }
+    return (
+      this.p.length > mv && this.p.splice(0, this.p.length - mv),
+      (this.spawned += r),
+      r
+    );
+  }
+  spray(t, e, s, n, i, a, r, l) {
+    let c = Math.hypot(n, i, a) || 1;
+    ((n /= c), (i /= c), (a /= c));
+    for (let h = 0; h < r; h++) {
+      let f = l * (0.55 + Math.random() * 0.6),
+        u = () => (Math.random() - 0.5) * l * 0.35;
+      this.p.push({
+        x: t + (Math.random() - 0.5) * 0.8,
+        y: e + Math.random() * 0.4,
+        z: s + (Math.random() - 0.5) * 0.8,
+        vx: n * f + u(),
+        vy: i * f + u() + 1.5,
+        vz: a * f + u(),
+        age: 0,
+        life: 1.4 + Math.random() * 1.2,
+        c: bO,
+        glint: 0.9 + Math.random() * 1.2,
+        rest: !1,
+        bounces: 0,
+      });
+    }
+    return (
+      this.p.length > mv && this.p.splice(0, this.p.length - mv),
+      (this.spawned += r),
+      r
+    );
+  }
+  update(t, e, s) {
+    if (e)
+      for (let l of e) {
+        if (l.t <= this.seen) continue;
+        this.seen = l.t;
+        let c = Math.hypot(s?.vel?.x ?? 0, s?.vel?.z ?? 0);
+        if (l.s < 0.3 || c < 8) continue;
+        let h = this.ground
+          ? this.ground(l.x, l.z, s?.pos?.y)
+          : (s?.pos?.y ?? 0);
+        this.burst(
+          l.x,
+          (Number.isFinite(h) ? h : (s?.pos?.y ?? 0)) + 0.45,
+          l.z,
+          l.s,
+          s?.vel?.x ?? 0,
+          s?.vel?.z ?? 0,
+        );
+      }
+    let n = this.pts.geometry.attributes.position.array,
+      i = this.pts.geometry.attributes.color.array,
+      a = 0;
+    for (let l = this.p.length - 1; l >= 0; l--) {
+      let c = this.p[l];
+      if (((c.age += t), c.age > c.life)) {
+        this.p.splice(l, 1);
+        continue;
+      }
+      if (!c.rest) {
+        ((c.vy -= hwt * t),
+          (c.x += c.vx * t),
+          (c.y += c.vy * t),
+          (c.z += c.vz * t));
+        let u = this.ground ? this.ground(c.x, c.z, c.y + 1) : -1e9;
+        Number.isFinite(u) &&
+          c.y < u + 0.02 &&
+          ((c.y = u + 0.02),
+          c.bounces++,
+          (c.vy = c.bounces < 3 ? -c.vy * 0.28 : 0),
+          (c.vx *= 0.5),
+          (c.vz *= 0.5),
+          (c.bounces >= 3 || Math.hypot(c.vx, c.vz) < 0.3) && (c.rest = !0));
+      }
+      let h = Math.min(1, (c.life - c.age) / 0.8),
+        f = c.glint ? 1 + c.glint * Math.max(0, Math.sin(c.age * 31 + l)) : 1;
+      ((n[a * 3] = c.x),
+        (n[a * 3 + 1] = c.y),
+        (n[a * 3 + 2] = c.z),
+        (i[a * 4] = c.c[0] * f),
+        (i[a * 4 + 1] = c.c[1] * f),
+        (i[a * 4 + 2] = c.c[2] * f),
+        (i[a * 4 + 3] = h),
+        a++);
+    }
+    let r = this.pts.geometry;
+    return (
+      r.setDrawRange(0, a),
+      (a || this._k) &&
+        ((r.attributes.position.needsUpdate = !0),
+        (r.attributes.color.needsUpdate = !0)),
+      (this._k = a),
+      a
+    );
+  }
+};
+es();
+es();

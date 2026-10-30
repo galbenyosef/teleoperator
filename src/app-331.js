@@ -1,333 +1,243 @@
-// app 331 — math
-// Lines 160933-161263 of readable/app.pretty.js (statement-aligned).
-var Ux = [0.62, 0.86, 1],
-  Du = {
-    exposure: 1.3,
-    bloom: 0.035,
-    vignette: 0.42,
-    glareSpread: 2.5,
-    tubeDiffuse: 2,
-    env: 1.15,
-    tubeSpec: 2.2,
-    tubeRim: 0.45,
-    grade: { saturation: 0.12, contrast: 0.2, warmth: -0.03, lift: -0.004 },
+// app 331 — short
+// Lines 159219-159459 of readable/app.pretty.js (statement-aligned).
+var Vf = ["manual", "l3", "l4", "l5"],
+  z2 = {
+    manual: {
+      name: "Manual",
+      short: "MAN",
+      sub: "No assistance: your hands only",
+    },
+    l3: {
+      name: "Level 3",
+      short: "L3",
+      sub: "Guidance: you drive, it eases the wheel along the arrows",
+    },
+    l4: {
+      name: "Level 4",
+      short: "L4",
+      sub: "Lane keeping, adaptive cruise, the route's turns: hold the throttle, steer to nudge",
+    },
+    l5: {
+      name: "Level 5",
+      short: "L5",
+      sub: "Drives itself: the route, the lights, the kerb - Mad Max by default (assertive: passes, keeps up). Gas: faster; steer or brake: take over",
+    },
   },
-  mz = class {
-    constructor(t, { mobile: e = !1, heroYaw: s = 0 } = {}) {
-      ((this.heroYaw = s),
-        (this.mb = t),
-        (this.mobile = e),
-        (this.on = !1),
-        (this.R = 6.9),
-        (this.H = 6),
-        this.build());
-    }
-    build() {
-      let t = (this.group = new ke());
-      t.name = "GarageStudio";
-      let e = this.R,
-        s = this.H,
-        n = this.mobile,
-        o = (_, R, T = 0, E = 0, A = 0) => {
-          let C = new _e(_, R);
-          return (C.position.set(T, E, A), (C.receiveShadow = !0), t.add(C), C);
-        },
-        a = new Ee({
-          color: new $t(0.016, 0.017, 0.019),
-          roughness: 0.3,
-          metalness: 0,
-          roughnessMap: C3t(),
-          envMapIntensity: 0.3,
-        });
-      a.roughnessMap.repeat.set(9, 9);
-      let r = (this.floor = o(new fr(24, 160), a));
-      ((r.rotation.x = -Math.PI / 2),
-        (r.name = "StudioFloor"),
-        n || (r.userData.mbPlanar = { r: e + 1 }),
-        o(
-          new ks(e + 0.3, e + 0.3, s, 96, 1, !0),
-          new An({
-            color: new $t(0.0014, 0.0016, 0.0019),
-            roughness: 1,
-            specularIntensity: 0,
-            envMapIntensity: 0.2,
-            side: ia,
-          }),
-          0,
-          s / 2,
-          0,
-        ));
-      let l = o(
-        new fr(e + 0.4, 64),
-        new Ee({ color: new $t(0.006, 0.006, 0.007), roughness: 1 }),
-        0,
-        s,
-        0,
-      );
-      l.rotation.x = Math.PI / 2;
-      let c = (this.table = new ke());
-      t.add(c);
-      let h = new _e(
-        new J0(3.28, 3.31, 160),
-        new ln({ color: new $t(0.002, 0.002, 0.002) }),
-      );
-      ((h.rotation.x = -Math.PI / 2), (h.position.y = 0.002));
-      let f = (this.ring = new _e(
-        new J0(3.31, 3.325, 160),
-        xQ([0.12 * Ux[0] * 3, 0.12 * Ux[1] * 3, 0.12 * Ux[2] * 3]),
-      ));
-      ((f.rotation.x = -Math.PI / 2), (f.position.y = 0.003), t.add(f));
-      let u = document.createElement("canvas");
-      u.width = u.height = 128;
-      let d = u.getContext("2d"),
-        p = d.createRadialGradient(64, 64, 4, 64, 64, 64);
-      (p.addColorStop(0, "rgba(0,0,0,0.95)"),
-        p.addColorStop(0.5, "rgba(0,0,0,0.7)"),
-        p.addColorStop(1, "rgba(0,0,0,0)"),
-        (d.fillStyle = p),
-        d.fillRect(0, 0, 128, 128));
-      let m = new Sn(u);
-      m.colorSpace = is;
-      let g = (this.pool = new _e(
-        new $n(1, 1),
-        new ln({
-          map: m,
-          transparent: !0,
-          depthWrite: !1,
-          color: 0,
-          opacity: 0.85,
-        }),
-      ));
-      ((g.rotation.x = -Math.PI / 2),
-        (g.position.y = 0.006),
-        (g.renderOrder = 1),
-        (g.userData.mbNoReflect = !0),
-        (this.poolAt = new ke()),
-        this.poolAt.add(g),
-        t.add(this.poolAt));
-      let b = (this.tubes = []),
-        x = n ? 10 : 14,
-        v = 0.024,
-        y = (_, R, T, E = !1) => {
-          let A = new xt(..._),
-            C = new xt(...R),
-            P = A.distanceTo(C),
-            I = new _e(
-              new ks(v, v, P, 10, 1),
-              xQ([0.85, 0.95, 1].map((L) => L * T * 1.4)),
-            );
-          (I.position.copy(A).add(C).multiplyScalar(0.5),
-            I.quaternion.setFromUnitVectors(
-              new xt(0, 1, 0),
-              C.clone().sub(A).normalize(),
-            ),
-            (I.userData.mbNoReflect = !0),
-            t.add(I),
-            b.push({
-              a: A,
-              b: C,
-              radius: v,
-              radiance: T,
-              mesh: I,
-              noFloor: E,
-            }));
-        },
-        M = n ? 7 : 9,
-        S = this.heroYaw + Math.PI,
-        w = e - 0.3,
-        z = [
-          ...Array.from(
-            { length: M },
-            (_, R) => S + (R / (M - 1) - 0.5) * 2 * 1.45,
-          ),
-          ...Array.from(
-            { length: x - M },
-            (_, R) => this.heroYaw + (R / (x - M - 1) - 0.5) * 2 * 1,
-          ),
-        ];
-      for (let _ of z)
-        y(
-          [Math.sin(_) * w, 0.25, Math.cos(_) * w],
-          [Math.sin(_) * w, s - 0.7, Math.cos(_) * w],
-          46,
-        );
-      for (let _ of [-0.85, 0.85]) y([_, 5.2, -2.6], [_, 5.2, 2.6], 90, !0);
-      ((this.tubeData = b.map((_) => ({
-        a: [0, 0, 0],
-        b: [0, 0, 0],
-        radius: _.radius,
-        color: Ux.map((R) => R * _.radiance),
-        noFloor: _.noFloor,
-      }))),
-        t.traverse((_) => {
-          _.isMesh && (_.userData.mbMover = !0);
-        }),
-        (this.env = L3t(n ? 512 : 1024, b, e, s)));
-      {
-        let _ = new y0();
-        (_.add(t), this.mb.compileAsync?.(_).catch(() => {}), _.remove(t));
-      }
-    }
-    enter(t) {
-      if (this.on) return;
-      this.on = !0;
-      let e = this.mb,
-        s = (this.keep = {
-          mb: {},
-          scene: { fog: t.fog, environmentIntensity: t.environmentIntensity },
-          vis: [],
-        });
-      for (let n of [
-        "toneMappingExposure",
-        "bloom",
-        "vignette",
-        "glareSpread",
-        "grade",
-        "envOverride",
-        "tubes",
-        "tubeDiffuse",
-        "tubeSpec",
-        "tubeRim",
-        "motionBlur",
-      ])
-        s.mb[n] = e[n];
-      (t.traverse((n) => {
-        (n.isSunLight ||
-          n.isDirectionalLight ||
-          n.isHemisphereLight ||
-          n.isAmbientLight ||
-          n.isSky ||
-          n.isWater) &&
-          n.visible &&
-          (s.vis.push(n), (n.visible = !1));
-      }),
-        (t.fog = null),
-        (t.environmentIntensity = Du.env),
-        (e.toneMappingExposure = Du.exposure),
-        (e.bloom = Du.bloom),
-        (e.vignette = Du.vignette),
-        (e.glareSpread = Du.glareSpread),
-        (e.grade = j5(Du.grade)),
-        (e.envOverride = this.env),
-        (e.tubes = this.tubeData),
-        (e.tubeDiffuse = Du.tubeDiffuse),
-        (e.tubeSpec = Du.tubeSpec),
-        (e.tubeRim = Du.tubeRim),
-        (e.motionBlur = 0),
-        t.add(this.group));
-    }
-    leave(t) {
-      if (!this.on) return;
-      this.on = !1;
-      let e = this.mb,
-        s = this.keep;
-      t.remove(this.group);
-      for (let [n, o] of Object.entries(s.mb)) e[n] = o;
-      ((t.fog = s.scene.fog),
-        (t.environmentIntensity = s.scene.environmentIntensity));
-      for (let n of s.vis) n.visible = !0;
-      this.keep = null;
-    }
-    show(t) {
-      this.state = t;
-      let e = this.ring.material.color,
-        s = performance.now() / 1e3;
-      t === "loading"
-        ? e.setRGB(
-            ...Ux.map((n) => n * (0.4 + 2.6 * (0.5 + 0.5 * Math.sin(s * 4)))),
-          )
-        : t === "failed"
-          ? e.setRGB(2.2, 0.12, 0.08)
-          : e.setRGB(...Ux.map((n) => n * 0.06));
-    }
-    hideNear(t, e, s) {
-      let n = Gx(s),
-        o = Math.hypot(n.max.x - n.min.x, n.max.z - n.min.z) / 2 + 0.6,
-        a = t.position.x - e.x,
-        r = t.position.z - e.z,
-        l = Math.hypot(a, r);
-      for (let c of this.tubes) {
-        if (Math.abs(c.a.y - c.b.y) < 1) continue;
-        let h = c.a.x - a,
-          f = c.a.z - r,
-          u = Math.hypot(h, f),
-          d = (h * -a + f * -r) / Math.max(0.001, u * l);
-        c.mesh.visible = !(u < l && d > Math.cos(Math.atan2(o, l) + 0.04));
-      }
-    }
-    place(t, e, s) {
-      let n = this.group;
-      (n.position.set(t.x, t.y, t.z),
-        (this.table.rotation.y = e),
-        n.updateMatrixWorld(!0));
-      for (let l = 0; l < this.tubes.length; l++) {
-        let c = this.tubes[l],
-          h = this.tubeData[l];
-        ((h.a[0] = c.a.x + t.x),
-          (h.a[1] = c.a.y + t.y),
-          (h.a[2] = c.a.z + t.z),
-          (h.b[0] = c.b.x + t.x),
-          (h.b[1] = c.b.y + t.y),
-          (h.b[2] = c.b.z + t.z));
-      }
-      let o = Gx(s),
-        a = s?.root?.matrixWorld.elements,
-        r = this.poolAt;
-      if (a) {
-        let l = Math.atan2(a[8], a[10]),
-          c = (o.min.x + o.max.x) / 2,
-          h = (o.min.z + o.max.z) / 2,
-          f = Math.cos(l),
-          u = Math.sin(l);
-        (r.position.set(
-          a[12] - t.x + f * c + u * h,
-          0,
-          a[14] - t.z - u * c + f * h,
-        ),
-          (r.rotation.y = l));
-      }
-      this.pool.scale.set(
-        (o.max.x - o.min.x) * 1.3,
-        (o.max.z - o.min.z) * 1.12,
-        1,
-      );
-    }
-  },
-  bQ = new WeakMap();
-function Gx(i) {
-  if (!i?.root) return new Ti(new xt(-1, 0, -2.3), new xt(1, 1.4, 2.3));
-  let t = bQ.get(i.root);
-  if (t) return t;
-  let e = i.root;
-  e.updateMatrixWorld(!0);
-  let s = new ye().copy(e.matrixWorld).invert(),
-    n = new ye(),
-    o = new Ti(),
-    a = new xt();
-  if (
-    ((t = new Ti()),
-    e.traverse((r) => {
-      if (
-        !r.isMesh ||
-        !r.geometry ||
-        r.visible === !1 ||
-        r.userData.mbShadowOnly
-      )
-        return;
-      let l = r.geometry;
-      (l.boundingBox || l.computeBoundingBox(),
-        !(!l.boundingBox || l.boundingBox.isEmpty()) &&
-          (n.multiplyMatrices(s, r.matrixWorld),
-          o.copy(l.boundingBox).applyMatrix4(n),
-          [o.min.x, o.min.y, o.min.z, o.max.x, o.max.y, o.max.z].every(
-            Number.isFinite,
-          ) &&
-            (o.getSize(a).length() > 40 || t.union(o))));
-    }),
-    t.isEmpty())
-  ) {
-    let r = i.dims || { w: 1.95, l: 4.6 };
-    t.set(new xt(-r.w / 2, 0, -r.l / 2), new xt(r.w / 2, 1.45, r.l / 2));
+  uE = !0,
+  MMt = "manual",
+  Eet = { off: "manual", light: "l3", full: "l4" },
+  zv = "sf-drive.settings",
+  Ret = 39;
+function VM() {
+  let o = {};
+  try {
+    o = JSON.parse(localStorage.getItem(zv) || "{}") || {};
+  } catch {
+    o = {};
   }
-  return ((t.min.y = Math.max(t.min.y, -0.2)), bQ.set(i.root, t), t);
+  let t = (o.levelVer === Ret && o.drivingLevel) || {};
+  return {
+    cars: { ...(t.cars || {}) },
+    all: Vf.includes(t.all) ? t.all : null,
+  };
+}
+function XO(o) {
+  try {
+    let t = JSON.parse(localStorage.getItem(zv) || "{}") || {};
+    ((t.drivingLevel = { cars: o.cars, all: o.all }),
+      (t.levelVer = Ret),
+      localStorage.setItem(zv, JSON.stringify(t)));
+  } catch {}
+}
+function KO() {
+  try {
+    let o = new URLSearchParams(location.search),
+      t = o.get("level");
+    return Vf.includes(t) ? t : null;
+  } catch {
+    return null;
+  }
+}
+function WM(o) {
+  let t = KO();
+  if (t) return t;
+  let e = VM();
+  return e.all ? e.all : Vf.includes(e.cars[o]) ? e.cars[o] : MMt;
+}
+var Aet = (o) => Vf[(Vf.indexOf(o) + 1) % Vf.length],
+  Hs = {
+    T: 2.8,
+    sMin: 9,
+    sMax: 150,
+    aThr: 0.9,
+    aOn: 2,
+    aOff: 0.6,
+    comf: 5,
+    emerg: 11,
+    pedOn: 1.2,
+    pedD0: 2.6,
+    latMax: 3.5,
+    nudge: 0.3,
+    slew: 2.2,
+    head: 1.6,
+    gap0: 2.5,
+    l3Nudge: 0.2,
+    l3Av: 0.2,
+    l3A0: 0.55,
+    l3Lat: 2.8,
+    l4Lat: 2.4,
+    l4Dec: 1.6,
+    l4Brk: 2.5,
+    l5Lat: 2.3,
+    l5Dec: 2.4,
+    l5Stop: 2.4,
+    l5Brk: 3.6,
+    l5Acc: 3.4,
+    l5Max: 35.8,
+    sightA: 4.5,
+    l5Clear: !1,
+    l3Up: 20,
+    l3Dn: 20,
+    l3Yaw: 0.5,
+    l3BLat: 2,
+    l3Player: 0.8,
+    l4Player: 0.3,
+    l4Hard: 0.55,
+    l5Cruise: 26.8,
+    l5AccBase: 2.6,
+    l5AccGas: 4,
+    l5LatGas: 2.8,
+  },
+  k2 = {
+    madmax: {
+      name: "Mad Max",
+      short: "MAX",
+      limits: !0,
+      limK: 1.6,
+      limB: 4,
+      cruise: 33,
+      lat: 6,
+      latGas: 7.5,
+      dec: 4.6,
+      stop: 4.2,
+      brkOn: 3,
+      brkK: 1.06,
+      acc: 6,
+      accGas: 8,
+      gain: 1.3,
+      head: 0.85,
+      gap0: 1.9,
+      jerk: 9,
+      jerkE: 30,
+      pass: !0,
+      mergeT: 2.5,
+      mergeR: 30,
+      grades: !1,
+      stopWait: 0.3,
+      launch: 0.55,
+      roll: 4.2,
+      passDv: 2,
+      passWait: 0.6,
+      passCool: 3.5,
+      oncPass: 160,
+      xT: 3,
+      xMax: 4,
+    },
+    chill: {
+      name: "Chill",
+      short: "CHILL",
+      limits: !1,
+      limK: 1.05,
+      limB: 0,
+      cruise: 26.8,
+      lat: 2.3,
+      latGas: 2.8,
+      dec: 2.4,
+      stop: 2.4,
+      brkOn: 0.9,
+      brkK: 1.15,
+      acc: 2.6,
+      accGas: 4,
+      gain: 0.8,
+      head: 1.6,
+      gap0: 2.5,
+      jerk: 0,
+      jerkE: 0,
+      pass: !1,
+      mergeT: 5,
+      mergeR: 50,
+      grades: !0,
+      stopWait: 0.7,
+      launch: 0.3,
+      roll: 0,
+      passDv: 2.5,
+      passWait: 0.8,
+      passCool: 5,
+      xT: 4.5,
+      xMax: 7,
+    },
+  },
+  SMt = {
+    name: "Boost",
+    short: "BOOST",
+    limits: !0,
+    limK: 2.4,
+    limB: 8,
+    cruise: 45,
+    lat: 7.5,
+    dec: 5.5,
+    stop: 5,
+    brkOn: 3.8,
+    brkK: 1.05,
+    acc: 9,
+    gain: 1.8,
+    head: 0.6,
+    gap0: 1.5,
+    jerk: 18,
+    jerkE: 40,
+    pass: !0,
+    mergeT: 2,
+    mergeR: 25,
+    grades: !1,
+    stopWait: 0.25,
+    launch: 1,
+    roll: 7,
+    passDv: 0.8,
+    passWait: 0.2,
+    passCool: 2,
+    oncPass: 220,
+    xT: 2.5,
+    xMax: 3,
+  },
+  kMt = (o, t, e, s) => {
+    for (let n in t) {
+      let i = t[n],
+        a = e[n];
+      o[n] =
+        typeof i == "number" && typeof a == "number"
+          ? i + (a - i) * s
+          : s > 0.5
+            ? (a ?? i)
+            : i;
+    }
+    return ((o.name = t.name), (o.short = t.short), (o.boost = s), o);
+  },
+  $O = "madmax";
+function zMt() {
+  if (typeof window > "u") return $O;
+  try {
+    let o = new URLSearchParams(location.search).get("l5");
+    if (k2[o]) return o;
+  } catch {}
+  try {
+    let o = JSON.parse(localStorage.getItem(zv) || "{}") || {};
+    if (k2[o.l5Profile]) return o.l5Profile;
+  } catch {}
+  return $O;
+}
+function Pet(o) {
+  try {
+    let t = JSON.parse(localStorage.getItem(zv) || "{}") || {};
+    ((t.l5Profile = o), localStorage.setItem(zv, JSON.stringify(t)));
+  } catch {}
 }

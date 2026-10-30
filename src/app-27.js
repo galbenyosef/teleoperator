@@ -1,6 +1,6 @@
-// app 27 — z4t
-// Lines 46169-46320 of readable/app.pretty.js (statement-aligned).
-var lU = (i) => `
+// app 27 — mzt
+// Lines 46376-46527 of readable/app.pretty.js (statement-aligned).
+var fV = (o) => `
 struct CU {
   size: vec4f,      // box size (m) xyz, base height (m)
   res: vec4f,       // density grid xyz, max puffs
@@ -8,10 +8,10 @@ struct CU {
   sunL: vec4f,      // towards the sun in cloud space, puff count
   drift: vec4f,     // base noise offset (m) xyz, _
 };
-@group(${i}) @binding(0) var<uniform> C: CU;
+@group(${o}) @binding(0) var<uniform> C: CU;
 `,
-  _4t =
-    lU(1) +
+  wzt =
+    fV(1) +
     `
 struct Puff { c: vec4f, e: vec4f };   // centre xyz, radius; vertical scale, strength, _, _
 @group(1) @binding(1) var<storage, read> puffs: array<Puff>;
@@ -65,9 +65,9 @@ fn smax(a: f32, b: f32, k: f32) -> f32 { let h = sat(0.5 + 0.5 * (b - a) / k); r
   textureStore(oLight, g, vec4f(od, ou, 0.0, 0.0));
 }
 `,
-  z4t =
-    lU(3) +
-    W6 +
+  Mzt =
+    fV(3) +
+    qS +
     `
 struct CR {
   w2l: mat4x4f,     // world -> cloud space (metres, box from 0 to size)

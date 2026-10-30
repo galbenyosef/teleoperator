@@ -1,232 +1,347 @@
 // app 197 — math
-// Lines 109415-109644 of readable/app.pretty.js (statement-aligned).
-function m1t(i, t) {
-  let { D: e, L: s } = t,
-    n = z$(e, Wy.stpat);
-  if (!n) return;
-  let o = va(n),
-    a = Xo(o),
-    r = hm(s, a, "Mission Street", 5),
-    l = 1e9,
-    c = -1e9;
-  for (let [I, L] of o) {
-    let F = s.driveHeight(I, L);
-    ((l = Math.min(l, F)), (c = Math.max(c, F)));
-  }
-  let h = s.driveHeight(r.m[0] + r.n[0] * 2.5, r.m[1] + r.n[1] * 2.5),
-    f = r.u,
-    u = [-r.n[0], -r.n[1]],
-    d = 1e9,
-    p = -1e9,
-    m = 0;
-  for (let [I, L] of o) {
-    let F = (I - r.m[0]) * f[0] + (L - r.m[1]) * f[1],
-      N = (I - r.m[0]) * u[0] + (L - r.m[1]) * u[1];
-    ((d = Math.min(d, F)), (p = Math.max(p, F)), (m = Math.max(m, N)));
-  }
-  let g = (d + p) / 2,
-    b = (p - d) / 2,
-    x = (I, L, F) => [
-      r.m[0] + f[0] * (g + I) + u[0] * L,
-      F,
-      r.m[1] + f[1] * (g + I) + u[1] * L,
-    ],
-    v = h + 14,
-    y = v + b * 0.85,
-    M = [-r.n[0], 0, -r.n[1]],
-    S = [r.n[0], 0, r.n[1]],
-    w = (I) => [f[0] * I, 0, f[1] * I],
-    z = [x(-b, 0, 0), x(b, 0, 0), x(b, m, 0), x(-b, m, 0)].map((I) => [
-      I[0],
-      I[2],
-    ]);
-  ys(i, z, l - 0.6, v, IP, { vBase: l });
-  for (let I of [-1, 1])
-    ne(
-      i,
+// Lines 109901-110245 of readable/app.pretty.js (statement-aligned).
+function Vgt(o, t) {
+  let { L: e } = t,
+    s = Nw.pg,
+    n = [(s[0][0] + s[1][0]) / 2, (s[0][1] + s[1][1]) / 2],
+    i = [(s[2][0] + s[3][0]) / 2, (s[2][1] + s[3][1]) / 2],
+    a = Math.hypot(i[0] - n[0], i[1] - n[1]),
+    r = [(i[0] - n[0]) / a, (i[1] - n[1]) / a],
+    l = [-r[1], r[0]],
+    c = Math.hypot(s[1][0] - s[0][0], s[1][1] - s[0][1]) / 2,
+    h = (u, d) => [n[0] + r[0] * u + l[0] * d, n[1] + r[1] * u + l[1] * d],
+    f = (u, d) => e.driveHeight(u, d);
+  for (let u = 2; u < a - 2; u += 3) {
+    let d = h(u, 0),
+      p = h(u + 3, 0),
+      m = f(...d) + 0.04,
+      g = f(...p) + 0.04;
+    oe(
+      o,
       [
-        x(I * (b + 0.6), -0.6, v - 0.3),
-        x(I * (b + 0.6), m + 0.6, v - 0.3),
-        x(0, m + 0.6, y),
-        x(0, -0.6, y),
+        [d[0] - l[0] * 1.6, m, d[1] - l[1] * 1.6],
+        [d[0] + l[0] * 1.6, m, d[1] + l[1] * 1.6],
+        [p[0] + l[0] * 1.6, g, p[1] + l[1] * 1.6],
+        [p[0] - l[0] * 1.6, g, p[1] - l[1] * 1.6],
       ],
-      p1t,
-      [f[0] * I, 0.9, f[1] * I],
-      (L) => [L[0] + L[2], L[1] * 1.4],
-    );
-  for (let [I, L] of [
-    [0, S],
-    [m, M],
-  ])
-    ne(i, [x(-b, I, v), x(b, I, v), x(0, I, y)], IP, L);
-  for (let I of [-1, 1]) {
-    let L = (F, N, B) => x(I * b + I * F, N, B);
-    for (let F = 6; F < m - 2; F += 5) {
-      let N = x(I * (b + 0.35), F, 0);
-      (nn(i, [N[0], N[2]], u, f, 0.45, 0.4, l - 0.4, v - 1.2, v$),
-        ne(
-          i,
-          [
-            x(I * (b + 0.76), F - 0.45, v - 1.2),
-            x(I * (b + 0.76), F + 0.45, v - 1.2),
-            x(I * (b + 0.01), F + 0.45, v + 0.2),
-            x(I * (b + 0.01), F - 0.45, v + 0.2),
-          ],
-          Ub,
-          [f[0] * I, 0.7, f[1] * I],
-        ),
-        F + 5 < m - 1 &&
-          yk(
-            i,
-            (B, H, O) => L(0.09, H + B, O),
-            w(I),
-            0,
-            F + 2.5,
-            1.9,
-            h + 3.6,
-            v - 3.4,
-            y$,
-          ));
-    }
-    nn(
-      i,
-      [x(I * (b + 0.08), m / 2, 0)[0], x(I * (b + 0.08), m / 2, 0)[2]],
-      u,
-      f,
-      m / 2,
-      0.1,
-      h + 3.3,
-      h + 3.6,
-      Ub,
-      !0,
+      Ugt,
+      [0, 1, 0],
+      (b) => [b[0], b[2]],
     );
   }
-  let _ = 4.4,
-    R = h + 36,
-    T = x(0, _ - 0.4, 0),
-    E = (I, L) => [
-      T[0] + f[0] * _ * I + u[0] * _ * L,
-      T[2] + f[1] * _ * I + u[1] * _ * L,
-    ],
-    A = [E(-1, -1), E(1, -1), E(1, 1), E(-1, 1)];
-  ys(i, A, l - 0.6, R, IP, { vBase: l });
-  let C = (I, L, F) => x(I, -0.4 - 0.09 - L, F);
-  for (let [I, L] of [[0, S]])
-    (ne(
-      i,
-      [C(-1.6, 0, h), C(1.6, 0, h), C(1.6, 0, h + 3.8), C(-1.6, 0, h + 3.8)],
-      w$,
-      L,
+  {
+    let u = h(a * 0.66, -c * 0.35),
+      d = f(...u),
+      p = 4.6;
+    for (let g = 0; g < 16; g++) {
+      let b = (g / 16) * Math.PI * 2,
+        v = ((g + 1) / 16) * Math.PI * 2;
+      oe(
+        o,
+        [
+          [u[0], d + 0.05, u[1]],
+          [
+            u[0] + Math.cos(b) * (p + 1.5),
+            d + 0.05,
+            u[1] + Math.sin(b) * (p + 1.5),
+          ],
+          [
+            u[0] + Math.cos(v) * (p + 1.5),
+            d + 0.05,
+            u[1] + Math.sin(v) * (p + 1.5),
+          ],
+        ],
+        Ggt,
+        [0, 1, 0],
+        (x) => [x[0], x[2]],
+      );
+    }
+    let m = (g, b) => [
+      u[0] + Math.cos(g) * p * Math.cos(b),
+      d + 0.2 + p * 0.8 * Math.sin(b),
+      u[1] + Math.sin(g) * p * Math.cos(b),
+    ];
+    for (let g = 0; g < 12; g++) {
+      let b = (g / 12) * Math.PI * 2;
+      for (let v = 0; v < 6; v++)
+        Ce(
+          o,
+          m(b, ((v / 6) * Math.PI) / 2),
+          m(b, (((v + 1) / 6) * Math.PI) / 2),
+          0.04,
+          zK,
+          4,
+        );
+    }
+    for (let g of [0.25, 0.55, 0.85, 1.15])
+      for (let b = 0; b < 24; b++)
+        Ce(
+          o,
+          m((b / 24) * Math.PI * 2, g),
+          m(((b + 1) / 24) * Math.PI * 2, g),
+          0.035,
+          zK,
+          4,
+        );
+    (Ce(o, [u[0], d, u[1]], [u[0], d + p * 0.8 + 0.6, u[1]], 0.09, _K, 6),
+      t.colliders.push({
+        t: "circ",
+        x: u[0],
+        z: u[1],
+        r: p * 0.95,
+        y0: d - 1,
+        y1: d + 4,
+      }));
+  }
+  {
+    let u = h(a * 0.16, 0),
+      d = f(...u);
+    for (let p = 0; p < 9; p++) {
+      let m = (p / 9) * Math.PI,
+        g = 6.5,
+        b = 2.6,
+        v = [u[0] + l[0] * Math.cos(m) * b, d, u[1] + l[1] * Math.cos(m) * b],
+        x = [
+          u[0] + r[0] * 1.2 + l[0] * Math.cos(m) * b * 0.8,
+          d + g * Math.sin(m) * 0.4 + 3,
+          u[1] + r[1] * 1.2 + l[1] * Math.cos(m) * b * 0.8,
+        ],
+        y = [u[0] + r[0] * 2.5, d + g, u[1] + r[1] * 2.5];
+      (Ce(o, v, x, 0.12, fL, 5), Ce(o, x, y, 0.1, fL, 5));
+    }
+    (qe(
+      o,
+      u[0] + r[0] * 2.5,
+      u[1] + r[1] * 2.5,
+      [
+        [0.01, d + 5.6],
+        [1, d + 6],
+        [1.2, d + 6.8],
+        [0.9, d + 7.6],
+        [0.01, d + 7.9],
+      ],
+      10,
+      fL,
     ),
-      yk(i, (F, N, B) => C(F, 0, B), L, 0, 0, 1.6 * 2, h + 3.8, h + 5, E$),
-      yk(i, (F, N, B) => C(F, 0, B), L, 0, 0, 3, h + 9, h + 16, y$));
-  let P = [
-    [
-      [-1, -1],
-      [1, -1],
-    ],
-    [
-      [1, -1],
-      [1, 1],
-    ],
-    [
-      [1, 1],
-      [-1, 1],
-    ],
-    [
-      [-1, 1],
-      [-1, -1],
-    ],
-  ];
-  for (let [[I, L], [F, N]] of P) {
-    let B = E(I, L),
-      H = E(F, N),
-      O = (B[0] + H[0]) / 2,
-      D = (B[1] + H[1]) / 2,
-      U = (H[0] - B[0]) / (2 * _),
-      G = (H[1] - B[1]) / (2 * _),
-      q = -G,
-      W = U;
-    (O - T[0]) * q + (D - T[2]) * W < 0 && ((q = -q), (W = -W));
-    let V = (Y, $, st) => [O + U * Y + q * 0.09, st, D + G * Y + W * 0.09];
-    yk(i, V, [q, 0, W], 0, 0, 2.8, R - 10, R - 4.6, w$);
-    for (let Y = 0; Y < 7; Y++)
-      ne(
-        i,
-        [
-          V(-1.3, 0, R - 9.6 + Y * 0.75),
-          V(1.3, 0, R - 9.6 + Y * 0.75),
+      t.colliders.push({
+        t: "circ",
+        x: u[0],
+        z: u[1],
+        r: 2.6,
+        y0: d - 1,
+        y1: d + 8,
+      }));
+  }
+  for (let u = 10; u < a - 8; u += 14)
+    for (let d of [-2.6, 2.6]) {
+      let p = h(u, d),
+        m = f(...p);
+      (cn(o, p, r, l, 0.9, 0.22, m + 0.42, m + 0.48, EK),
+        cn(
+          o,
           [
-            O + U * 1.3 + q * 0.25,
-            R - 9.6 + Y * 0.75 + 0.35,
-            D + G * 1.3 + W * 0.25,
+            p[0] + l[0] * Math.sign(d) * 0.22,
+            p[1] + l[1] * Math.sign(d) * 0.22,
           ],
-          [
-            O - U * 1.3 + q * 0.25,
-            R - 9.6 + Y * 0.75 + 0.35,
-            D - G * 1.3 + W * 0.25,
-          ],
-        ],
-        Ub,
-        [q, 0.8, W],
-      );
-    for (let Y = 0; Y < 5; Y++) {
-      let $ = -_ + 0.9 + (Y * (2 * _ - 1.8)) / 4;
-      nn(
-        i,
-        [O + U * $ + q * 0.15, D + G * $ + W * 0.15],
-        [U, G],
-        [q, W],
-        0.42,
-        0.35,
-        R,
-        R + 1.4,
-        Ub,
-      );
+          r,
+          l,
+          0.9,
+          0.04,
+          m + 0.48,
+          m + 0.9,
+          EK,
+        ));
+      for (let g of [-0.75, 0.75])
+        cn(
+          o,
+          [p[0] + r[0] * g, p[1] + r[1] * g],
+          r,
+          l,
+          0.04,
+          0.2,
+          m,
+          m + 0.42,
+          _K,
+        );
     }
-    nn(
-      i,
-      [O + q * 0.2, D + W * 0.2],
-      [U, G],
-      [q, W],
-      I === F ? _ - 0.15 : _ + 0.55,
-      0.35,
-      R - 0.6,
-      R,
-      Ub,
-    );
+  for (let u = 5; u < a - 3; u += 9)
+    for (let d of [-c + 1.6, c - 1.6]) {
+      let [p, m] = h(u, d),
+        g = f(p, m),
+        b = Math.abs(Math.sin(p * 12.99 + m * 78.23) * 43758.5) % 1;
+      (u > a * 0.55 && u < a * 0.78 && d < 0) ||
+        (t.inst.push({
+          kind: "tree",
+          sp: b < 0.7 ? "tree0" : "tree2",
+          x: p,
+          y: g,
+          z: m,
+          rot: b * 6.28,
+          scale: 0.75 + 0.3 * b,
+        }),
+        t.colliders.push({
+          t: "circ",
+          x: p,
+          z: m,
+          r: 0.3,
+          y0: g - 1.5,
+          y1: g + 6,
+        }));
+    }
+}
+function PK(o, t, e) {
+  let s = new Map(),
+    n = (i) => {
+      let a = s.get(i);
+      return (a || s.set(i, (a = new Be())), a);
+    };
+  for (let [i, a] of [
+    [() => Bgt(n("mint"), e), "mint"],
+    [() => Hgt(n("stpat"), e), "stpat"],
+    [() => Vgt(n("green"), e), "green"],
+  ])
+    try {
+      i();
+    } catch (r) {
+      console.error("r17:", a, r);
+    }
+  for (let [i, a] of s) vn(o.group, a, t.lm, "R17_" + i);
+}
+var mh = {
+  maritime: 32839686,
+  opera: 32865161,
+  veterans: 32865757,
+  arena: 579646390,
+  civic: [
+    [-2161.7, 1877.9],
+    [-2048.2, 1859.7],
+    [-2065, 1756.8],
+    [-2075.1, 1743.2],
+    [-2077.4, 1736.5],
+    [-2082.4, 1703],
+    [-2073.2, 1701.4],
+    [-2074.8, 1691.3],
+    [-2080.4, 1687.4],
+    [-2084.2, 1684.7],
+    [-2110.2, 1688.7],
+    [-2108.7, 1698],
+    [-2152.1, 1704.7],
+    [-2155.9, 1704.7],
+    [-2159.5, 1704.1],
+    [-2166.8, 1701.7],
+    [-2171.1, 1700.4],
+    [-2175.5, 1700.3],
+    [-2189.6, 1702.6],
+    [-2194.7, 1710.8],
+    [-2169.1, 1872.4],
+  ],
+  dome: [-2264.5, 1805.5],
+};
+function DK(o) {
+  (o.claim({ name: "maritime", ids: [mh.maritime], poly: null }),
+    o.claim({ name: "warmemorial", ids: [mh.opera, mh.veterans], poly: null }),
+    o.claim({ name: "arena", ids: [mh.arena], poly: null }),
+    o.claim({
+      name: "civicplaza",
+      poly: mh.civic,
+      buildings: !1,
+      props: ["car", "tree", "ptree", "lamp", "palm"],
+    }));
+}
+var Wgt = (o, t) => {
+    let e = o.bld;
+    if (e.seed) {
+      for (let s = 0; s < e.n; s++) if (e.seed[s] === t) return er(o, s);
+    }
+    return null;
+  },
+  qgt = (o, t, e, s) => {
+    let n = 1e9,
+      i = -1e9,
+      a = 1e9,
+      r = -1e9;
+    for (let [l, c] of t)
+      ((n = Math.min(n, l)),
+        (i = Math.max(i, l)),
+        (a = Math.min(a, c)),
+        (r = Math.max(r, c)));
+    o.colliders.push({
+      t: "poly",
+      pts: Float32Array.from(t.flat()),
+      bb: [n, a, i, r],
+      y0: e,
+      y1: s,
+    });
+  };
+function Bp(o, t, e, s, n, i, a = 8) {
+  i = Math.min(i, n - 0.01, s - 0.01);
+  let r = [],
+    l = (h, f, u) => {
+      let d = h * (s - i),
+        p = f * (n - i);
+      for (let m = 0; m <= a; m++) {
+        let g = u + ((m / a) * Math.PI) / 2,
+          b = d + Math.cos(g) * i,
+          v = p + Math.sin(g) * i;
+        r.push([o[0] + t[0] * b + e[0] * v, o[1] + t[1] * b + e[1] * v]);
+      }
+    };
+  (l(1, 1, 0),
+    l(-1, 1, Math.PI / 2),
+    l(-1, -1, Math.PI),
+    l(1, -1, Math.PI * 1.5));
+  let c = [];
+  for (let h = 0; h < r.length; h++) {
+    let f = r[h],
+      u = r[(h + 1) % r.length],
+      d = Math.max(1, Math.ceil(Math.hypot(u[0] - f[0], u[1] - f[1]) / 3));
+    for (let p = 0; p < d; p++)
+      c.push([f[0] + ((u[0] - f[0]) * p) / d, f[1] + ((u[1] - f[1]) * p) / d]);
   }
-  for (let [I, L] of [
-    [-1, -1],
-    [1, -1],
-    [1, 1],
-    [-1, 1],
-  ]) {
-    let [F, N] = E(I, L);
-    (nn(i, [F, N], f, u, 0.75, 0.75, l - 0.4, R + 0.4, v$),
-      Oe(
-        i,
-        F,
-        N,
-        [
-          [0.7, R + 0.4],
-          [0.6, R + 1.6],
-          [0.45, R + 2],
-          [0.32, R + 5.5],
-          [0, R + 7.5],
-        ],
+  return c;
+}
+function wz(o, t, e, s, n, i = 0.09, a = null, r = null, l = null, c = null) {
+  let h = 0;
+  for (let u = 0; u < t.length; u++) {
+    let d = t[u],
+      p = t[(u + 1) % t.length];
+    h += d[0] * p[1] - p[0] * d[1];
+  }
+  let f = h > 0 ? t.slice().reverse() : t;
+  for (let u = 0; u < f.length; u++) {
+    let d = f[u],
+      p = f[(u + 1) % f.length],
+      m = p[0] - d[0],
+      g = p[1] - d[1],
+      b = Math.hypot(m, g);
+    if (b < 0.05) continue;
+    let v = (-g / b) * i,
+      x = (m / b) * i;
+    if (a) {
+      let y = (d[0] + p[0]) / 2 - r[0],
+        M = (d[1] + p[1]) / 2 - r[1];
+      if (!a(y * l[0] + M * l[1], y * c[0] + M * c[1])) continue;
+    }
+    o.wall(d[0] + v, d[1] + x, p[0] + v, p[1] + x, e, e, s, s, n);
+  }
+}
+function dL(o, t, e, s, n = 1.05) {
+  let i = 0;
+  for (let a = 0; a < t.length; a++) {
+    let r = t[a],
+      l = t[(a + 1) % t.length],
+      c = Math.hypot(l[0] - r[0], l[1] - r[1]);
+    for (let h of [n, n * 0.5])
+      Ce(
+        o,
+        [r[0], e + h, r[1]],
+        [l[0], e + h, l[1]],
+        h === n ? 0.035 : 0.022,
+        s,
         4,
-        Ub,
-      ));
+      );
+    ((i += c),
+      i >= 2 &&
+        ((i = 0), Ce(o, [r[0], e, r[1]], [r[0], e + n, r[1]], 0.028, s, 4)));
   }
-  (g1t(i, A, R - 0.5), NP(t, o, l - 3, y + 2));
 }
-function g1t(i, t, e) {
-  Ua(i, t, e, It(Lt.stone, 0.25, 0.25, 0.25));
-}
-var b1t = Be(be.granite, 0.62, 0.6, 0.57),
-  M$ = It(Lt.matte, 0.55, 0.08, 0.06),
-  S$ = It(Lt.metal, 0.5, 0.5, 0.52),
-  FP = It(Lt.matte, 0.3, 0.15, 0.08),
-  k$ = It(Lt.matte, 0.32, 0.22, 0.14),
-  x1t = It(Lt.matte, 0.22, 0.16, 0.11);

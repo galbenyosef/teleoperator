@@ -1,9 +1,9 @@
 // app 20 — coat
-// Lines 42597-42941 of readable/app.pretty.js (statement-aligned).
-function $r(i, t) {
-  let e = i?.paintKit;
+// Lines 42683-43027 of readable/app.pretty.js (statement-aligned).
+function c0(o, t) {
+  let e = o?.paintKit;
   if (!e) return !1;
-  let s = qa(t),
+  let s = or(t),
     n = e.mat;
   e.saved ||
     (e.saved = {
@@ -11,94 +11,94 @@ function $r(i, t) {
       cc: n.clearcoat || 0,
       ccr: n.clearcoatRoughness || 0,
     });
-  let o = null,
+  let i = null,
     a = null;
-  if (s?.w && i_(i)) {
-    let r = TL(s.w);
+  if (s?.w && i_(o)) {
+    let r = iF(s.w);
     if ((!r.ready && s.w.p?.[0] && (a = s.w.p[0]), r.ready)) {
       let l = performance.now();
-      ((i.wrapT0 ||= l),
-        !CL || CL(fY(e, s.f || "gloss", s.w.m)) || l - i.wrapT0 > 3e4
-          ? ((o = s.w.m), (n.userData.mbMap8 = r.tex), (i.wrapT0 = 0))
+      ((o.wrapT0 ||= l),
+        !lF || lF(pZ(e, s.f || "gloss", s.w.m)) || l - o.wrapT0 > 3e4
+          ? ((i = s.w.m), (n.userData.mbMap8 = r.tex), (o.wrapT0 = 0))
           : setTimeout(() => {
-              i.paint === s && $r(i, s);
+              o.paint === s && c0(o, s);
             }, 250));
     } else
       r.failed ||
         r.p.then((l) => {
-          l && i.paint === s && $r(i, s);
+          l && o.paint === s && c0(o, s);
         });
   }
   if (
-    (!o && n.userData.mbMap8?.name === "wrap" && (n.userData.mbMap8 = null),
-    !s || (!s.c && !s.f && !o && !a))
+    (!i && n.userData.mbMap8?.name === "wrap" && (n.userData.mbMap8 = null),
+    !s || (!s.c && !s.f && !i && !a))
   )
     ((n.userData.mbAlbedo = e.saved.hook),
       e.base.copy(e.factory),
       e.coatOn === "material" &&
         ((n.clearcoat = e.saved.cc), (n.clearcoatRoughness = e.saved.ccr)));
   else {
-    let r = s.f || (o ? "gloss" : "metallic");
-    (e.base.copy(o ? obt : a ? l_.set(a) : s.c ? l_.set(s.c) : e.shown),
-      (n.userData.mbAlbedo = fY(e, r, o)),
+    let r = s.f || (i ? "gloss" : "metallic");
+    (e.base.copy(i ? R3t : a ? l_.set(a) : s.c ? l_.set(s.c) : e.shown),
+      (n.userData.mbAlbedo = pZ(e, r, i)),
       e.coatOn === "material" &&
-        ((n.clearcoat = PL[r].coat), (n.clearcoatRoughness = PL[r].coatRough)));
+        ((n.clearcoat = rF[r].coat), (n.clearcoatRoughness = rF[r].coatRough)));
   }
   return (
-    (e.wrapOn = !!o),
+    (e.wrapOn = !!i),
     e.tint(e.base),
-    dY(e.calipers, (e.calSaved ||= uY(e.calipers)), s?.cal, null),
+    gZ(e.calipers, (e.calSaved ||= mZ(e.calipers)), s?.cal, null),
     (e.rimHex = s?.rim || null),
-    dY(
+    gZ(
       e.rims,
-      (e.rimSaved ||= uY(e.rims)),
+      (e.rimSaved ||= mZ(e.rims)),
       s?.rim,
       e.rimFollows
-        ? (o ? l_.setRGB(0.05, 0.05, 0.055) : l_.copy(e.base)).multiplyScalar(
+        ? (i ? l_.setRGB(0.05, 0.05, 0.055) : l_.copy(e.base)).multiplyScalar(
             e.night,
           )
         : null,
       !0,
     ),
-    (i.paint = s),
+    (o.paint = s),
     !0
   );
 }
-function dY(i, t, e, s, n = !1) {
-  if (i?.length)
-    for (let o of t)
+function gZ(o, t, e, s, n = !1) {
+  if (o?.length)
+    for (let i of t)
       if (e) {
-        if ((o.m.color.set(e), n)) {
-          let a = nbt[e] ?? 1;
-          ((o.m.metalness = a ? 1 : 0.15), (o.m.roughness = a ? 0.28 : 0.3));
+        if ((i.m.color.set(e), n)) {
+          let a = E3t[e] ?? 1;
+          ((i.m.metalness = a ? 1 : 0.15), (i.m.roughness = a ? 0.28 : 0.3));
         }
       } else
         s
-          ? (o.m.color.copy(s), (o.m.metalness = o.mt), (o.m.roughness = o.r))
-          : (o.m.color.copy(o.c),
-            (o.m.metalness = o.mt),
-            (o.m.roughness = o.r));
+          ? (i.m.color.copy(s), (i.m.metalness = i.mt), (i.m.roughness = i.r))
+          : (i.m.color.copy(i.c),
+            (i.m.metalness = i.mt),
+            (i.m.roughness = i.r));
 }
-function pl({
-  mat: i,
+function Ir({
+  mat: o,
   kind: t,
   factory: e,
   shown: s = e,
   hook: n,
-  coatOn: o = "hook",
+  coatOn: i = "hook",
   calipers: a = [],
   rims: r = [],
   rimFollows: l = !1,
   wrap: c = !1,
 }) {
   let h = {
-    mat: i,
+    mat: o,
     kind: t,
     factory: e.clone(),
     shown: s.clone(),
     base: e.clone(),
     hook: n,
-    coatOn: o,
+    coatOn: i,
     calipers: a,
     rims: r,
     rimFollows: l,
@@ -107,7 +107,7 @@ function pl({
   };
   return (
     (h.tint = (f) => {
-      i.color.copy(f).multiplyScalar(h.night);
+      o.color.copy(f).multiplyScalar(h.night);
     }),
     (h.setNight = (f) => {
       ((h.night = f), h.tint(h.base));
@@ -115,30 +115,30 @@ function pl({
     h
   );
 }
-var fp,
-  PL,
-  tf,
-  hp,
-  ax,
-  ef,
-  nbt,
-  sf,
-  ibt,
-  cY,
-  pw,
+var Vp,
+  rF,
+  Lf,
+  Gp,
+  qx,
+  If,
+  E3t,
+  Ff,
+  T3t,
+  uZ,
+  hM,
   c_,
-  hY,
+  dZ,
   l_,
-  obt,
-  CL,
-  IL,
-  uY,
-  ml = Vi(() => {
-    as();
-    uw();
-    wm();
-    uw();
-    ((fp = [
+  R3t,
+  lF,
+  hF,
+  mZ,
+  P0 = Ki(() => {
+    es();
+    lM();
+    h2();
+    lM();
+    ((Vp = [
       {
         id: "gloss",
         key: "g",
@@ -175,7 +175,7 @@ var fp,
         lvl: 8,
       },
     ]),
-      (PL = {
+      (rF = {
         gloss: {
           flakes: 0,
           flakeTilt: 0,
@@ -272,8 +272,8 @@ var fp,
           coatRough: 0.02,
         },
       }),
-      (tf = (i) => fp.find((t) => t.id === i) || null),
-      (hp = [
+      (Lf = (o) => Vp.find((t) => t.id === o) || null),
+      (Gp = [
         ["#c1121c", "Track Red"],
         ["#ff5a1f", "Lava Orange"],
         ["#ffc61a", "Solar Yellow"],
@@ -291,7 +291,7 @@ var fp,
         ["#f2f1ec", "Glacier White"],
         ["#0b0b0d", "Jet Black"],
       ]),
-      (ax = [
+      (qx = [
         ["#d0161b", "Red"],
         ["#f5c400", "Yellow"],
         ["#ff6a00", "Orange"],
@@ -300,7 +300,7 @@ var fp,
         ["#b8bcc2", "Silver"],
         ["#141416", "Black"],
       ]),
-      (ef = [
+      (If = [
         ["#c9ccd1", "Silver", 1],
         ["#5a5d63", "Gunmetal", 1],
         ["#0d0d0f", "Gloss Black", 0],
@@ -308,37 +308,37 @@ var fp,
         ["#d4b05a", "Gold", 1],
         ["#ececec", "White", 0],
       ]),
-      (nbt = Object.fromEntries(ef.map((i) => [i[0], i[2]]))),
-      (sf = (i, t = hp) =>
-        (t.find((e) => e[0] === i) ||
-          (t === hp ? Sm.find((e) => e[0] === i) : null) ||
+      (E3t = Object.fromEntries(If.map((o) => [o[0], o[2]]))),
+      (Ff = (o, t = Gp) =>
+        (t.find((e) => e[0] === o) ||
+          (t === Gp ? f2.find((e) => e[0] === o) : null) ||
           [])[1] || null),
-      (ibt = /^#[0-9a-f]{6}$/));
-    ((cY = (i) => (
-      (i = qa(i)),
-      i
+      (T3t = /^#[0-9a-f]{6}$/));
+    ((uZ = (o) => (
+      (o = or(o)),
+      o
         ? JSON.stringify([
-            i.c,
-            i.f,
-            i.cal,
-            i.rim,
-            i.w?.u || null,
-            i.w?.c || null,
-            i.w?.m || null,
+            o.c,
+            o.f,
+            o.cal,
+            o.rim,
+            o.w?.u || null,
+            o.w?.c || null,
+            o.w?.m || null,
           ])
         : ""
     )),
-      (pw = (i, t) => cY(i) === cY(t)));
-    ((c_ = (i) => "#" + (i?.paintKit?.shown?.getHexString?.() || "ffffff")),
-      (hY = new Map()));
-    ((l_ = new $t()),
-      (obt = new $t(1, 1, 1)),
-      (CL = null),
-      (IL = (i) => {
-        CL = i;
+      (hM = (o, t) => uZ(o) === uZ(t)));
+    ((c_ = (o) => "#" + (o?.paintKit?.shown?.getHexString?.() || "ffffff")),
+      (dZ = new Map()));
+    ((l_ = new It()),
+      (R3t = new It(1, 1, 1)),
+      (lF = null),
+      (hF = (o) => {
+        lF = o;
       }));
-    uY = (i) =>
-      (i || []).map((t) => ({
+    mZ = (o) =>
+      (o || []).map((t) => ({
         m: t,
         c: t.color.clone(),
         r: t.roughness,

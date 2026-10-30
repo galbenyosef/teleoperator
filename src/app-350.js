@@ -1,597 +1,315 @@
-// app 350 — math
-// Lines 170698-171292 of readable/app.pretty.js (statement-aligned).
-var Dz = class {
-  constructor(t) {
-    (Object.assign(this, t),
-      (this.mb = window.mindblown),
-      (this.p = Oz()),
-      (this.savedAt = 0),
-      (this.scope = "browser"),
-      (this.ready = !1),
-      (this._last = { x: 0, z: 0 }),
-      (this._bucket = Ra.CAP),
-      (this._w = 0),
-      (this._dr = 0),
-      (this.fails = 0),
-      (this.pending = !1),
-      (this.held = 0),
-      addEventListener("visibilitychange", () => {
-        document.visibilityState === "hidden" && this.save(!0);
-      }),
-      addEventListener("pagehide", () => this.save(!0)),
-      addEventListener("online", () => {
-        (this.pending || this.needLoad) && this.save(!0);
-      }),
-      (this._cashL = []),
-      (this._seq = 0),
-      (this._dev = ott().replace(/[^\w]/g, "").slice(0, 8)),
-      this.police &&
-        (this.police.onCash = (s, n) => this.credit(s, n, "police")));
-    let e = this.rides;
-    if (e?.emit) {
-      let s = e.emit.bind(e);
-      e.emit = (n, o = {}) => {
-        s(n, o);
-        try {
-          this.rideEvent(n, o);
-        } catch (a) {
-          console.warn("profile", a);
-        }
-      };
-    }
-  }
-  get signedIn() {
-    return this.scope === "account" && (this.mb?.viewer?.signedIn ?? !0);
-  }
-  rideEvent(t, e) {
-    if (
-      (t === "bank" &&
-        ((this.p.best.bounty = Math.min(
-          Ra.BOUNTY,
-          Math.max(this.p.best.bounty, e.pts || 0),
-        )),
-        e.cash > 0 && this.credit(e.cash, "Street bounty banked", "fare")),
-      t === "dropoff")
-    ) {
-      let s = e.summary || {};
-      ((this.p.best.bounty = Math.min(
-        Ra.BOUNTY,
-        Math.max(this.p.best.bounty, s.bounty || 0),
+// app 350 — cam
+// Lines 168916-169228 of readable/app.pretty.js (statement-aligned).
+P0();
+var Fn = (o, t, e) => (o < t ? t : o > e ? e : o),
+  m4t = (o) => ((o = Fn(o, 0, 1)), o * o * (3 - 2 * o)),
+  g4t = 60 / (2 * Math.PI),
+  P2 = [
+    { id: "stock", name: "Stock", col: "#9aa0a6" },
+    { id: "street", name: "Street", col: "#46c46a" },
+    { id: "sport", name: "Sport", col: "#2f8cff" },
+    { id: "race", name: "Race", col: "#a35cff" },
+    { id: "elite", name: "Elite", col: "#ffb020" },
+  ],
+  Ri = {
+    engine: {
+      tab: "engine",
+      name: "Engine",
+      ev: "Motor",
+      cam: "engine",
+      icon: "engine",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 3500, 1, "+7 % power: intake, cams, a tune"],
+        [2, 9e3, 3, "+15 % power: forged internals"],
+        [3, 2e4, 6, "+24 % power: a race build"],
+        [4, 42e3, 10, "+34 % power: the full elite build"],
+      ],
+    },
+    turbo: {
+      tab: "engine",
+      name: "Forced induction",
+      ev: "Inverter",
+      cam: "engine",
+      icon: "turbo",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 4e3, 2, "+6 % at the top end"],
+        [2, 11e3, 5, "+12 %, a bigger turbo"],
+        [3, 26e3, 9, "+19 %, twin race turbos"],
+      ],
+    },
+    exhaust: {
+      tab: "engine",
+      name: "Exhaust",
+      ev: null,
+      cam: "exhaust",
+      icon: "exhaust",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 1800, 1, "+2 % power, a deeper note"],
+        [2, 5e3, 3, "+4 %, louder, it crackles"],
+        [3, 12e3, 6, "+6 %, straight pipes: loud"],
+      ],
+    },
+    nitro: {
+      tab: "engine",
+      name: "Nitrous",
+      ev: null,
+      cam: "exhaust",
+      icon: "nitro",
+      lv: [
+        [0, 0, 0, "Factory bottle"],
+        [1, 2500, 2, "A bigger bottle: 6 s, +8 % push"],
+        [2, 7e3, 4, "7.5 s, +16 % push"],
+        [3, 16e3, 7, "Race kit: 9 s, +25 % push"],
+      ],
+    },
+    trans: {
+      tab: "perf",
+      name: "Transmission",
+      ev: "Reduction gear",
+      cam: "side",
+      icon: "gearbox",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 3e3, 2, "Quicker shifts"],
+        [2, 8e3, 4, "Race shifts; the final drive tunable"],
+        [3, 18e3, 8, "Sequential: shifts in half the time"],
+      ],
+    },
+    weight: {
+      tab: "perf",
+      name: "Weight reduction",
+      ev: null,
+      cam: "side",
+      icon: "weight",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 3e3, 2, "-3 %: lighter seats"],
+        [2, 9e3, 5, "-6 %: carbon panels"],
+        [3, 22e3, 9, "-10 %: stripped out"],
+      ],
+    },
+    brakes: {
+      tab: "perf",
+      name: "Brakes",
+      ev: null,
+      cam: "wheel",
+      icon: "brake",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 2e3, 1, "Sport pads: +12 % bite"],
+        [2, 6e3, 3, "Big brake kit"],
+        [3, 15e3, 6, "Carbon-ceramic race brakes"],
+      ],
+    },
+    susp: {
+      tab: "perf",
+      name: "Suspension",
+      ev: null,
+      cam: "wheelLow",
+      icon: "spring",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 2500, 1, "Lowering springs: -1.5 cm"],
+        [2, 7e3, 3, "Coilovers: springs, bars, height tunable"],
+        [3, 16e3, 6, "Race coilovers: -4.5 cm, stiff"],
+      ],
+    },
+    diff: {
+      tab: "perf",
+      name: "Differential",
+      ev: null,
+      cam: "rear",
+      icon: "diff",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [2, 5e3, 3, "Sport LSD: tunable lock"],
+        [3, 12e3, 6, "Drift diff: locked, the tail loose"],
+      ],
+    },
+    aero: {
+      tab: "perf",
+      name: "Aero",
+      ev: null,
+      cam: "rear",
+      icon: "wing",
+      lv: [
+        [0, 0, 0, "Factory"],
+        [1, 3e3, 2, "Lip spoiler: +25 % downforce"],
+        [2, 8e3, 4, "Sport wing: +70 %, tunable"],
+        [3, 19e3, 7, "Race wing: +130 % downforce"],
+      ],
+    },
+    tyre: {
+      tab: "tyres",
+      name: "Compound",
+      ev: null,
+      cam: "wheelLow",
+      icon: "tyre",
+      choice: !0,
+      lv: [
+        [0, 0, 0, "Factory road tyres"],
+        [1, 1200, 1, "Street: quiet, a little less grip"],
+        [2, 3e3, 2, "Sport: +4 % grip"],
+        [3, 7500, 4, "Semi-slick: +9 % grip"],
+        [2, 4e3, 3, "Drift: the rear lets go, holds the angle"],
+        [1, 2500, 2, "Off-road: grips on grass and dirt"],
+      ],
+    },
+    width: {
+      tab: "tyres",
+      name: "Width",
+      ev: null,
+      cam: "wheelLow",
+      icon: "tyre",
+      choice: !0,
+      lv: [
+        [0, 0, 0, "Factory width"],
+        [1, 1500, 1, "+20 mm: +2 % grip"],
+        [2, 3500, 3, "+40 mm: +4 % grip, a touch of drag"],
+      ],
+    },
+  },
+  Rst = ["Factory", "Street", "Sport", "Semi-slick", "Drift", "Off-road"];
+var Ast = (o, t) =>
+    !!Ri[o] &&
+    (!t ||
+      Ri[o].ev !== null ||
+      ["weight", "brakes", "susp", "diff", "aero", "tyre", "width"].includes(
+        o,
       )),
-        s.total > 0 &&
-          this.credit(
-            s.total,
-            (s.style === "street" ? "Street ride" : "Fare") +
-              (s.name ? " \xB7 " + s.name : "") +
-              (s.stars ? " " + "\u2605".repeat(s.stars) : ""),
-            "fare",
-          ),
-        this.save(!0),
-        this.board?.submit(!0));
+  Pst = (o, t) => (t && Ri[o].ev ? Ri[o].ev : Ri[o].name),
+  Hr = [
+    ["Factory", 0, "factory", 0, 0],
+    ["Split five", 5, "split", 1500, 1],
+    ["Mesh", 10, "mesh", 2200, 2],
+    ["Turbofan", 14, "fan", 2800, 3],
+    ["Deep dish", 6, "dish", 2500, 2],
+    ["Six blade", 6, "blade", 2e3, 1],
+    ["Monoblock", 5, "mono", 3200, 4],
+    ["Aero disc", 0, "disc", 3e3, 5],
+  ],
+  C2 = ["Black", "White letters", "White wall", "Red stripe"],
+  Cst = [-1, 0, 1, 2, 3],
+  Iv = [
+    ["pf", "Tyres", "Pressure front", -0.4, 0.4, 0.05, "bar", null],
+    ["pr", "Tyres", "Pressure rear", -0.4, 0.4, 0.05, "bar", null],
+    ["cf", "Alignment", "Camber front", -2.5, 1, 0.1, "\xB0", null],
+    ["cr", "Alignment", "Camber rear", -2.5, 1, 0.1, "\xB0", null],
+    ["tf", "Alignment", "Toe front", -0.5, 0.5, 0.05, "\xB0", null],
+    ["tr", "Alignment", "Toe rear", -0.5, 0.5, 0.05, "\xB0", null],
+    ["sf", "Springs", "Springs front", -25, 35, 5, "%", ["susp", 2]],
+    ["sr", "Springs", "Springs rear", -25, 35, 5, "%", ["susp", 2]],
+    ["rh", "Springs", "Ride height", -5, 3, 0.5, "cm", ["susp", 2]],
+    ["dp", "Damping", "Damping", -25, 35, 5, "%", ["susp", 2]],
+    ["af", "Anti-roll bars", "Anti-roll front", -50, 100, 10, "%", ["susp", 2]],
+    ["ar", "Anti-roll bars", "Anti-roll rear", -50, 100, 10, "%", ["susp", 2]],
+    ["fd", "Gearing", "Final drive", -12, 12, 1, "%", ["trans", 2]],
+    ["dl", "Differential", "Diff lock", -50, 150, 10, "%", ["diff", 1]],
+    ["bb", "Brakes", "Brake balance", -10, 10, 1, "% front", null],
+    ["bp", "Brakes", "Brake pressure", -20, 20, 5, "%", null],
+    ["dn", "Aero", "Downforce", -40, 40, 5, "%", ["aero", 2]],
+    ["db", "Aero", "Aero balance", -10, 10, 1, "% front", ["aero", 2]],
+  ],
+  OE = Object.fromEntries(Iv.map((o) => [o[0], o])),
+  A2 = (o, t, e) => (Number.isFinite(+o) ? Fn(Math.round(+o), t, e) : 0);
+function Jo(o) {
+  if (!o || typeof o != "object") return null;
+  let t = { p: {}, own: {}, w: {}, t: {} };
+  for (let a in Ri) {
+    let r = Ri[a].lv.length - 1,
+      l = A2(o.p?.[a], 0, r),
+      c = A2(o.own?.[a], 0, r);
+    if ((l && (t.p[a] = l), Ri[a].choice)) {
+      let h = A2(o.own?.[a], 0, 2 ** (r + 1) - 1) | (l ? 1 << l : 0);
+      h && (t.own[a] = h);
+    } else Math.max(l, c) && (t.own[a] = Math.max(l, c));
+  }
+  let e = A2(o.w?.s, 0, Hr.length - 1),
+    s = A2(o.w?.z, -1, 3),
+    n = A2(o.w?.d, 0, C2.length - 1),
+    i = A2(o.w?.own, 0, 2 ** Hr.length - 1) | (e ? 1 << e : 0);
+  (e && (t.w.s = e), s && (t.w.z = s), n && (t.w.d = n), i && (t.w.own = i));
+  for (let [a, , , r, l, c] of Iv) {
+    let h = +o.t?.[a];
+    if (Number.isFinite(h) && h) {
+      let f = Fn(Math.round(h / c) * c, r, l);
+      Math.abs(f) > 1e-9 && (t.t[a] = +f.toFixed(3));
     }
   }
-  async load() {
-    if (
-      (await new Promise((t) => setTimeout(t)),
-      await this._load(),
-      !this._sub &&
-        this.mb?.viewer?.onchange &&
-        ((this._sub = !0),
-        this.mb.viewer.onchange((t) => {
-          let e = t?.signedIn ? "a:" + t.id : "g";
-          if (this._who === void 0) {
-            this._who = e;
-            return;
-          }
-          e !== this._who && ((this._who = e), this.rescope());
-        })),
-      this._arrive)
-    ) {
-      let t = this._arrive;
-      ((this._arrive = null), this.arrive(t));
-    }
-    return this.p;
-  }
-  async _load() {
-    let t = null,
-      e = "browser",
-      s = !1;
-    if (this.mb?.load)
-      try {
-        let a = await this.mb.load(Kx);
-        ((this.rev = a), (e = a?.scope || "account"), (t = a?.value));
-      } catch (a) {
-        (console.warn("profile load", a?.reason || a),
-          (s = !0),
-          (e = this.mb.viewer?.signedIn ? "account" : "browser"));
-      }
-    else t = $m(ntt);
-    let n = rh(t),
-      o = null;
-    if (s && e === "account") {
-      n = rh($m(rM + this.who())) || Oz();
-      let a = rh($m(kF + this.who()));
-      a && kp(n, a);
-    }
-    if (((n ||= Oz()), (this.needLoad = s), e === "account")) {
-      let a = rh($m(rM + this.who()));
-      a && !s && (kp(n, a), (this.pending = !0));
-      let r = rh($m(Vm));
-      r && !s && ((o = ltt(n, r)), o && Uu(Vm, r));
-    } else {
-      let a = this.mb ? rh($m(Vm)) : null;
-      (a &&
-        (!t || !n.gid || a.gid === n.gid) &&
-        (t ? ((n.gid ||= a.gid), kp(n, a)) : (n = a)),
-        (n.gid ||= ott()));
-    }
-    return (
-      (this.p = n),
-      (this.scope = e),
-      (this._key = null),
-      e === "account" && !s && Uu(kF + this.who(), n),
-      this.apply(),
-      (this.ready = !0),
+  for (let a of ["p", "own", "w", "t"]) Object.keys(t[a]).length || delete t[a];
+  return Object.keys(t).length ? t : null;
+}
+var b4t = (o) =>
+    !!(
       o &&
-        (o.cash > 0 || o["taxi.rides"] > 0) &&
-        this.toast?.(
-          "Guest progress added to your account",
-          "+$" +
-            Math.round(o.cash || 0).toLocaleString() +
-            " \xB7 " +
-            o["taxi.rides"] +
-            " ride" +
-            (o["taxi.rides"] === 1 ? "" : "s"),
-        ),
-      o?.cash > 0 && this.emitCash({ a: o.cash, why: "Guest progress added" }),
-      (o || this.pending) && this.save(!0),
-      this.board?.submit(!0),
-      n
-    );
+      ((o.p && Object.keys(o.p).length) || (o.t && Object.keys(o.t).length))
+    ),
+  lr = (o, t) => o?.p?.[t] || 0,
+  L2 = (o, t, e) =>
+    !e ||
+    (Ri[t].choice
+      ? !!((o?.own?.[t] || 0) & (1 << e))
+      : (o?.own?.[t] || 0) >= e),
+  Fv = (o, t) => !t || !!((o?.w?.own || 0) & (1 << t)),
+  BE = (o, t) => JSON.stringify(Jo(o)) === JSON.stringify(Jo(t)),
+  NE = (o, t) => {
+    let e = OE[t][7];
+    return !e || lr(o, e[0]) >= e[1];
+  };
+function Ov(o, t) {
+  let e = [];
+  for (let n in Ri) {
+    let i = lr(t, n);
+    i &&
+      !L2(o, n, i) &&
+      e.push({
+        id: n,
+        k: i,
+        what:
+          Ri[n].name +
+          " \xB7 " +
+          (Ri[n].choice
+            ? Ri[n].lv[i][3].split(":")[0]
+            : P2[Ri[n].lv[i][0]].name),
+        price: Ri[n].lv[i][1],
+      });
   }
-  who() {
-    return (this.mb?.viewer?.id || "account")
-      .replace(/[^\w:-]/g, "")
-      .slice(0, 64);
-  }
-  async rescope() {
-    if (!this._rescoping) {
-      this._rescoping = !0;
-      try {
-        let t = null,
-          e = this.scope + "/" + this.who();
-        (this.ready &&
-          ((t = JSON.parse(JSON.stringify(this.snapshot()))),
-          (t.updated = Date.now()),
-          this.scope === "browser" && this.mb
-            ? Uu(Vm, t)
-            : this.scope === "account" &&
-              this.pending &&
-              Uu(rM + this.who(), t)),
-          (this.ready = !1),
-          await this._load(),
-          this.board?.reset(),
-          t &&
-            this.scope + "/" + this.who() === e &&
-            (kp(this.p, t), this.apply(), this.save(!0)));
-      } finally {
-        this._rescoping = !1;
-      }
-    }
-  }
-  apply() {
-    let t = this.p;
-    (this.rides &&
-      ((this.rides.total = t.taxi.total),
-      (this.rides.rides = t.taxi.rides),
-      (this.rides.stars = t.taxi.stars.slice(-200))),
-      this.police &&
-        ((this.police.bounty = t.police.bounty),
-        (this.police.escapes = t.police.escapes),
-        (this.police.busts = t.police.busts)));
-    let e = this.taxi?.();
-    (e &&
-      ((e.wallet = () => this.wallet()),
-      (e.lbHint = () => this.board?.hint() || ""),
-      e.total?.()),
-      (this._w = this.wallet()));
-    let s = t.settings;
-    if (s && Object.keys(s).length) {
-      for (let n of itt)
-        if (typeof s.store?.[n] == "string")
-          try {
-            localStorage.getItem(n) !== s.store[n] &&
-              localStorage.setItem(n, s.store[n]);
-          } catch {}
-      this.onSettings?.(s);
-    }
-    this.onCustom?.(t.custom);
-  }
-  custom(t) {
-    let e = this.p.custom?.[t];
-    return e ? (e.paint ?? null) : void 0;
-  }
-  setCustom(t, e) {
-    let s = (this.p.custom ||= {}),
-      n = s[t]?.tune;
-    ((s[t] = { paint: e || null, t: Date.now() }),
-      n && (s[t].tune = n),
-      this.save(!0));
-  }
-  tune(t) {
-    let e = this.p.custom?.[t];
-    return e ? (e.tune ?? null) : void 0;
-  }
-  setTune(t, e) {
-    let s = (this.p.custom ||= {}),
-      n = mtt(e);
-    ((s[t] = { paint: s[t]?.paint ?? null, t: Date.now() }),
-      n && (s[t].tune = n),
-      this.save(!0));
-  }
-  spend(t, e = "Garage") {
-    return t > 0
-      ? !Number.isFinite(t) || this.wallet() + 1e-6 < t
-        ? !1
-        : (this.post(-t, e, "spend"), this.save(!0), !0)
-      : !0;
-  }
-  ride() {
-    return this.p.ride || null;
-  }
-  cars() {
-    return this.p.cars || [];
-  }
-  setCars(t, e) {
-    ((this.p.cars = cM(t)),
-      e !== void 0 && (this.p.mine = e),
-      (this.p.updated = Date.now()),
-      this.save(!0));
-  }
-  setRide(t) {
-    ((this.p.ride = vl(t)),
-      this.p.ride && (this.p.car = "custom"),
-      (this.p.updated = Date.now()),
-      this.save(!0));
-  }
-  addXP(t) {
-    if (!(t > 0) || !Number.isFinite(t)) return this.p.xp;
-    let e = performance.now();
-    ((this._xb = Math.min(
-      Ra.XPCAP,
-      (this._xb ?? Ra.XPCAP) +
-        (Ra.XPRATE * Math.max(0, e - (this._xbT ?? e))) / 1e3,
-    )),
-      (this._xbT = e));
-    let s = Math.min(t, this._xb);
-    return (
-      (this._xb -= s),
-      t - s > 0.5 &&
-        ((this.xpHeld = (this.xpHeld || 0) + t - s),
-        console.warn(
-          "profile: " +
-            Math.round(t - s) +
-            " XP over the plausible rate held back",
-        )),
-      (this.p.xp = Go((this.p.xp || 0) + s)),
-      this.p.xp
-    );
-  }
-  prize(t, e = "Level-up wheelspin") {
-    return !(t > 0) || !Number.isFinite(t)
-      ? 0
-      : ((t = Math.min(t, 2e4)),
-        (this.p.race.money = Co(this.p.race.money + t)),
-        (this.p.earned = Co(this.p.earned + t)),
-        this.post(t, e, "prize"),
-        this.save(!0),
-        t);
-  }
-  setRoads(t) {
-    this.p.roads = TF(this.p.roads, btt(t));
-  }
-  addBoard(t) {
-    ((this.p.boards = AF(this.p.boards, xtt([t]))), this.save(!0));
-  }
-  chRec(t) {
-    return this.p.ch?.best?.[t] || null;
-  }
-  chResult(t, e, s = 0, n = "Challenge") {
-    let o = (this.p.ch ||= { cash: 0, runs: 0, best: {} });
-    o.best ||= {};
-    let a = vtt({ [t]: e })[t];
-    a && (o.best[t] = a);
-    let r = 0;
-    return (
-      s > 0 &&
-        Number.isFinite(s) &&
-        ((r = Co(Math.min(s, Ra.CAP))),
-        (this.p.race.money = Co(this.p.race.money + r)),
-        this.credit(r, n, "challenge"),
-        (o.cash = Co((o.cash || 0) + r))),
-      (o.runs = (o.runs || 0) + 1),
-      this.save(!0),
-      this.board?.submit(!0),
-      r
-    );
-  }
-  fine(t, e = "Busted \xB7 police fine") {
-    let s = Co(Math.max(0, Math.min(t, this.wallet())));
-    return (s > 0 && this.post(-s, e, "fine"), this.save(!0), s);
-  }
-  ledger() {
-    return this.p.cash?.log || [];
-  }
-  onCash(t) {
-    return (
-      this._cashL.push(t),
-      () => {
-        this._cashL = this._cashL.filter((e) => e !== t);
-      }
-    );
-  }
-  emitCash(t) {
-    for (let e of this._cashL)
-      try {
-        e(t);
-      } catch (s) {
-        console.warn("cash", s);
-      }
-    this.taxi?.()?.total?.();
-  }
-  post(t, e, s = "", n = null) {
-    let o = (this.p.cash ||= { base: 0, baseT: 0, moves: 0, log: [] }),
-      a = Date.now(),
-      r = {
-        id: this._dev + "." + a.toString(36) + "." + (this._seq++).toString(36),
-        t: a,
-        a: Co(t),
-        why: String(e || "").slice(0, 60),
+  let s = t?.w?.s || 0;
+  return (
+    s &&
+      !Fv(o, s) &&
+      e.push({
+        id: "rim",
         k: s,
-      };
-    return (
-      n && ((r.pend = 1), (r.held = n)),
-      o.log.push(r),
-      lM(o),
-      this.emitCash({ ...r, bal: this.wallet() }),
-      r
-    );
-  }
-  credit(t, e, s = "") {
-    if (((t = Co(+t)), !(t > 0) || !Number.isFinite(t))) return 0;
-    let n = Co(Math.min(t, this._bucket));
-    return (
-      (this._bucket -= n),
-      n > 0 && ((this.p.earned = Co(this.p.earned + n)), this.post(n, e, s)),
-      t - n > 0.004 &&
-        ((this.held = Co(this.held + t - n)),
-        console.warn(
-          "profile: $" +
-            Math.round(t - n) +
-            " pending (over the plausible rate)",
-        ),
-        this.post(
-          t - n,
-          e,
-          s,
-          "Over $" +
-            Ra.CAP.toLocaleString() +
-            " in a short time - released as the limit refills",
-        )),
-      t
-    );
-  }
-  wallet() {
-    return Mtt(this.p.cash);
-  }
-  pendingCash() {
-    return iyt(this.p.cash);
-  }
-  guard(t) {
-    this._bucket = Math.min(Ra.CAP, this._bucket + Ra.RATE * t);
-    for (let e of this.p.cash?.log || [])
-      if (e.pend) {
-        if (e.a > this._bucket + 0.004) {
-          if (e.a > Ra.CAP) continue;
-          break;
-        }
-        ((this._bucket -= e.a),
-          delete e.pend,
-          delete e.held,
-          (e.rel = Date.now()),
-          (this.held = Math.max(0, Co(this.held - e.a))),
-          (this.p.earned = Co(this.p.earned + e.a)),
-          this.emitCash({ ...e, released: !0, bal: this.wallet() }),
-          this.save(!0));
-      }
-  }
-  arrive({ skipPlace: t = !1, skipCar: e = !1 } = {}) {
-    if (!this.ready) {
-      this._arrive = { skipPlace: t, skipCar: e };
-      return;
-    }
-    let s = this.p;
-    (e ||
-      (s.car === "custom" && s.ride && this.onRide?.(s.ride),
-      s.car && s.car !== this.carId() && this.swapCar?.(s.car)),
-      !t &&
-        s.pos &&
-        Number.isFinite(s.pos.x) &&
-        this.place?.({ x: s.pos.x, z: s.pos.z, psi: s.pos.psi }),
-      s.updated &&
-        this.toast?.(
-          "Welcome back",
-          "$" +
-            Math.round(this.wallet()).toLocaleString() +
-            (this.scope === "account"
-              ? " \xB7 saved to your account"
-              : " \xB7 saved in this browser"),
-        ));
-  }
-  raceResult({ place: t, of: e, net: s, ms: n, id: o }) {
-    let a = this.p.race,
-      r = (e > 1 && K5t[s ? "net" : "solo"][t - 1]) || 0;
-    return (
-      a.played++,
-      t === 1 && e > 1 && a.wins++,
-      t <= 3 && e > 2 && a.podiums++,
-      (a.money += r),
-      o &&
-        n > 0 &&
-        (!a.best[o] || n < a.best[o]) &&
-        (a.best[o] = Math.round(n)),
-      r > 0 &&
-        this.credit(
-          r,
-          "Race \xB7 " +
-            (["1st", "2nd", "3rd"][t - 1] || t + "th") +
-            " of " +
-            e,
-          "race",
-        ),
-      this.save(!0),
-      this.board?.submit(!0),
-      r
-    );
-  }
-  update(t, e) {
-    if (!this.ready) return;
-    let s = this.v,
-      n = Math.hypot(s.pos.x - this._last.x, s.pos.z - this._last.z),
-      o = this.p.best;
-    if (
-      (n > 0.5 && n < 50 && (this.p.km += n / 1e3),
-      (this._last.x = s.pos.x),
-      (this._last.z = s.pos.z),
-      this.guard(Math.min(t, 1)),
-      e && !this.noPos?.())
-    ) {
-      let a = s.kmh || 0;
-      (a > o.kmh && a < Ra.KMH && n < 50 && (o.kmh = Math.round(a * 10) / 10),
-        (s.drift || 0) > 0.45 && a > 25
-          ? (this._dr += t)
-          : (this._dr > o.drift &&
-              (o.drift = Math.min(Ra.DRIFT, Math.round(this._dr * 10) / 10)),
-            (this._dr = 0)));
-    }
-    e &&
-      performance.now() - this.savedAt > X5t &&
-      (this.save(), this.board?.submit());
-  }
-  snapshot() {
-    let t = this.p,
-      e = this.v;
-    (this.rides &&
-      (t.taxi = {
-        total: Co(this.rides.total),
-        rides: this.rides.rides,
-        stars: (this.rides.stars || []).slice(-200),
+        what: "Wheels \xB7 " + Hr[s][0],
+        price: Hr[s][3],
       }),
-      this.police &&
-        (t.police = {
-          bounty: this.police.bounty,
-          escapes: this.police.escapes,
-          busts: this.police.busts,
-        }),
-      this.noPos?.() ||
-        (t.pos = {
-          x: Math.round(e.pos.x * 10) / 10,
-          z: Math.round(e.pos.z * 10) / 10,
-          psi: Math.round(e.psi * 1e3) / 1e3,
-        }),
-      (t.car = this.carId()),
-      (t.km = Math.round(t.km * 100) / 100));
-    let s = {};
-    for (let o of itt)
-      try {
-        let a = localStorage.getItem(o);
-        a !== null && a.length < 4e3 && (s[o] = a);
-      } catch {}
-    t.settings = { ...t.settings, store: s };
-    let n = this.mph?.();
-    return (typeof n == "boolean" && (t.settings.mph = n), t);
+    { items: e, total: e.reduce((n, i) => n + i.price, 0) }
+  );
+}
+function HE(o) {
+  let t = Jo(o) || {};
+  t.own ||= {};
+  for (let e in Ri) {
+    let s = lr(t, e);
+    s &&
+      (Ri[e].choice
+        ? (t.own[e] = (t.own[e] || 0) | (1 << s))
+        : (t.own[e] = Math.max(t.own[e] || 0, s)));
   }
-  async save(t = !1) {
-    if (!this.ready) return;
-    if (this._saving) {
-      t && (this._again = !0);
-      return;
-    }
-    if (!t && performance.now() - this.savedAt < 1e4) return;
-    let e = this.snapshot(),
-      s = JSON.stringify({ ...e, updated: 0 });
-    if (s === this._key && !this.pending && !this.needLoad) {
-      this.savedAt = performance.now();
-      return;
-    }
-    if (
-      ((this._key = s),
-      (this.savedAt = performance.now()),
-      (e.updated = Date.now()),
-      this.scope === "browser" && this.mb && Uu(Vm, e),
-      !this.mb?.save)
-    ) {
-      Uu(ntt, e);
-      return;
-    }
-    ((this._saving = !0), clearTimeout(this._retryT));
-    try {
-      (await this.put(),
-        this.pending && Z5t(rM + this.who()),
-        (this.pending = !1),
-        (this.fails = 0),
-        this.scope === "account" && Uu(kF + this.who(), this.p));
-    } catch (n) {
-      (console.warn("profile save", n?.reason || n),
-        this.scope === "account" &&
-          (Uu(rM + this.who(), this.p), (this.pending = !0)),
-        (this._key = null),
-        this.fails++,
-        n?.reason !== "QUOTA_EXCEEDED" &&
-          (this._retryT = setTimeout(
-            () => this.save(!0),
-            Math.min(6e4, 4e3 * 2 ** Math.min(4, this.fails - 1)),
-          )));
-    } finally {
-      ((this._saving = !1), this._again && ((this._again = !1), this.save(!0)));
-    }
+  return (t.w?.s && (t.w.own = (t.w.own || 0) | (1 << t.w.s)), Jo(t));
+}
+function DE(o, t) {
+  let e = [];
+  for (let n in Ri) {
+    let i = lr(o, n);
+    i &&
+      Ri[n].lv[i][2] > t &&
+      e.push({ what: Ri[n].name, lvl: Ri[n].lv[i][2] });
   }
-  async put() {
-    let t = this.mb;
-    if (this.needLoad) {
-      let e = await t.load(Kx);
-      if ((e?.scope || "account") !== this.scope) {
-        setTimeout(() => this.rescope());
-        return;
-      }
-      ((this.needLoad = !1), kp(this.p, rh(e?.value)));
-      let s = this.scope === "account" ? rh($m(Vm)) : null;
-      (s && ltt(this.p, s) && Uu(Vm, s), this.apply());
-    }
-    try {
-      this.rev = await t.save(Kx, this.snapshot());
-    } catch (e) {
-      if (e?.reason === "REVISION_CONFLICT" && e.current)
-        (kp(
-          this.p,
-          rh(e.current.value !== void 0 ? e.current.value : e.current),
-        ),
-          this.apply(),
-          (this.rev = await t.save(Kx, this.snapshot())));
-      else if (e?.reason === "LOAD_FIRST") {
-        let s = await t.load(Kx);
-        if ((s?.scope || "account") !== this.scope) {
-          setTimeout(() => this.rescope());
-          return;
-        }
-        (kp(this.p, rh(s?.value)),
-          this.apply(),
-          (this.rev = await t.save(Kx, this.snapshot())));
-      } else if (e?.reason === "AUTH_CHANGED") setTimeout(() => this.rescope());
-      else throw e;
-    }
-  }
-  merge(t) {
-    (kp(this.p, rh(t)), this.apply());
-  }
-};
+  let s = o?.w?.s || 0;
+  return (s && Hr[s][4] > t && e.push({ what: Hr[s][0], lvl: Hr[s][4] }), e);
+}

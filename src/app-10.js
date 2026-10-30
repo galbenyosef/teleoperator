@@ -1,20 +1,20 @@
 // app 10 — lat
-// Lines 39210-39554 of readable/app.pretty.js (statement-aligned).
-var jU,
-  VU,
-  $U,
-  XU,
+// Lines 39245-39589 of readable/app.pretty.js (statement-aligned).
+var $V,
+  XV,
+  KV,
+  YV,
   Tt,
-  Hg,
-  Dg,
-  Ug = Vi(() => {
-    ((jU = `
+  Tb,
+  Rb,
+  Ab = Ki(() => {
+    (($V = `
 fn wH(p: vec2f) -> f32 { return fract(sin(dot(p, vec2f(127.1, 311.7))) * 43758.5453); }
 fn wN(p: vec2f) -> f32 { let i = floor(p); let f = fract(p); let u = f * f * (3.0 - 2.0 * f);
   return mix(mix(wH(i), wH(i + vec2f(1.0, 0.0)), u.x), mix(wH(i + vec2f(0.0, 1.0)), wH(i + vec2f(1.0, 1.0)), u.x), u.y); }
 fn wR(x: f32, a: f32, b: f32, aa: f32) -> f32 { return clamp(min(x - a, b - x) / aa + 0.5, 0.0, 1.0); }
 `),
-      (VU = {
+      (XV = {
         ferry_arcade: [24, 18],
         ferry_shaft: [13, 16],
         bulk_a: [20, 18],
@@ -28,12 +28,12 @@ fn wR(x: f32, a: f32, b: f32, aa: f32) -> f32 { return clamp(min(x - a, b - x) /
         wharf: [18, 9],
         ferry_rear: [24, 18],
       }),
-      ($U = Object.fromEntries(Object.keys(VU).map((i, t) => [i, t]))),
-      (XU =
-        jU +
+      (KV = Object.fromEntries(Object.keys(XV).map((o, t) => [o, t]))),
+      (YV =
+        $V +
         `
-const WCELL = array<vec2f, 12>(${Object.values(VU)
-          .map(([i, t]) => `vec2f(${i.toFixed(1)}, ${t.toFixed(1)})`)
+const WCELL = array<vec2f, 12>(${Object.values(XV)
+          .map(([o, t]) => `vec2f(${o.toFixed(1)}, ${t.toFixed(1)})`)
           .join(", ")});
 // (night49) a floodlit landmark as the lamps at its foot light it: bright low, falling off up the wall in scallops between
 // the fixtures (~9 m apart), the tower's own lights above the roofline - not one flat daylit slab (0.35-0.6 everywhere)
@@ -87,8 +87,8 @@ fn mbAlbedo(uv: vec2f, wp: vec3f, col0: vec4f, bc: vec4f) -> vec4f {
         conc: 14,
         glow: 15,
       }),
-      (Hg =
-        jU +
+      (Tb =
+        $V +
         `
 var<private> wGX: vec2f; var<private> wGY: vec2f;
 fn wTile(uv: vec2f, t: u32, s: f32) -> vec3f {
@@ -180,7 +180,7 @@ fn mbAlbedo(uv: vec2f, wp: vec3f, col0: vec4f, bc: vec4f) -> vec4f {
   return vec4f(c, 1.0);
 }
 `),
-      (Dg = `
+      (Rb = `
 fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
   let t = textureSample(matMap, matSamp, uv);
   let pic = col.a > 0.5;
@@ -192,9 +192,9 @@ fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
 }
 `));
   });
-var JU,
-  YU = Vi(() => {
-    JU = {
+var QV,
+  ZV = Ki(() => {
+    QV = {
       id: "us/san_francisco",
       aliases: ["sf"],
       name: "San Francisco",
@@ -224,7 +224,7 @@ var JU,
         raw: "tools/real/",
         data: "assets/real/",
         district: "src/city/real/district.js",
-        seeds: "tools/real/seeds/round39_bake.json",
+        seeds: "tools/place/sf/round39_bake.json",
         assets: "assets/tex/",
         landmarks: "src/city/landmarks/",
         content: "cities/us/san_francisco/content/",
@@ -238,9 +238,9 @@ var JU,
       credits: ["osm", "usgs-3dep", "datasf-street-trees"],
     };
   });
-var QU,
-  ZU = Vi(() => {
-    QU = {
+var eW,
+  tW = Ki(() => {
+    eW = {
       id: "jp/tokyo",
       aliases: ["tokyo"],
       name: "Tokyo",
@@ -265,9 +265,9 @@ var QU,
       credits: ["osm", "gsi-dem"],
     };
   });
-var eG,
-  tG = Vi(() => {
-    eG = {
+var nW,
+  sW = Ki(() => {
+    nW = {
       id: "fr/paris",
       aliases: ["paris"],
       name: "Paris",
@@ -297,51 +297,51 @@ var eG,
       credits: ["osm", "ign-rge-alti"],
     };
   });
-function rR(i = globalThis.location?.search || "", t = null) {
-  let e = new URLSearchParams(i).get("city"),
+function F7(o = globalThis.location?.search || "", t = null) {
+  let e = new URLSearchParams(o).get("city"),
     s = null;
   try {
     s = (t ?? globalThis.localStorage)?.getItem("sf-drive.city") ?? null;
   } catch {}
-  for (let n of [e, s]) if (n && Qf(n)?.enabled) return Qf(n).id;
-  return sG;
+  for (let n of [e, s]) if (n && Fu(n)?.enabled) return Fu(n).id;
+  return iW;
 }
-function nG(i, t = null) {
+function oW(o, t = null) {
   try {
-    Qf(i)?.enabled &&
-      (t ?? globalThis.localStorage)?.setItem("sf-drive.city", Qf(i).id);
+    Fu(o)?.enabled &&
+      (t ?? globalThis.localStorage)?.setItem("sf-drive.city", Fu(o).id);
   } catch {}
 }
-function iG() {
-  let i = globalThis.process;
-  if (i?.versions?.node && !globalThis.document) {
-    let t = i.argv.indexOf("--city"),
-      e = t >= 0 ? i.argv[t + 1] : i.env.CITY;
+function aW() {
+  let o = globalThis.process;
+  if (o?.versions?.node && !globalThis.document) {
+    let t = o.argv.indexOf("--city"),
+      e = t >= 0 ? o.argv[t + 1] : o.env.CITY;
     if (e) {
-      let s = Qf(e);
+      let s = Fu(e);
       if (!s) throw new Error("no city " + e);
       return s;
     }
-    return Qf(sG);
+    return Fu(iW);
   }
-  return Qf(rR());
+  return Fu(F7());
 }
-var sG,
-  aR,
-  Qf,
-  lR = Vi(() => {
-    YU();
-    ZU();
-    tG();
-    ((sG = "us/san_francisco"),
-      (aR = [JU, QU, eG].map((i) => ({
-        id: i.id,
-        name: i.name,
-        status: i.status,
-        enabled: i.status === "live",
-        label: i.status === "live" ? i.name : i.name + " (coming soon)",
-        manifest: i,
+var iW,
+  I7,
+  Fu,
+  O7 = Ki(() => {
+    ZV();
+    tW();
+    sW();
+    ((iW = "us/san_francisco"),
+      (I7 = [QV, eW, nW].map((o) => ({
+        id: o.id,
+        name: o.name,
+        status: o.status,
+        enabled: o.status === "live",
+        label: o.status === "live" ? o.name : o.name + " (coming soon)",
+        manifest: o,
       }))),
-      (Qf = (i) =>
-        aR.find((t) => t.id === i || t.manifest.aliases?.includes(i)) || null));
+      (Fu = (o) =>
+        I7.find((t) => t.id === o || t.manifest.aliases?.includes(o)) || null));
   });

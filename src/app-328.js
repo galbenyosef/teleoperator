@@ -1,104 +1,327 @@
-// app 328 — cars
-// Lines 159880-159981 of readable/app.pretty.js (statement-aligned).
-var fQ = "sf-drive.spendcap",
-  uQ = "sf-drive.spend",
-  dQ = "sf-drive.spend.session",
-  Hm = (i, t = 0) => (Number.isFinite(+i) && +i >= 0 ? Math.floor(+i) : t),
-  uF = new Set(),
-  Yw = null,
-  pQ = () => {
-    for (let i of uF)
-      try {
-        i();
-      } catch {}
-  },
-  pi = {
-    on(i) {
-      return (uF.add(i), () => uF.delete(i));
-    },
-    bindProfile(i) {
-      Yw = i;
-    },
-    cap() {
-      try {
-        let i = localStorage.getItem(fQ);
-        return i === null ? 5 : Math.max(0, Math.min(100, Hm(i, 5)));
-      } catch {
-        return 5;
-      }
-    },
-    setCap(i) {
-      try {
-        localStorage.setItem(fQ, String(Math.max(0, Math.min(100, Hm(i, 5)))));
-      } catch {}
-      pQ();
-    },
-    session() {
-      try {
-        return Hm(sessionStorage.getItem(dQ));
-      } catch {
-        return pi._s || 0;
-      }
-    },
-    lifetime() {
-      let i = { pictures: 0, cars: 0 };
-      try {
-        let e = JSON.parse(localStorage.getItem(uQ) || "null");
-        e && (i = { pictures: Hm(e.pictures), cars: Hm(e.cars) });
-      } catch {}
-      let t = Yw?.p?.spend;
-      return (
-        t &&
-          (i = {
-            pictures: Math.max(i.pictures, Hm(t.pictures)),
-            cars: Math.max(i.cars, Hm(t.cars)),
-          }),
-        i
-      );
-    },
-    record(i, t = 1) {
-      let e = pi.lifetime();
-      i === "car" ? (e.cars += t) : (e.pictures += t);
-      try {
-        localStorage.setItem(uQ, JSON.stringify(e));
-      } catch {}
-      let s = pi.session() + t;
-      try {
-        sessionStorage.setItem(dQ, String(s));
-      } catch {
-        pi._s = s;
-      }
-      (Yw?.p && ((Yw.p.spend = e), Yw.save?.(!0)), pQ());
-    },
-    over(i = 1) {
-      return pi.session() + i > pi.cap();
-    },
-    tokens() {
-      let i = pi.lifetime(),
-        t = Ou("image", i.pictures),
-        e = Ou("car", i.cars);
-      return (i.pictures && !t) || (i.cars && !e)
-        ? null
-        : {
-            pictures: i.pictures,
-            cars: i.cars,
-            text: [t, e].filter(Boolean).join(" + ") || "\u2248 0 tokens",
-          };
-    },
-    lifeLine() {
-      let i = pi.lifetime(),
-        t = pi.tokens();
-      return `${i.pictures} AI picture${i.pictures === 1 ? "" : "s"} \xB7 ${i.cars} AI car${i.cars === 1 ? "" : "s"}${t && (i.pictures || i.cars) ? " \xB7 " + t.text.replace(/ \+ /, " + ") + " (estimate)" : ""}`;
-    },
-  };
-function Jw(i, t = 1, e = "") {
-  let s = Ou(i, t),
-    n = pi.session(),
-    o = pi.cap(),
-    a = n + t > o;
-  return `<p><b>${e || (i === "car" ? "Create a car with AI?" : t > 1 ? `Make ${t} wrap designs?` : "Make a wrap design?")}</b></p>
-    <p>This uses your mindblown tokens. After the free 10M a month, tokens cost real money. Estimated: ${s || "cost unknown"}.</p>
-    <p class="sp-sess${a ? " over" : ""}">This session: ${n} of your limit of ${o} AI generation${o === 1 ? "" : "s"}${a ? " - this goes over it." : "."}</p>
-    ${a ? '<label class="sp-over"><input type="checkbox" class="sp-go"> Go over my limit for this one</label>' : ""}`;
+// app 328 — math
+// Lines 157420-157744 of readable/app.pretty.js (statement-aligned).
+function HO(o, t, e = {}) {
+  let s = o?.L;
+  if (!s?.roadAt) return null;
+  let n = s.roadAt(t.pos.x, t.pos.z, 3, t.pos.y, !1, e);
+  if (!n || n.J || !n.E.car || !n.E.lg || n.dd > 2.5) return null;
+  let i = Math.hypot(t.vel.x, t.vel.z),
+    a = i > 1 ? t.vel.x / i : -Math.sin(t.psi),
+    r = i > 1 ? t.vel.z / i : -Math.cos(t.psi),
+    l = a * n.dx + r * n.dz;
+  if (Math.abs(l) < 0.6) return null;
+  let c = l >= 0 ? 1 : -1;
+  return (n.E.oneway && c < 0) || n.s < n.E.s0 - 0.5 || n.s > n.E.s1 + 0.5
+    ? null
+    : { E: n.E, dir: c, s: n.s };
 }
-var Zw = (i, t = 1) => !pi.over(t) || !!i?.querySelector?.(".sp-go")?.checked;
+function pet(o, t, e = {}) {
+  let s = o?.L;
+  if (!s?.roadAt) return null;
+  let n = s.roadAt(t.pos.x, t.pos.z, 3, t.pos.y, !1, e);
+  if (!n || n.J || !n.E.car || !n.E.lg || n.dd > 2.5) return null;
+  let i = Math.hypot(t.vel.x, t.vel.z),
+    a = i > 1 ? t.vel.x / i : -Math.sin(t.psi),
+    r = i > 1 ? t.vel.z / i : -Math.cos(t.psi),
+    l = a * n.dx + r * n.dz;
+  if (Math.abs(l) < 0.5 || n.s < n.E.s0 - 0.5 || n.s > n.E.s1 + 0.5)
+    return null;
+  let c = l >= 0 ? 1 : -1;
+  return n.E.oneway && c < 0
+    ? { E: n.E, dir: 1, s: n.s, wrong: !0 }
+    : { E: n.E, dir: c, s: n.s, wrong: !1 };
+}
+function DO(o, t, e) {
+  let s = o.D,
+    n = s.juns[e > 0 ? t.jb : t.ja];
+  if (!n?.tl) return [];
+  let i = n.tl.find((c) => c.E === t && c.end === (e > 0 ? "b" : "a"));
+  if (!i) return [];
+  let a = -i.hx,
+    r = -i.hz,
+    l = [];
+  for (let c of n.tl) {
+    let h = c.E;
+    if (
+      (h === t && c.end === i.end) ||
+      !h.car ||
+      !h.lg ||
+      h.inner ||
+      h.hwy ||
+      h.layered
+    )
+      continue;
+    let f = c.end === "a" ? 1 : -1;
+    if (h.oneway && f < 0) continue;
+    let u = a * c.hx + r * c.hz,
+      d = Math.acos(S2(u, -1, 1));
+    d > 2.6 ||
+      l.push({ F: h, dir: f, cross: a * c.hz - r * c.hx, ang: d, J: n });
+  }
+  return l;
+}
+function met(o, t, e, s = 300) {
+  let n = [{ E: t.E, dir: t.dir, sA: t.s, sB: t.dir > 0 ? t.E.s1 : t.E.s0 }],
+    i = Math.abs(n[0].sB - n[0].sA),
+    a = t.E,
+    r = t.dir;
+  for (let l = 0; l < 12 && i < s; l++) {
+    let c = DO(o, a, r);
+    if (!c.length) break;
+    let h = e(c, a, r, l);
+    if (!h) break;
+    ((a = h.F),
+      (r = h.dir),
+      n.push({
+        E: a,
+        dir: r,
+        sA: r > 0 ? a.s0 : a.s1,
+        sB: r > 0 ? a.s1 : a.s0,
+      }),
+      (i += a.s1 - a.s0 + 10));
+  }
+  return n;
+}
+var UO = (o, t) => {
+    let e = null,
+      s = 1e9;
+    for (let n of o) {
+      let i = n.ang - (n.F.name && n.F.name === t.name ? 0.25 : 0);
+      i < s && ((s = i), (e = n));
+    }
+    return e && e.ang < 1 ? e : null;
+  },
+  get = (o) => (t, e) => {
+    let s = null,
+      n = 1e9;
+    for (let i of t) {
+      if (i.ang < 0.6 || (o > 0 ? i.cross >= 0 : i.cross <= 0)) continue;
+      let a = Math.abs(i.ang - 1.57);
+      a < n && ((n = a), (s = i));
+    }
+    return s || UO(t, e);
+  };
+await _0();
+var bd = {
+    chainStep: 0.25,
+    chainMax: 3,
+    chainT: 5,
+    heatMult: 0.5,
+    missR: 3.4,
+    missV: 6,
+    missKmh: 30,
+    missP: 250,
+    driftMin: 0.6,
+    driftP: 120,
+    driftPS: 180,
+    airMin: 0.3,
+    airP: 200,
+    airPS: 600,
+    fastKmh: 90,
+    fastT: 2.5,
+    fastP: 150,
+    oncKmh: 35,
+    oncT: 1.5,
+    oncP: 100,
+    crashV: 6,
+    bumpV: 3,
+  },
+  bet = 400,
+  xet = 200;
+function Ah(o) {
+  let t = 1,
+    e = bet + xet,
+    s = 0;
+  for (o = Math.max(0, +o || 0); o >= s + e && t < 999;)
+    ((s += e), t++, (e = bet + xet * t));
+  return { level: t, into: o - s, need: e, frac: (o - s) / e };
+}
+var Sv = class {
+  constructor(t = {}) {
+    ((this.env = t),
+      (this.t = 0),
+      (this.chain = 0),
+      (this.chainT = 0),
+      (this.mult = 1),
+      (this.maxMult = 1),
+      (this.pts = 0),
+      (this.n = 0),
+      (this.skills = 0),
+      (this.crashes = 0),
+      (this.F = {}),
+      (this._seen = new WeakSet()),
+      (this.listeners = []));
+  }
+  on(t) {
+    return (this.listeners.push(t), this);
+  }
+  emit(t) {
+    t.t = this.t;
+    for (let e of this.listeners)
+      try {
+        e(t);
+      } catch (s) {
+        console.warn("skills", s);
+      }
+  }
+  _heatM() {
+    let t = this.env.police?.();
+    return t && t.enabled !== !1 && t.pursuit
+      ? 1 + bd.heatMult * Math.max(1, t.level)
+      : 1;
+  }
+  score(t, e, s, { flat: n = !1, line: i = "" } = {}) {
+    n || (this.chain++, (this.chainT = bd.chainT));
+    let a = Math.min(
+      bd.chainMax,
+      1 + bd.chainStep * Math.max(0, this.chain - 1),
+    );
+    ((this.mult = Math.round(a * this._heatM() * 4) / 4),
+      (this.maxMult = Math.max(this.maxMult, this.mult)));
+    let r = n ? 1 : this.mult,
+      l = Math.round((s * r) / 10) * 10;
+    return (
+      (this.pts += l),
+      this.n++,
+      this.skills++,
+      this.emit({
+        type: "skill",
+        key: t,
+        label: e,
+        pts: l,
+        mult: r,
+        flat: n,
+        line: i,
+        chain: this.chain,
+        total: this.pts,
+      }),
+      l
+    );
+  }
+  end(t) {
+    let e = Math.round(this.pts),
+      s = this.n,
+      n = this.mult;
+    ((this.chain = 0),
+      (this.chainT = 0),
+      (this.pts = 0),
+      (this.n = 0),
+      (this.mult = this._heatM()),
+      s
+        ? this.emit(
+            t === "crash"
+              ? { type: "crash", lost: !0, pts: e, n: s }
+              : { type: "bank", pts: e, n: s, mult: n },
+          )
+        : t === "crash" &&
+          this.emit({ type: "crash", lost: !1, pts: 0, n: 0 }));
+  }
+  reset() {
+    ((this.F = {}),
+      (this.chain = 0),
+      (this.chainT = 0),
+      (this.pts = 0),
+      (this.n = 0),
+      (this.mult = 1));
+  }
+  update(t, e, s = [], n = !0, i = !1) {
+    this.t += t;
+    let a = bd,
+      r = this.F,
+      l = e.kmh || 0,
+      c = e.speed || 0;
+    if (!n) {
+      (this.n && this.end("bank"),
+        (r.driftT = 0),
+        (r.air = 0),
+        (r.fastT = 0),
+        (r.oncT = 0),
+        (r.missPend = null));
+      for (let M of s) this._seen.add(M);
+      return;
+    }
+    this.chain && (this.chainT -= t) <= 0 && this.end("bank");
+    let h = 0,
+      f = 0;
+    for (let M of s)
+      this._seen.has(M) ||
+        (this._seen.add(M),
+        M.C?.kerb ? (f = Math.max(f, M.v || 0)) : (h = Math.max(h, M.v || 0)));
+    if (
+      (f > a.crashV * 1.5 && (h = Math.max(h, f)),
+      h > a.crashV && (r.crashT || 0) <= this.t
+        ? ((r.crashT = this.t + 1.5),
+          (r.hitT = this.t),
+          this.crashes++,
+          this.end("crash"))
+        : h > a.bumpV && (r.hitT = this.t),
+      i)
+    ) {
+      ((r.driftT = 0), (r.air = 0), (r.fastT = 0), (r.oncT = 0));
+      return;
+    }
+    let u = (M, S, w) => this.score(M, S, w),
+      d = this.env.cars?.(),
+      p = e.pos.x,
+      m = e.pos.z,
+      g = e.vel?.x ?? 0,
+      b = e.vel?.z ?? 0;
+    if (d && l > a.missKmh && this.t - (r.hitT ?? -9) > 0.8) {
+      let M = (r.miss ||= new WeakMap());
+      for (let w of d) {
+        let _ = w.x - p,
+          z = w.z - m;
+        if (Math.abs(_) > a.missR || Math.abs(z) > a.missR) continue;
+        let A = Math.hypot(_, z);
+        if (A > a.missR || A < 1.2 || w.wreck) continue;
+        let T = w.v || 0;
+        Math.hypot(g - (w.fx || 0) * T, b - (w.fz || 0) * T) < a.missV ||
+          (M.get(w) ?? -99) > this.t - 6 ||
+          (M.set(w, this.t), (r.missPend = { c: w, t: this.t }));
+      }
+      let S = r.missPend;
+      S &&
+        this.t - S.t > 0.35 &&
+        ((r.missPend = null),
+        this.t - (r.hitT ?? -9) > 0.5 &&
+          u(
+            "miss",
+            S.c.cop ? "Near miss \xB7 police" : "Near miss",
+            a.missP * (S.c.cop ? 2 : 1),
+          ));
+    }
+    if ((e.drift || 0) > 0.45 && l > 25) r.driftT = (r.driftT || 0) + t;
+    else {
+      if ((r.driftT || 0) > a.driftMin) {
+        let M = Math.min(6, r.driftT);
+        u("drift", `Drift ${M.toFixed(1)}s`, a.driftP + a.driftPS * M);
+      }
+      r.driftT = 0;
+    }
+    let v = e.airTime || 0;
+    (v > 0
+      ? (r.air = Math.max(r.air || 0, v))
+      : ((r.air || 0) > a.airMin &&
+          u("air", `Airtime ${r.air.toFixed(1)}s`, a.airP + a.airPS * r.air),
+        (r.air = 0)),
+      l > a.fastKmh
+        ? ((r.fastT = (r.fastT || 0) + t),
+          r.fastT > a.fastT && ((r.fastT = 0), u("fast", "Top speed", a.fastP)))
+        : (r.fastT = Math.max(0, (r.fastT || 0) - t)));
+    let x = !1,
+      y = this.env.L;
+    if (l > a.oncKmh && y?.roadAt) {
+      let M = y.roadAt(p, m, 2, void 0, !0, (r._rq ||= {}));
+      if (M && M.E && !M.E.oneway && !M.E.hwy && M.dd <= 0 && c > 1) {
+        let S = (g * M.dx + b * M.dz) / c;
+        x = Math.abs(S) > 0.85 && M.v * Math.sign(S) < -1.4;
+      }
+    }
+    x
+      ? ((r.oncT = (r.oncT || 0) + t),
+        r.oncT > a.oncT && ((r.oncT = 0), u("onc", "Oncoming", a.oncP)))
+      : (r.oncT = Math.max(0, (r.oncT || 0) - t * 0.5));
+  }
+};
+await No();
+yet();

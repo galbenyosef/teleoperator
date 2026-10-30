@@ -1,271 +1,349 @@
-// app 44 — uniforms
-// Lines 59192-59460 of readable/app.pretty.js (statement-aligned).
-function Bg(i) {
-  return i
-    ? (i.name || i.constructor?.name || "") === "GPUOutOfMemoryError" ||
-        /out[ -]of[ -]memory|unable to create (?:a )?(?:buffer|texture)|failed to allocate.*(?:buffer|texture|memory)/i.test(
-          String(i.message || i),
-        ) ||
-        (i.cause && i.cause !== i ? Bg(i.cause) : !1)
-    : !1;
+// app 44 — field
+// Lines 59692-60038 of readable/app.pretty.js (statement-aligned).
+U5.SkyShader = {
+  name: "SkyShader",
+  uniforms: {
+    turbidity: { value: 2 },
+    rayleigh: { value: 1 },
+    mieCoefficient: { value: 0.005 },
+    mieDirectionalG: { value: 0.8 },
+    sunPosition: { value: new dt() },
+    cloudScale: { value: 2e-4 },
+    cloudSpeed: { value: 2e-5 },
+    cloudCoverage: { value: 0.4 },
+    cloudDensity: { value: 0.4 },
+    cloudElevation: { value: 0.5 },
+    showSunDisc: { value: 1 },
+    time: { value: 0 },
+  },
+  vertexShader: `
+		uniform vec3 sunPosition;
+		uniform float rayleigh;
+		uniform float turbidity;
+		uniform float mieCoefficient;
+
+		varying vec3 vWorldPosition;
+		varying vec3 vSunDirection;
+		varying float vSunfade;
+		varying vec3 vBetaR;
+		varying vec3 vBetaM;
+		varying float vSunE;
+
+		// constants for atmospheric scattering
+		const float e = 2.71828182845904523536028747135266249775724709369995957;
+		const float pi = 3.141592653589793238462643383279502884197169;
+
+		// wavelength of used primaries, according to preetham
+		const vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );
+		// this pre-calculation replaces older TotalRayleigh(vec3 lambda) function:
+		// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))
+		const vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );
+
+		// mie stuff
+		// K coefficient for the primaries
+		const float v = 4.0;
+		const vec3 K = vec3( 0.686, 0.678, 0.666 );
+		// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K
+		const vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );
+
+		// earth shadow hack
+		// cutoffAngle = pi / 1.95;
+		const float cutoffAngle = 1.6110731556870734;
+		const float steepness = 1.5;
+		const float EE = 1000.0;
+
+		float sunIntensity( float zenithAngleCos ) {
+			zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );
+			return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );
+		}
+
+		vec3 totalMie( float T ) {
+			float c = ( 0.2 * T ) * 10E-18;
+			return 0.434 * c * MieConst;
+		}
+
+		void main() {
+
+			vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+			vWorldPosition = worldPosition.xyz;
+
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+			gl_Position.z = gl_Position.w; // set z to camera.far
+
+			vSunDirection = normalize( sunPosition );
+
+			vSunE = sunIntensity( vSunDirection.y );
+
+			vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );
+
+			float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );
+
+			// extinction (absorption + out scattering)
+			// rayleigh coefficients
+			vBetaR = totalRayleigh * rayleighCoefficient;
+
+			// mie coefficients
+			vBetaM = totalMie( turbidity ) * mieCoefficient;
+
+		}`,
+  fragmentShader: `
+		varying vec3 vWorldPosition;
+		varying vec3 vSunDirection;
+		varying vec3 vBetaR;
+		varying vec3 vBetaM;
+		varying float vSunE;
+
+		uniform float mieDirectionalG;
+		uniform float cloudScale;
+		uniform float cloudSpeed;
+		uniform float cloudCoverage;
+		uniform float cloudDensity;
+		uniform float cloudElevation;
+		uniform float showSunDisc;
+		uniform float time;
+
+		// gradient at a lattice corner; sinless hash so every GPU produces the same clouds
+		vec2 gradient( vec2 i ) {
+			vec3 p = fract( i.xyx * vec3( 0.1031, 0.1030, 0.0973 ) );
+			p += dot( p, p.yzx + 33.33 );
+			return fract( ( p.xx + p.yz ) * p.zy ) * 2.0 - 1.0;
+		}
+
+		// 2D gradient noise: isotropic lobes like Perlin at value-noise cost
+		float noise( vec2 p ) {
+			vec2 i = floor( p );
+			vec2 f = fract( p );
+			vec2 u = f * f * f * ( f * ( f * 6.0 - 15.0 ) + 10.0 ); // quintic fade
+			float a = dot( gradient( i ), f );
+			float b = dot( gradient( i + vec2( 1.0, 0.0 ) ), f - vec2( 1.0, 0.0 ) );
+			float c = dot( gradient( i + vec2( 0.0, 1.0 ) ), f - vec2( 0.0, 1.0 ) );
+			float d = dot( gradient( i + vec2( 1.0, 1.0 ) ), f - vec2( 1.0, 1.0 ) );
+			return mix( mix( a, b, u.x ), mix( c, d, u.x ), u.y ) * 1.6; // ~[-1,1]
+		}
+
+		// fbm; per-octave drift makes clouds billow instead of scrolling as a rigid stamp
+		float fbm( vec2 p, float drift ) {
+			float result = 0.0;
+			float amplitude = 1.0;
+			for ( int i = 0; i < 4; i ++ ) {
+				result += amplitude * noise( p );
+				amplitude *= 0.5;
+				p = p * 2.0 + drift;
+			}
+			return result;
+		}
+
+		// constants for atmospheric scattering
+		const float pi = 3.141592653589793238462643383279502884197169;
+
+		const float n = 1.0003; // refractive index of air
+		const float N = 2.545E25; // number of molecules per unit volume for air at 288.15K and 1013mb (sea level -45 celsius)
+
+		// optical length at zenith for molecules
+		const float rayleighZenithLength = 8.4E3;
+		const float mieZenithLength = 1.25E3;
+		// 66 arc seconds -> degrees, and the cosine of that
+		const float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;
+
+		// 3.0 / ( 16.0 * pi )
+		const float THREE_OVER_SIXTEENPI = 0.05968310365946075;
+		// 1.0 / ( 4.0 * pi )
+		const float ONE_OVER_FOURPI = 0.07957747154594767;
+
+		float rayleighPhase( float cosTheta ) {
+			return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );
+		}
+
+		float hgPhase( float cosTheta, float g ) {
+			float g2 = pow( g, 2.0 );
+			float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );
+			return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );
+		}
+
+		void main() {
+
+			vec3 direction = normalize( vWorldPosition - cameraPosition );
+
+			// optical length
+			// cutoff angle at 90 to avoid singularity in next formula.
+			float zenithAngle = acos( max( 0.0, direction.y ) );
+			float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );
+			float sR = rayleighZenithLength * inverse;
+			float sM = mieZenithLength * inverse;
+
+			// combined extinction factor
+			vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );
+
+			// in scattering
+			float cosTheta = dot( direction, vSunDirection );
+
+			float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );
+			vec3 betaRTheta = vBetaR * rPhase;
+
+			float mPhase = hgPhase( cosTheta, mieDirectionalG );
+			vec3 betaMTheta = vBetaM * mPhase;
+
+			vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );
+			Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - vSunDirection.y, 5.0 ), 0.0, 1.0 ) );
+
+			// nightsky
+			float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]
+			float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]
+			vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );
+			vec3 L0 = vec3( 0.1 ) * Fex;
+
+			// composition + solar disc
+			float sundisc = clamp( ( cosTheta - sunAngularDiameterCos ) * 50000.0, 0.0, 1.0 ) * showSunDisc;
+			vec3 sundiscColor = ( 760.0 * sundisc ) * min( vSunE * Fex, 80.0 );
+
+			vec3 texColor = ( Lin + L0 ) * 0.04 + sundiscColor + vec3( 0.0, 0.0003, 0.00075 );
+
+			// Clouds
+			if ( direction.y > 0.0 && cloudCoverage > 0.0 ) {
+
+				// Project to cloud plane (higher elevation = clouds appear lower/closer)
+				float elevation = mix( 1.0, 0.1, cloudElevation );
+				vec2 cloudUV = direction.xz / ( direction.y * elevation );
+				cloudUV *= cloudScale;
+				cloudUV += time * cloudSpeed;
+
+				// Cloud density field
+				float evolve = time * cloudSpeed * 300.0;
+				float cloudNoise = clamp( fbm( cloudUV * 1000.0, evolve ) * 0.7 + 0.5, 0.0, 1.0 );
+
+				// Large-scale coverage variation: clear gaps next to dense banks
+				float region = noise( cloudUV * 300.0 ) * 0.37 + 0.5;
+				float cov = clamp( cloudCoverage + ( region - 0.5 ) * 0.6, 0.0, 1.0 );
+
+				// Carve clouds where noise rises above the coverage level
+				float threshold = 1.0 - cov;
+				float cloudMask = smoothstep( threshold, threshold + 0.3, cloudNoise );
+
+				// Fade clouds near horizon (adjusted by elevation)
+				float horizonFade = smoothstep( 0.0, 0.03 + 0.06 * cloudElevation, direction.y );
+				cloudMask *= horizonFade;
+
+				// Cloud lighting from the sky's own radiance
+				float dayFactor = smoothstep( -0.08, 0.3, vSunDirection.y );
+				vec3 sunColor = vSunE * Fex * 0.22 * 0.04; // 0.22 ~ albedo/pi, 0.04 = exposure; the aerial composite adds the eye-leg extinction
+				vec3 skyAmbient = Lin * 0.04 + vec3( 0.0, 0.0003, 0.00075 );
+
+				// Beer-powder self-shadow from the sampled density
+				float depth = max( 0.0, cloudNoise - threshold );
+				float beer = exp( depth * -4.0 );
+				float powder = 1.0 - beer * beer; // beer*beer == exp(-8*depth)
+				float shade = mix( 0.45, 1.0, clamp( beer * powder * 2.6, 0.0, 1.0 ) ); // 2.6 = 1/0.385, normalizes beer*powder peak to 1
+
+				// Henyey-Greenstein forward lobe ( g = 0.7 ): silver lining on rims toward the sun
+				float silver = clamp( 0.51 / pow( 1.49 - cosTheta * 1.4, 1.5 ), 0.0, 3.0 ); // 0.51=1-g^2, 1.49=1+g^2, 1.4=2g
+				float edge = cloudMask * ( 1.0 - cloudMask ) * 4.0;
+
+				vec3 cloudColor = skyAmbient + sunColor * shade;
+				cloudColor += sunColor * silver * edge * 0.6;
+				cloudColor *= max( dayFactor, 0.03 );
+
+				// Cloud opacity via Beer's law: density sets how solid the clouds get
+				float alpha = ( 1.0 - exp( depth * cloudDensity * -12.0 ) ) * horizonFade;
+
+				// Occlude the sun disc/glow behind opaque cloud
+				texColor -= L0 * 0.04 * alpha;
+
+				// Composite through the atmosphere so distant clouds dissolve into haze
+				vec3 cloudAerial = mix( texColor, cloudColor, Fex );
+				texColor = mix( texColor, cloudAerial, alpha );
+
+			}
+
+			gl_FragColor = vec4( texColor, 1.0 );
+
+			#include <tonemapping_fragment>
+			#include <colorspace_fragment>
+
+		}`,
+};
+var R7 = {
+  Float32Array,
+  Float64Array,
+  Int32Array,
+  Uint32Array,
+  Int16Array,
+  Uint16Array,
+  Uint8Array,
+  Int8Array,
+};
+function _a(o) {
+  let t = new Uint8Array(o),
+    e = new DataView(t.buffer, t.byteOffset).getUint32(0, !0),
+    s = JSON.parse(new TextDecoder().decode(t.subarray(4, 4 + e))),
+    n = t.byteOffset + 4 + e,
+    i = { meta: s.meta };
+  for (let [a, [r, l, c, h]] of Object.entries(s.arrays))
+    i[a] = h
+      ? jut(
+          R7[r],
+          t.subarray(
+            n - t.byteOffset + l,
+            n - t.byteOffset + l + c * R7[r].BYTES_PER_ELEMENT,
+          ),
+          c,
+          h,
+        )
+      : new R7[r](t.buffer, n + l, c);
+  return i;
 }
-function j5(i = {}) {
-  let t = i.curve ?? 0;
+var qut = (o) => {
+  let t = /^(F?)D(\d*)S$/.exec(o || "");
+  return t ? { f: !!t[1], k: +(t[2] || 1) } : null;
+};
+function jut(o, t, e, s) {
+  let n = o.BYTES_PER_ELEMENT,
+    i = new o(e),
+    a = new Uint8Array(i.buffer);
+  for (let l = 0; l < n; l++) {
+    let c = l * e;
+    for (let h = 0, f = l; h < e; h++, f += n) a[f] = t[c + h];
+  }
+  let r = qut(s);
+  if (r) {
+    let l = r.f ? new Int32Array(i.buffer) : i,
+      c = r.k;
+    for (let h = c; h < e; h++) l[h] = l[h] + l[h - c];
+  }
+  return i;
+}
+es();
+var $ut = [
+    0, 0.6, 1.5, 3, 5, 8, 12, 18, 26, 36, 50, 70, 95, 130, 175, 235, 310,
+  ],
+  Xut = [1.5, 5, 12, 26, 50, 95, 175],
+  Kut = (o) => Math.min(8, Math.max(1, Math.round(o / 10)));
+function Yut(o) {
+  let t = [];
+  for (let e of $ut) e < o - 0.6 && t.push(e);
+  return (t.push(Math.max(0, o - 0.2)), t);
+}
+function A7(o) {
+  let t = o,
+    e = t.meta;
+  if (e.field.delta && t.field) {
+    let s = t.field,
+      n = e.field.w,
+      i = e.field.h;
+    for (let a = 0; a < i; a++) {
+      let r = 0;
+      for (let l = a * n, c = l + n; l < c; l++)
+        ((r = (r + s[l]) & 255), (s[l] = r));
+    }
+    ((t.field = s), (e.field = { ...e.field, delta: !1 }));
+  }
   return {
-    ...i,
-    saturation: (1 + (i.saturation ?? 0)) * 1.22 - 1,
-    vibrance: (i.vibrance ?? 0) + 0.14,
-    curve: t + (1 - t) * 0.08,
+    meta: e,
+    field: t.field || null,
+    bOff: t.bOff,
+    wall: t.wall,
+    roof: t.roof,
+    lmOff: t.lmOff,
+    lmData: t.lmData,
+    lmKeys: e.lm || [],
   };
 }
-as();
-var Q6 = class extends _e {
-  constructor(t, e = {}) {
-    (super(t), (this.isWater = !0));
-    let s = this,
-      n = e.textureWidth !== void 0 ? e.textureWidth : 512,
-      o = e.textureHeight !== void 0 ? e.textureHeight : 512,
-      a = e.clipBias !== void 0 ? e.clipBias : 0,
-      r = e.alpha !== void 0 ? e.alpha : 1,
-      l = e.time !== void 0 ? e.time : 0,
-      c = e.waterNormals !== void 0 ? e.waterNormals : null,
-      h =
-        e.sunDirection !== void 0
-          ? e.sunDirection
-          : new xt(0.70707, 0.70707, 0),
-      f = new $t(e.sunColor !== void 0 ? e.sunColor : 16777215),
-      u = new $t(e.waterColor !== void 0 ? e.waterColor : 8355711),
-      d = e.eye !== void 0 ? e.eye : new xt(0, 0, 0),
-      p = e.distortionScale !== void 0 ? e.distortionScale : 20,
-      m = e.side !== void 0 ? e.side : Fa,
-      g = e.fog !== void 0 ? e.fog : !1,
-      b = new x0(),
-      x = new xt(),
-      v = new xt(),
-      y = new xt(),
-      M = new ye(),
-      S = new xt(0, 0, -1),
-      w = new fi(),
-      z = new xt(),
-      _ = new xt(),
-      R = new fi(),
-      T = new ye(),
-      E = new Di(),
-      A = new Vo(n, o, { type: aa }),
-      C = {
-        name: "MirrorShader",
-        uniforms: Lh.merge([
-          Cs.fog,
-          Cs.lights,
-          {
-            normalSampler: { value: null },
-            mirrorSampler: { value: null },
-            alpha: { value: 1 },
-            time: { value: 0 },
-            size: { value: 1 },
-            distortionScale: { value: 20 },
-            textureMatrix: { value: new ye() },
-            sunColor: { value: new $t(8355711) },
-            sunDirection: { value: new xt(0.70707, 0.70707, 0) },
-            eye: { value: new xt() },
-            waterColor: { value: new $t(5592405) },
-          },
-        ]),
-        vertexShader: `
-				uniform mat4 textureMatrix;
-				uniform float time;
-
-				varying vec4 mirrorCoord;
-				varying vec4 worldPosition;
-
-				#include <common>
-				#include <fog_pars_vertex>
-				#include <shadowmap_pars_vertex>
-				#include <logdepthbuf_pars_vertex>
-
-				void main() {
-					mirrorCoord = modelMatrix * vec4( position, 1.0 );
-					worldPosition = mirrorCoord.xyzw;
-					mirrorCoord = textureMatrix * mirrorCoord;
-					vec4 mvPosition =  modelViewMatrix * vec4( position, 1.0 );
-					gl_Position = projectionMatrix * mvPosition;
-
-				#include <beginnormal_vertex>
-				#include <defaultnormal_vertex>
-				#include <logdepthbuf_vertex>
-				#include <fog_vertex>
-				#include <shadowmap_vertex>
-			}`,
-        fragmentShader: `
-				uniform sampler2D mirrorSampler;
-				uniform float alpha;
-				uniform float time;
-				uniform float size;
-				uniform float distortionScale;
-				uniform sampler2D normalSampler;
-				uniform vec3 sunColor;
-				uniform vec3 sunDirection;
-				uniform vec3 eye;
-				uniform vec3 waterColor;
-
-				varying vec4 mirrorCoord;
-				varying vec4 worldPosition;
-
-				vec4 getNoise( vec2 uv ) {
-					vec2 uv0 = ( uv / 103.0 ) + vec2(time / 17.0, time / 29.0);
-					vec2 uv1 = uv / 107.0-vec2( time / -19.0, time / 31.0 );
-					vec2 uv2 = uv / vec2( 8907.0, 9803.0 ) + vec2( time / 101.0, time / 97.0 );
-					vec2 uv3 = uv / vec2( 1091.0, 1027.0 ) - vec2( time / 109.0, time / -113.0 );
-					vec4 noise = texture2D( normalSampler, uv0 ) +
-						texture2D( normalSampler, uv1 ) +
-						texture2D( normalSampler, uv2 ) +
-						texture2D( normalSampler, uv3 );
-					return noise * 0.5 - 1.0;
-				}
-
-				void sunLight( const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse, inout vec3 diffuseColor, inout vec3 specularColor ) {
-					vec3 reflection = normalize( reflect( -sunDirection, surfaceNormal ) );
-					float direction = max( 0.0, dot( eyeDirection, reflection ) );
-					specularColor += pow( direction, shiny ) * sunColor * spec;
-					diffuseColor += max( dot( sunDirection, surfaceNormal ), 0.0 ) * sunColor * diffuse;
-				}
-
-				#include <common>
-				#include <packing>
-				#include <bsdfs>
-				#include <fog_pars_fragment>
-				#include <logdepthbuf_pars_fragment>
-				#include <lights_pars_begin>
-				#include <shadowmap_pars_fragment>
-				#include <shadowmask_pars_fragment>
-
-				void main() {
-
-					#include <logdepthbuf_fragment>
-					vec4 noise = getNoise( worldPosition.xz * size );
-					vec3 surfaceNormal = normalize( noise.xzy * vec3( 1.5, 1.0, 1.5 ) );
-
-					vec3 diffuseLight = vec3(0.0);
-					vec3 specularLight = vec3(0.0);
-
-					vec3 worldToEye = eye-worldPosition.xyz;
-					vec3 eyeDirection = normalize( worldToEye );
-					sunLight( surfaceNormal, eyeDirection, 100.0, 2.0, 0.5, diffuseLight, specularLight );
-
-					float distance = length(worldToEye);
-
-					vec2 distortion = surfaceNormal.xz * ( 0.001 + 1.0 / distance ) * distortionScale;
-					vec3 reflectionSample = vec3( texture2D( mirrorSampler, mirrorCoord.xy / mirrorCoord.w + distortion ) );
-
-					float theta = max( dot( eyeDirection, surfaceNormal ), 0.0 );
-					float rf0 = 0.02;
-					float reflectance = rf0 + ( 1.0 - rf0 ) * pow( ( 1.0 - theta ), 5.0 );
-					vec3 scatter = max( 0.0, dot( surfaceNormal, eyeDirection ) ) * waterColor;
-					vec3 albedo = mix( ( sunColor * diffuseLight * 0.3 + scatter ) * getShadowMask(), reflectionSample + specularLight, reflectance );
-					vec3 outgoingLight = albedo;
-					gl_FragColor = vec4( outgoingLight, alpha );
-
-					#include <tonemapping_fragment>
-					#include <colorspace_fragment>
-					#include <fog_fragment>	
-				}`,
-      },
-      P = new Bo({
-        name: C.name,
-        uniforms: Lh.clone(C.uniforms),
-        vertexShader: C.vertexShader,
-        fragmentShader: C.fragmentShader,
-        lights: !0,
-        side: m,
-        fog: g,
-      });
-    ((P.uniforms.mirrorSampler.value = A.texture),
-      (P.uniforms.textureMatrix.value = T),
-      (P.uniforms.alpha.value = r),
-      (P.uniforms.time.value = l),
-      (P.uniforms.normalSampler.value = c),
-      (P.uniforms.sunColor.value = f),
-      (P.uniforms.waterColor.value = u),
-      (P.uniforms.sunDirection.value = h),
-      (P.uniforms.distortionScale.value = p),
-      (P.uniforms.eye.value = d),
-      (s.material = P),
-      (s.onBeforeRender = function (I, L, F) {
-        if (
-          (v.setFromMatrixPosition(s.matrixWorld),
-          y.setFromMatrixPosition(F.matrixWorld),
-          M.extractRotation(s.matrixWorld),
-          x.set(0, 0, 1),
-          x.applyMatrix4(M),
-          z.subVectors(v, y),
-          z.dot(x) > 0)
-        )
-          return;
-        (z.reflect(x).negate(),
-          z.add(v),
-          M.extractRotation(F.matrixWorld),
-          S.set(0, 0, -1),
-          S.applyMatrix4(M),
-          S.add(y),
-          _.subVectors(v, S),
-          _.reflect(x).negate(),
-          _.add(v),
-          E.position.copy(z),
-          E.up.set(0, 1, 0),
-          E.up.applyMatrix4(M),
-          E.up.reflect(x),
-          E.lookAt(_),
-          (E.far = F.far),
-          E.updateMatrixWorld(),
-          E.projectionMatrix.copy(F.projectionMatrix),
-          T.set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1),
-          T.multiply(E.projectionMatrix),
-          T.multiply(E.matrixWorldInverse),
-          b.setFromNormalAndCoplanarPoint(x, v),
-          b.applyMatrix4(E.matrixWorldInverse),
-          w.set(b.normal.x, b.normal.y, b.normal.z, b.constant));
-        let N = E.projectionMatrix;
-        ((R.x = (Math.sign(w.x) + N.elements[8]) / N.elements[0]),
-          (R.y = (Math.sign(w.y) + N.elements[9]) / N.elements[5]),
-          (R.z = -1),
-          (R.w = (1 + N.elements[10]) / N.elements[14]),
-          w.multiplyScalar(2 / w.dot(R)),
-          (N.elements[2] = w.x),
-          (N.elements[6] = w.y),
-          (N.elements[10] = w.z + 1 - a),
-          (N.elements[14] = w.w),
-          d.setFromMatrixPosition(F.matrixWorld));
-        let B = I.getRenderTarget(),
-          H = I.xr.enabled,
-          O = I.shadowMap.autoUpdate;
-        ((s.visible = !1),
-          (I.xr.enabled = !1),
-          (I.shadowMap.autoUpdate = !1),
-          I.setRenderTarget(A),
-          I.state.buffers.depth.setMask(!0),
-          I.autoClear === !1 && I.clear(),
-          I.render(L, E),
-          (s.visible = !0),
-          (I.xr.enabled = H),
-          (I.shadowMap.autoUpdate = O),
-          I.setRenderTarget(B));
-        let D = F.viewport;
-        D !== void 0 && I.state.viewport(D);
-      }));
-  }
-};
-as();
-var V5 = class i extends _e {
-  constructor() {
-    let t = i.SkyShader,
-      e = new Bo({
-        name: t.name,
-        uniforms: Lh.clone(t.uniforms),
-        vertexShader: t.vertexShader,
-        fragmentShader: t.fragmentShader,
-        side: ia,
-        depthWrite: !1,
-      });
-    (super(new qs(1, 1, 1), e), (this.isSky = !0));
-  }
-};

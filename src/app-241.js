@@ -1,265 +1,322 @@
 // app 241 — math
-// Lines 123617-123879 of readable/app.pretty.js (statement-aligned).
-function TC(i = "hedge", t = 9, { W: e, y0: s = 0 } = {}) {
-  let n = [];
-  for (let [o, [a, r]] of [
-    [1, 1],
-    [0.45, 1.6],
-    [0.2, 2.6],
-  ].entries()) {
-    let l = $c(t + o),
-      c = new la(),
-      h = new la(),
-      f = e || (i === "hedge" ? 0.9 : 1.3),
-      u = i === "hedge" ? 1.1 : i === "flower" ? 0.75 : 1.2,
-      d = i === "hedge" ? 1 : 1.3;
-    i !== "flower" &&
-      ((v, y, M, S, w, z, _) => {
-        let R = [
-          [v, y, M],
-          [S, y, M],
-          [S, w, M],
-          [v, w, M],
-          [v, y, z],
-          [S, y, z],
-          [S, w, z],
-          [v, w, z],
-        ].map((T) => Vs(...T));
-        for (let [T, E, A, C, P] of [
-          [0, 1, 2, 3, Vs(0, 0, -1)],
-          [5, 4, 7, 6, Vs(0, 0, 1)],
-          [4, 0, 3, 7, Vs(-1, 0, 0)],
-          [1, 5, 6, 2, Vs(1, 0, 0)],
-          [3, 2, 6, 7, Vs(0, 1, 0)],
-        ]) {
-          let I = [T, E, A, C].map((L, F) =>
-            c.v(
-              R[L],
-              P,
-              (0.15 + 0.7 * (F === 1 || F === 2 ? 1 : 0)) / 4,
-              (3.2 + 0.6 * (F < 2 ? 1 : 0)) / 4,
-              _,
-            ),
-          );
-          c.q(I[0], I[1], I[2], I[3]);
-        }
-      })(
-        -f * 0.42,
+// Lines 124138-124457 of readable/app.pretty.js (statement-aligned).
+function oI(o = 61, t = 0) {
+  let e = [],
+    s = s2.mound,
+    n = s % 4,
+    i = s >> 2,
+    a = 0.7,
+    r = 1,
+    l = 2,
+    c = 0.32,
+    h = t
+      ? [
+          [0.8, -0.25],
+          [0.86, 0],
+          [1, 0.3],
+          [1.04, 0.58],
+          [0.92, 0.84],
+          [0.62, 0.97],
+          [0.26, 1],
+          [0, 1],
+        ]
+      : [
+          [0.9, -0.25],
+          [0.94, 0],
+          [0.99, 0.45],
+          [1, 0.8],
+          [0.93, 0.95],
+          [0.66, 1],
+          [0.25, 1],
+          [0, 1],
+        ],
+    f = Sh(o + 7),
+    u = l - c,
+    d = t ? 0.06 : 0.022,
+    p = t ? 0.05 : 0.018,
+    m = [
+      [1, d * (0.6 + 0.4 * f())],
+      [2, d * (0.5 * f() - 0.25)],
+    ],
+    g = [
+      [1, p * (f() - 0.5) * 2],
+      [2, p * (0.5 * f() - 0.25)],
+    ],
+    b = (z, A) =>
+      z.reduce(
+        (T, [E, R]) => T + R * Math.cos((2 * Math.PI * E * (A + l / 2)) / u),
         0,
-        -d * 0.5,
-        f * 0.42,
-        u * 0.9,
-        d * 0.5,
-        [0.7, 0.7, 0.7, 0],
+      ),
+    v = (z) => 1 + (t ? 0.04 : 0) + b(m, z),
+    x = (z) => 1 + b(g, z),
+    y = (z) => {
+      let A = z - (l / 2 - c);
+      return A <= 0 ? 1 : Math.sqrt(Math.max(0, 1 - (A / c) ** 2));
+    },
+    M = h.length - 1,
+    S = (z, A) => {
+      let T = z < 0.5 ? -1 : 1,
+        E = (z < 0.5 ? z : 1 - z) * 2 * M,
+        R = Math.min(M - 1, Math.floor(E)),
+        P = E - R,
+        C = h[R][0] + (h[R + 1][0] - h[R][0]) * P,
+        I = h[R][1] + (h[R + 1][1] - h[R][1]) * P,
+        L = y(A),
+        F = Math.max(0.5, L);
+      return Js(
+        ((T * C * a) / 2) * x(A) * F,
+        I * r * v(A) * (0.72 + 0.28 * F) * (I > 0, 1),
+        A,
       );
-    let m = i === "flower" ? 13 : 12,
-      g = Math.round((i === "hedge" ? 26 : i === "flower" ? 16 : 22) * a),
-      b = Vs(0, u * 0.45, 0);
-    for (let v = 0; v < g; v++) {
-      let y, M;
-      if (i === "hedge") {
-        let T = Math.floor(l() * 3),
-          E = (l() - 0.5) * d;
-        if (T === 0)
-          ((y = Vs((l() - 0.5) * f * 0.9, u * (0.92 + l() * 0.1), E)),
-            (M = Vs(0, 1, 0)));
-        else {
-          let A = T === 1 ? 1 : -1;
-          ((y = Vs(A * f * (0.45 + l() * 0.05), u * (0.1 + l() * 0.8), E)),
-            (M = Vs(A, 0.2, 0).normalize()));
-        }
-      } else {
-        let T = Vs(l() * 2 - 1, l() * 0.9, l() * 2 - 1).normalize();
-        ((y = b.clone().add(Vs(T.x * f * 0.55, T.y * u * 0.6, T.z * d * 0.55))),
-          (M = T));
-      }
-      let S =
-          (i === "hedge" ? 0.62 : i === "flower" ? 0.7 : 0.8) *
-          r *
-          (0.85 + l() * 0.3),
-        w = i === "flower" ? oi.clone() : Vc(M, l).lerp(oi, 0.3).normalize(),
-        z = w.clone().cross(M).normalize(),
-        _ = y.clone().addScaledVector(w, -S * 0.5),
-        R = [];
-      for (let T of [0, 1])
-        for (let E of [-0.5, 0.5]) {
-          let A = _.clone()
-              .addScaledVector(w, T * S)
-              .addScaledVector(z, E * S),
-            C = 0.55 + 0.45 * Math.min(1, A.y / u + 0.2);
-          R.push(
-            h.v(
-              A,
-              M.clone().lerp(A.clone().sub(b).normalize(), 0.5).normalize(),
-              ((m % 4) + 0.02 + 0.96 * (E + 0.5)) / 4,
-              ((m >> 2) + 0.99 - 0.98 * T) / 4,
-              [C, C, C, 0.6],
+    },
+    w = (z, A) => {
+      let T = S(Math.min(1, z + 0.01), A).sub(S(Math.max(0, z - 0.01), A)),
+        R = S(z, Math.min(l / 2, A + 0.01))
+          .sub(S(z, Math.max(-l / 2, A - 0.01)))
+          .cross(T)
+          .normalize(),
+        P = S(z, A);
+      return (R.x * P.x + R.y * (P.y - r * 0.3) < 0 && R.negate(), R);
+    },
+    _ = (z, A) =>
+      z
+        .clone()
+        .multiplyScalar(0.6)
+        .add(
+          Js(A.x / a, (A.y - r * 0.4) / r, (A.z / l) * 0.6).multiplyScalar(0.8),
+        )
+        .normalize();
+  for (let z of [0, 1, 2]) {
+    let A = Sh(o),
+      T = new xa(),
+      E = new xa();
+    {
+      let O = [16, 8, 6][z],
+        B = [8, 4, 2][z],
+        H = [];
+      for (let N = 0; N <= B; N++) {
+        let D = -l / 2 + (l * N) / B,
+          U = [];
+        for (let G = 0; G <= O; G++) {
+          let W = G / O,
+            V = S(W, D),
+            $ = 0.26 + 0.2 * Math.min(1, V.y / r);
+          U.push(
+            T.v(
+              V,
+              _(w(W, D), V),
+              (0.15 + 0.7 * (N / B)) / 4,
+              (3 + 0.2 + 0.6 * W) / 4,
+              [$, $ * 1.04, $ * 0.9, 0],
             ),
           );
         }
-      h.q(R[0], R[1], R[3], R[2]);
+        H.push(U);
+      }
+      for (let N = 0; N < B; N++)
+        for (let D = 0; D < O; D++)
+          T.q(H[N][D], H[N][D + 1], H[N + 1][D + 1], H[N + 1][D]);
+      for (let [N, D] of [
+        [0, -1],
+        [B, 1],
+      ]) {
+        let U = (D * l) / 2,
+          G = Js(0, r * 0.28, U),
+          W = T.v(
+            G,
+            Js(0, 0.3, D).normalize(),
+            0.5 / 4,
+            3.5 / 4,
+            [0.3, 0.31, 0.27, 0],
+          );
+        for (let V = 0; V < O; V++)
+          D < 0 ? T.t(W, H[N][V + 1], H[N][V]) : T.t(W, H[N][V], H[N][V + 1]);
+      }
     }
-    let x = [{ mat: "leaf", geo: h.geo() }];
-    if ((c.count && x.unshift({ mat: "shrubcore", geo: c.geo() }), s))
-      for (let v of x) v.geo.translate(0, s, 0);
-    n.push(x);
-  }
-  return n;
-}
-var un = {
-    pitto: 0,
-    escal: 1,
-    flax: 2,
-    rosem: 3,
-    fern: 4,
-    ivy: 5,
-    ice: 6,
-    lawn: 7,
-    wild: 8,
-    coyote: 9,
-    juniper: 10,
-    hydr: 11,
-    box: 12,
-    agap: 13,
-    clover: 14,
-    litter: 15,
-  },
-  dm = { mound: 0, clump: 2, mat: 5 };
-function pm(i = "mound", t = 21) {
-  let e = dm[i],
-    s = e % 4,
-    n = e >> 2,
-    o = (s + 0.008) / 4,
-    a = (s + 0.992) / 4,
-    r = (n + 0.008) / 4,
-    l = (n + 0.992) / 4,
-    c = [];
-  for (let h of [0, 1, 2]) {
-    let f = $c(t),
-      u = new la(),
-      d = (
-        g,
-        b,
-        x,
-        v,
-        y,
-        M,
-        {
-          u0: S = 0,
-          u1: w = 1,
-          v0: z = 0,
-          v1: _ = 1,
-          ao0: R = 0.5,
-          tr: T = 0.8,
-        } = {},
-      ) => {
-        let E = [];
-        for (let [A, C] of [
-          [0, _],
-          [0.5, (z + _) / 2],
-          [1, z],
-        ])
-          for (let P of [-0.5, 0.5]) {
-            let I = g
-                .clone()
-                .addScaledVector(b, P * v)
-                .addScaledVector(x, A * y),
-              L = b.clone().cross(x).normalize(),
-              F = I.clone().sub(M);
-            ((F.y = Math.max(F.y, 0) * 1.4 + 0.15), F.normalize());
-            let N = L.multiplyScalar(L.dot(F) < 0 ? -0.3 : 0.3)
-                .addScaledVector(F, 0.7)
-                .normalize(),
-              B = R + (1 - R) * ul(0, 0.8, A);
-            E.push(
-              u.v(I, N, o + (a - o) * (P < 0 ? S : w), r + (l - r) * C, [
-                B,
-                B,
-                1,
-                T,
-              ]),
+    let R = (n + 0.2) / 4,
+      P = (n + 0.8) / 4,
+      C = (i + 0.08) / 4,
+      I = (i + 0.62) / 4,
+      L = 3,
+      F = (O, B, H, N) => {
+        let D = [],
+          U = H / L,
+          G = A() < 0.5,
+          W = 0.04 + A() * 0.04;
+        for (let V = 0; V <= N; V++)
+          for (let $ = 0; $ <= N; $++) {
+            let J = Math.min(1, Math.max(0, O + ($ / N - 0.5) * U)),
+              X = Math.min(
+                l / 2 + 0.05,
+                Math.max(-l / 2 - 0.05, B + (V / N - 0.5) * H),
+              ),
+              tt = S(J, X),
+              Z = w(J, X),
+              q = Math.max(Math.abs($ / N - 0.5), Math.abs(V / N - 0.5)) * 2,
+              j = tt.addScaledVector(Z, W + 0.03 * q),
+              K = 0.5 * (0.6 + 0.4 * Math.min(1, Math.max(0, j.y) / r));
+            D.push(
+              E.v(
+                j,
+                _(Z, j),
+                (G ? 1 - V / N : V / N) * (P - R) + R,
+                C + (I - C) * ($ / N),
+                [K, K, 1, 0.5 + 0.4 * (1 - q)],
+              ),
             );
           }
-        (u.q(E[0], E[1], E[3], E[2]), u.q(E[2], E[3], E[5], E[4]));
-      },
-      p = Vs(0, 0.35, 0),
-      m = f() * Math.PI;
-    if (i === "mound") {
-      let g = [4, 3, 2][h];
-      for (let x = 0; x < g; x++) {
-        let v = m + (x / g) * Math.PI + (f() - 0.5) * 0.25,
-          y = Vs(Math.cos(v), 0, Math.sin(v)),
-          M = (f() - 0.5) * 0.25,
-          S = oi.clone().applyAxisAngle(y, M),
-          w = 1.35 + f() * 0.3;
-        d(
-          Vs((f() - 0.5) * 0.15, -0.04, (f() - 0.5) * 0.15),
-          y,
-          S,
-          w,
-          w * (0.8 + f() * 0.1),
-          p,
-          { ao0: 0.45 },
-        );
-      }
-      let b = [6, 3, 0][h];
-      for (let x = 0; x < b; x++) {
-        let v = m + (x / b) * Math.PI * 2 + f() * 0.5,
-          y = Vs(Math.cos(v), 0, Math.sin(v)),
-          M = Vs(-y.z, 0, y.x),
-          S = 0.95 + f() * 0.3,
-          w = oi
-            .clone()
-            .multiplyScalar(Math.cos(S))
-            .addScaledVector(y, Math.sin(S));
-        d(
-          Vs(0, 0.55 + f() * 0.15, 0).addScaledVector(y, -0.25),
-          M,
-          w,
-          0.95,
-          0.8,
-          p,
-          { v0: 0, v1: 0.75, ao0: 0.7, tr: 1 },
-        );
-      }
-    } else if (i === "clump") {
-      let g = [5, 3, 2][h];
-      for (let b = 0; b < g; b++) {
-        let x = m + (b / g) * Math.PI + (f() - 0.5) * 0.3,
-          v = Vs(Math.cos(x), 0, Math.sin(x)),
-          y = Vs(-v.z, 0, v.x).multiplyScalar(f() < 0.5 ? -1 : 1),
-          M = b < 2 ? (f() - 0.5) * 0.12 : 0.22 + f() * 0.15,
-          S = oi
-            .clone()
-            .multiplyScalar(Math.cos(M))
-            .addScaledVector(y, Math.sin(M));
-        d(Vs(0, -0.03, 0), v, S, b < 2 ? 1.1 : 0.9, b < 2 ? 1.1 : 0.95, p, {
-          ao0: 0.55,
-        });
-      }
-    } else {
-      let g = [6, 4, 3][h];
-      for (let b = 0; b < g; b++) {
-        let x = m + (b / g) * Math.PI * 2 + f() * 0.4,
-          v = Vs(Math.cos(x), 0, Math.sin(x)),
-          y = Vs(-v.z, 0, v.x),
-          M = 0.9 + f() * 0.35,
-          S = oi
-            .clone()
-            .multiplyScalar(Math.cos(M))
-            .addScaledVector(v, Math.sin(M));
-        d(
-          v.clone().multiplyScalar(-0.2).setY(0.02),
-          y,
-          S,
-          1.5,
-          0.95,
-          Vs(0, -0.3, 0),
-          { ao0: 0.7, tr: 0.6 },
-        );
-      }
+        for (let V = 0; V < N; V++)
+          for (let $ = 0; $ < N; $++) {
+            let J = V * (N + 1) + $;
+            E.q(D[J], D[J + 1], D[J + N + 2], D[J + N + 1]);
+          }
+      };
+    {
+      let O = [0.5, 1, 1.15][z],
+        B = O * 0.75,
+        H = z < 2 ? 2 : 1;
+      for (let N = -l / 2 + B * 0.4; N < l / 2; N += B)
+        for (let D = 0.04 + (B / L) * 0.5; D < 0.97; D += B / L)
+          F(
+            D + (A() - 0.5) * 0.02,
+            N + (A() - 0.5) * B * 0.3,
+            O * (0.9 + A() * 0.2),
+            H,
+          );
     }
-    c.push([{ mat: "shrubleaf", geo: u.geo() }]);
+    e.push([
+      { mat: "shrubcore", geo: T.geo() },
+      { mat: "shrubleaf", geo: E.geo() },
+    ]);
   }
-  return c;
+  return e;
 }
+function lJ(o = 63) {
+  let t = new xa(),
+    e = [0.5, 0.48, 0.45, 1];
+  return (
+    ((i, a, r, l, c, h) => {
+      let f = [
+        [i, a, r],
+        [l, a, r],
+        [l, c, r],
+        [i, c, r],
+        [i, a, h],
+        [l, a, h],
+        [l, c, h],
+        [i, c, h],
+      ].map((u) => Js(...u));
+      for (let [u, d, p, m, g] of [
+        [0, 1, 2, 3, Js(0, 0, -1)],
+        [5, 4, 7, 6, Js(0, 0, 1)],
+        [4, 0, 3, 7, Js(-1, 0, 0)],
+        [1, 5, 6, 2, Js(1, 0, 0)],
+        [3, 2, 6, 7, Js(0, 1, 0)],
+      ]) {
+        let b = [u, d, p, m].map((v) => t.v(f[v], g, 0.5, 0.5, e));
+        t.q(b[0], b[1], b[2], b[3]);
+      }
+    })(-0.25, 0, -0.65, 0.25, 0.5, 0.65),
+    n2("mound", o)
+      .map((i) =>
+        i.map(({ mat: a, geo: r }) => {
+          let l = r.clone();
+          return (
+            l.scale(0.42, 0.5, 0.9),
+            l.translate(0, 0.45, 0),
+            { mat: a, geo: l }
+          );
+        }),
+      )
+      .map((i, a) => [{ mat: "paint", geo: t.geo() }, ...i])
+  );
+}
+function cJ(o = 65) {
+  let t = [],
+    e = s2.mat,
+    s = e % 4,
+    n = e >> 2,
+    i = (s + 0.02) / 4,
+    a = (s + 0.98) / 4,
+    r = (n + 0.02) / 4,
+    l = (n + 0.98) / 4;
+  for (let c of [0, 1, 2]) {
+    let h = Sh(o),
+      f = new xa(),
+      u = [7, 4, 2][c];
+    for (let d = 0; d < u; d++) {
+      let p = (d / Math.max(1, u - 1) - 0.5) * 0.7,
+        m = 0.55 + 0.3 * h(),
+        g = -0.02,
+        b = 0.55 + 0.45 * h() * (1 - Math.abs(p)),
+        v = 0.02 + 0.03 * h(),
+        x = [];
+      for (let [y, M] of [
+        [g, l],
+        [b, r],
+      ])
+        for (let S of [-0.5, 0.5])
+          x.push(
+            f.v(
+              Js(v + (y > 0.3 ? 0.04 : 0), y, p + S * m),
+              Js(0.85, 0.2, S * 0.4).normalize(),
+              S < 0 ? i : a,
+              M,
+              [0.8, 0.8, 1, 0.5],
+            ),
+          );
+      f.q(x[0], x[1], x[3], x[2]);
+    }
+    t.push([{ mat: "shrubleaf", geo: f.geo() }]);
+  }
+  return t;
+}
+var svt = {
+    north: [
+      [-122.419528, 37.802104, -122.41906, 37.802166],
+      [
+        -122.418924, 37.802166, -122.418908, 37.802174, -122.418874, 37.802172,
+        -122.418841, 37.802175, -122.418805, 37.802187, -122.418777, 37.802193,
+        -122.4187, 37.802203, -122.418667, 37.802208,
+      ],
+      [
+        -122.418667, 37.802208, -122.418643, 37.802206, -122.41861, 37.802206,
+        -122.418577, 37.802211, -122.418561, 37.802214, -122.41839, 37.802247,
+        -122.418283, 37.802251, -122.418093, 37.802273,
+      ],
+    ],
+    south: [
+      [-122.41949, 37.801941, -122.419325, 37.801966],
+      [
+        -122.41924, 37.801976, -122.419184, 37.801983, -122.419066, 37.802004,
+        -122.419036, 37.802006, -122.419012, 37.802007, -122.418985, 37.802011,
+        -122.418972, 37.802012, -122.41896, 37.802014,
+      ],
+      [
+        -122.41896, 37.802014, -122.418876, 37.80202, -122.418807, 37.802031,
+        -122.418764, 37.802041, -122.418725, 37.802048, -122.418672, 37.802055,
+        -122.418565, 37.80206, -122.418467, 37.802071, -122.418379, 37.802089,
+        -122.418347, 37.802094, -122.41832, 37.802096, -122.418296, 37.802095,
+        -122.418271, 37.802092, -122.418244, 37.802092, -122.418115, 37.802109,
+        -122.418057, 37.802129,
+      ],
+    ],
+  },
+  aI = [
+    -122.418858, 37.802196, -122.418866, 37.802146, -122.418497, 37.8022,
+    -122.418601, 37.802185, -122.418797, 37.8022, -122.418747, 37.802207,
+    -122.418628, 37.802226, -122.418769, 37.802057, -122.418806, 37.802163,
+    -122.418985, 37.802, -122.418909, 37.802026, -122.419089, 37.801974,
+    -122.419128, 37.802139, -122.419181, 37.802132, -122.419233, 37.802125,
+    -122.418933, 37.802129, -122.418201, 37.802319, -122.418139, 37.802246,
+    -122.418183, 37.802242, -122.418234, 37.802236,
+  ],
+  $z = 0.5,
+  nvt = 0.8,
+  hJ = 0.155,
+  ivt = 0.32,
+  ovt = 6,
+  Lr = (o, t, e = 0) => {
+    let s = Math.sin(o * 12.9898 + t * 78.233 + e * 37.719) * 43758.5453;
+    return s - Math.floor(s);
+  };

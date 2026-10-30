@@ -1,314 +1,352 @@
 // app 106 — math
-// Lines 80363-80674 of readable/app.pretty.js (statement-aligned).
-var Rft = [0.62, 0.6, 0.56, 0],
-  Pft = [0.58, 0.565, 0.53, 0],
-  HW = [0.42, 0.41, 0.39, 0],
-  DW = [0.7, 0.69, 0.66, 0],
-  n7 = [0.16, 0.19, 0.2, 0];
-function Cft(i, t, e, s, n, o, a, r, l) {
-  let c = [i.ux * s, i.uz * s],
-    h = {},
-    f = [],
-    u = e.y;
-  for (let d = 0.5; d <= 140; d += 2.5) {
-    let p = e.x + c[0] * d,
-      m = e.z + c[1] * d,
-      g = null;
-    for (let b of a.probe(p, m).all) {
-      let x = b.J
-        ? b.J.legs
-            .map(([v]) => v)
-            .find((v) => !v.tunnel && v.name === i.tn.name)
-        : b.E;
-      !x ||
-        x.tunnel ||
-        Math.abs(b.y - u) > 2.5 ||
-        ((!g || b.y < g.y) && (g = { E: x, y: b.y }));
+// Lines 80911-81260 of readable/app.pretty.js (statement-aligned).
+function NP(o, t, e = !1) {
+  let s = o.tunnels?.filter((u) => !u.tn.open);
+  if (!s?.length || !t || t.empty) return 0;
+  let n = t.p.a,
+    i = t.v,
+    a = new Uint8Array(i),
+    r = new Uint8Array(i),
+    l = !1;
+  for (let u of s) {
+    if (u.noClip) continue;
+    let d = (u.tn.shape === "box" ? Gu(u.tn) : ch(u.tn) + hc(u.tn)) + 0.3,
+      p = u.W + wo + 0.3,
+      m = Math.min(u.Ja.x, u.Jb.x) - p,
+      g = Math.max(u.Ja.x, u.Jb.x) + p,
+      b = Math.min(u.Ja.z, u.Jb.z) - p,
+      v = Math.max(u.Ja.z, u.Jb.z) + p;
+    for (let x = 0; x < i; x++) {
+      let y = n[x * 3],
+        M = n[x * 3 + 2];
+      if (y < m || y > g || M < b || M > v) continue;
+      let [S, w] = yp(u, y, M);
+      if (Math.abs(w) > p) continue;
+      let _ = n[x * 3 + 1];
+      if (S > 0 && S < 10 && Math.abs(_ - sl(u, 0)) < 0.35) {
+        ((n[x * 3] -= u.ux * S), (n[x * 3 + 2] -= u.uz * S));
+        continue;
+      }
+      if (S < u.L && S > u.L - 10 && Math.abs(_ - sl(u, u.L)) < 0.35) {
+        let z = u.L - S;
+        ((n[x * 3] += u.ux * z), (n[x * 3 + 2] += u.uz * z));
+        continue;
+      }
+      if (S >= 1 && S <= u.L - 1) {
+        let z = sl(u, S);
+        _ > z - 0.6 &&
+          _ < z + d &&
+          (e && S > lh && S < u.L - lh
+            ? ((n[x * 3 + 1] = z + d), (t.lifted = (t.lifted || 0) + 1))
+            : ((a[x] = 1), (l = !0), S > lh && S < u.L - lh && (r[x] = 1)));
+      } else if (
+        e &&
+        u.tn.portals &&
+        ((S > -10 && S < 1) || (S > u.L - 1 && S < u.L + 10))
+      ) {
+        let z = S < 1 ? 0 : 1,
+          A = sl(u, z ? u.L : 0);
+        _ > A - 0.6 && _ < u.top[z] - 0.2 && ((a[x] = 1), (l = !0));
+      }
     }
-    if (!g) {
-      if (d > 20) break;
+  }
+  if (!l) return 0;
+  let c = t.ix.a,
+    h = 0,
+    f = 0;
+  for (let u = 0; u + 2 < t.ix.n; u += 3) {
+    let d = c[u],
+      p = c[u + 1],
+      m = c[u + 2];
+    if (a[d] || a[p] || a[m]) {
+      (f++, (r[d] || r[p] || r[m]) && (t.cutMid = (t.cutMid || 0) + 1));
       continue;
     }
-    if (f.length && g.E !== f[0].E) break;
-    (vs(g.E, p, m, h),
-      Ot(g.E, Math.max(0, Math.min(g.E.L, h.s)), h),
-      (u = g.y),
-      f.push({ x: p, z: m, y: g.y, nx: h.nx, nz: h.nz, w: h.w, d, E: g.E }));
+    ((c[h++] = d), (c[h++] = p), (c[h++] = m));
   }
-  for (let d of [-1, 1]) {
-    let p = null,
-      m = [];
-    for (let g of f) {
-      let b = (M) => [g.x + g.nx * M * d, g.z + g.nz * M * d],
-        x = null,
-        v = null;
-      for (let M = g.w + 0.5; M <= g.w + 9 && x === null; M += 0.5) {
-        let [S, w] = b(M);
-        for (let z of a.probe(S, w).all)
-          if (z.y > g.y + 1 && z.y < g.y + 14) {
-            ((x = z.y), (v = M));
-            break;
-          }
-        if (x === null) {
-          let z = a.probe(S, w);
-          z.walk && z.walk.y > g.y + 1 && ((x = z.walk.y), (v = M));
-        }
+  return ((t.ix.n = h), f);
+}
+function HP(o, t) {
+  if (!t || t.t !== "poly") return t;
+  let e = o.terrain,
+    s = e?.tubeBox,
+    n = t.bb;
+  if (!s || n[2] < s[0] || n[0] > s[2] || n[3] < s[1] || n[1] > s[3]) return t;
+  for (let i of o.tunnels || []) {
+    if (i.tn.open || !i.box) continue;
+    let a = i.box;
+    if (n[2] < a[0] || n[0] > a[2] || n[3] < a[1] || n[1] > a[3]) continue;
+    let r = Math.max(...i.bores.map((c) => Math.max(-c.v0, c.v1))) + 0.5,
+      l = -1 / 0;
+    for (let c = n[0]; c <= n[2] + 0.99; c += 1)
+      for (let h = n[1]; h <= n[3] + 0.99; h += 1) {
+        let f = Math.min(c, n[2]),
+          u = Math.min(h, n[3]);
+        if (!rn(t.pts, f, u)) continue;
+        let [d, p] = wp(i, f, u);
+        d < 0 || d > i.L || Math.abs(p) > r || (l = Math.max(l, sl(i, d)));
       }
-      if (x === null) {
-        let M = -1e9;
-        for (let S = g.w + 0.5; S <= g.w + 6; S += 0.5) {
-          let [w, z] = b(S);
-          M = Math.max(M, a.terrainAt(w, z));
-        }
-        M > g.y + 0.6 && ((x = M), (v = g.w + 6));
-      }
-      let y =
-        x !== null && x - g.y >= 0.6
-          ? {
-              S: g,
-              up: x,
-              vUp: v,
-              w0: b(g.w + 0.15),
-              w1: b(g.w + 0.55),
-              c1: b(v),
-            }
-          : null;
-      if (y) {
-        let M = 1 / 0,
-          S = {};
-        for (let w of [y.w0, y.w1])
-          for (let z of a.probe(w[0], w[1]).all)
-            z.y > g.y + 0.5 &&
-              z.y < y.up + 1.5 &&
-              z.E !== g.E &&
-              !(z.J && (z.J.id === g.E.ja || z.J.id === g.E.jb)) &&
-              (!z.E ||
-                (Ot(z.E, Math.max(0, Math.min(z.E.L, z.s)), S),
-                Math.abs(S.dx * g.nx + S.dz * g.nz) > 0.5)) &&
-              (M = Math.min(M, z.y));
-        M < 1 / 0 && (y.deck = M - 0.06);
-      }
-      m.push(y);
+    l > -1 / 0 && t.y0 < l + 2 && (t.y0 = l + 2);
+  }
+  return t;
+}
+function e1t(o) {
+  if (o._bldBB) return o._bldBB;
+  let t = o.bld,
+    e = (o._bldBB = new Float64Array(t.n * 4));
+  for (let s = 0; s < t.n; s++) {
+    let n = t.bRing[s],
+      i = t.rStart[n] * 2,
+      a = t.rStart[n + 1] * 2,
+      r = t.pts,
+      l = 1e9,
+      c = 1e9,
+      h = -1e9,
+      f = -1e9;
+    for (let u = i; u < a; u += 2) {
+      let d = r[u],
+        p = r[u + 1];
+      (d < l && (l = d), d > h && (h = d), p < c && (c = p), p > f && (f = p));
     }
-    for (let g = m.length - 2; g >= 0; g--) {
-      let b = m[g],
-        x = m[g + 1];
-      b &&
-        x &&
-        (b.S.d < 15 || !m[g - 1]) &&
-        b.deck === void 0 &&
-        x.deck === void 0 &&
-        b.up < x.up - 0.5 &&
-        ((b.up = x.up), (b.c1 = x.c1));
-    }
-    globalThis.SF_TUNDBG &&
-      (i._cut ||= []).push({
-        e: t,
-        sd: d,
-        curs: m.map(
-          (g) =>
-            g && {
-              d: g.S.d,
-              y: +g.S.y.toFixed(2),
-              up: +g.up.toFixed(2),
-              deck: g.deck,
-              x: +g.w0[0].toFixed(1),
-              z: +g.w0[1].toFixed(1),
-            },
-        ),
-      });
-    for (let g of m) {
-      let b = g?.S;
-      if (g && p) {
-        let v = p,
-          y = g,
-          M = [b.nx * -d, 0, b.nz * -d],
-          S = v.deck ?? v.up + 0.45,
-          w = y.deck ?? y.up + 0.45,
-          z = Math.floor(v.S.d / 2.5) % 2 ? Rft : Pft,
-          _ = (I, L) => [I[0] + M[0] * L, I[2] + M[2] * L],
-          R = (I, L, F = 0) => {
-            let N = _([I[0], 0, I[1]], F);
-            return [N[0], L, N[1]];
-          };
-        if (
-          (n.quad(
-            R(v.w0, v.S.y - 0.4),
-            R(y.w0, y.S.y - 0.4),
-            R(y.w0, y.S.y + 0.5),
-            R(v.w0, v.S.y + 0.5),
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            HW,
-            M,
-          ),
-          n.quad(
-            R(v.w0, v.S.y + 0.5),
-            R(y.w0, y.S.y + 0.5),
-            R(y.w0, w - 0.3),
-            R(v.w0, S - 0.3),
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            z,
-            M,
-          ),
-          n.quad(
-            R(v.w0, S - 0.3, 0.06),
-            R(y.w0, w - 0.3, 0.06),
-            R(y.w0, w, 0.06),
-            R(v.w0, S, 0.06),
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            DW,
-            M,
-          ),
-          n.quad(
-            R(v.w0, S - 0.3),
-            R(y.w0, w - 0.3),
-            R(y.w0, w - 0.3, 0.06),
-            R(v.w0, S - 0.3, 0.06),
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            HW,
-            [0, -1, 0],
-          ),
-          v.deck === void 0 && y.deck === void 0)
-        ) {
-          (n.quad(
-            [v.w0[0], v.up + 0.45, v.w0[1]],
-            [y.w0[0], y.up + 0.45, y.w0[1]],
-            [y.w1[0], y.up + 0.45, y.w1[1]],
-            [v.w1[0], v.up + 0.45, v.w1[1]],
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            DW,
-            [0, 1, 0],
-          ),
-            n.quad(
-              [v.w1[0], v.up + 0.45, v.w1[1]],
-              [y.w1[0], y.up + 0.45, y.w1[1]],
-              [y.w1[0], y.up - 0.2, y.w1[1]],
-              [v.w1[0], v.up - 0.2, v.w1[1]],
-              [0, 0],
-              [1, 0],
-              [1, 1],
-              [0, 1],
-              l,
-              [-M[0], 0, -M[2]],
-            ));
-          let I = (N, B) => [(N[0] + B[0]) / 2, (N[1] + B[1]) / 2],
-            L = I(v.w0, v.w1),
-            F = I(y.w0, y.w1);
-          for (let [N, B] of [
-            [1.02, 1.08],
-            [0.72, 0.76],
-          ]) {
-            let H = v.up + B,
-              O = y.up + B,
-              D = v.up + N,
-              U = y.up + N;
-            (n.quad(
-              [L[0], D, L[1]],
-              [F[0], U, F[1]],
-              [F[0], O, F[1]],
-              [L[0], H, L[1]],
-              [0, 0],
-              [1, 0],
-              [1, 1],
-              [0, 1],
-              n7,
-              M,
-            ),
-              n.quad(
-                [L[0], H, L[1]],
-                [F[0], O, F[1]],
-                [F[0], O + 0.001, F[1]],
-                [L[0], H + 0.001, L[1]],
-                [0, 0],
-                [1, 0],
-                [1, 1],
-                [0, 1],
-                n7,
-                [0, 1, 0],
-              ));
-          }
-          {
-            let N = [-M[2] * 0.03, M[0] * 0.03];
-            n.quad(
-              [L[0] - N[0], v.up + 0.45, L[1] - N[1]],
-              [L[0] + N[0], v.up + 0.45, L[1] + N[1]],
-              [L[0] + N[0], v.up + 1.08, L[1] + N[1]],
-              [L[0] - N[0], v.up + 1.08, L[1] - N[1]],
-              [0, 0],
-              [1, 0],
-              [1, 1],
-              [0, 1],
-              n7,
-              M,
-            );
-          }
-          n.quad(
-            [v.w1[0], v.up + 0.03, v.w1[1]],
-            [y.w1[0], y.up + 0.03, y.w1[1]],
-            [y.c1[0], y.up + 0.03, y.c1[1]],
-            [v.c1[0], v.up + 0.03, v.c1[1]],
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            [0.44, 0.43, 0.41, 0],
-            [0, 1, 0],
-          );
-        }
-        let T = (v.w0[0] + y.w0[0] + v.w1[0] + y.w1[0]) / 4,
-          E = (v.w0[1] + y.w0[1] + v.w1[1] + y.w1[1]) / 4,
-          A = y.w0[0] - v.w0[0],
-          C = y.w0[1] - v.w0[1],
-          P = Math.hypot(A, C);
-        P > 0.2 &&
-          o.push({
-            t: "obb",
-            x: T,
-            z: E,
-            hx: 0.2,
-            hz: P / 2 + 0.05,
-            c: C / P,
-            s: A / P,
-            y0: Math.min(v.S.y, y.S.y) - 1,
-            y1: Math.min(
-              Math.max(v.up, y.up) + 1.1,
-              Math.min(v.deck ?? 1 / 0, y.deck ?? 1 / 0) - 0.6,
-            ),
-            wall: !0,
-            cut: !0,
-          });
-      }
-      p = g;
+    ((e[s * 4] = l),
+      (e[s * 4 + 1] = c),
+      (e[s * 4 + 2] = h),
+      (e[s * 4 + 3] = f));
+  }
+  return e;
+}
+function Kq(o, t) {
+  let e = o.bld,
+    s = 0;
+  for (let n of o.tunnels || []) {
+    if (!n.tn.portals) continue;
+    let i = n.W + wo + 1,
+      a = [];
+    for (let [u, d] of [
+      [-4, lh],
+      [n.L - lh, n.L + 4],
+    ])
+      for (let p = u; p <= d; p += 2)
+        for (let m = -i; m <= i; m += 2)
+          a.push([
+            n.Ja.x + n.ux * p - n.uz * m,
+            n.Ja.z + n.uz * p + n.ux * m,
+            p < n.L / 2 ? 0 : 1,
+          ]);
+    let r = 1e9,
+      l = 1e9,
+      c = -1e9,
+      h = -1e9;
+    for (let [u, d] of a)
+      ((r = Math.min(r, u)),
+        (c = Math.max(c, u)),
+        (l = Math.min(l, d)),
+        (h = Math.max(h, d)));
+    let f = e1t(o);
+    for (let u = 0; u < e.n; u++) {
+      if (t.bSkip[u]) continue;
+      let d = f[u * 4],
+        p = f[u * 4 + 1],
+        m = f[u * 4 + 2],
+        g = f[u * 4 + 3];
+      if (m < r || d > c || g < l || p > h) continue;
+      let b = e.bRing[u],
+        v = e.pts.subarray(e.rStart[b] * 2, e.rStart[b + 1] * 2);
+      a.some(
+        ([x, y, M]) =>
+          x >= d &&
+          x <= m &&
+          y >= p &&
+          y <= g &&
+          e.bF[u * 3] < n.top[M] &&
+          rn(v, x, y),
+      ) && ((t.bSkip[u] = 1), s++);
     }
   }
+  {
+    let n = o.props,
+      i = o.terrain?.tubeBox,
+      a = (o.tunnels || []).filter((l) => !l.tn.open).map((l) => l.box),
+      r = 0;
+    if (i)
+      for (let l = 0; l < n.n; l++) {
+        let c = n.pf[l * 5],
+          h = n.pf[l * 5 + 1];
+        c < i[0] - 40 ||
+          c > i[2] + 40 ||
+          h < i[1] - 40 ||
+          h > i[3] + 40 ||
+          t.pSkip[l] ||
+          !a.some(
+            (f) =>
+              c > f[0] - 40 && c < f[2] + 40 && h > f[1] - 40 && h < f[3] + 40,
+          ) ||
+          (Kb(o, n.pf[l * 5], n.pf[l * 5 + 1], n.pf[l * 5 + 2]) &&
+            ((t.pSkip[l] = 1), r++));
+      }
+    t.list.push({ name: "tunnel bores", np: r });
+  }
+  {
+    let n = o.props,
+      i = o.edges.filter((l) => l.split),
+      a = {},
+      r = 0;
+    for (let l of i) {
+      let c = 1e9,
+        h = -1e9,
+        f = 1e9,
+        u = -1e9;
+      for (let d = 0; d < l.n; d++)
+        ((c = Math.min(c, l.P[d * 3])),
+          (h = Math.max(h, l.P[d * 3])),
+          (f = Math.min(f, l.P[d * 3 + 1])),
+          (u = Math.max(u, l.P[d * 3 + 1])));
+      for (let d = 0; d < n.n; d++) {
+        if (t.pSkip[d] || n.kinds[n.pk[d]] !== "car") continue;
+        let p = n.pf[d * 5],
+          m = n.pf[d * 5 + 1];
+        p < c - 15 ||
+          p > h + 15 ||
+          m < f - 15 ||
+          m > u + 15 ||
+          (ys(l, p, m, a),
+          a.s > 0.5 &&
+            a.s < l.L - 0.5 &&
+            a.d > a.w - 1.2 &&
+            a.d < a.w + 6 &&
+            Math.abs(n.pf[d * 5 + 2] - a.y) < 1.6 &&
+            ((t.pSkip[d] = 1), r++));
+      }
+    }
+    t.list.push({ name: "split-level approaches", np: r });
+  }
+  if (o.duboce) {
+    let n = o.props,
+      i = 0;
+    for (let a = 0; a < n.n; a++)
+      fw(o, n.pf[a * 5], n.pf[a * 5 + 1], 2) && ((t.pSkip[a] = 1), i++);
+    for (let a = 0; a < e.n; a++) {
+      if (t.bSkip[a]) continue;
+      let r = e.bRing[a],
+        l = e.pts.subarray(e.rStart[r] * 2, e.rStart[r + 1] * 2);
+      for (let c = 0; c < l.length; c += 2)
+        if (fw(o, l[c], l[c + 1], 8)) {
+          ((t.bSkip[a] = 1), s++);
+          break;
+        }
+    }
+  }
+  return (t.list.push({ name: "tunnel portals", nb: s }), s);
 }
-function VW(i, t, e, s = null) {
-  let n = i.tunnelR;
-  if (!n) return 0.5;
-  let [o] = Ud(n, t, e),
-    a = Math.max(0, Math.min(o, n.L - o)),
-    r = Math.max(0.12, 0.7 * Math.exp(-a / 14));
-  if (!s) return r;
-  let l = o < n.L / 2 ? 0 : 1,
-    c = l ? [i.D[(i.n - 2) * 2], i.D[(i.n - 2) * 2 + 1]] : [-i.D[0], -i.D[1]],
-    h = l ? i.n - 1 : 0,
-    f = s(i.P[h * 3] + c[0] * 3, i.P[h * 3 + 1] + c[1] * 3),
-    u = Math.min(1, a / 16),
-    d = u * u * (3 - 2 * u);
-  return f * (1 - d) + r * d;
+function Kb(o, t, e, s) {
+  let n = o.terrain;
+  if (!n?.tubeBox) return !1;
+  let i = n.tubeBox;
+  if (t < i[0] - 40 || t > i[2] + 40 || e < i[1] - 40 || e > i[3] + 40)
+    return !1;
+  for (let a of o.tunnels || []) {
+    if (a.tn.open) continue;
+    let r = a.box;
+    if (t < r[0] - 40 || t > r[2] + 40 || e < r[1] - 40 || e > r[3] + 40)
+      continue;
+    let [l, c] = wp(a, t, e),
+      h = Math.max(...a.bores.map((p) => Math.max(-p.v0, p.v1)));
+    if (l >= -1 && l <= a.L + 1) {
+      if (
+        Math.abs(c) < h + 4 &&
+        s < sl(a, Math.max(0, Math.min(a.L, l))) + a.roof + 0.3
+      )
+        return !0;
+      continue;
+    }
+    if (a.tn.portals !== "hood") continue;
+    let f = l < 0 ? 0 : 1,
+      u = f ? l - a.L : -l,
+      d = a.hw?.[f]?.[c < 0 ? 0 : 1] ?? a.W + 6;
+    if (u < 30 && Math.abs(c) < d && s < sl(a, f ? a.L : 0) + 3) return !0;
+  }
+  return !1;
 }
+function DP(o, t, e, s) {
+  for (let n of o.tunnels || []) {
+    if (n.tn.open) continue;
+    let i = n.W + 20 + s;
+    if (
+      t > Math.min(n.Ja.x, n.Jb.x) - i &&
+      t < Math.max(n.Ja.x, n.Jb.x) + i &&
+      e > Math.min(n.Ja.z, n.Jb.z) - i &&
+      e < Math.max(n.Ja.z, n.Jb.z) + i
+    )
+      return !0;
+  }
+  return !1;
+}
+var UP = [
+    [-2811.4, 2809.7, -2821.1, 2817.6, -2841.2, 2830.6, -2851.5, 2838.8],
+    [-3064.1, 2881.6, -3056.1, 2880.2, -3047.4, 2877.4, -3042, 2876.6],
+    [-2960.8, 2880.4, -2928.5, 2879, -2915.8, 2879, -2902.5, 2878.1],
+    [
+      -2876.8, 2863.6, -2881.6, 2867.9, -2885.7, 2870.5, -2895.7, 2873.9,
+      -2900.8, 2874.5, -2907.3, 2874, -2923.1, 2869.2, -2935.2, 2868.4, -3076.3,
+      2879.2, -3082.8, 2880.2, -3086.1, 2881.4, -3098.9, 2888.5, -3104.1,
+      2890.5, -3109.9, 2891.7,
+    ],
+    [
+      -3105.3, 2895.2, -3100, 2894.4, -3095.9, 2893.1, -3078.5, 2883.8, -3074.5,
+      2882.7, -3064.1, 2881.6, -2935.6, 2872, -2925.7, 2872.8, -2910.7, 2877.2,
+      -2902.5, 2878.1,
+    ],
+    [
+      -2349, 2340.9, -2365, 2356.2, -2388.7, 2376.2, -2396.8, 2383.8, -2495.6,
+      2482.6, -2534.7, 2519.4, -2595.1, 2580.1, -2603.3, 2588.7, -2613.4,
+      2600.8, -2643.4, 2631.9, -2875.3, 2862.1, -3114.9, 3101.6, -3132.5, 3120,
+      -3409.9, 3396, -3419.3, 3406.4, -3431.5, 3421.4, -3474.3, 3465, -3479.9,
+      3471.6, -3483.5, 3476.9, -3485.7, 3482.6, -3487.2, 3490.6, -3487.5,
+      3501.4, -3476.7, 3638.6, -3476.9, 3642.6, -3477.9, 3646.2, -3480.2,
+      3649.1, -3482.9, 3651.4, -3486.9, 3653.2, -3490.7, 3653.9,
+    ],
+    [
+      -3638.4, 3667.9, -3642.8, 3667.7, -3647.6, 3665.4, -3650.5, 3662.7,
+      -3652.9, 3658.2, -3653.5, 3653.3, -3652.4, 3648.6, -3649.4, 3643.9,
+      -3646.1, 3640.1, -3615.4, 3610.6, -3509.1, 3505.2, -3485.7, 3482.6,
+      -3315.4, 3311.6, -3302.8, 3300.1, -3234.8, 3231.7, -3132.6, 3130.5,
+      -3107.8, 3104.9, -3085.6, 3083.6, -3025.4, 3021.2, -2774.1, 2772.6,
+      -2640.1, 2638.9, -2626.4, 2623.9, -2588.5, 2591.2, -2561.8, 2565.1,
+      -2388.4, 2391, -2377, 2377.9, -2361.9, 2359.2, -2354.7, 2351.5, -2290.6,
+      2288.2,
+    ],
+    [-2902.5, 2878.1, -2881.7, 2875.8, -2878.8, 2874.6, -2871.4, 2869],
+    [-3105.4, 3624.1, -3490.7, 3653.9],
+    [
+      -3105.5, 3627.3, -3098.6, 3627.2, -3094.7, 3627.9, -3088.2, 3631.5,
+      -3085.9, 3634, -3084.1, 3637.2, -3081.8, 3649.8,
+    ],
+    [
+      -3477.8, 3624.1, -3474.2, 3642, -3472.8, 3645.8, -3470.7, 3649.4, -3468.2,
+      3651.9, -3465.3, 3653.3, -3461.7, 3654.3, -3457.1, 3654.5,
+    ],
+    [
+      -3085.5, 3600.6, -3086.2, 3610.5, -3087.3, 3613.5, -3089.4, 3616.9,
+      -3091.8, 3619.3, -3095.1, 3621.1, -3098.8, 3622.6, -3105.4, 3624.1,
+    ],
+    [
+      -3105.5, 3627.3, -3094.2, 3625.6, -3088, 3622.4, -3086, 3620.5, -3082.7,
+      3615, -3081.7, 3611.1, -3081.6, 3606.9,
+    ],
+    [
+      -3078.9, 3642.5, -3080, 3634.9, -3081.1, 3632.2, -3085.3, 3626.8, -3090.5,
+      3623.8, -3096.7, 3623.5, -3105.4, 3624.1,
+    ],
+    [-3594.4, 3664.5, -3575.7, 3664, -3457.1, 3654.5],
+    [-3457.1, 3654.5, -3105.5, 3627.3],
+    [-3569.5, 3660.1, -3588.4, 3663.9, -3594.4, 3664.5],
+    [
+      -3117.7, 3133.1, -3117.1, 3122, -3116.3, 3118.8, -3113.9, 3113.1, -3107.8,
+      3104.9,
+    ],
+    [-3594.4, 3664.5, -3619.1, 3666.4],
+    [-3490.7, 3653.9, -3569.5, 3660.1],
+    [-3634.7, 3667.7, -3638.4, 3667.9],
+    [-3619.1, 3666.4, -3634.7, 3667.7],
+  ],
+  uw = null;

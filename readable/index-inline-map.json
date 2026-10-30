@@ -4,7 +4,7 @@
     "shell-index.html",
     "shell.html"
   ],
-  "generated": "2026-10-13",
+  "generated": "2026-10-30",
   "note": "byte ranges + sha256 of every inline <script>/<style> content block in the captured HTML documents; twins are the prettified (prettier 3.9.6, module API) renderings and are never shipped to a browser.",
   "blocks": [
     {
@@ -41,6 +41,17 @@
       "sha256": "4451dadc45ff2698161b0044f2cfdcb203f5ea80810f0f028ddcac79e0340c41"
     },
     {
+      "file": "readable/index-inline-4.pretty.js",
+      "source": "index.html",
+      "section": "index-inline-4.js",
+      "kind": "script",
+      "block": 4,
+      "byteStart": 8692,
+      "byteEnd": 8804,
+      "bytes": 112,
+      "sha256": "5dec4070673a4bf5de4b34d96a71b8a74bdea37de9da0a479eebea0663ab9499"
+    },
+    {
       "file": "readable/shell-index-inline-1.pretty.js",
       "source": "shell-index.html",
       "section": "shell-index-inline-1.js",
@@ -68,8 +79,8 @@
       "section": "shell-index-inline-3.js",
       "kind": "script",
       "block": 3,
-      "byteStart": 11698,
-      "byteEnd": 12036,
+      "byteStart": 11651,
+      "byteEnd": 11989,
       "bytes": 338,
       "sha256": "1751cd280cba74ea80c323bd71877a6a05f24c4c73023b8ecf0586f5ab022207"
     },
@@ -79,8 +90,8 @@
       "section": "shell-index-inline-4.js",
       "kind": "script",
       "block": 4,
-      "byteStart": 12053,
-      "byteEnd": 12483,
+      "byteStart": 12006,
+      "byteEnd": 12436,
       "bytes": 430,
       "sha256": "271dfea9cebdb353e92ee2427cfa997db9343cc9955b8db0661badea8c49b0ec"
     },
@@ -90,8 +101,8 @@
       "section": "shell-index-inline-1.css",
       "kind": "style",
       "block": 1,
-      "byteStart": 12500,
-      "byteEnd": 20869,
+      "byteStart": 12453,
+      "byteEnd": 20822,
       "bytes": 8369,
       "sha256": "3cd1d1ecc4298eb992043bb6540299f7a1dd394cafef29e11cfaa90e8671e183"
     },
@@ -101,8 +112,8 @@
       "section": "shell-index-inline-2.css",
       "kind": "style",
       "block": 2,
-      "byteStart": 20885,
-      "byteEnd": 23619,
+      "byteStart": 20838,
+      "byteEnd": 23572,
       "bytes": 2734,
       "sha256": "be2a6e5cca24e4b2f2c407f71c6b2e391eee716dd68594c6f3479fa76894c2d3"
     },
@@ -112,8 +123,19 @@
       "section": "shell-index-inline-5.js",
       "kind": "script",
       "block": 5,
-      "byteStart": 47494,
-      "byteEnd": 51541,
+      "byteStart": 31844,
+      "byteEnd": 31881,
+      "bytes": 37,
+      "sha256": "18f2624f218b2b67f2adbfa1fb4f9906a69f8d51c0e83b74b7415c98976ae98b"
+    },
+    {
+      "file": "readable/shell-index-inline-6.pretty.js",
+      "source": "shell-index.html",
+      "section": "shell-index-inline-6.js",
+      "kind": "script",
+      "block": 6,
+      "byteStart": 32432,
+      "byteEnd": 36479,
       "bytes": 4047,
       "sha256": "298a3a417b80dbe6300856dedfd0fddd795eb685c16c82e3b45994afb017a0bf"
     },
@@ -145,8 +167,8 @@
       "section": "shell-inline-3.js",
       "kind": "script",
       "block": 3,
-      "byteStart": 11688,
-      "byteEnd": 12026,
+      "byteStart": 11641,
+      "byteEnd": 11979,
       "bytes": 338,
       "sha256": "1751cd280cba74ea80c323bd71877a6a05f24c4c73023b8ecf0586f5ab022207"
     },
@@ -156,8 +178,8 @@
       "section": "shell-inline-4.js",
       "kind": "script",
       "block": 4,
-      "byteStart": 12043,
-      "byteEnd": 12473,
+      "byteStart": 11996,
+      "byteEnd": 12426,
       "bytes": 430,
       "sha256": "271dfea9cebdb353e92ee2427cfa997db9343cc9955b8db0661badea8c49b0ec"
     },
@@ -167,8 +189,8 @@
       "section": "shell-inline-1.css",
       "kind": "style",
       "block": 1,
-      "byteStart": 12490,
-      "byteEnd": 20859,
+      "byteStart": 12443,
+      "byteEnd": 20812,
       "bytes": 8369,
       "sha256": "3cd1d1ecc4298eb992043bb6540299f7a1dd394cafef29e11cfaa90e8671e183"
     },
@@ -178,8 +200,8 @@
       "section": "shell-inline-2.css",
       "kind": "style",
       "block": 2,
-      "byteStart": 20875,
-      "byteEnd": 23609,
+      "byteStart": 20828,
+      "byteEnd": 23562,
       "bytes": 2734,
       "sha256": "be2a6e5cca24e4b2f2c407f71c6b2e391eee716dd68594c6f3479fa76894c2d3"
     },
@@ -189,8 +211,19 @@
       "section": "shell-inline-5.js",
       "kind": "script",
       "block": 5,
-      "byteStart": 47464,
-      "byteEnd": 51511,
+      "byteStart": 31834,
+      "byteEnd": 31871,
+      "bytes": 37,
+      "sha256": "18f2624f218b2b67f2adbfa1fb4f9906a69f8d51c0e83b74b7415c98976ae98b"
+    },
+    {
+      "file": "readable/shell-inline-6.pretty.js",
+      "source": "shell.html",
+      "section": "shell-inline-6.js",
+      "kind": "script",
+      "block": 6,
+      "byteStart": 32402,
+      "byteEnd": 36449,
       "bytes": 4047,
       "sha256": "298a3a417b80dbe6300856dedfd0fddd795eb685c16c82e3b45994afb017a0bf"
     }

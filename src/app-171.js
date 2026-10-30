@@ -1,374 +1,308 @@
-// app 171 — geo
-// Lines 101408-101779 of readable/app.pretty.js (statement-aligned).
-function lV(i, t, e) {
-  let s = {},
-    n = (d, p, m) => new qs(d, p, m),
-    o = (d, p, m, g = 10) => new ks(d, p, m, g),
-    a = [0.035, 0.035, 0.038],
-    r = [0.5, 0.51, 0.52],
-    l = (d, p, m, g = 1) => {
-      let b = i(d, p, m),
-        x = b.attributes.position,
-        v = b.attributes.color,
-        y = b.attributes.uv;
-      for (let M = 0; M < x.count; M++)
-        (v.setW(M, g), y.setXY(M, Math.max(x.getY(M), 0), 0));
-      return b;
-    },
-    c = (d, p, m, g = 0.3) => {
-      let b = d.attributes.uv;
-      for (let y = 0; y < b.count; y++)
-        b.setXY(
-          y,
-          (p[0] + b.getX(y) * p[2]) / 1024,
-          (p[1] + (1 - b.getY(y)) * p[3]) / 1024,
-        );
-      let x = i(d, [1, 1, 1], m),
-        v = x.attributes.color;
-      for (let y = 0; y < v.count; y++) v.setW(y, g);
-      return x;
-    },
-    h = (d, p) => new $n(d, p),
-    f = Math.PI;
-  {
-    let d = [0.74, 0.74, 0.71],
-      p = [0.08, 0.22, 0.58],
-      m = [];
-    m.push(
-      l(o(0.165, 0.175, 0.05, 16), d, t(0, 0.025, 0)),
-      l(o(0.12, 0.132, 0.48, 16), d, t(0, 0.29, 0)),
-      l(o(0.15, 0.15, 0.045, 16), d, t(0, 0.545, 0)),
-    );
-    for (let g = 0; g < 8; g++) {
-      let b = (g * f) / 4 + f / 8;
-      m.push(
-        l(
-          o(0.016, 0.016, 0.035, 6),
-          d,
-          t(Math.sin(b) * 0.148, 0.06, Math.cos(b) * 0.148),
-          0.75,
-        ),
-      );
-    }
-    m.push(
-      l(
-        new i0(0.14, 16, 6, 0, f * 2, 0, f / 2),
-        p,
-        t(0, 0.565, 0, 0, 0, 0, [1, 0.75, 1]),
-      ),
-      l(o(0.03, 0.038, 0.06, 5), p, t(0, 0.69, 0)),
-    );
-    for (let g of [-1, 1])
-      m.push(
-        l(o(0.048, 0.052, 0.11, 12), d, t(g * 0.16, 0.4, 0, 0, 0, f / 2)),
-        l(o(0.058, 0.058, 0.035, 6), p, t(g * 0.225, 0.4, 0, 0, 0, f / 2)),
-        l(o(0.014, 0.014, 0.025, 5), p, t(g * 0.255, 0.4, 0, 0, 0, f / 2)),
-      );
-    (m.push(
-      l(o(0.068, 0.072, 0.1, 12), d, t(0, 0.36, 0.165, f / 2, 0, 0)),
-      l(o(0.078, 0.078, 0.04, 8), p, t(0, 0.36, 0.235, f / 2, 0, 0)),
-      l(o(0.02, 0.02, 0.03, 5), p, t(0, 0.36, 0.265, f / 2, 0, 0)),
-    ),
-      (s.hydrant = [{ mat: "furn", geo: e(m) }]));
-  }
-  let u = [0.15, 0.16, 0.175];
-  s.meter = [
-    {
-      mat: "furn",
-      geo: e([
-        l(n(0.075, 1.08, 0.075), [0.1, 0.105, 0.11], t(0, 0.54, 0)),
-        l(o(0.07, 0.08, 0.03, 8), [0.2, 0.2, 0.2], t(0, 0.015, 0), 0.75),
-        l(n(0.2, 0.3, 0.15), u, t(0, 1.24, 0)),
-        l(
-          o(0.1, 0.1, 0.15, 12, 1, !1, f / 2, f),
-          u,
-          t(0, 1.39, 0, f / 2, 0, 0),
-        ),
-        l(
-          n(0.15, 0.012, 0.1),
-          [0.03, 0.04, 0.07],
-          t(0, 1.495, 0, -0.25, 0, 0),
-          0.75,
-        ),
-        l(n(0.11, 0.05, 0.006), [0.72, 0.72, 0.68], t(0, 1.16, 0.078)),
-        c(h(0.18, 0.27), [0, 384, 256, 384], t(0, 1.245, -0.0765, 0, f, 0)),
-      ]),
-    },
-  ];
-  {
-    let d = [0.035, 0.1, 0.065],
-      p = [
-        l(o(0.265, 0.255, 0.84, 16), d, t(0, 0.47, 0)),
-        l(o(0.285, 0.29, 0.07, 16), [0.03, 0.035, 0.035], t(0, 0.035, 0)),
-        l(
-          o(0.24, 0.3, 0.09, 16),
-          d.map((m) => m * 0.8),
-          t(0, 0.93, 0),
-        ),
-        l(
-          new i0(0.25, 16, 5, 0, f * 2, 0, f / 2),
-          d.map((m) => m * 0.8),
-          t(0, 0.97, 0, 0, 0, 0, [1, 0.42, 1]),
-        ),
-        l(n(0.3, 0.12, 0.05), [0.02, 0.025, 0.025], t(0, 0.85, 0.265)),
-      ];
-    for (let m = 0; m < 18; m++) {
-      let g = ((m + 0.5) * f) / 9;
-      Math.abs(Math.atan2(Math.sin(g), Math.cos(g))) < 0.5 ||
-        p.push(
-          l(
-            n(0.032, 0.74, 0.022),
-            d.map((b) => b * 0.85),
-            t(Math.sin(g) * 0.272, 0.5, Math.cos(g) * 0.272, 0, g, 0),
-          ),
-        );
-    }
-    (p.push(
-      c(
-        new ks(0.268, 0.268, 0.15, 8, 1, !0, -0.55, 1.1),
-        [0, 768, 256, 128],
-        t(0, 0.6, 0),
-      ),
-    ),
-      (s.bin = [{ mat: "furn", geo: e(p) }]));
-  }
-  {
-    let d = [
-        [0.5, 0.04, 0.03],
-        [0.05, 0.12, 0.4],
-        [0.78, 0.62, 0.08],
-        [0.78, 0.78, 0.75],
-      ],
-      p = [];
-    ([-0.78, -0.26, 0.26, 0.78].forEach((m, g) => {
-      p.push(
-        l(n(0.46, 0.62, 0.4), d[g], t(m, 0.65, 0)),
-        l(
-          n(0.47, 0.06, 0.42),
-          d[g].map((b) => b * 0.8),
-          t(m, 0.99, 0),
-        ),
-        l(
-          n(0.14, 0.09, 0.09),
-          [0.45, 0.46, 0.47],
-          t(m + 0.1, 1.065, -0.1),
-          0.75,
-        ),
-      );
-      for (let b of [-0.18, 0.18])
-        p.push(l(n(0.035, 0.34, 0.035), a, t(m + b, 0.17, 0)));
-      p.push(
-        c(h(0.42, 0.58), [g * 256, 0, 256, 384], t(m, 0.65, -0.2015, 0, f, 0)),
-        c(h(0.42, 0.13), [g * 256, 0, 256, 88], t(m, 0.86, 0.2015)),
-      );
-    }),
-      p.push(l(n(2.1, 0.04, 0.36), [0.3, 0.3, 0.29], t(0, 0.02, 0), 0.75)),
-      (s.newsbox = [{ mat: "furn", geo: e(p) }]));
-  }
-  ((s.bench = [
-    {
-      mat: "furn",
-      geo: e(
-        [0, 1, 2]
-          .map((d) =>
-            l(
-              n(1.8, 0.035, 0.12),
-              [0.3, 0.18, 0.09],
-              t(0, 0.45, -0.14 + d * 0.14),
-            ),
-          )
-          .concat(
-            [0, 1].map((d) =>
-              l(
-                n(1.8, 0.1, 0.03),
-                [0.3, 0.18, 0.09],
-                t(0, 0.62 + d * 0.14, -0.24, -0.18, 0, 0),
-              ),
-            ),
-            [-0.78, 0.78].flatMap((d) => [
-              l(n(0.05, 0.45, 0.46), a, t(d, 0.225, -0.02)),
-              l(n(0.05, 0.4, 0.05), a, t(d, 0.66, -0.25, -0.18, 0, 0)),
-            ]),
-          ),
-      ),
-    },
+// app 171 — math
+// Lines 102016-102321 of readable/app.pretty.js (statement-aligned).
+var wx = {
+  meter: 0.1,
+  bin: 0.32,
+  newsbox: 0.55,
+  bench: 0.45,
+  rack: 0.4,
+  cafe0: 0.55,
+  cafe1: 0.55,
+  cone: 0.22,
+  barricade: 0.6,
+  worksign: 0.35,
+  flexpost: 0.06,
+};
+var Lp = new Set([
+    "Columbus Avenue",
+    "Grant Avenue",
+    "Stockton Street",
+    "Chestnut Street",
+    "Union Street",
+    "Fillmore Street",
+    "Polk Street",
+    "Market Street",
+    "Mission Street",
+    "Geary Street",
+    "Geary Boulevard",
+    "Post Street",
+    "Sutter Street",
+    "Powell Street",
+    "Kearny Street",
+    "Montgomery Street",
+    "Hayes Street",
+    "Van Ness Avenue",
+    "Divisadero Street",
+    "Lombard Street",
+    "Broadway",
+    "Clay Street",
+    "Washington Street",
+    "Jackson Street",
+    "Pacific Avenue",
+    "Jefferson Street",
+    "Beach Street",
+    "Hyde Street",
+    "Folsom Street",
+    "Howard Street",
+    "2nd Street",
+    "3rd Street",
+    "4th Street",
+    "Valencia Street",
+    "Sacramento Street",
+    "California Street",
+    "Bush Street",
+    "Pine Street",
+    "Battery Street",
+    "Sansome Street",
+    "24th Street",
+    "Castro Street",
+    "18th Street",
+    "Haight Street",
+    "Church Street",
+    "16th Street",
+    "Cole Street",
+    "Noe Street",
   ]),
-    (s.shelter = [
-      {
-        mat: "furn",
-        geo: e([
-          l(n(4, 0.12, 1.7), [0.3, 0.31, 0.33], t(0, 2.5, 0)),
-          l(n(4.06, 0.05, 1.76), [0.22, 0.23, 0.24], t(0, 2.42, 0)),
-          ...[
-            [-1.92, -0.66],
-            [1.92, -0.66],
-            [-1.92, 0.66],
-            [1.92, 0.66],
-          ].map(([d, p]) =>
-            l(n(0.08, 2.44, 0.08), [0.28, 0.29, 0.3], t(d, 1.22, p), 0.75),
-          ),
-          l(n(1.7, 0.05, 0.36), r, t(-0.5, 0.5, -0.45), 0.75),
-          l(n(0.05, 0.45, 0.3), r, t(-0.5, 0.25, -0.45), 0.75),
-          l(n(0.18, 1.95, 1.32), [0.25, 0.26, 0.27], t(1.92, 1.12, 0)),
-          l(n(0.7, 0.16, 0.1), [0.02, 0.02, 0.02], t(-0.9, 2.3, 0.72)),
-          c(
-            h(1.18, 1.75),
-            [256, 384, 256, 384],
-            t(2.0105, 1.15, 0, 0, f / 2, 0),
-            0.15,
-          ),
-          c(
-            h(1.18, 1.75),
-            [512, 384, 256, 384],
-            t(1.8295, 1.15, 0, 0, -f / 2, 0),
-            0.15,
-          ),
-        ]),
+  v2t = new Set([...jm, "northbeach", "wharf", "soma"]),
+  zf = (o, t) => {
+    let e = Math.sin(o * 12.9898 + t * 78.233) * 43758.5453;
+    return e - Math.floor(e);
+  },
+  jC = () => {
+    let o = new Map();
+    return {
+      add(t, e) {
+        let s = o.get(t);
+        return (s || o.set(t, (s = new Set())), s.add(e), !0);
       },
-      {
-        mat: "glass",
-        geo: e([
-          i(n(3.8, 2.1, 0.025), [0.2, 0.24, 0.26], t(0, 1.2, -0.68)),
-          i(n(0.025, 2.1, 0.8), [0.2, 0.24, 0.26], t(-1.92, 1.2, -0.25)),
-        ]),
+      has(t, e) {
+        let s = o.get(t);
+        return !!s && s.has(e);
       },
-    ]),
-    (s.rack = [
-      {
-        mat: "metal",
-        geo: e(
-          [-0.45, 0.45].flatMap((d) => [
-            i(o(0.025, 0.025, 0.85, 6), r, t(d - 0.3, 0.425, 0)),
-            i(o(0.025, 0.025, 0.85, 6), r, t(d + 0.3, 0.425, 0)),
-            i(o(0.025, 0.025, 0.6, 6), r, t(d, 0.85, 0, 0, 0, Math.PI / 2)),
-          ]),
-        ),
+      get size() {
+        return o.size;
       },
-    ]));
-  for (let [d, p] of [
-    ["cafe0", [0.5, 0.06, 0.05]],
-    ["cafe1", [0.78, 0.72, 0.58]],
-  ])
-    s[d] = [
-      {
-        mat: "metal",
-        geo: e([
-          i(o(0.36, 0.36, 0.03, 16), [0.72, 0.72, 0.7], t(0, 0.74, 0)),
-          i(o(0.025, 0.025, 0.74, 6), a, t(0, 0.37, 0)),
-          i(o(0.22, 0.24, 0.02, 10), a, t(0, 0.01, 0)),
-          i(o(0.02, 0.02, 2.3, 6), a, t(0, 1.15, 0)),
-          ...[-0.62, 0.62].flatMap((m) => [
-            i(n(0.4, 0.04, 0.4), [0.22, 0.14, 0.08], t(m, 0.46, 0)),
-            i(
-              n(0.04, 0.42, 0.4),
-              [0.22, 0.14, 0.08],
-              t(m + Math.sign(m) * 0.2, 0.68, 0),
-            ),
-            ...[-0.17, 0.17].flatMap((g) => [
-              i(n(0.03, 0.46, 0.03), a, t(m - 0.17, 0.23, g)),
-              i(n(0.03, 0.46, 0.03), a, t(m + 0.17, 0.23, g)),
-            ]),
-          ]),
-        ]),
-      },
-      {
-        mat: "paint",
-        geo: e([
-          i(o(0.03, 1.25, 0.42, 8), p, t(0, 2.2, 0)),
-          i(
-            o(1.25, 1.25, 0.12, 8, 1, !0),
-            p.map((m) => m * 0.85),
-            t(0, 1.95, 0),
-          ),
-        ]),
-      },
-    ];
-  {
-    let d = [0.95, 0.24, 0.02],
-      p = [0.9, 0.9, 0.86];
-    s.cone = [
-      {
-        mat: "paint",
-        geo: e([
-          i(n(0.4, 0.035, 0.4), a, t(0, 0.0175, 0)),
-          i(o(0.035, 0.13, 0.66, 10), d, t(0, 0.365, 0)),
-          i(o(0.071, 0.087, 0.1, 10), p, t(0, 0.47, 0)),
-          i(o(0.1, 0.113, 0.08, 10), p, t(0, 0.28, 0)),
-        ]),
-      },
-    ];
-    let m = (x) => {
-      let v = [];
-      for (let y = 0; y < 7; y++)
-        v.push(
-          i(n(0.26, 0.2, 0.025), y % 2 ? p : d, t(-0.78 + y * 0.26, x, 0)),
-        );
-      return v;
     };
-    s.barricade = [
-      { mat: "paint", geo: e([...m(0.95), ...m(0.62)]) },
-      {
-        mat: "metal",
-        geo: e(
-          [-0.8, 0.8].flatMap((x) => [
-            i(
-              n(0.05, 1.1, 0.05),
-              [0.75, 0.75, 0.72],
-              t(x, 0.52, 0.16, -0.3, 0, 0),
-            ),
-            i(
-              n(0.05, 1.1, 0.05),
-              [0.75, 0.75, 0.72],
-              t(x, 0.52, -0.16, 0.3, 0, 0),
-            ),
-          ]),
-        ),
-      },
-    ];
-    let g = new $n(0.85, 0.85);
-    (g.rotateY(Math.PI), g.rotateZ(Math.PI / 4));
-    let b = new $n(0.85, 0.85);
-    (b.rotateZ(Math.PI / 4),
-      (s.worksign = [
-        {
-          mat: "paint",
-          geo: e([
-            i(g, d, t(0, 1.35, -0.02)),
-            i(b, [0.35, 0.35, 0.33], t(0, 1.35, -0.01)),
-            i(n(0.52, 0.07, 0.01), a, t(0, 1.4, -0.03)),
-            i(n(0.42, 0.07, 0.01), a, t(0, 1.27, -0.03)),
-          ]),
-        },
-        {
-          mat: "metal",
-          geo: e([
-            i(n(0.04, 1.3, 0.04), [0.3, 0.3, 0.3], t(0, 0.65, 0.02)),
-            i(
-              n(0.04, 0.9, 0.04),
-              [0.3, 0.3, 0.3],
-              t(0.3, 0.42, 0.25, 0.5, 0, -0.35),
-            ),
-            i(
-              n(0.04, 0.9, 0.04),
-              [0.3, 0.3, 0.3],
-              t(-0.3, 0.42, 0.25, 0.5, 0, 0.35),
-            ),
-          ]),
-        },
-      ]));
+  };
+function uX(o, t, e, s) {
+  let n = new Map(),
+    i = (m, g) => Math.floor(m / 4) * 100003 + Math.floor(g / 4),
+    a = (m, g, b) => {
+      let v = i(m, g),
+        x = n.get(v);
+      (x || n.set(v, (x = [])), x.push(m, g, b));
+    },
+    r = (m, g, b) => {
+      for (let v = -1; v <= 1; v++)
+        for (let x = -1; x <= 1; x++) {
+          let y = n.get(i(m + v * 4, g + x * 4));
+          if (y) {
+            for (let M = 0; M < y.length; M += 3)
+              if (Math.hypot(y[M] - m, y[M + 1] - g) < b + y[M + 2]) return !1;
+          }
+        }
+      return !0;
+    },
+    l = o.props;
+  for (let m = 0; m < l.n; m++)
+    l.kinds[l.pk[m]] !== "car" && a(l.pf[m * 5], l.pf[m * 5 + 1], 0.6);
+  let c = (o.claims?.list || [])
+      .filter((m) => m.poly)
+      .map((m) => {
+        let g = m.poly,
+          b = 1e9,
+          v = 1e9,
+          x = -1e9,
+          y = -1e9;
+        for (let M = 0; M < g.length; M += 2)
+          ((b = Math.min(b, g[M])),
+            (x = Math.max(x, g[M])),
+            (v = Math.min(v, g[M + 1])),
+            (y = Math.max(y, g[M + 1])));
+        return { R: g, bb: [b, v, x, y] };
+      }),
+    h = (m, g) =>
+      c.some(
+        ({ R: b, bb: v }) =>
+          m > v[0] && m < v[2] && g > v[1] && g < v[3] && rn(b, m, g),
+      ),
+    f = {},
+    u = e.length,
+    d = null,
+    p = (m, g, b, v, x, y = wx[x] ?? 0.4, M = 0) => {
+      Ot(m, g, f);
+      let S = f.nx * b,
+        w = f.nz * b,
+        _ = f.x + S * (f.w + v) + f.dx * M,
+        z = f.z + w * (f.w + v) + f.dz * M;
+      if (!r(_, z, y + 0.35) || h(_, z)) return !1;
+      let A = t.inWorld(_, z) ? t.probe(_, z) : null,
+        T = A && !A.road && A.walk;
+      if (
+        !T &&
+        !(
+          x === "meter" &&
+          m.sw >= 3.2 &&
+          !(A?.all || []).some((L) => L.J || L.E !== m)
+        )
+      )
+        return !1;
+      let E = f.dx * y,
+        R = f.dz * y,
+        P = Math.min(y, 0.5);
+      if (
+        y > 0.2 &&
+        (v < P - 0.02 ||
+          v + P > m.sw + 0.02 ||
+          t.surfaceAt(_ + E, z + R) !== "walk" ||
+          t.surfaceAt(_ - E, z - R) !== "walk")
+      )
+        return !1;
+      if (x === "shelter") {
+        for (let [L, F] of [
+          [-1, -1],
+          [1, -1],
+          [1, 1],
+          [-1, 1],
+        ])
+          if (
+            t.surfaceAt(
+              _ + f.dx * 2 * L + S * 0.85 * F,
+              z + f.dz * 2 * L + w * 0.85 * F,
+            ) === "road"
+          )
+            return !1;
+      }
+      if (x === "tree" && t.clearOfRoads && !t.clearOfRoads(_, z, 0.7))
+        return !1;
+      let C = T ? T.y : t.streetY(_, z) + t.CURB,
+        I = Math.atan2(-S, -w);
+      return (
+        a(_, z, y),
+        e.push({ kind: x, x: _, y: C, z, rot: I }),
+        x === "shelter"
+          ? s.push({
+              t: "obb",
+              x: _,
+              z,
+              hx: 2,
+              hz: 0.85,
+              c: Math.cos(I),
+              s: Math.sin(I),
+              y0: C - 1.5,
+              y1: C + 2.6,
+            })
+          : s.push({ t: "circ", x: _, z, r: y, y0: C - 1.5, y1: C + 2.4 }),
+        !0
+      );
+    };
+  ((d = M2t(o, e, s, p)), S2t(o, e, s, p));
+  for (let m of o.edges) {
+    if (m.inner || m.elev || m.hwy || m.sunk || m.sw < 2.2) continue;
+    let g = m.s0 + 7,
+      b = m.s1 - 7,
+      v = b - g;
+    if (v < 12) continue;
+    let x = Ot(m, (m.s0 + m.s1) / 2, f),
+      y = Di(x.x, x.z),
+      M = v2t.has(y),
+      S = Lp.has(m.name) || M,
+      w = !(m.flags & 4) && m.cls !== "service";
+    for (let _ of [1, -1]) {
+      let z = (T) => zf(m.sid * 2 + (_ > 0 ? 1 : 0), T);
+      if (w && m.sw >= 2.6 && (M || (Lp.has(m.name) && z(16) < 0.7)))
+        for (let T = g + 2 + 3 * z(1); T < b - 2; T += 8)
+          zf(T, m.sid + _) > 0.3 && p(m, T, _, 0.45, "meter");
+      ((S || z(2) < 0.3) &&
+        (p(m, g + 1.5 + z(3) * 3, _, 0.6, "bin"),
+        v > 60 && S && p(m, b - 1.5 - z(4) * 3, _, 0.6, "bin")),
+        (M || Lp.has(m.name)) &&
+          z(5) < 0.55 &&
+          m.sw >= 3 &&
+          p(m, z(6) < 0.5 ? g + 4 : b - 4, _, 0.75, "newsbox"),
+        S &&
+          z(7) < 0.35 &&
+          m.sw >= 3 &&
+          p(m, g + v * (0.25 + 0.5 * z(8)), _, 0.8, "rack"));
+      let A = m.name === "The Embarcadero";
+      if (((M && z(9) < 0.3) || A) && m.sw >= 3.2)
+        for (let T = g + 10 + 20 * z(10); T < b - 5; T += A ? 45 : 1e9)
+          p(m, T, _, 1.1, "bench");
+      if (
+        ((m.trolley || (S && (m.cls === "primary" || m.cls === "secondary"))) &&
+          v > 50 &&
+          m.sw >= 3 &&
+          z(11) < 0.45 &&
+          !(m.oneway && _ < 0) &&
+          p(m, _ > 0 ? b - 12 : g + 12, _, 1.15, "shelter", 1.95),
+        y === "northbeach" && m.sw >= 2.9 && z(12) < 0.6)
+      ) {
+        let T = g + v * 0.2 * z(13),
+          E = 2 + Math.floor(z(14) * 4),
+          R = z(15) < 0.5 ? "cafe0" : "cafe1";
+        for (let P = 0; P < E; P++) p(m, T + P * 3.2, _, m.sw - 0.95, R);
+      }
+    }
   }
-  return (
-    (s.flexpost = [
-      {
-        mat: "paint",
-        geo: e([
-          i(o(0.12, 0.13, 0.05, 8), a, t(0, 0.025, 0)),
-          i(o(0.04, 0.045, 0.95, 8), [0.82, 0.82, 0.8], t(0, 0.5, 0)),
-          i(o(0.047, 0.047, 0.07, 8), [0.6, 0.6, 0.58], t(0, 0.82, 0)),
-          i(o(0.047, 0.047, 0.07, 8), [0.6, 0.6, 0.58], t(0, 0.68, 0)),
-        ]),
-      },
-    ]),
-    s
-  );
+  return (w2t(o, t, e, p), k2t(o, t, e, s), _2t(o, t, e, s, h), e.length - u);
+}
+var y2t = new Set([...jm, "union", "chinatown", "northbeach"]);
+function w2t(o, t, e, s) {
+  let n = new Set(["The Embarcadero"]),
+    i = new Map(),
+    a = (l, c) => Math.floor(l / 32) * 100003 + Math.floor(c / 32);
+  for (let l of e)
+    if (l.kind === "lamp") {
+      let c = a(l.x, l.z),
+        h = i.get(c);
+      (h || i.set(c, (h = [])), h.push(l));
+    }
+  let r = {};
+  for (let l of o.edges)
+    if (!(l.inner || l.elev || l.hwy || !n.has(l.name))) {
+      for (let c = l.s0; c <= l.s1; c += 8) {
+        Ot(l, c, r);
+        for (let h = -1; h <= 1; h++)
+          for (let f = -1; f <= 1; f++)
+            for (let u of i.get(a(r.x + h * 32, r.z + f * 32)) || [])
+              u.kind === "lamp" &&
+                Math.hypot(u.x - r.x, u.z - r.z) < r.w + l.sw + 1.5 &&
+                (u.kind = "lamp2");
+      }
+      if (l.sw >= 2.4 && l.s1 - l.s0 > 20)
+        for (let c of [1, -1])
+          for (let h = l.s0 + 6 + 10 * zf(l.sid + c, 71); h < l.s1 - 4; h += 28)
+            s(l, h, c, 0.6, "lamp2", 0.22);
+    }
+  for (let l of o.edges) {
+    if (
+      l.inner ||
+      l.elev ||
+      l.hwy ||
+      l.sunk ||
+      l.sw < 2.9 ||
+      n.has(l.name) ||
+      l.name === "Market Street"
+    )
+      continue;
+    let c = l.s0 + 6,
+      h = l.s1 - 6;
+    if (h - c < 20) continue;
+    let f = Ot(l, (l.s0 + l.s1) / 2, r),
+      u = Di(f.x, f.z);
+    if (!(
+      !y2t.has(u) ||
+      (l.cls !== "primary" &&
+        l.cls !== "secondary" &&
+        l.cls !== "tertiary" &&
+        l.sw < 3.6)
+    ))
+      for (let d of [1, -1])
+        for (
+          let p = c + 5 + 8 * zf(l.sid + d, 70);
+          p < h - 3;
+          p += 22 + 6 * zf(p, l.sid)
+        )
+          s(l, p, d, 0.5, "plamp", 0.2);
+  }
 }

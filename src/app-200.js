@@ -1,313 +1,337 @@
 // app 200 — math
-// Lines 110257-110567 of readable/app.pretty.js (statement-aligned).
-function A1t(i, t) {
-  let { L: e } = t,
-    s = Hc.civic,
-    n = Hc.dome,
-    o = s[s.length - 1],
-    a = s[s.length - 2],
-    r = [o[0] - a[0], o[1] - a[1]];
+// Lines 110824-111158 of readable/app.pretty.js (statement-aligned).
+function HK(o, t, e, s) {
+  let { D: n, L: i } = t,
+    a = null;
   {
-    let S = Math.hypot(r[0], r[1]);
-    r = [r[0] / S, r[1] / S];
+    let O = n.bld;
+    for (let B = 0; B < O.n; B++)
+      if (O.seed[B] === e) {
+        a = er(n, B);
+        break;
+      }
   }
-  r[1] < 0 && (r = [-r[0], -r[1]]);
-  let l = [-r[1], r[0]][0] > 0 ? [-r[1], r[0]] : [r[1], -r[0]],
-    c = (n[0] - a[0]) * r[0] + (n[1] - a[1]) * r[1],
-    h = [a[0] + r[0] * c, a[1] + r[1] * c],
-    f = (S, w) => [
-      (S - h[0]) * l[0] + (w - h[1]) * l[1],
-      (S - h[0]) * r[0] + (w - h[1]) * r[1],
+  if (!a) return;
+  let r = Ra(a),
+    l = ia(r),
+    c = 1e9,
+    h = -1e9;
+  for (let [O, B] of r) {
+    let H = i.terrainAt(O, B);
+    ((c = Math.min(c, H)), (h = Math.max(h, H)));
+  }
+  let f = h + 8.5,
+    u = f + 14.5,
+    d = u + 2.4,
+    p = d + 1.1,
+    m = p + 5.5;
+  (Ss(o, r, c - 0.6, f, tbt, { vBase: c }),
+    Eo(o, l, 0.3, f - 0.4, f + 0.1, Tx),
+    Ss(o, r, f, u, ebt, { vBase: f - 4 }),
+    Eo(o, l, 0.9, u, d, Tx),
+    Ss(o, r, d, p, Tx));
+  let [g, b] = r.reduce(
+      (O, B) => [O[0] + B[0] / r.length, O[1] + B[1] / r.length],
+      [0, 0],
+    ),
+    v = 0;
+  for (let [O, B] of r) v = Math.max(v, Math.hypot(O - g, B - b));
+  let x = Math.max(0.7, 1 - 3.5 / v),
+    y = r.map(([O, B]) => [g + (O - g) * x, b + (B - b) * x]);
+  for (let O = 0; O < r.length; O++) {
+    let B = r[O],
+      H = r[(O + 1) % r.length],
+      N = y[(O + 1) % r.length],
+      D = y[O];
+    (oe(
+      o,
+      [
+        [B[0], p, B[1]],
+        [H[0], p, H[1]],
+        [N[0], m, N[1]],
+        [D[0], m, D[1]],
+      ],
+      BK,
+      [0, 1, 0],
+    ),
+      oe(
+        o,
+        [
+          [D[0], m, D[1]],
+          [N[0], m, N[1]],
+          [H[0], p, H[1]],
+          [B[0], p, B[1]],
+        ],
+        BK,
+        [0, -1, 0],
+      ));
+  }
+  sr(o, y, m, Lt(Ct.stone, 0.4, 0.4, 0.41));
+  let M = Qm(i, l, "Van Ness Avenue"),
+    S = M.u,
+    w = M.n,
+    _ = M.L / 2 - 6,
+    z = 0;
+  for (let O of r) {
+    let B = (O[0] - M.m[0]) * S[0] + (O[1] - M.m[1]) * S[1],
+      H = (O[0] - M.m[0]) * w[0] + (O[1] - M.m[1]) * w[1];
+    Math.abs(B) < M.L / 2 + 3 && H < 6 && (z = Math.max(z, H));
+  }
+  let A = [M.m[0] + w[0] * z, M.m[1] + w[1] * z],
+    T = (O, B, H) => [
+      A[0] + S[0] * O + w[0] * B,
+      H,
+      A[1] + S[1] * O + w[1] * B,
     ],
-    u = 0,
-    d = 0,
-    p = 0;
-  for (let [S, w] of s) {
-    let [z, _] = f(S, w);
-    ((u = Math.max(u, z)), (d = Math.min(d, _)), (p = Math.max(p, _)));
+    E = (O, B, H, N, D, U, G) => {
+      let W = T(O, B, 0);
+      cn(o, [W[0], W[2]], S, w, H, N, D, U, G);
+    };
+  E(0, 0.08, _, 0.08, f + 0.6, u - 1, obt);
+  let R = Math.max(4, Math.round((2 * _) / 6.2));
+  for (let O = 0; O < R; O++) {
+    let B = -_ + (O + 0.5) * ((2 * _) / R),
+      H = 1.5,
+      N = f + 1.6,
+      D = u - 2.4,
+      U = [w[0], 0, w[1]];
+    (E(B, 0.2, H + 0.2, 0.04, N - 0.2, D + 0.2, sbt),
+      E(B, 0.3, H, 0.03, N, D, gL),
+      O % 2 === 0 &&
+        E(B, 1.75, 1.1, 0.02, f + 3.2, u - 1.6, NK[(O / 2) % NK.length]));
   }
-  let m = 16,
-    g = (S, w) => [h[0] + l[0] * S + r[0] * w, h[1] + l[1] * S + r[1] * w],
-    b = (S, w) => e.terrainAt(S, w),
-    x = (S, w) => S > 8 && S < 66 && Math.abs(w) > m && Math.abs(w) < m + 30,
-    v = (S, w) =>
-      S > 74 &&
-      S < u - 10 &&
-      Math.abs(w) > m + 6 &&
-      Math.abs(w) < Math.max(-d, p) - 8,
-    y = (S, w) => T1t(s, S, w);
-  (L$(
-    i,
-    e,
-    h,
-    l,
-    r,
-    -2,
-    u + 2,
-    d - 2,
-    p + 2,
-    3,
-    (S, w, z, _) => y(z, _) && !v(S, w),
-    S1t,
-  ),
-    L$(
-      i,
-      e,
-      h,
-      l,
-      r,
-      -2,
-      u + 2,
-      d - 2,
-      p + 2,
-      3,
-      (S, w, z, _) => y(z, _) && v(S, w),
-      _1t,
-      0.08,
-    ));
-  for (let S of [-1, 1])
-    for (let w = 2; w < u - 4; w += 8) {
-      let z = g(w, S * m),
-        _ = g(w + 6, S * m),
-        R = g(w + 6, S * (m - 0.5)),
-        T = g(w, S * (m - 0.5)),
-        E = [z, _, R, T].map(([A, C]) => [A, b(A, C) + 0.14, C]);
-      ne(i, S > 0 ? E : E.slice().reverse(), k1t, [0, 1, 0], (A) => [
-        A[0],
-        A[2],
-      ]);
-    }
-  for (let S of [-1, 1]) {
-    let w = S * (m + 3),
-      z = S * (m + 27);
-    for (let C = 11; C < 64; C += 6)
-      for (let P = 0; P < 5; P++) {
-        let I = w + ((z - w) * P) / 4,
-          [L, F] = g(C, I),
-          N = b(L, F);
-        (Ae(i, [L, N, F], [L, N + 3.3, F], 0.2, P$, 6),
-          Oe(
-            i,
-            L,
-            F,
-            [
-              [0.32, N + 3.2],
-              [0.42, N + 3.6],
-              [0.2, N + 3.9],
-            ],
-            6,
-            P$,
-          ),
-          t.colliders.push({
-            t: "circ",
-            x: L,
-            z: F,
-            r: 0.25,
-            y0: N - 1,
-            y1: N + 4,
-          }));
-      }
-    let _ = 8,
-      R = 67,
-      T = Math.min(w, z) - 3 * Math.sign(S) * 0 - 2.5,
-      E = Math.max(w, z) + 2.5,
-      A = b(...g(38, S * (m + 15)));
-    for (let C = _; C < R; C += 3.7)
-      for (let P = T; P < E; P += 3.6) {
-        let I = Math.abs(Math.sin(C * 12.99 + P * 78.23) * 43758.5) % 1,
-          L = g(C + 1.85, P + 1.8);
-        Ze(
-          i,
-          L[0] - 1.85,
-          A + 3.7 + I * 0.3,
-          L[1] - 1.8,
-          L[0] + 1.85,
-          A + 6.4 + I * 0.5,
-          L[1] + 1.8,
-          z1t,
-        );
-      }
-  }
-  let M = [
-    [0.7, 0.1, 0.12],
-    [0.1, 0.2, 0.55],
-    [0.95, 0.8, 0.2],
-    [0.85, 0.85, 0.85],
-    [0.15, 0.45, 0.25],
-    [0.8, 0.35, 0.1],
-  ];
-  for (let S of [-1, 1])
-    for (let w = 0; w < 6; w++) {
-      let z = S * (m + 2 + w * 9),
-        [_, R] = g(5, z),
-        T = b(_, R);
-      Oe(
-        i,
-        _,
-        R,
+  for (let O = c + 1.2; O < f - 0.6; O += 0.75)
+    Eo(o, l, 0.02, O, O + 0.07, nbt);
+  for (let O = 0; O <= R; O++)
+    for (let B of [-0.75, 0.75]) {
+      let H = -_ + O * ((2 * _) / R) + B,
+        N = T(H, 1.9, 0);
+      qe(
+        o,
+        N[0],
+        N[2],
         [
-          [0.16, T],
-          [0.13, T + 1],
-          [0.07, T + 18],
-          [0.12, T + 18.2],
-          [0.01, T + 18.4],
+          [0.86, f],
+          [0.8, f + 0.4],
+          [0.72, f + 0.6],
+          [0.64, u - 1],
+          [0.8, u - 0.6],
+          [0.86, u],
         ],
-        8,
-        E1t,
+        12,
+        ibt,
       );
-      let E = M[(w + (S > 0 ? 3 : 0)) % 6],
-        A = It(Lt.matte, ...E),
-        C = [r[0] * 0.2 + l[0] * 0.98, r[1] * 0.2 + l[1] * 0.98];
-      (ne(
-        i,
-        [
-          [_, T + 15.6, R],
-          [_ + C[0] * 3.6, T + 15.6, R + C[1] * 3.6],
-          [_ + C[0] * 3.6, T + 17.8, R + C[1] * 3.6],
-          [_, T + 17.8, R],
-        ],
-        A,
-        [-C[1], 0, C[0]],
-      ),
-        ne(
-          i,
-          [
-            [_, T + 17.8, R],
-            [_ + C[0] * 3.6, T + 17.8, R + C[1] * 3.6],
-            [_ + C[0] * 3.6, T + 15.6, R + C[1] * 3.6],
-            [_, T + 15.6, R],
-          ],
-          A,
-          [C[1], 0, -C[0]],
-        ),
-        t.colliders.push({
-          t: "circ",
-          x: _,
-          z: R,
-          r: 0.2,
-          y0: T - 1,
-          y1: T + 18,
-        }));
     }
-  for (let S of [-1, 1])
-    for (let w = u + 22; w < u + 190; w += 9)
-      for (let [z, _] of [
-        [S * 9, !1],
-        [S * 13.5, !0],
-      ]) {
-        if (_ && Math.round((w - u) / 9) % 2) continue;
-        let [R, T] = g(w, z),
-          E = b(R, T);
-        if (!(e.surfaceAt(R, T) === "road" || e.surfaceAt(R, T) === "walk")) {
-          if (_) {
-            (t.inst.push({
-              kind: "tree",
-              sp: "tree0",
-              x: R,
-              y: E,
-              z: T,
-              rot: w,
-              scale: 0.85,
-            }),
-              t.colliders.push({
-                t: "circ",
-                x: R,
-                z: T,
-                r: 0.3,
-                y0: E - 1,
-                y1: E + 6,
-              }));
-            continue;
-          }
-          (Oe(
-            i,
-            R,
-            T,
-            [
-              [0.2, E],
-              [0.16, E + 0.4],
-              [0.12, E + 3.6],
-            ],
-            8,
-            C$,
-          ),
-            Oe(
-              i,
-              R,
-              T,
-              [
-                [0.01, E + 3.5],
-                [0.38, E + 3.85],
-                [0.42, E + 4.2],
-                [0.3, E + 4.55],
-                [0.01, E + 4.65],
-              ],
-              10,
-              bn(1, 0.95, 0.85),
-            ),
-            t.colliders.push({
-              t: "circ",
-              x: R,
-              z: T,
-              r: 0.2,
-              y0: E - 1,
-              y1: E + 4.6,
-            }));
-        }
-      }
-  for (let S of [-1, 1])
-    for (let w = 76; w < u - 6; w += 14) {
-      let [z, _] = g(w, S * (m - 1.5)),
-        R = b(z, _);
-      (Oe(
-        i,
-        z,
-        _,
-        [
-          [0.12, R],
-          [0.08, R + 0.5],
-          [0.06, R + 4.2],
-        ],
-        6,
-        C$,
-      ),
-        Oe(
-          i,
-          z,
-          _,
-          [
-            [0.01, R + 4.1],
-            [0.3, R + 4.25],
-            [0.32, R + 4.6],
-            [0.01, R + 4.8],
-          ],
-          8,
-          bn(1, 0.9, 0.75),
-        ),
-        t.colliders.push({
-          t: "circ",
-          x: z,
-          z: _,
-          r: 0.15,
-          y0: R - 1,
-          y1: R + 4.5,
-        }));
+  cn(
+    o,
+    [A[0] + w[0] * 1.15, A[1] + w[1] * 1.15],
+    S,
+    w,
+    _ + 1.2,
+    1.2,
+    u - 0.3,
+    d + 0.06,
+    Tx,
+  );
+  for (let O = -_; O < _; O += 0.45) {
+    let B = T(O, 2.2, 0);
+    qe(
+      o,
+      B[0],
+      B[2],
+      [
+        [0.11, d],
+        [0.17, d + 0.35],
+        [0.08, d + 0.6],
+        [0.11, d + 0.85],
+      ],
+      6,
+      Tx,
+    );
+  }
+  cn(
+    o,
+    [A[0] + w[0] * 2.2, A[1] + w[1] * 2.2],
+    S,
+    w,
+    _ + 1.2,
+    0.25,
+    d + 0.85,
+    d + 1.1,
+    Tx,
+  );
+  for (let O = 0; O < R; O++) {
+    let B = -_ + (O + 0.5) * ((2 * _) / R),
+      H = 1.6,
+      N = Math.max(c, i.terrainAt(T(B, 1, 0)[0], T(B, 1, 0)[2])) + 0.2,
+      D = N + 4.2,
+      U = [T(B - H, 0.07, N), T(B + H, 0.07, N), T(B + H, 0.07, D)];
+    for (let G = 1; G < 8; G++) {
+      let W = (G / 8) * Math.PI;
+      U.push(T(B + Math.cos(W) * H, 0.07, D + Math.sin(W) * H));
     }
+    E(B, 0.1, H, 0.05, N, D, gL);
+    for (let G = 0; G < 6; G++)
+      E(
+        B,
+        0.1,
+        H * Math.sqrt(1 - ((G + 0.5) / 6) ** 2),
+        0.05,
+        D + (H * G) / 6,
+        D + (H * (G + 1)) / 6,
+        gL,
+      );
+  }
+  if (s) {
+    let O = [g - w[0] * 18, b - w[1] * 18];
+    cn(o, O, S, w, 22, 16, m - 2, c + 46, abt);
+  }
+  let P = [];
+  for (let [O, B] of r) P.push(O, B);
+  let C = 1e9,
+    I = -1e9,
+    L = 1e9,
+    F = -1e9;
+  for (let [O, B] of r)
+    ((C = Math.min(C, O)),
+      (I = Math.max(I, O)),
+      (L = Math.min(L, B)),
+      (F = Math.max(F, B)));
+  t.colliders.push({
+    t: "poly",
+    pts: Float32Array.from(P),
+    bb: [C, L, I, F],
+    y0: c - 3,
+    y1: c + 50,
+  });
 }
-var Gb = Be(be.granite, 0.97, 0.95, 0.9),
-  R1t = Be(be.granite, 0.8, 0.78, 0.74),
-  P1t = yn(sn.WIN, be.granite, 1, 0.98, 0.93),
-  I$ = Be(be.slate, 0.24, 0.26, 0.27),
-  DP = It(Lt.matte, 0.045, 0.045, 0.05),
-  C1t = It(Lt.matte, 0.62, 0.6, 0.55),
-  L1t = It(Lt.matte, 0.3, 0.29, 0.27),
-  F$ = [
-    [0.62, 0.08, 0.06],
-    [0.85, 0.42, 0.08],
-    [0.06, 0.4, 0.42],
-    [0.5, 0.1, 0.3],
-  ].map((i) => It(Lt.matte, ...i)),
-  I1t = Be(be.granite, 1.06, 1.04, 0.99),
-  F1t = It(Lt.matte, 0.075, 0.072, 0.068),
-  aEt = It(Lt.gloss, 0.06, 0.05, 0.04),
-  N1t = Be(be.stucco, 0.8, 0.79, 0.75);
+var rbt = We(we.perforated, 0.93, 0.93, 0.92),
+  Sz = Lt(Ct.gloss, 0.78, 0.79, 0.8),
+  lbt = Tn(ln.GLASS, we.stainedglass, 0.35, 0.42, 0.48),
+  cbt = Lt(Ct.stone, 0.62, 0.62, 0.6);
+function hbt(o, t) {
+  let { D: e, L: s } = t,
+    n = null;
+  {
+    let w = e.bld;
+    for (let _ = 0; _ < w.n; _++)
+      if (w.seed[_] === mh.arena) {
+        n = er(e, _);
+        break;
+      }
+  }
+  if (!n) return;
+  let i = Ra(n),
+    a = 1e9,
+    r = -1e9;
+  for (let [w, _] of i) {
+    let z = s.terrainAt(w, _);
+    ((a = Math.min(a, z)), (r = Math.max(r, z)));
+  }
+  let [l, c] = i.reduce(
+      (w, _) => [w[0] + _[0] / i.length, w[1] + _[1] / i.length],
+      [0, 0],
+    ),
+    h = (w) => i.map(([_, z]) => [l + (_ - l) * w, c + (z - c) * w]),
+    f = (w) => {
+      let _ = [];
+      for (let z = 0; z < w.length; z++) {
+        let A = w[(z + w.length - 1) % w.length],
+          T = w[z],
+          E = w[(z + 1) % w.length],
+          R = [(A[0] + T[0]) / 2, (A[1] + T[1]) / 2],
+          P = [(T[0] + E[0]) / 2, (T[1] + E[1]) / 2];
+        for (let C = 0; C < 1; C += 0.25)
+          _.push([
+            (1 - C) * (1 - C) * R[0] + 2 * C * (1 - C) * T[0] + C * C * P[0],
+            (1 - C) * (1 - C) * R[1] + 2 * C * (1 - C) * T[1] + C * C * P[1],
+          ]);
+      }
+      return _;
+    },
+    u = f(i),
+    d = r + 0.1,
+    p = d + 9,
+    m = a + 34,
+    g = 0;
+  for (let [w, _] of i) g = Math.max(g, Math.hypot(w - l, _ - c));
+  let b = f(h(1 - 2.2 / g));
+  Ss(o, b, a - 0.5, p, lbt, { vBase: d });
+  for (let w = 0; w < b.length; w += 3) {
+    let [_, z] = b[w];
+    Ce(o, [_, a, z], [_, p, z], 0.07, Sz, 4);
+  }
+  (Ta(o, u, p, Sz), Ss(o, u, p - 0.6, p, Sz));
+  for (let w = 0, _ = p; _ < m - 1.6; w++, _ += 2.4)
+    Ss(o, f(h(1 - (0.3 / g) * (w % 2))), _, _ + 2.25, rbt, { vBase: _ });
+  (Ss(o, f(h(1 - 0.8 / g)), m - 1.6, m - 0.9, wn(0.9, 0.95, 1)),
+    Ss(o, u, m - 0.9, m, Sz),
+    Ta(o, f(h(0.97)), m, cbt));
+  let v = [];
+  for (let [w, _] of i) v.push(w, _);
+  let x = 1e9,
+    y = -1e9,
+    M = 1e9,
+    S = -1e9;
+  for (let [w, _] of i)
+    ((x = Math.min(x, w)),
+      (y = Math.max(y, w)),
+      (M = Math.min(M, _)),
+      (S = Math.max(S, _)));
+  t.colliders.push({
+    t: "poly",
+    pts: Float32Array.from(v),
+    bb: [x, M, y, S],
+    y0: a - 3,
+    y1: m + 2,
+  });
+}
+function UK(o, t, e) {
+  let s = new Map(),
+    n = (a) => {
+      let r = s.get(a);
+      return (r || s.set(a, (r = new Be())), r);
+    };
+  for (let [a, r] of [
+    [() => jgt(n("maritime"), e), "maritime"],
+    [() => Qgt(n("civic"), e), "civic"],
+    [() => HK(n("opera"), e, mh.opera, !0), "opera"],
+    [() => HK(n("veterans"), e, mh.veterans, !1), "veterans"],
+    [() => hbt(n("arena"), e), "arena"],
+  ])
+    try {
+      a();
+    } catch (l) {
+      console.error("r18:", r, l);
+    }
+  let i = (a) => {
+    for (let [r, l] of s) vn(a, l, t.lm, "R18_" + r);
+  };
+  Mp() ? ex(() => i(o.rc?.group || o.group)) : i(o.group);
+}
+var dr = {
+  levis: [288483487, 288483479, 288483480],
+  westin: 1091967971,
+  macys: 32863633,
+  neiman: 332521036,
+  saks: 32863589,
+  sfmoma: {
+    botta: [1365384415, 1365384412, 1365384413, 1365384414],
+    drum: 1365384410,
+    ext: 1365384411,
+    foyer: 1365384416,
+  },
+  plaza: [
+    [-797, -736],
+    [-742, -727],
+    [-752, -794],
+    [-792, -797],
+    [-790, -764],
+    [-799, -753],
+  ],
+  fountain: [-766, -775],
+  cascade: [
+    [-714, -808],
+    [-672, -784],
+  ],
+};

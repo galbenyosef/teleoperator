@@ -1,6 +1,6 @@
-// app 28 — a4t
-// Lines 46321-46595 of readable/app.pretty.js (statement-aligned).
-var qA = `
+// app 28 — ezt
+// Lines 46528-46802 of readable/app.pretty.js (statement-aligned).
+var v7 = `
 struct PU {
   model: mat4x4f,     // pool -> world
   inv: mat4x4f,       // world -> pool (water at rest: y = 0; interior x in [-hx, hx], z in [-hz, hz], floor y = -depth)
@@ -18,8 +18,8 @@ struct PU {
 };
 @group(1) @binding(0) var<uniform> PP: PU;
 `,
-  A4t =
-    qA +
+  zzt =
+    v7 +
     `
 @group(1) @binding(1) var hIn: texture_2d<f32>;
 @group(1) @binding(2) var hOut: texture_storage_2d<rgba32float, write>;
@@ -70,7 +70,7 @@ fn H(c: vec2i) -> vec4f { return textureLoad(hIn, clamp(c, vec2i(0), dims() - 1)
   textureStore(sOut, c, vec4f(h, nrm.x, nrm.z, 0.0));
 }
 `,
-  cU = `
+  uV = `
 const IOR_W = 1.333;
 fn BLO() -> vec3f { return vec3f(-PP.size.x, -PP.size.z, -PP.size.y); }   // the pool box (open far above the rim)
 fn BHI() -> vec3f { return vec3f(PP.size.x, 100.0, PP.size.y); }
@@ -84,9 +84,9 @@ fn causticUV(p: vec3f) -> vec2f {
   return (proj - ctr) / (2.8 * PP.size.xy) + 0.5;
 }
 `,
-  R4t =
-    qA +
-    cU +
+  _zt =
+    v7 +
+    uV +
     `
 @group(1) @binding(1) var tSurf: texture_2d<f32>;
 struct CO { @builtin(position) pos: vec4f, @location(0) oldP: vec3f, @location(1) newP: vec3f };
@@ -127,9 +127,9 @@ fn project(o: vec3f, ray: vec3f, rl: vec3f) -> vec3f {
   return vec4f(min(c, 12.0), 0.0, 0.0, 1.0);
 }
 `,
-  P4t =
-    qA +
-    cU +
+  Ezt =
+    v7 +
+    uV +
     `
 @group(1) @binding(1) var tSurf: texture_2d<f32>;
 @group(1) @binding(2) var tCaus: texture_2d<f32>;

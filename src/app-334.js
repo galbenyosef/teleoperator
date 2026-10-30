@@ -1,315 +1,263 @@
-// app 334 — cam
-// Lines 162621-162933 of readable/app.pretty.js (statement-aligned).
-ml();
-var Pn = (i, t, e) => (i < t ? t : i > e ? e : i),
-  O3t = (i) => ((i = Pn(i, 0, 1)), i * i * (3 - 2 * i)),
-  H3t = 60 / (2 * Math.PI),
-  Um = [
-    { id: "stock", name: "Stock", col: "#9aa0a6" },
-    { id: "street", name: "Street", col: "#46c46a" },
-    { id: "sport", name: "Sport", col: "#2f8cff" },
-    { id: "race", name: "Race", col: "#a35cff" },
-    { id: "elite", name: "Elite", col: "#ffb020" },
-  ],
-  mi = {
-    engine: {
-      tab: "engine",
-      name: "Engine",
-      ev: "Motor",
-      cam: "engine",
-      icon: "engine",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 3500, 1, "+7 % power: intake, cams, a tune"],
-        [2, 9e3, 3, "+15 % power: forged internals"],
-        [3, 2e4, 6, "+24 % power: a race build"],
-        [4, 42e3, 10, "+34 % power: the full elite build"],
-      ],
-    },
-    turbo: {
-      tab: "engine",
-      name: "Forced induction",
-      ev: "Inverter",
-      cam: "engine",
-      icon: "turbo",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 4e3, 2, "+6 % at the top end"],
-        [2, 11e3, 5, "+12 %, a bigger turbo"],
-        [3, 26e3, 9, "+19 %, twin race turbos"],
-      ],
-    },
-    exhaust: {
-      tab: "engine",
-      name: "Exhaust",
-      ev: null,
-      cam: "exhaust",
-      icon: "exhaust",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 1800, 1, "+2 % power, a deeper note"],
-        [2, 5e3, 3, "+4 %, louder, it crackles"],
-        [3, 12e3, 6, "+6 %, straight pipes: loud"],
-      ],
-    },
-    nitro: {
-      tab: "engine",
-      name: "Nitrous",
-      ev: null,
-      cam: "exhaust",
-      icon: "nitro",
-      lv: [
-        [0, 0, 0, "Factory bottle"],
-        [1, 2500, 2, "A bigger bottle: 6 s, +8 % push"],
-        [2, 7e3, 4, "7.5 s, +16 % push"],
-        [3, 16e3, 7, "Race kit: 9 s, +25 % push"],
-      ],
-    },
-    trans: {
-      tab: "perf",
-      name: "Transmission",
-      ev: "Reduction gear",
-      cam: "side",
-      icon: "gearbox",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 3e3, 2, "Quicker shifts"],
-        [2, 8e3, 4, "Race shifts; the final drive tunable"],
-        [3, 18e3, 8, "Sequential: shifts in half the time"],
-      ],
-    },
-    weight: {
-      tab: "perf",
-      name: "Weight reduction",
-      ev: null,
-      cam: "side",
-      icon: "weight",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 3e3, 2, "-3 %: lighter seats"],
-        [2, 9e3, 5, "-6 %: carbon panels"],
-        [3, 22e3, 9, "-10 %: stripped out"],
-      ],
-    },
-    brakes: {
-      tab: "perf",
-      name: "Brakes",
-      ev: null,
-      cam: "wheel",
-      icon: "brake",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 2e3, 1, "Sport pads: +12 % bite"],
-        [2, 6e3, 3, "Big brake kit"],
-        [3, 15e3, 6, "Carbon-ceramic race brakes"],
-      ],
-    },
-    susp: {
-      tab: "perf",
-      name: "Suspension",
-      ev: null,
-      cam: "wheelLow",
-      icon: "spring",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 2500, 1, "Lowering springs: -1.5 cm"],
-        [2, 7e3, 3, "Coilovers: springs, bars, height tunable"],
-        [3, 16e3, 6, "Race coilovers: -4.5 cm, stiff"],
-      ],
-    },
-    diff: {
-      tab: "perf",
-      name: "Differential",
-      ev: null,
-      cam: "rear",
-      icon: "diff",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [2, 5e3, 3, "Sport LSD: tunable lock"],
-        [3, 12e3, 6, "Drift diff: locked, the tail loose"],
-      ],
-    },
-    aero: {
-      tab: "perf",
-      name: "Aero",
-      ev: null,
-      cam: "rear",
-      icon: "wing",
-      lv: [
-        [0, 0, 0, "Factory"],
-        [1, 3e3, 2, "Lip spoiler: +25 % downforce"],
-        [2, 8e3, 4, "Sport wing: +70 %, tunable"],
-        [3, 19e3, 7, "Race wing: +130 % downforce"],
-      ],
-    },
-    tyre: {
-      tab: "tyres",
-      name: "Compound",
-      ev: null,
-      cam: "wheelLow",
-      icon: "tyre",
-      choice: !0,
-      lv: [
-        [0, 0, 0, "Factory road tyres"],
-        [1, 1200, 1, "Street: quiet, a little less grip"],
-        [2, 3e3, 2, "Sport: +4 % grip"],
-        [3, 7500, 4, "Semi-slick: +9 % grip"],
-        [2, 4e3, 3, "Drift: the rear lets go, holds the angle"],
-        [1, 2500, 2, "Off-road: grips on grass and dirt"],
-      ],
-    },
-    width: {
-      tab: "tyres",
-      name: "Width",
-      ev: null,
-      cam: "wheelLow",
-      icon: "tyre",
-      choice: !0,
-      lv: [
-        [0, 0, 0, "Factory width"],
-        [1, 1500, 1, "+20 mm: +2 % grip"],
-        [2, 3500, 3, "+40 mm: +4 % grip, a touch of drag"],
-      ],
-    },
-  },
-  RQ = ["Factory", "Street", "Sport", "Semi-slick", "Drift", "Off-road"];
-var PQ = (i, t) =>
-    !!mi[i] &&
-    (!t ||
-      mi[i].ev !== null ||
-      ["weight", "brakes", "susp", "diff", "aero", "tyre", "width"].includes(
-        i,
-      )),
-  CQ = (i, t) => (t && mi[i].ev ? mi[i].ev : mi[i].name),
-  Mr = [
-    ["Factory", 0, "factory", 0, 0],
-    ["Split five", 5, "split", 1500, 1],
-    ["Mesh", 10, "mesh", 2200, 2],
-    ["Turbofan", 14, "fan", 2800, 3],
-    ["Deep dish", 6, "dish", 2500, 2],
-    ["Six blade", 6, "blade", 2e3, 1],
-    ["Monoblock", 5, "mono", 3200, 4],
-    ["Aero disc", 0, "disc", 3e3, 5],
-  ],
-  Gm = ["Black", "White letters", "White wall", "Red stripe"],
-  LQ = [-1, 0, 1, 2, 3],
-  qx = [
-    ["pf", "Tyres", "Pressure front", -0.4, 0.4, 0.05, "bar", null],
-    ["pr", "Tyres", "Pressure rear", -0.4, 0.4, 0.05, "bar", null],
-    ["cf", "Alignment", "Camber front", -2.5, 1, 0.1, "\xB0", null],
-    ["cr", "Alignment", "Camber rear", -2.5, 1, 0.1, "\xB0", null],
-    ["tf", "Alignment", "Toe front", -0.5, 0.5, 0.05, "\xB0", null],
-    ["tr", "Alignment", "Toe rear", -0.5, 0.5, 0.05, "\xB0", null],
-    ["sf", "Springs", "Springs front", -25, 35, 5, "%", ["susp", 2]],
-    ["sr", "Springs", "Springs rear", -25, 35, 5, "%", ["susp", 2]],
-    ["rh", "Springs", "Ride height", -5, 3, 0.5, "cm", ["susp", 2]],
-    ["dp", "Damping", "Damping", -25, 35, 5, "%", ["susp", 2]],
-    ["af", "Anti-roll bars", "Anti-roll front", -50, 100, 10, "%", ["susp", 2]],
-    ["ar", "Anti-roll bars", "Anti-roll rear", -50, 100, 10, "%", ["susp", 2]],
-    ["fd", "Gearing", "Final drive", -12, 12, 1, "%", ["trans", 2]],
-    ["dl", "Differential", "Diff lock", -50, 150, 10, "%", ["diff", 1]],
-    ["bb", "Brakes", "Brake balance", -10, 10, 1, "% front", null],
-    ["bp", "Brakes", "Brake pressure", -20, 20, 5, "%", null],
-    ["dn", "Aero", "Downforce", -40, 40, 5, "%", ["aero", 2]],
-    ["db", "Aero", "Aero balance", -10, 10, 1, "% front", ["aero", 2]],
-  ],
-  vz = Object.fromEntries(qx.map((i) => [i[0], i])),
-  Dm = (i, t, e) => (Number.isFinite(+i) ? Pn(Math.round(+i), t, e) : 0);
-function Uo(i) {
-  if (!i || typeof i != "object") return null;
-  let t = { p: {}, own: {}, w: {}, t: {} };
-  for (let a in mi) {
-    let r = mi[a].lv.length - 1,
-      l = Dm(i.p?.[a], 0, r),
-      c = Dm(i.own?.[a], 0, r);
-    if ((l && (t.p[a] = l), mi[a].choice)) {
-      let h = Dm(i.own?.[a], 0, 2 ** (r + 1) - 1) | (l ? 1 << l : 0);
-      h && (t.own[a] = h);
-    } else Math.max(l, c) && (t.own[a] = Math.max(l, c));
+// app 334 — math
+// Lines 163196-163456 of readable/app.pretty.js (statement-aligned).
+var xE = class {
+  constructor(t) {
+    let e = new Le();
+    ((this.pos = new Float32Array(o1 * 6 * 3)),
+      (this.col = new Float32Array(o1 * 6 * 4)));
+    let s = new Float32Array(o1 * 6 * 3),
+      n = new Float32Array(o1 * 6 * 2),
+      i = [];
+    for (let r = 0; r < o1 * 6; r++) s[r * 3 + 1] = 1;
+    for (let r = 0; r < o1; r++) for (let l of LMt) i.push(r * 6 + l);
+    (e.setAttribute("position", new Te(this.pos, 3)),
+      e.setAttribute("normal", new Te(s, 3)),
+      e.setAttribute("uv", new Te(n, 2)),
+      e.setAttribute("color", new Te(this.col, 4)),
+      e.setIndex(i),
+      (e.boundingSphere = new _n(new dt(), 120)));
+    let a = new Ys({
+      color: 16777215,
+      vertexColors: !0,
+      transparent: !0,
+      depthWrite: !1,
+      side: ls,
+      fog: !1,
+    });
+    ((this.mesh = new ye(e, a)),
+      (this.mesh.name = "GuideArrows"),
+      (this.mesh.frustumCulled = !1),
+      (this.mesh.renderOrder = 3),
+      (this.mesh.castShadow = this.mesh.receiveShadow = !1),
+      (this.mesh.userData.mbNoReflect = !0),
+      (this.mesh.visible = !1),
+      t.add(this.mesh),
+      (this.icons = [1, -1].map((r) => {
+        let l = new Jr(
+          new kr({
+            map: FMt(r),
+            color: 16777215,
+            transparent: !0,
+            depthWrite: !1,
+            fog: !1,
+          }),
+        );
+        return (
+          (l.name = "GuideTurn"),
+          (l.visible = !1),
+          (l.renderOrder = 4),
+          l.scale.set(2.6, 2.6, 1),
+          t.add(l),
+          l
+        );
+      })),
+      (this.g = e),
+      (this.t = 0),
+      (this.k = 0),
+      (this.ph = 0),
+      (this.n = 0),
+      (this.state = "green"),
+      (this.turn = null),
+      (this._p = { x: 0, z: 0, y: 0, i: 0 }),
+      (this._q = { x: 0, z: 0, y: 0, i: 0 }));
   }
-  let e = Dm(i.w?.s, 0, Mr.length - 1),
-    s = Dm(i.w?.z, -1, 3),
-    n = Dm(i.w?.d, 0, Gm.length - 1),
-    o = Dm(i.w?.own, 0, 2 ** Mr.length - 1) | (e ? 1 << e : 0);
-  (e && (t.w.s = e), s && (t.w.z = s), n && (t.w.d = n), o && (t.w.own = o));
-  for (let [a, , , r, l, c] of qx) {
-    let h = +i.t?.[a];
-    if (Number.isFinite(h) && h) {
-      let f = Pn(Math.round(h / c) * c, r, l);
-      Math.abs(f) > 1e-9 && (t.t[a] = +f.toFixed(3));
+  _nextTurn(t) {
+    let e = this._p,
+      s = this._q;
+    for (let n of t.marks || []) {
+      let i = n.sJ - t.s,
+        a = n.sOut - t.s;
+      if (a < 2) continue;
+      if (i > 140) break;
+      t.at(Math.max(0, i - 4), e);
+      let r = e.x,
+        l = e.z;
+      t.at(Math.max(0.5, i), s);
+      let c = s.x - r,
+        h = s.z - l;
+      (t.at(a, e), (r = e.x), (l = e.z), t.at(a + 4, s));
+      let f = s.x - r,
+        u = s.z - l,
+        d = c * u - h * f,
+        p = c * f + h * u,
+        m = Math.atan2(d, p);
+      if (Math.abs(m) > 0.5) return { d: (i + a) / 2, dir: m > 0 ? 1 : -1 };
+    }
+    return null;
+  }
+  update(t, e, s, n = !0, i = !1) {
+    let a = e?.mode === "manual",
+      r = e?.path,
+      l = n && !!r && r.n > 1 && (!a || i) && !!s;
+    if (
+      ((this.line = a && i),
+      (this.k += ((l ? 1 : 0) - this.k) * Math.min(1, t * 4)),
+      (this.ph += t),
+      this.k < 0.02 || !r || r.n < 2)
+    ) {
+      ((this.mesh.visible = !1),
+        (this.icons[0].visible = this.icons[1].visible = !1),
+        (this.turn = null));
+      return;
+    }
+    if ((this.t -= t) > 0 && this.mesh.visible) {
+      this._icon(t, e, s, r, !1);
+      return;
+    }
+    this.t = 1 / 30;
+    let c = e.cue?.state || "green",
+      h = c === "brake",
+      f = e.mode === "l5",
+      u = this._p,
+      d = this._q,
+      p = this.pos,
+      m = this.col,
+      g = (f ? 0.45 : this.line && c === "green" ? 0.22 : 0.95) * this.k,
+      b = AMt[c],
+      v = h ? Cet * 1.4 : Cet,
+      x = Math.min(RMt, h ? Math.max(mE + 2, e.cue.gap - 1) : 1e9, r.left - 1),
+      y = h || c === "red" ? 0.7 + 0.3 * Math.sin(this.ph * (h ? 14 : 8)) : 1;
+    r.at(0, u);
+    let M = u.x,
+      S = s.driveHeight(u.x, u.z),
+      w = u.z;
+    (this.mesh.position.set(M, S, w), this.mesh.updateMatrixWorld());
+    let _ = 0,
+      z = 0,
+      A = 0;
+    r.at(mE - 1, d);
+    for (let T = mE; T <= x && _ < o1; T += v * Math.max(1, T / Let), _++) {
+      ((z = d.x), (A = d.z), r.at(T, u), (d.x = u.x), (d.z = u.z));
+      let E = u.x - z,
+        R = u.z - A,
+        P = Math.hypot(E, R) || 1;
+      ((E /= P), (R /= P), h && ((E = -E), (R = -R)));
+      let C = s.driveHeight(u.x, u.z) + IMt - S,
+        I = f ? 0.85 : 1,
+        L = I * Math.max(1, T / Let),
+        F =
+          g *
+          y *
+          Math.min(1, (T - mE) / 3 + 0.35) *
+          Math.min(1, Math.max(0, (x - T) / TMt));
+      for (let O = 0; O < 6; O++) {
+        let B = _ * 6 + O,
+          H = PMt[O] * I,
+          N = CMt[O] * L;
+        ((p[B * 3] = u.x - M + R * H + E * N),
+          (p[B * 3 + 1] = C),
+          (p[B * 3 + 2] = u.z - w - E * H + R * N),
+          (m[B * 4] = b.r * YO),
+          (m[B * 4 + 1] = b.g * YO),
+          (m[B * 4 + 2] = b.b * YO),
+          (m[B * 4 + 3] = F));
+      }
+    }
+    for (let T = _ * 6; T < o1 * 6; T++)
+      ((m[T * 4 + 3] = 0),
+        (p[T * 3] = p[0]),
+        (p[T * 3 + 1] = p[1]),
+        (p[T * 3 + 2] = p[2]));
+    ((this.n = _),
+      (this.g.attributes.position.needsUpdate = !0),
+      (this.g.attributes.color.needsUpdate = !0),
+      (this.mesh.visible = _ > 0),
+      (this.state = c),
+      this._icon(t, e, s, r, !0));
+  }
+  _icon(t, e, s, n, i) {
+    if (this.line) {
+      ((this.icons[0].visible = this.icons[1].visible = !1),
+        (this.turn = null));
+      return;
+    }
+    i && (this.turn = this._nextTurn(n));
+    let a = this.turn,
+      r = this.icons;
+    if (!a || a.d < 6) {
+      r[0].visible = r[1].visible = !1;
+      return;
+    }
+    let l = r[a.dir > 0 ? 0 : 1],
+      c = r[a.dir > 0 ? 1 : 0];
+    if (((c.visible = !1), i)) {
+      n.at(a.d, this._p);
+      let d = this._p;
+      l.position.set(d.x, s.driveHeight(d.x, d.z) + 2.4, d.z);
+    }
+    let h = Math.min(1, (a.d - 6) / 10),
+      f = Math.min(1, Math.max(0, (150 - a.d) / 40));
+    ((l.material.opacity = (e.mode === "l5" ? 0.5 : 1) * this.k * h * f),
+      (l.visible = l.material.opacity > 0.02));
+    let u = 2.6 * (1 + 0.04 * Math.sin(this.ph * 3));
+    (l.scale.set(u, u, 1), l.updateMatrixWorld());
+  }
+};
+await _0();
+es();
+es();
+var jM = [
+    [-0.855, 0.358, -1.16],
+    [0.849, 0.358, -1.159],
+    [-0.844, 0.358, 1.486],
+    [0.848, 0.358, 1.487],
+  ],
+  OMt = /^(CarBody|CarCarbon|CarTaillight|CarHeadlight|CarSignal|CarYellow)$/,
+  BMt = /^(CarBody|CarCarbon)$/;
+function Iet(o, t) {
+  let e = new Map();
+  for (let n = 0; n < o.length; n++) {
+    let i = o[n],
+      a = i.length / 3;
+    for (let r = 0; r < a; r++) {
+      let l = Math.round(i[r * 3] * t),
+        c = Math.round(i[r * 3 + 1] * t),
+        h = Math.round(i[r * 3 + 2] * t),
+        f =
+          (Math.imul(l, 73856093) ^
+            Math.imul(c, 19349663) ^
+            Math.imul(h, 83492791)) |
+          0,
+        u = e.get(f);
+      u || e.set(f, (u = []));
+      let d = null;
+      for (let p of u)
+        if (p[0] === l && p[1] === c && p[2] === h) {
+          d = p;
+          break;
+        }
+      (d || u.push((d = [l, c, h, []])), d[3].push(n, r));
     }
   }
-  for (let a of ["p", "own", "w", "t"]) Object.keys(t[a]).length || delete t[a];
-  return Object.keys(t).length ? t : null;
+  let s = [];
+  for (let n of e.values()) for (let i of n) s.push(i[3]);
+  return s;
 }
-var D3t = (i) =>
-    !!(
-      i &&
-      ((i.p && Object.keys(i.p).length) || (i.t && Object.keys(i.t).length))
-    ),
-  Va = (i, t) => i?.p?.[t] || 0,
-  Wm = (i, t, e) =>
-    !e ||
-    (mi[t].choice
-      ? !!((i?.own?.[t] || 0) & (1 << e))
-      : (i?.own?.[t] || 0) >= e),
-  jx = (i, t) => !t || !!((i?.w?.own || 0) & (1 << t)),
-  yz = (i, t) => JSON.stringify(Uo(i)) === JSON.stringify(Uo(t)),
-  wz = (i, t) => {
-    let e = vz[t][7];
-    return !e || Va(i, e[0]) >= e[1];
-  };
-function Vx(i, t) {
-  let e = [];
-  for (let n in mi) {
-    let o = Va(t, n);
-    o &&
-      !Wm(i, n, o) &&
-      e.push({
-        id: n,
-        k: o,
-        what:
-          mi[n].name +
-          " \xB7 " +
-          (mi[n].choice
-            ? mi[n].lv[o][3].split(":")[0]
-            : Um[mi[n].lv[o][0]].name),
-        price: mi[n].lv[o][1],
-      });
+function Fet(o, t) {
+  if (!t) return 0;
+  let e = new DataView(t.buffer || t, t.byteOffset || 0);
+  if (e.getUint32(0, !0) !== 827277635) return 0;
+  let s = 8,
+    n = [];
+  for (let l = 0, c = e.getUint32(4, !0); l < c; l++) {
+    let h = e.getUint8(s),
+      f = new TextDecoder().decode(
+        new Uint8Array(e.buffer, e.byteOffset + s + 1, h),
+      );
+    ((s += 1 + h), n.push([f, e.getUint32(s, !0)]), (s += 4));
   }
-  let s = t?.w?.s || 0;
-  return (
-    s &&
-      !jx(i, s) &&
-      e.push({
-        id: "rim",
-        k: s,
-        what: "Wheels \xB7 " + Mr[s][0],
-        price: Mr[s][3],
-      }),
-    { items: e, total: e.reduce((n, o) => n + o.price, 0) }
-  );
-}
-function Mz(i) {
-  let t = Uo(i) || {};
-  t.own ||= {};
-  for (let e in mi) {
-    let s = Va(t, e);
-    s &&
-      (mi[e].choice
-        ? (t.own[e] = (t.own[e] || 0) | (1 << s))
-        : (t.own[e] = Math.max(t.own[e] || 0, s)));
+  let i = new Uint8Array(e.buffer, e.byteOffset + s),
+    a = 0,
+    r = 0;
+  for (let l = 0; l < n.length && l < o.length; l++) {
+    let [c, h] = n[l],
+      f = o[l];
+    if (f.name === c && f.attrs.position.array.length / 3 === h) {
+      let u = new Float32Array(h * 2);
+      for (let d = 0; d < h; d++) u[d * 2] = 1 - i[a + d] / 255;
+      ((f.attrs.uv1 = { array: u, itemSize: 2 }), r++);
+    }
+    a += h;
   }
-  return (t.w?.s && (t.w.own = (t.w.own || 0) | (1 << t.w.s)), Uo(t));
-}
-function Sz(i, t) {
-  let e = [];
-  for (let n in mi) {
-    let o = Va(i, n);
-    o &&
-      mi[n].lv[o][2] > t &&
-      e.push({ what: mi[n].name, lvl: mi[n].lv[o][2] });
-  }
-  let s = i?.w?.s || 0;
-  return (s && Mr[s][4] > t && e.push({ what: Mr[s][0], lvl: Mr[s][4] }), e);
+  return r;
 }

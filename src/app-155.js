@@ -1,344 +1,346 @@
 // app 155 — math
-// Lines 95803-96144 of readable/app.pretty.js (statement-aligned).
-function Ej(i) {
-  let t = {},
-    e = new Set();
-  for (let s of i.juns) {
-    if (!s.legs.some(([r]) => bj(r))) continue;
-    let n = s.legs
-      .filter(
-        ([r]) =>
-          !r.elev &&
-          !r.sunk &&
-          r.hwy &&
-          Fy(r) &&
-          !r.inner &&
-          !r.region &&
-          r.n >= 2 &&
-          r.L > 6,
-      )
-      .map(([r]) => r);
-    if (n.length !== 2 || s.legs.length !== 3) continue;
-    {
-      let [r, l] = n,
-        c = 0;
-      for (let h = 0; h < r.n; h++) {
-        if ((vs(l, r.P[h * 3], r.P[h * 3 + 1], t), t.d > r.W[h] + t.w - 0.25))
-          continue;
-        let f = Math.abs(t.y - r.P[h * 3 + 2]);
-        f <= $7 && (c = Math.max(c, f));
-      }
-      if (c < 0.15) continue;
-    }
-    for (let r of n) Yd(r, V7);
-    let o = new Map(
-        n.map((r) => [
-          r,
-          Float64Array.from({ length: r.n }, (l, c) => r.P[c * 3 + 2]),
-        ]),
-      ),
-      a = new Map(n.map((r) => [r, new Uint8Array(r.n)]));
-    for (let r = 0; r < 8; r++) {
-      let l = new Map(),
-        c = 0;
-      for (let h of n) {
-        let f = new Float64Array(h.n),
-          u = h.ja === s.id ? h.n - 1 : 0;
-        for (let d = 0; d < h.n; d++) {
-          let p = h.P[d * 3],
-            m = h.P[d * 3 + 1],
-            g = h.P[d * 3 + 2],
-            b = Math.min(d, h.n - 2),
-            x = g,
-            v = 1;
-          if (d === u) {
-            f[d] = g;
-            continue;
-          }
-          for (let y of n) {
-            if (
-              y === h ||
-              (vs(y, p, m, t),
-              t.d > h.W[d] + t.w - 0.25 || Math.abs(t.y - g) > $7)
-            )
-              continue;
-            let M = Math.min(t.k, y.n - 2);
-            Math.abs(
-              h.D[b * 2] * y.D[M * 2] + h.D[b * 2 + 1] * y.D[M * 2 + 1],
-            ) < 0.6 || ((x += t.y), v++);
-          }
-          ((f[d] = x / v),
-            v > 1 && (a.get(h)[d] = 1),
-            (c = Math.max(c, Math.abs(f[d] - g))));
-        }
-        l.set(h, f);
-      }
-      for (let h of n) {
-        let f = l.get(h);
-        for (let u = 0; u < h.n; u++) h.P[u * 3 + 2] = f[u];
-      }
-      if (c < 0.002) break;
-    }
-    for (let r of n) {
-      let l = a.get(r);
-      if (!l.some((m) => m)) continue;
-      let c = o.get(r),
-        h = r.n,
-        f = r.ja === s.id ? 0 : h - 1,
-        u = -1;
-      if (f === 0) for (let m = 0; m < h; m++) l[m] && (u = m);
-      else for (let m = h - 1; m >= 0; m--) l[m] && (u = m);
-      let d = r.P[u * 3 + 2] - c[u],
-        p = Math.min(
-          Math.max(15, Math.abs(d) / 0.035),
-          Math.abs(r.S[h - 1 - f] - r.S[u]),
-        );
-      for (let m = 0; m < h; m++) {
-        if (l[m]) continue;
-        let g = Math.abs(r.S[m] - r.S[u]);
-        (f === 0) != m < u &&
-          (r.P[m * 3 + 2] = c[m] + (g < p ? d * (1 - fu(g / p)) : 0));
-      }
-      for (let m = 0; m < h; m++)
-        (f === 0) == m < u && !l[m] && (r.P[m * 3 + 2] = r.P[u * 3 + 2]);
-      (e.add(r), (r._merged = !0));
-    }
-    if (e.size) {
-      let r = n.map((c) => c.P[(c.ja === s.id ? 0 : c.n - 1) * 3 + 2]),
-        l = r.reduce((c, h) => c + h, 0) / r.length;
-      Math.max(...r) - Math.min(...r) < 0.05 && (s.y = l);
-    }
-  }
-  for (let s of e) (i.embank ||= []).push(s);
-  return e.size;
-}
-var ui = 256,
-  hu = (i, t) => `${Math.floor(i / ui)},${Math.floor(t / ui)}`,
-  d0 = 32,
-  Ny = (i, t) => (i * 73856093) ^ (t * 19349663),
-  ll = {
-    noCrossA: 1,
-    noCrossB: 2,
-    noPark: 4,
-    oneway: 8,
-    cable: 16,
-    tram: 32,
-    elevated: 64,
-    inner: 128,
-  },
-  Jut = 0.08,
-  Zut = 12,
-  Qut = 0.015;
-function tdt(i) {
-  if (i.layered || i.inner || i.n < 3 || i.s1 - i.s0 < 1) return 0;
-  let t = i.P,
-    e = i.S,
-    s = i.W,
-    n = i.n,
-    o = new Float64Array(n - 1);
-  for (let p = 0; p + 1 < n; p++)
-    o[p] = (t[p * 3 + 5] - t[p * 3 + 2]) / Math.max(1e-6, e[p + 1] - e[p]);
-  let a = new Float64Array(n),
-    r = 0;
-  for (let p = 1; p + 1 < n; p++) {
-    let m = o[p] - o[p - 1];
-    if (Math.abs(m) < Qut || e[p] <= i.s0 + 0.05 || e[p] >= i.s1 - 0.05)
-      continue;
-    let g = Math.min(Zut / 2, (Jut * 4) / Math.abs(m));
-    ((g = Math.min(
-      g,
-      e[p] - i.s0,
-      i.s1 - e[p],
-      (e[p] - e[p - 1]) * (p - 1 >= 1 ? 0.5 : 1),
-      (e[p + 1] - e[p]) * (p + 1 <= n - 2 ? 0.5 : 1),
-    )),
-      g > 0.2 && ((a[p] = g), r++));
-  }
-  if (!r) return 0;
-  let l = [],
-    c = [],
-    h = (p, m) => {
-      let g = (m - e[p]) / Math.max(1e-9, e[p + 1] - e[p]);
-      return [
-        t[p * 3] + (t[p * 3 + 3] - t[p * 3]) * g,
-        t[p * 3 + 1] + (t[p * 3 + 4] - t[p * 3 + 1]) * g,
-        s[p] + (s[p + 1] - s[p]) * g,
-      ];
+// Lines 96415-96758 of readable/app.pretty.js (statement-aligned).
+function zmt(o) {
+  let t = _a(o["terrain.bin"]),
+    e = _a(o["roads.bin"]),
+    s = _a(o["buildings.bin"]),
+    n = _a(o["props.bin"]),
+    i = o["coast.bin"] ? _a(o["coast.bin"]) : null,
+    a = {
+      meta: {
+        terrain: t.meta,
+        roads: e.meta,
+        buildings: s.meta,
+        props: n.meta,
+      },
     };
-  for (let p = 0; p < n; p++) {
-    if (!a[p]) {
-      let M = l.length;
-      (M &&
-        Math.abs(l[M - 3] - t[p * 3]) + Math.abs(l[M - 2] - t[p * 3 + 1]) <
-          1e-4) ||
-        (l.push(t[p * 3], t[p * 3 + 1], t[p * 3 + 2]), c.push(s[p]));
-      continue;
+  ((a.terrain = P$(t)), On("crissy") && Smt(a.terrain));
+  let r = Object.entries(z0).map(([m, g]) => ({ key: m, def: g, dir: g.dir }));
+  ((a.regions = Object.fromEntries(
+    r.map((m) => [
+      m.key,
+      {
+        key: m.key,
+        def: m.def,
+        sea: t.meta.regionSea?.[m.key] || null,
+        loaded: !1,
+      },
+    ]),
+  )),
+    (a.far = t.farH ? [{ h: t.farH, meta: t.meta.far }] : []),
+    (a.terrain.regions = []),
+    (a.edges = []),
+    (a.juns = []),
+    kmt(a, e));
+  for (let [m, g] of Object.entries(e.meta.regions || {})) {
+    for (let b = g.e0; b < g.e1; b++) a.edges[b].region = m;
+    for (let b = g.j0; b < g.j1; b++) a.juns[b].region = m;
+  }
+  let l = 0;
+  for (let m of a.edges) l += Mmt(m);
+  ((a.fillets = l), On("highways") && f$(a), On("tunnels") && Vq(a));
+  for (let m of a.edges)
+    (m.ja >= 0 && a.juns[m.ja].legs.push([m, "a"]),
+      m.jb >= 0 && a.juns[m.jb].legs.push([m, "b"]));
+  (Emt(a), (a.joinedEnds = T$(a)));
+  for (let m of a.juns)
+    ((m.elev = m.legs.length > 0 && m.legs.every(([g]) => g.elev)),
+      (m.layered = m.legs.length > 0 && m.legs.every(([g]) => g.layered)));
+  for (let m of a.juns)
+    if (m.legs.some(([g]) => g.tunnel))
+      for (let [g, b] of m.legs)
+        g.tunnel || ((g.atPortal ||= [!1, !1])[b === "a" ? 0 : 1] = !0);
+  let c = m$(a),
+    h = R$(a);
+  ((a.decks = y$(a)),
+    (a.decks.merged = h),
+    (a.decks.underpasses = M$(a)),
+    (a.decks.joins = k$(a)),
+    (a.decks.plates = z$(a)),
+    (a.decks.carved = S$(a)),
+    (a.walks = new Map()),
+    (a.curbs = new Map()));
+  let f = e,
+    u = (m, g, b) => {
+      let v = new Float32Array(m.length);
+      for (let x = 0; x + 1 < g.length; x++) {
+        let [y, M] = b(x);
+        for (let S = g[x]; S < g[x + 1]; S++)
+          ((v[S * 2] = y * _i + m[S * 2] / 100),
+            (v[S * 2 + 1] = M * _i + m[S * 2 + 1] / 100));
+      }
+      return v;
+    };
+  for (let m of [f]) {
+    if (m.wQ) {
+      let g = new Int32Array(m.wRing.length - 1);
+      for (let b = 0; b + 1 < m.wPoly.length; b++)
+        for (let v = m.wPoly[b]; v < m.wPoly[b + 1]; v++) g[v] = b;
+      m.wPts = u(m.wQ, m.wRing, (b) => [
+        m.wChunk[g[b] * 2],
+        m.wChunk[g[b] * 2 + 1],
+      ]);
     }
-    let m = a[p],
-      g = 2 * m,
-      b = o[p - 1],
-      x = o[p],
-      v = t[p * 3 + 2] - b * m,
-      y = Math.max(4, Math.ceil(g / 0.75));
-    for (let M = 0; M <= y; M++) {
-      let S = (g * M) / y,
-        w = e[p] - m + S,
-        [z, _, R] = w <= e[p] ? h(p - 1, w) : h(p, w),
-        T = l.length;
-      (T && Math.abs(l[T - 3] - z) + Math.abs(l[T - 2] - _) < 1e-4) ||
-        (l.push(z, _, v + b * S + ((x - b) / (2 * g)) * S * S), c.push(R));
+    m.cQ &&
+      (m.cPts = u(m.cQ, m.cStart, (g) => [
+        m.cChunk[g * 2],
+        m.cChunk[g * 2 + 1],
+      ]));
+    for (let g = 0; g + 1 < m.wPoly.length; g++) {
+      let b = `${m.wChunk[g * 2]},${m.wChunk[g * 2 + 1]}`,
+        v = [],
+        x = [];
+      for (let M = m.wPoly[g]; M < m.wPoly[g + 1]; M++)
+        (v.push(m.wPts.subarray(m.wRing[M] * 2, m.wRing[M + 1] * 2)),
+          m.wY && x.push(m.wY.subarray(m.wRing[M], m.wRing[M + 1])));
+      v.ys = m.wY ? x : null;
+      let y = a.walks.get(b);
+      (y || a.walks.set(b, (y = [])), y.push(v));
+    }
+    for (let g = 0; g + 1 < m.cStart.length; g++) {
+      let b = `${m.cChunk[g * 2]},${m.cChunk[g * 2 + 1]}`,
+        v = m.cPts.subarray(m.cStart[g] * 2, m.cStart[g + 1] * 2);
+      v.ys = m.cY ? m.cY.subarray(m.cStart[g], m.cStart[g + 1]) : null;
+      let x = a.curbs.get(b);
+      (x || a.curbs.set(b, (x = [])), x.push(v));
     }
   }
-  ((i.P = new Float32Array(l)), (i.W = new Float32Array(c)));
-  let f = i.s0,
-    u = i.s1,
-    d = i.L;
+  (((m) => {
+    if (m.q) {
+      m.pts = new Float32Array(m.q.length);
+      for (let g = 0; g < m.meta.count; g++)
+        for (let b = m.rStart[m.bRing[g]]; b < m.rStart[m.bRing[g + 1]]; b++)
+          ((m.pts[b * 2] = m.org[g * 2] + m.q[b * 2] / 100),
+            (m.pts[b * 2 + 1] = m.org[g * 2 + 1] + m.q[b * 2 + 1] / 100));
+    }
+  })(s),
+    (a.bld = {
+      n: s.meta.count,
+      bRing: s.bRing,
+      rStart: s.rStart,
+      pts: s.pts,
+      front: s.front,
+      bF: s.bF,
+      bB: s.bB,
+      seed: s.seed,
+      roof: s.roof,
+      roofH: s.roofH,
+      styles: s.meta.styles,
+      named: s.meta.named,
+    }),
+    (a.props = {
+      n: n.meta.count,
+      kinds: n.meta.kinds,
+      pf: n.pf,
+      pk: n.pk,
+      px: n.px,
+    }),
+    (a.bld.nMain = a.bld.n),
+    (a.props.nMain = a.props.n),
+    (a.seawall = []),
+    (a.seawallCode = null));
+  for (let m of [i]) {
+    if (!m) continue;
+    let g = a.seawall.length;
+    for (let b = 0; b + 1 < m.sStart.length; b++)
+      a.seawall.push(m.sPts.subarray(m.sStart[b] * 2, m.sStart[b + 1] * 2));
+    if (m.iCode) {
+      let b = (v, x) => v.subarray(m.iStart[x], m.iStart[x + 1]);
+      a.seawallCode ||
+        ((a.seawallCode = []), (a.seawallY = []), (a.seawallSide = []));
+      for (let v = g; v < a.seawall.length; v++)
+        ((a.seawallCode[v] = b(m.iCode, v - g)),
+          (a.seawallY[v] = b(m.iY, v - g)),
+          (a.seawallSide[v] = m.iSide[v - g]));
+      a.quayStep = m.meta.quay.step;
+    }
+  }
+  (g$(a, c),
+    (a.groundBridges = c.length),
+    On("highways") && h$(a),
+    On("trench") && Fq(a),
+    On("highways") && (a.decks.mitered = _$(a)),
+    Rmt(a),
+    (a.absorbed = Tmt(a)),
+    (a.alleySnap = _mt(a)));
+  let p =
+    typeof window > "u" &&
+    !o.__noRegions &&
+    globalThis.process?.getBuiltinModule?.("fs");
+  for (let m of r) {
+    let g = o[m.dir + "terrain.bin"]
+      ? Object.fromEntries(Jk.map((b) => [b, o[m.dir + b]]))
+      : null;
+    if (!g && p) {
+      let b = globalThis.process?.env?.PLACE_OUT,
+        v =
+          (b
+            ? b.replace(/\/?$/, "/")
+            : new URL("../../../assets/real/", import.meta.url).pathname) +
+          m.dir;
+      p.existsSync(v + "terrain.bin") &&
+        (g = Object.fromEntries(
+          Jk.map((x) => {
+            if (!p.existsSync(v + x)) return [x, null];
+            let y = p.readFileSync(v + x);
+            return [
+              x,
+              y.buffer.slice(y.byteOffset, y.byteOffset + y.byteLength),
+            ];
+          }),
+        ));
+    }
+    g && C$(a, m.key, g);
+  }
+  return a;
+}
+function C$(o, t, e) {
+  let s = o.regions[t];
+  if (!s || s.loaded) return null;
+  let n = e["terrain.bin"] ? _a(e["terrain.bin"]) : null,
+    i = e["buildings.bin"] ? _a(e["buildings.bin"]) : null,
+    a = e["props.bin"] ? _a(e["props.bin"]) : null,
+    r = null;
+  if (n) {
+    if (
+      ((r = Object.assign(P$(n), { key: t })),
+      o.far.some((h) => h.meta.region === t))
+    ) {
+      let h = (f) => 32 * Math.floor(((f - 1) * r.step) / 32);
+      r.clipBox = [r.x0, r.z0, r.x0 + h(r.nx), r.z0 + h(r.nz)];
+    }
+    (o.terrain.regions.push(r), jq(o, r), E$(o, r));
+  }
+  let l = o.bld.n,
+    c = o.props.n;
+  if (i && i.meta.count) {
+    if (i.q) {
+      i.pts = new Float32Array(i.q.length);
+      for (let h = 0; h < i.meta.count; h++)
+        for (let f = i.rStart[i.bRing[h]]; f < i.rStart[i.bRing[h + 1]]; f++)
+          ((i.pts[f * 2] = i.org[h * 2] + i.q[f * 2] / 100),
+            (i.pts[f * 2 + 1] = i.org[h * 2 + 1] + i.q[f * 2 + 1] / 100));
+    }
+    (Amt(o.bld, i), o.bld.pts0 && (o.bld.pts0 = Rl(o.bld.pts0, i.pts)));
+  }
+  if ((a && a.meta.count && Pmt(o.props, a), o.claims)) {
+    let h = (f, u) => {
+      let d = new f.constructor(u);
+      return (d.set(f), d);
+    };
+    ((o.claims.bSkip = h(o.claims.bSkip, o.bld.n)),
+      (o.claims.pSkip = h(o.claims.pSkip, o.props.n)));
+  }
   return (
-    dr(i),
-    (i.ta = i.ta * (i.L / d)),
-    (i.tb = i.tb * (i.L / d)),
-    (i.s0 = f * (i.L / d)),
-    (i.s1 = i.L - (d - u) * (i.L / d)),
-    r
+    (s.loaded = !0),
+    { key: t, grid: r, b0: l, b1: o.bld.n, p0: c, p1: o.props.n }
   );
 }
-function edt(i) {
-  let s = (i.cover = new Uint8Array(i.cover));
-  for (let n = -7140; n <= -5020; n += i.step) {
-    let o = Math.round((n - i.x0) / i.step);
-    if (o < 0 || o >= i.nx) continue;
-    let a = -1;
-    for (let r = -1e3; r >= -1300; r -= i.step) {
-      let l = Math.round((r - i.z0) / i.step);
-      if (!(l < 0 || l >= i.nz) && s[l * i.nx + o] & 8) {
-        a = l;
-        break;
-      }
-    }
-    if (!(a < 0)) {
-      for (let r = 1; r <= 10; r++) {
-        let l = a + r,
-          c = l * i.nx + o;
-        if (l >= i.nz) break;
-        let h = s[c];
-        if (h & 16 || h & 8) break;
-        let f = 0.35 + (r * i.step) / 12;
-        (i.h[c] > f && (i.h[c] = r === 10 ? (i.h[c] + f) / 2 : f),
-          (h & 15) <= 3 && (s[c] = (h & -16) | 3));
-      }
-      for (let r = 0; r < 5; r++) {
-        let l = a - r,
-          c = l * i.nx + o;
-        if (l < 0) break;
-        i.h[c] = Math.max(i.h[c], -0.25 - r * 0.55);
-      }
+function _mt(o) {
+  let t = new Map(),
+    e = o.bld,
+    s = 0;
+  for (let u of o.edges) {
+    if (
+      u.layered ||
+      u.hwy ||
+      u.inner ||
+      !u.name ||
+      (u.cls !== "service" &&
+        u.cls !== "residential" &&
+        u.cls !== "living_street" &&
+        u.cls !== "pedestrian")
+    )
+      continue;
+    let d = u.P;
+    for (let p = 0; p + 1 < u.n; p++) {
+      if (Math.max(u.W[p], u.W[p + 1]) > 3) continue;
+      let g = Math.min(d[p * 3], d[p * 3 + 3]) - 4,
+        b = Math.max(d[p * 3], d[p * 3 + 3]) + 4,
+        v = Math.min(d[p * 3 + 1], d[p * 3 + 4]) - 4,
+        x = Math.max(d[p * 3 + 1], d[p * 3 + 4]) + 4;
+      for (let y = Math.floor(g / T0); y <= Math.floor(b / T0); y++)
+        for (let M = Math.floor(v / T0); M <= Math.floor(x / T0); M++) {
+          let S = Aw(y, M),
+            w = t.get(S);
+          (w || t.set(S, (w = [])), w.push([u, p]));
+        }
     }
   }
-}
-function Aj(i) {
-  let t = i.meta,
-    e = new Float32Array(i.h.length);
-  for (let s = 0; s < e.length; s++) e[s] = i.h[s] * t.hScale + t.hOff;
-  return {
-    x0: t.x0,
-    z0: t.z0,
-    step: t.step,
-    nx: t.nx,
-    nz: t.nz,
-    h: e,
-    cover: i.cover,
-    bounds: t.bounds,
-    sea: t.sea,
-  };
-}
-function sdt(i, t) {
-  let e = t.meta.names,
-    s = t.meta.classes,
-    n = t.meta.districts,
-    o = i.edges.length,
-    a = i.juns.length;
-  for (let r = 0; r + 1 < t.eStart.length; r++) {
-    let l = t.eStart[r],
-      c = t.eStart[r + 1],
-      h = {
-        id: o + r,
-        sid: t.eSeed ? t.eSeed[r] : o + r,
-        P: t.pts.subarray(l * 3, c * 3),
-        W: t.pw.subarray(l, c),
-      };
-    dr(h);
-    let f = t.eF,
-      u = t.eI,
-      d = t.eB,
-      p = (m) => (m >= 0 ? m + a : m);
-    (Object.assign(h, {
-      ta: f[r * 6],
-      tb: f[r * 6 + 1],
-      sw: f[r * 6 + 2],
-      laneW: f[r * 6 + 3],
-      maxspeed: f[r * 6 + 4],
-      ja: p(u[r * 5]),
-      jb: p(u[r * 5 + 1]),
-      name: u[r * 5 + 2] ? e[u[r * 5 + 2] - 1] : "",
-      way: u[r * 5 + 3],
-      dist: n[u[r * 5 + 4]] || "",
-      rank: d[r * 7] / 2,
-      lanes: d[r * 7 + 1],
-      flags: d[r * 7 + 2],
-      cls: s[d[r * 7 + 3]],
-      median: d[r * 7 + 4] & 1,
-      trolley: !!(d[r * 7 + 4] & 2),
-      stops: d[r * 7 + 5],
-      layer: d[r * 7 + 6] - 128,
-    }),
-      (h.elev = !!(h.flags & ll.elevated)),
-      (h.inner = !!(h.flags & ll.inner)),
-      (h.oneway = !!(h.flags & ll.oneway)),
-      (h.sunk = h.layer < 0),
-      (h.layered = h.elev || h.sunk),
-      (h.hwy = h.cls === "motorway" || h.cls === "motorway_link"),
-      (h.s0 = h.ta),
-      (h.s1 = h.L - h.tb),
-      i.region && (h.region = i.region),
-      i.edges.push(h));
-  }
-  for (let r = 0; r + 1 < t.jRing.length; r++) {
-    let l = {
-      id: a + r,
-      x: t.jF[r * 3],
-      z: t.jF[r * 3 + 1],
-      y: t.jF[r * 3 + 2],
-      type: ["end", "x", "j"][t.jB[r * 2]],
-      ctl: t.jB[r * 2 + 1],
-      rings: [],
-      polys: [],
-    };
-    i.region && (l.region = i.region);
-    let c = null;
-    for (let p = t.jRing[r]; p < t.jRing[r + 1]; p++) {
-      let m = t.rStart[p],
-        g = t.rStart[p + 1],
-        b = {
-          pts: t.rPts.subarray(m * 2, g * 2),
-          y: t.rY.subarray(m, g),
-          hole: !!t.rHole[p],
-        };
-      (l.rings.push(b), b.hole ? c && c.push(b) : ((c = [b]), l.polys.push(c)));
+  if (!t.size) return 0;
+  let n = e.pts,
+    i = n.length / 2,
+    a = n.slice(),
+    r = [];
+  for (let u = 0; u < i; u++) {
+    let d = n[u * 2],
+      p = n[u * 2 + 1],
+      m = t.get(Aw(Math.floor(d / T0), Math.floor(p / T0)));
+    if (!m) continue;
+    let g = null,
+      b = 1e9;
+    for (let [v, x] of m) {
+      let y = v.P,
+        M = y[x * 3],
+        S = y[x * 3 + 1],
+        w = y[x * 3 + 3] - M,
+        _ = y[x * 3 + 4] - S,
+        z = w * w + _ * _;
+      if (z < 1e-6) continue;
+      let A = ((d - M) * w + (p - S) * _) / z;
+      if (A < 0 || A > 1) continue;
+      let T = M + w * A,
+        E = S + _ * A,
+        R = Math.hypot(d - T, p - E),
+        P = v.W[x] + (v.W[x + 1] - v.W[x]) * A;
+      Math.abs(R - P) < 0.7 &&
+        R > 0.3 &&
+        Math.abs(R - P) < b &&
+        ((b = Math.abs(R - P)), (g = [T, E, R, P]));
     }
-    l.flat =
-      l.type === "x" &&
-      l.rings.every((p) => p.y.every((m) => Math.abs(m - l.y) < 0.001));
-    let h = 1e9,
-      f = 1e9,
-      u = -1e9,
-      d = -1e9;
-    for (let p of l.rings)
-      for (let m = 0; m < p.pts.length; m += 2)
-        ((h = Math.min(h, p.pts[m])),
-          (u = Math.max(u, p.pts[m])),
-          (f = Math.min(f, p.pts[m + 1])),
-          (d = Math.max(d, p.pts[m + 1])));
-    ((l.bb = [h, f, u, d]), (l.legs = []), i.juns.push(l));
+    if (g) {
+      let [v, x, y, M] = g,
+        S = M / y;
+      (b > 0.02 &&
+        ((n[u * 2] = v + (d - v) * S), (n[u * 2 + 1] = x + (p - x) * S), s++),
+        r.push(u));
+    }
   }
+  let l = new Int32Array(i);
+  for (let u = 0; u < e.n; u++)
+    for (let d = e.rStart[e.bRing[u]]; d < e.rStart[e.bRing[u + 1]]; d++)
+      l[d] = u;
+  let c = new Map(),
+    h = (u, d) => Math.floor(u / 4) * 100003 + Math.floor(d / 4),
+    f = new Uint8Array(i);
+  for (let u of r) {
+    let d = h(n[u * 2], n[u * 2 + 1]),
+      p = c.get(d);
+    (p || c.set(d, (p = [])), p.push(u));
+  }
+  for (let u of r) {
+    if (f[u]) continue;
+    let d = n[u * 2],
+      p = n[u * 2 + 1],
+      m = -1,
+      g = 1.2;
+    for (let x = -1; x <= 1; x++)
+      for (let y = -1; y <= 1; y++)
+        for (let M of c.get(
+          (Math.floor(d / 4) + x) * 100003 + Math.floor(p / 4) + y,
+        ) || []) {
+          if (f[M] || l[M] === l[u]) continue;
+          let S = Math.hypot(n[M * 2] - d, n[M * 2 + 1] - p);
+          S > 0.05 && S < g && ((g = S), (m = M));
+        }
+    if (m < 0) continue;
+    let b = (d + n[m * 2]) / 2,
+      v = (p + n[m * 2 + 1]) / 2;
+    ((n[u * 2] = n[m * 2] = b),
+      (n[u * 2 + 1] = n[m * 2 + 1] = v),
+      (f[u] = f[m] = 1),
+      (s += 2));
+  }
+  return (s && (e.pts0 = a), s);
 }
-var JS = ["terrain.bin", "buildings.bin", "props.bin"];
+var A$ = new Set([1006830791, 1006830792, 1006830794, 24326092, 243260921]);

@@ -13,7 +13,7 @@ Source: https://mindblown.ai/games/teleoperator
 
 - **Single esbuild bundle, WebGPU city drive** — the entry document loads
   `boot.js` (classic, device tier + crash recovery + early prefetch) then
-  `app.js` (4,016,285 B, minified, built from a ~40-file module graph as the
+  `app.js` (4,169,358 B, minified, built from a ~40-file module graph as the
   `taxi` variant: `SF_VARIANT='taxi'`, `SF_DIST`, `SF_MP`, `MB_GZ` globals).
   three.js powers the renderer through WebGPU (WGSL shaders; WebGL 1 is
   rejected since r163 — the og:description says "Real-time WebGPU")
@@ -40,15 +40,17 @@ day/night and weather, photo mode — plus multiplayer rooms of up to 8 drivers
 (`SF_MP`; the rooms terminate in the publisher's live brokers, which a static
 mirror cannot carry).
 
-The capture is the whole runtime closure the game host serves: **410 files,
-171,250,625 bytes (163.3 MiB)** — entry document, the boot/bundle pair, the
+The capture is the whole runtime closure the game host serves: **432 files,
+173,514,989 bytes (165.5 MiB)** — entry document, the boot/bundle pair, the
 stylesheet, the gzipped city and car payloads, the full audio tree, maps,
 textures with baked lightmaps, fonts, the four workers and the `__mb/` platform
-embed. Fetched 2026-10-12 across the fleet-wide network outage (two attempts
-were killed mid-flight and resumed; the final fetch ran to closure — 283
-requests, 0 gated, zero unresolved static paths; `/__mb/sound` is a POST-only
+embed. First fetched 2026-10-12 across the fleet-wide network outage (two
+attempts were killed mid-flight and resumed; the final fetch ran to closure —
+283 requests, 0 gated, zero unresolved static paths; `/__mb/sound` is a POST-only
 dynamic endpoint recorded in `_mirror-report.json`, and the cookie/localStorage
-path in `index.html` covers the sound switch without it).
+path in `index.html` covers the sound switch without it). Refreshed from the
+live origin on **2026-10-30** (see *Refresh record* below): 25 files replaced,
+1 upstream-gone, 23 closure additions — 410 → 432 files.
 
 External, and staying external: `https://api.mindblown.ai/pod.js` (platform
 pod: game config, events, sound sync), `https://mindblown.ai/embed/rail.js` +
@@ -60,56 +62,68 @@ Live multiplayer rooms are served by `api.mindblown.ai` and are not mirrorable.
 
 ## Layout
 
-- `index.html` — the **game document** (39,043 B) as served at `/?mb=game`;
+- `index.html` — the **game document** (39,317 B) as served at `/?mb=game`;
   this is the mirror's entry (a plain static server serves it at `/` and at
   `/?mb=game`)
-- `shell.html` — the **feed shell** served at `/` (51,867 B): splash + rail +
-  a same-origin iframe of `/?mb=game`; kept because the host serves it
-- `shell-index.html` — the same shell as served at `/index.html` (51,907 B;
-  identical but for its self-referential `twitter:player` meta) — the reason
-  the entry document is probed through its real route, `/?mb=game`
+- `shell.html` — the **feed shell** served at `/` (latest snapshot 36,805 B):
+  splash + rail + the game iframe; kept because the host serves it. **Presence-only
+  (dynamic):** the publisher renders it per request — consecutive GETs return
+  37,131 / 36,845 / 36,805 B variants (game iframe with a freshly signed
+  `mb_rec` token, or no iframe), so the manifest marks it `dynamic: true`
+- `shell-index.html` — the same shell as served at `/index.html` (latest snapshot
+  36,845 B; also presence-only/dynamic) — the reason the entry document is
+  probed through its real route, `/?mb=game`
 - `app.js`, `boot.js`, `style.css`, `tune.json`, `slots.json`, `robots.txt`,
   `thumb.webp`, `icon.webp`, `apple-touch-icon.png` — the rest of the root
 - `assets/`, `workers/`, `fonts/`, `__mb/app/` — the payload (see Assets)
-- `.upstream/manifest.json` — sha256 for all 410 captured files (origin
+- `.upstream/manifest.json` — sha256 for all 432 captured files (origin
   `https://teleoperator.mindblown.ai`)
+- `legacy/2026-10-30/` — the 26 files the 2026-10-30 refresh replaced or retired
+  (25 replaced + 1 upstream-gone), byte-exact originals for rollback
 - `_mirror-report.json` — capture record (283 requests, unresolved/unreachable
-  notes)
-- `readable/` — prettified derived layer (pinned prettier 3.9.6): 25 pretties
-  (app, boot, style, `__mb/app/worker`, the four `workers/*.js` and the 17
+  notes) + the 2026-10-30 refresh record
+- `readable/` — prettified derived layer (pinned prettier 3.9.6): 28 pretties
+  (app, boot, style, `__mb/app/worker`, the four `workers/*.js` and the 20
   inline content blocks of the three documents) + `index-inline-map.json`
   (byte ranges + sha256)
-- `src/` + `split-spec.json` — 417 statement-aligned slices recorded in 441
+- `src/` + `split-spec.json` — 434 statement-aligned slices recorded in 461
   derivation sections
 - `tools/derive.mjs` — rebuild `readable/` + `src/` + `split-spec.json`
 - `tools/verify.mjs` — re-hash the capture against the manifest
-- `tools/update.mjs` — read-only drift probe against the live game host
+- `tools/update.mjs` — read-only drift probe **and** the gated `--pull` refresh
+  (`--dry-run` is the trust gate; `--pull` refuses to write unless it passes;
+  `--closure` re-scans the runtime closure)
 - `tools/audit.js` — integrity gate for the derived layers (`AUDIT PASS`)
 - `tools/vendor/prettier/` — the pinned renderer itself, vendored **into this
   mirror** (prettier 3.9.6 module API, byte-identical to the published
   `prettier-3.9.6.tgz`); `derive.mjs` and `audit.js` resolve `$PRETTIER_MJS` →
   this copy → a local `node_modules`, so neither ever reaches into a sibling
   mirror's uncommitted tree
-- `docs/cover.png`, `docs/boot-2026-10-13.png` — cover + boot evidence from
-  the served mirror (actual gameplay)
+- `docs/cover.png`, `docs/boot-2026-10-13.png`, `docs/boot-2026-10-27.png`,
+  `docs/boot-2026-10-30-refresh.png` — cover + boot evidence from the served
+  mirror (actual gameplay)
 
 ## Assets
 
-- **city data** — `assets/real/` (20 files, 25.9 MiB): `roads.bin.gz`,
+- **city data** — `assets/real/` (22 files, 27.2 MiB): `roads.bin.gz`,
   `terrain.bin.gz`, `buildings.bin.gz`, `props.bin.gz`, `ground.bin.gz`,
   `green.bin.gz`, `coast.bin.gz`, `rails.bin.gz`, `sky.bin.gz`,
-  `sky_field.bin.gz`, `btags.bin.gz` + `marin/`, `west/`
-- **audio** — `assets/audio/` (147 files, 32.7 MiB): `audio.json` + 146
-  mp3/wav — engine and tyre loops (`ev_*`, `v12_*`, `dsl_*`, `sml_*`), brakes,
-  horns, sirens (`cop_*`), city/bay beds, taxi chimes, `track_3.mp3`
+  `sky_field.bin.gz`, `btags.bin.gz`, `yards.bin.gz`, `place.json` + `marin/`,
+  `west/`
+- **audio** — `assets/audio/` (166 files, 34.2 MiB): `audio.json` + 165
+  mp3/wav — engine and tyre loops (`ev_*`, `v12_*`, `dsl_*`, `sml_*`, the new
+  `rd_*` roadster set), brakes, horns, sirens (`cop_*`), city/bay beds, taxi
+  chimes, `track_3.mp3`
 - **textures** — `assets/tex/` (166 files, 50.5 MiB): the webp texture sets,
   `tex.json`, `impostors.json` and the baked lightmaps under
   `assets/tex/lm/{fortmason,lombard_gg,pier39,skyline,waterfront}/`
 - **vehicles** — traffic in `assets/cars/` (bus, cablecar, hatch, pickup,
   sedan, suv, taxi, van — `*.glb.gz` + `*_lod1.glb.gz` + `*_2k.webp`); player
   cars `assets/waymo/` (7), `assets/cybercab/` (4), `assets/corvette/` (3),
-  `assets/cybertruck/` (3); the garage turntable scene in `assets/car/` (7)
-- **vegetation / lightmaps** — `assets/veg/` (trees, yards), `assets/lm/`
+  `assets/cybertruck/` (3); the garage turntable scene in `assets/car/` (7);
+  the garage turn-table sprites for the procedural Roadster and the mission
+  cards in `assets/roadster/turntable.webp` and `assets/missions/turntable.webp`
+- **vegetation / lightmaps** — `assets/veg/` (trees), `assets/lm/`
 - **art** — `assets/plates.webp`, `assets/teleop_title{,_portrait,_square}.webp`,
   `thumb.webp`, `icon.webp`, `apple-touch-icon.png`
 - **fonts** — `fonts/` (2): `Archivo-300-800.woff2`, `JetBrainsMono-600.woff2`
@@ -139,11 +153,11 @@ node tools/check-exports.mjs   # the derived layer still exports every public na
 node tools/derive.mjs --check          # the derived layer is current? (compares a fresh rebuild; writes NOTHING)
 ```
 
-Last run: `410 files checked, 0 problems` and `AUDIT PASS` (441 spec sections,
-417/417 src↔pretty round-trips byte-exact, 25/25 pretties re-render byte-exact
-under pinned prettier 3.9.6, 17 inline content blocks with twins + map), plus
-`DERIVE CHECK PASS` (two consecutive `--check` runs: `readable` + `src` current
-under the documented chain, byte-identical, nothing written).
+Last run (2026-10-30, after the refresh): `432 files checked, 0 problems` and
+`AUDIT PASS` (461 spec sections, 434/434 src↔pretty round-trips byte-exact,
+28/28 pretties re-render byte-exact under pinned prettier 3.9.6, 20 inline
+content blocks with twins + map), plus `DERIVE CHECK PASS` (`readable` + `src`
+current under the documented chain, byte-identical, nothing written).
 
 `check-exports` reports `0 export table(s) checked` **by construction**: the
 capture is one minified, side-effect-only module bundle (no `export` statement
@@ -154,21 +168,72 @@ The green is an honest zero, not a vacuous pass over an unreached surface.
 ## Updating from upstream
 
 ```
-node tools/update.mjs     # read-only drift probe: what changed upstream
+node tools/update.mjs                  # read-only drift probe: what changed upstream
+node tools/update.mjs --dry-run        # TRUST GATE: fetch every file, compare byte-for-byte, write NOTHING
+node tools/update.mjs --closure        # re-scan the runtime closure of the local capture
+node tools/update.mjs --pull --date 2026-10-30   # gated refresh (refuses to write unless the gate passes)
 ```
 
-The probe never rewrites the capture — a mirror is a point-in-time snapshot.
-Route quirks it handles (re-verified 2026-10-13, byte-exact): the entry
-document is probed at `/?mb=game` (GET `/index.html` answers with the shell,
-captured as `shell-index.html`), and GET `/` answers with the feed shell
-(`shell.html`). Known noise: `/__mb/sound` is POST-only (405 on GET) and stays
-uncapturable by design. Refreshing means re-fetching the closure into a clean
-tree and re-deriving `readable/` + `src/` with `node tools/derive.mjs`.
+The default probe never rewrites the capture — a mirror is a point-in-time
+snapshot. `--dry-run` is the trust gate: it fetches every manifest file and
+classifies it as identical / changed / upstream-gone, so a refresh can prove the
+tool still reproduces the current capture byte-for-byte on everything still
+served before a single byte is written. `--pull` runs the same gate in the same
+run, archives every file it is about to replace or retire into
+`legacy/<date>/<rel>`, then writes the new bytes, records upstream-gone files
+(never invents them) and re-cuts `.upstream/manifest.json`.
 
-### 2026-10-12/13 derivation, closure and gates
+Route quirks it handles (re-verified 2026-10-30): the entry document is probed
+at `/?mb=game` (GET `/index.html` answers with the feed shell, captured as
+`shell-index.html`), and GET `/` answers with the feed shell (`shell.html`).
+The two shell documents are **presence-only** (`dynamic: true`) — the publisher
+renders them per request with either a signed game iframe or no iframe, so their
+sha can never match. Known noise: `/__mb/sound` is POST-only (405 on GET) and
+stays uncapturable by design.
+
+A refresh always re-runs the closure scan (PLAN §4) over the freshly fetched
+text: static path literals, every bare filename in the captured JSON asset
+manifests, constructed runtime paths (`dir + "turntable.webp"`, the garage
+sprite for every car and mission) and the served `.gz` twin of every `.bin`
+literal. Then re-derive `readable/` + `src/` with `node tools/derive.mjs`.
+
+### 2026-10-30 refresh (fresh upstream fetch + full re-derive)
+
+The origin was reachable and reproducible. The trust gate — a `--dry-run` over
+the 2026-10-13 capture — reproduced **384 of 410** files byte-for-byte, found
+**25 genuinely changed**, **1 upstream-gone** and 0 unreachable. The bytes were
+then refreshed through the mirror's own tool, not hand-copied:
+
+- **25 replaced** (originals kept in `legacy/2026-10-30/`): `app.js`
+  (4,016,285 → 4,169,358 B), `boot.js`, `style.css`, `index.html`, both shell
+  documents, `workers/img.js`, the three `__mb/app/icon-*.png`, `icon.webp`,
+  `thumb.webp`, `assets/audio/audio.json` and 12 `assets/real/*.bin.gz` city
+  payloads.
+- **1 upstream-gone** (recorded, not invented): `assets/veg/yards.bin.gz`
+  (404). The city file moved to `assets/real/yards.bin.gz`, which the closure
+  scan picked up via the `.gz` twin of the bundle's `assets/real/yards.bin`
+  literal.
+- **23 closure additions**, none visible to the drift probe: 19 new
+  `assets/audio/rd_*.mp3` (the Roadster audio set, named only by the new
+  `audio.json`), `assets/real/place.json`, `assets/real/yards.bin.gz`, and —
+  caught only by the offline boot, because the path is constructed —
+  `assets/roadster/turntable.webp` and `assets/missions/turntable.webp`.
+  410 → **432 files, 173,514,989 B**.
+- **Re-derived**: `readable/` 25 → 28 pretties, `src/` 417 → 434 slices,
+  `split-spec.json` 441 → 461 sections. The `app.js` vendor anchors were made
+  semantic (the minifier renumbered every identifier: `var L9, aH, …` became
+  `var aA, cU, …`) and `tools/audit.js` follows.
+- **Gates**: `verify.mjs` → `432 files checked, 0 problems`; `audit.js` →
+  `AUDIT PASS`; `check-exports.mjs` → no public export name lost;
+  `derive.mjs --check` → `DERIVE CHECK PASS`.
+- **Boot** (below): 0 console errors, 0 failed same-origin requests after the
+  closure additions — the two `turntable.webp` 404s the first offline boot
+  exposed are gone.
+
+### 2026-10-12/13 derivation, closure and gates (prior record)
 
 The whole pipeline was cut from the recorded capture (capture bytes untouched —
-`node tools/verify.mjs` re-hashes all 410 files), across the fleet-wide network
+`node tools/verify.mjs` re-hashes what is on disk), across the fleet-wide network
 outage that killed two earlier fetch attempts mid-flight and forced the capture
 to be resumed:
 
@@ -208,21 +273,55 @@ to be resumed:
   a browser; it exists so the bundles can actually be read.
 - **Provenance** — `.upstream/manifest.json` records sha256 for each captured
   artifact, and `tools/verify.mjs` re-checks it.
-- **Drift** — `tools/update.mjs` is read-only: it reports what changed upstream
-  and never rewrites the capture.
+- **Drift** — `tools/update.mjs` is read-only by default: it reports what
+  changed upstream and never rewrites the capture. Writing happens only through
+  the explicit `--pull`, which refuses to run unless its trust gate passes.
+- **Presence-only** — the two feed-shell documents are per-request variants;
+  they are marked `dynamic: true` in the manifest and compared by presence, not
+  by sha (their captured snapshot is still hashed by `verify.mjs`).
+- **Legacy** — every refresh keeps the files it replaces or retires under
+  `legacy/<date>/`; git history plus that copy is the rollback path.
 - **Route divergence (recorded)** — upstream `/` is the publisher's feed shell
   and the game document lives at `/?mb=game`; the mirror's disk root is the
   game document (`index.html`), and both shell documents are preserved as
   `shell.html` / `shell-index.html`.
 
-## Boot test (2026-10-27)
+## Boot test (2026-10-30, refresh)
+
+- Session: `boot-teleoperator-refresh` — Chrome 156 driven over CDP, launched
+  with `--host-resolver-rules=MAP * 127.0.0.1` so every off-origin host resolves
+  to loopback and the network is effectively blocked.
+- Entry: `http://127.0.0.1:4750/?mb=game` served by `tools/serve.mjs 4750`
+  (port inside the 4700–4799 range), listener killed afterwards and the port
+  proven closed with `netstat -ano`.
+- Outcome: **rendered and driven** — the WebGPU San Francisco build read the
+  refreshed city payloads (1407 chunks, 54,512 buildings, 245,844 props, 263,324
+  colliders), opened the garage with the full car roster, then `DRIVE` put the
+  Waymo on the street at Russian Hill (Van Ness Ave) with the destination board,
+  minimap, speedometer and a live **76 fps** counter; the car moved under `W`.
+- Evidence — `docs/boot-2026-10-30-refresh.png` (screenshot, read back):
+  body 919 chars, main canvas 1088x680 at 1280x800, `window.__sf` present with
+  `loop/peds/world/tele/mp/garage/race/...`, city build console log present.
+  **0 console errors, 0 page errors**, 104 same-origin requests **all 200**
+  (city `.bin.gz`, textures, traffic, audio, the new `audio.json` entries,
+  `assets/real/place.json`, both `turntable.webp` sprites), 0 uncaptured
+  same-origin requests. Only the documented external pod
+  (`api.mindblown.ai/pod.js`) is refused, as expected.
+- Gaps seen: none. The first offline boot of this refresh did expose two real
+  capture gaps (`assets/roadster/turntable.webp`, `assets/missions/turntable.webp`)
+  — constructed paths the static scan cannot see; both were fetched through the
+  gated pull and the boot above is clean.
+
+The capture's "playable" claim holds on the refreshed bytes: the static mirror
+alone boots and drives offline; only the external platform pod (and the
+multiplayer rooms it carries) is absent.
+
+## Boot test (2026-10-27, prior record)
 
 - Entry: `http://127.0.0.1:4984/?mb=game` served by `tools/serve.mjs` with the network blocked (`MAP * 127.0.0.1`).
 - Outcome: **rendered** — the WebGPU San Francisco build booted to the garage screen, and after one click on `DRIVE` the Waymo taxi drove down Marina streets with the courier HUD, minimap, speedometer and a live 81 fps counter.
 - Evidence: body 458 chars; canvas 1262x568 (plus HUD canvases); 0 console errors (0 page errors, 4 `STORAGE_UNAVAILABLE` profile warnings); 0 failed same-origin requests, 1 blocked cross-origin (`api.mindblown.ai/pod.js`); screenshot `docs/boot-2026-10-27.png`.
 - Gaps seen: none — 133 same-origin requests, every one 200 (city `.bin.gz` payloads, textures, traffic models, audio).
-
-The capture's "playable" claim is confirmed: the static mirror alone boots and drives offline; only the external platform pod (and the multiplayer rooms it carries) is absent.
 
 ## Fleet status
 

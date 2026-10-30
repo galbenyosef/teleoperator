@@ -1,247 +1,333 @@
-// app 341 — math
-// Lines 165689-165933 of readable/app.pretty.js (statement-aligned).
-function $Q(i, t) {
-  let e = vz[i],
-    s = e[6],
-    n = Math.abs(t) < 1e-9 ? 0 : t;
-  return (
-    (n > 0 ? "+" : n < 0 ? "\u2212" : "\xB1") +
-    Math.abs(n).toFixed(e[5] < 0.1 ? 2 : e[5] < 1 ? 1 : 0) +
-    (s.startsWith("%") || s === "\xB0" ? "" : " ") +
-    s
-  );
-}
-as();
-var JQ = /Tyre|Tires|Tire/,
-  v5t = /Tyre|Tires|Tire|Disc|Caliper/,
-  Tz = new xt(),
-  XQ = new ye();
-function y5t(i) {
-  if (i.userData?.tuneFit) return i.userData.tuneFit;
-  i.root.updateMatrixWorld(!0);
-  let t = i.wheels.map((f) => {
-    let u = Math.sign(f.c[0]) || 1,
-      d = new ye().copy(f.spin.matrixWorld).invert(),
-      p = 0,
-      m = 1e9,
-      g = -1e9,
-      b = 1e9,
-      x = 0;
-    return (
-      f.spin.traverse((v) => {
-        if (!v.isMesh || !JQ.test(v.name)) return;
-        let y = v.geometry?.attributes?.position;
-        if (!y?.array?.length) return;
-        XQ.multiplyMatrices(d, v.matrixWorld);
-        let M = Math.max(1, Math.floor(y.count / 6e3));
-        for (let S = 0; S < y.count; S += M) {
-          Tz.fromBufferAttribute(y, S).applyMatrix4(XQ);
-          let w = Math.hypot(Tz.y, Tz.z),
-            z = Tz.x * u;
-          ((p = Math.max(p, w)),
-            (g = Math.max(g, z)),
-            (b = Math.min(b, z)),
-            x++,
-            w < m && (m = w));
-        }
-      }),
-      (!x || !(p > 0.08) || !(m < p)) &&
-        ((p = 0.34), (m = 0.25), (g = 0.13), (b = -0.12)),
-      { R: p, bead: Math.max(m, p * 0.55), xo: g, xi: b, out: u }
-    );
+// app 341 — color
+// Lines 165021-165351 of readable/app.pretty.js (statement-aligned).
+async function est(o, t) {
+  let e = await new va().parseAsync(
+      o.buffer ? o.buffer.slice(o.byteOffset, o.byteOffset + o.byteLength) : o,
+      "./",
+    ),
+    s = {},
+    n = null;
+  e.scene.traverse((z) => {
+    z.isMesh &&
+      (z.geometry.computeBoundingSphere(),
+      (s[z.name] = z.geometry),
+      z.name === "Body" && (n = z.material));
   });
-  for (let [f, u] of [
-    [0, 1],
-    [2, 3],
-  ])
-    if (t[f] && t[u]) {
-      let d = t[f].R <= t[u].R ? t[f] : t[u];
-      for (let p of [f, u])
-        t[p] = { ...d, xi: Math.max(t[f].xi, t[u].xi), out: t[p].out };
-    }
-  let e = Math.max(i.wheels[2].c[2], i.wheels[3].c[2]),
-    s = [];
-  i.body.traverse((f) => {
-    f.isMesh &&
-      f.visible &&
-      f.geometry?.attributes?.position?.array?.length &&
-      !/Glass|Head|Tail|Plate|Lamp/i.test(f.name) &&
-      s.push(f);
-  });
-  let n = new ye().copy(i.model.matrixWorld).invert(),
-    o = new cg(),
-    a = new xt(0, -1, 0).transformDirection(i.model.matrixWorld),
-    r = (f) => {
-      o.set(new xt(0, 4, f).applyMatrix4(i.model.matrixWorld), a);
-      let u = o.intersectObjects(s, !1)[0];
-      return u ? u.point.clone().applyMatrix4(n).y : null;
-    },
-    l = null,
-    c = null;
-  if (s.length)
-    for (let f = e; f < e + 1.8; f += 0.08) {
-      let u = r(f);
-      if (u !== null && u > 0.45) l = f;
-      else if (l !== null) break;
-    }
-  if (l !== null) {
-    let f = Math.max(e + 0.1, l - 0.3);
-    ((c = r(f)), (l = f));
-  }
-  let h = {
-    W: t,
-    deck: {
-      y: c ?? (i.dims?.tail?.[0]?.[1] ?? 0.9) + 0.12,
-      z: l ?? e + 0.7,
-      w: Math.min(1.7, (i.dims?.w || 1.9) * 0.82),
-    },
-  };
-  return (((i.userData ||= {}).tuneFit = h), h);
-}
-var uf = {};
-function w5t() {
-  if (uf.rim) return uf;
-  let i = (t, e) => {
-    let s = new t(e);
-    return ((s.side = Ss), s);
-  };
-  return (
-    (uf.rim = i(An, {
-      name: "TuneRim",
-      color: new $t(0.62, 0.63, 0.65),
-      metalness: 1,
-      roughness: 0.26,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.08,
-    })),
-    (uf.barrel = i(Ee, {
-      name: "TuneBarrel",
-      color: new $t(0.32, 0.32, 0.33),
-      metalness: 1,
-      roughness: 0.45,
-    })),
-    (uf.dark = i(Ee, {
-      name: "TuneDark",
-      color: new $t(0.02, 0.02, 0.022),
-      metalness: 0.2,
-      roughness: 0.7,
-    })),
-    (uf.rotor = i(Ee, {
-      name: "TuneRotor",
-      color: new $t(0.2, 0.2, 0.21),
-      metalness: 0.8,
-      roughness: 0.42,
-    })),
-    (uf.nut = i(Ee, {
-      name: "TuneNut",
-      color: new $t(0.8, 0.8, 0.82),
-      metalness: 1,
-      roughness: 0.2,
-    })),
-    (uf.rubber = i(Ee, {
-      name: "TuneRubber",
-      color: new $t(0.018, 0.018, 0.02),
+  let i = n.map,
+    a = n.metalnessMap || n.roughnessMap;
+  ((i.colorSpace = Je), (i.anisotropy = 8), (a.colorSpace = Nn));
+  let r = { lumRef: t.paintLum || 0.8, detail: 0.25, coat: 1, coatRough: 0.03 },
+    l = new mn({
+      name: "MissionSBody",
+      color: tB.clone(),
+      map: i,
+      roughness: 0.32,
       metalness: 0,
-      roughness: 0.85,
-    })),
-    (uf.carbon = i(An, {
-      name: "TuneCarbon",
-      color: new $t(0.025, 0.026, 0.03),
-      metalness: 0.3,
-      roughness: 0.35,
       clearcoat: 1,
-      clearcoatRoughness: 0.05,
-    })),
-    uf
-  );
-}
-var wF = {};
-function M5t(i) {
-  if (wF[i]) return wF[i];
-  let t = 2048,
-    e = 64,
-    s = document.createElement("canvas");
-  ((s.width = t), (s.height = e));
-  let n = s.getContext("2d");
-  if ((n.clearRect(0, 0, t, e), i === 1)) {
-    ((n.fillStyle = "#f4f4f0"),
-      (n.font = "800 44px Arial Black, Arial, sans-serif"),
-      (n.textBaseline = "middle"));
-    for (let a = 0; a < 2; a++)
-      (n.save(),
-        n.translate((a * t) / 2, 0),
-        n.fillText("SF DRIVE", 120, e / 2),
-        (n.font = "700 30px Arial, sans-serif"),
-        n.fillText("RACING RADIAL \xB7 245/35", 520, e / 2 + 2),
-        (n.font = "800 44px Arial Black, Arial, sans-serif"),
-        n.restore());
-  } else
-    i === 2
-      ? ((n.fillStyle = "#f2f1ea"), n.fillRect(0, 10, t, e - 20))
-      : i === 3 && ((n.fillStyle = "#d4141c"), n.fillRect(0, 24, t, 14));
-  let o = new Sn(s);
-  return ((o.colorSpace = is), (o.wrapS = ti), (o.anisotropy = 4), (wF[i] = o));
-}
-function jm(i, t = 40) {
-  let e = new A1(
-    i.map(([s, n]) => new Re(Math.max(n, 1e-4), s)),
-    t,
-  );
-  return (e.rotateZ(-Math.PI / 2), e);
-}
-function KQ(i, t, e, s = 96, n = 2) {
-  let o = [],
-    a = [],
-    r = [];
-  for (let c = 0; c <= s; c++) {
-    let h = (c / s) * Math.PI * 2,
-      f = Math.cos(h),
-      u = Math.sin(h);
-    (o.push(i, t * f, t * u, i, e * f, e * u),
-      a.push((c / s) * n, 0, (c / s) * n, 1));
-  }
-  for (let c = 0; c < s; c++) {
-    let h = c * 2;
-    r.push(h, h + 2, h + 1, h + 1, h + 2, h + 3);
-  }
-  let l = new De();
-  return (
-    l.setAttribute("position", new ze(o, 3)),
-    l.setAttribute("uv", new ze(a, 2)),
-    l.setIndex(r),
-    l.computeVertexNormals(),
-    l
-  );
-}
-function Xx(i, t, e, s, n, o, a, r = 0, l = 0) {
-  let c = new qs(o, t - i, 1, 1, 3, 1),
-    h = c.attributes.position;
-  for (let f = 0; f < h.count; f++) {
-    let u = (h.getY(f) + (t - i) / 2) / (t - i),
-      d = e + (s - e) * u;
-    (h.setZ(f, h.getZ(f) * d + r * (u - 0.5) * (t - i)),
-      h.setX(f, h.getX(f) - o / 2 + n + l * (1 - u) * (1 - u)),
-      h.setY(f, i + u * (t - i)));
-  }
-  return (c.computeVertexNormals(), c.rotateX(a), c);
-}
-var Az = (i) => {
-    let t = [];
-    for (let r of i) t.push(r.index ? r.toNonIndexed() : r);
-    let e = t.reduce((r, l) => r + l.attributes.position.count, 0),
-      s = new Float32Array(e * 3),
-      n = new Float32Array(e * 3),
-      o = 0;
-    for (let r of t)
-      (s.set(r.attributes.position.array, o * 3),
-        n.set(r.attributes.normal.array, o * 3),
-        (o += r.attributes.position.count));
-    let a = new De();
+      clearcoatRoughness: 0.03,
+      envMapIntensity: 1,
+    });
+  ((l.userData.mbExtraMap = a),
+    (l.userData.mbAlbedo = xc(Qet, r)),
+    (l.userData.mbUV1 = !!s.Body?.attributes.uv1));
+  let c = (z, A, T = i) => {
+      let E = new Ys({
+        name: z,
+        color: A.clone(),
+        map: T,
+        fog: !1,
+        toneMapped: !0,
+        side: ls,
+      });
+      return ((E.userData.mbNoReflect = !0), (E.userData.base = A.clone()), E);
+    },
+    h = {
+      Body: l,
+      Glass: new mn({
+        name: "MissionSGlass",
+        color: new It(0.026, 0.026, 0.028),
+        roughness: 0.05,
+        metalness: 0,
+        specularIntensity: 1,
+        specularColor: new It(1, 1, 1),
+      }),
+      Cabin: new me({
+        name: "MissionSCabin",
+        color: new It(0.05, 0.05, 0.052),
+        roughness: 0.8,
+        metalness: 0,
+      }),
+      Liner: new me({
+        name: "MissionSLiner",
+        color: new It(0.012, 0.012, 0.014),
+        roughness: 0.9,
+        metalness: 0,
+        side: ls,
+      }),
+      Head: c("MissionSHead", new It(0.95, 0.97, 1), null),
+      Tail: c("MissionSTail", new It(1, 1, 1)),
+      LampGlass: new mn({
+        name: "MissionSLampGlass",
+        color: new It(0.02, 0.022, 0.025),
+        roughness: 0.04,
+        metalness: 0,
+        clearcoat: 1,
+        clearcoatRoughness: 0.02,
+        transparent: !0,
+        opacity: 0.55,
+      }),
+      Tyre: new me({
+        name: "MissionSTyre",
+        color: new It(0.024, 0.024, 0.026),
+        roughness: 0.85,
+        metalness: 0,
+        side: ls,
+      }),
+      Cover: new mn({
+        name: "MissionSWheelFace",
+        color: new It().setRGB(0.82, 0.82, 0.8, Je),
+        roughness: 0.28,
+        metalness: 0.1,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.06,
+        side: ls,
+      }),
+      Rim: new mn({
+        name: "MissionSRim",
+        color: new It(0.02, 0.02, 0.022),
+        roughness: 0.3,
+        metalness: 0.4,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.1,
+        side: ls,
+      }),
+      Caliper: new mn({
+        name: "MissionSCaliper",
+        color: new It().setRGB(0.78, 0.04, 0.05, Je),
+        roughness: 0.35,
+        metalness: 0,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.1,
+      }),
+    };
+  ((h.Glass.userData.mbAlbedo = zh()),
+    (h.Glass.userData.mbUV1 = !!s.Glass?.attributes.uv1));
+  let f = new le();
+  f.name = "MissionSModel";
+  let u = new le();
+  ((u.name = "MissionSBodyGroup"), f.add(u));
+  let d = (z, A, T = z) => {
+    let E = new ye(A, h[T]);
+    E.name = "MissionS" + z;
+    let R = z === "Head" || z === "Tail";
     return (
-      a.setAttribute("position", new Te(s, 3)),
-      a.setAttribute("normal", new Te(n, 3)),
-      a.computeBoundingSphere(),
-      a
+      (E.castShadow =
+        !R && z !== "Glass" && z !== "Cabin" && T !== "LampGlass"),
+      (E.receiveShadow = !R && z !== "Cabin"),
+      E
     );
+  };
+  for (let z of ["Body", "Glass", "Cabin", "Liner", "Tail"])
+    s[z] && u.add(d(z, s[z]));
+  {
+    let z = { ...$Mt, ...(t.heads || {}) },
+      A = new Er(z.r, 32, 12, 0, Math.PI * 2, 0, 0.55).rotateX(Math.PI / 2),
+      T = [];
+    for (let [R, P] of [
+      [-1, -1],
+      [1, -1],
+      [1, 1],
+      [-1, 1],
+    ])
+      T.push(
+        new da(z.r * 0.17, 16).translate(
+          R * z.r * 0.42,
+          P * z.r * 0.42,
+          z.r * 0.86 + 0.006,
+        ),
+      );
+    let E = XMt(T);
+    for (let R of [-1, 1]) {
+      let P = new le(),
+        C = new dt(z.n[0] * R, z.n[1], z.n[2]).normalize();
+      (P.quaternion.setFromUnitVectors(new dt(0, 0, 1), C),
+        P.position.set(z.x * R, z.y, z.z).addScaledVector(C, -z.r * 0.85),
+        P.add(d("Head", E), d("LampDome", A, "LampGlass")),
+        u.add(P));
+    }
+  }
+  t.plates?.length &&
+    R0(
+      u,
+      t.plates.map((z) => ({ ...z, cell: vo.emoji })),
+    );
+  let p = t.wheels.map((z, A) => {
+      let T = A < 2 ? "F" : "R",
+        E = new le();
+      (E.position.set(...z), (E.name = "WheelSteer" + A));
+      let R = new le();
+      ((R.name = "WheelSpin" + A), E.add(R));
+      let P = new le();
+      ((P.rotation.y = z[0] < 0 ? Math.PI : 0), R.add(P));
+      for (let C of ["Tyre", "Rim", "Cover"])
+        s[C + T] && P.add(d(C + T, s[C + T], C));
+      if (s["Caliper" + T]) {
+        let C = new le();
+        ((C.rotation.y = z[0] < 0 ? Math.PI : 0),
+          C.add(d("Caliper" + T, s["Caliper" + T], "Caliper")),
+          E.add(C));
+      }
+      return (f.add(E), { c: z, steer: E, spin: R });
+    }),
+    m = new le();
+  ((m.name = "Car"), (m.rotation.order = "YXZ"), m.add(f));
+  let g = { tail: [], head: [], signal: [] };
+  u.traverse((z) => {
+    z.name === "MissionSTail"
+      ? g.tail.push(z)
+      : z.name === "MissionSHead" && g.head.push(z);
+  });
+  let [, , b] = t.min,
+    [, , v] = t.max,
+    x = t.tailBar || [0.8, v - 0.05],
+    y = {
+      w: 1.99,
+      l: v - b - 0.06,
+      cz: (b + v) / 2,
+      wheels: t.wheels.map((z) => [z[0], z[2]]),
+      pivotY: 0.45,
+      cgZ: 0.1,
+      steerK: 0.85,
+      tail: [
+        [-0.62, x[0], x[1]],
+        [0.62, x[0], x[1]],
+      ],
+    },
+    M = 1,
+    S = (z) => {
+      (h.Head.color
+        .copy(h.Head.userData.base)
+        .multiplyScalar(1.2 + 1.8 * (z.head || 0)),
+        h.Tail.color
+          .copy(h.Tail.userData.base)
+          .multiplyScalar((0.7 + 1.5 * (z.tail || 0)) * M));
+    },
+    w = Ir({
+      mat: l,
+      kind: "missions",
+      factory: tB,
+      hook: (z, A) =>
+        xc({ ...Qet, ...z }, { ...r, repaint: tB.toArray(), ...A }),
+      calipers: [h.Caliper],
+      rims: [h.Rim],
+    });
+  return {
+    root: m,
+    model: f,
+    body: u,
+    wheels: p,
+    lamps: g,
+    dims: y,
+    materials: h,
+    setLamps: S,
+    onNight: (z) => {
+      ((M = 1 / (1 + 2.2 * z)), w.setNight(1 - 0.2 * z));
+    },
+    paintKit: w,
+  };
+}
+function XMt(o) {
+  let t = [],
+    e = [],
+    s = [],
+    n = 0;
+  for (let a of o) {
+    let r = a.attributes.position.array,
+      l = a.attributes.normal.array,
+      c = a.index.array;
+    for (let h = 0; h < r.length; h++) (t.push(r[h]), e.push(l[h]));
+    for (let h of c) s.push(h + n);
+    n += r.length / 3;
+  }
+  let i = new Le();
+  return (
+    i.setAttribute("position", new Re(t, 3)),
+    i.setAttribute("normal", new Re(e, 3)),
+    i.setIndex(s),
+    i.computeBoundingSphere(),
+    i
+  );
+}
+var us = {
+    waymo: {
+      id: "waymo",
+      name: "Waymo",
+      model: "Jaguar I-PACE",
+      maker: "Waymo Driver",
+      dir: $x,
+      glb: "waymo.glb",
+      meta: "waymo.json",
+      tex: ["waymo_albedo", "waymo_orm", "waymo_emit"],
+      load: yZ,
+      spec: md,
+      sound: "waymo",
+      cam: {
+        h: 1.18,
+        dist: 1.125,
+        look: 1.26,
+        inside: { Hood: [0, 1.36, -0.55], Bumper: [0, 0.55, -2.45] },
+      },
+      hl: [0.7, 0.76, -2.2],
+      orbit: { R: 7.4, h: 1.9, look: 0.9 },
+      stats: [
+        ["310 kW", "dual motor AWD"],
+        ["4.5 s", "0-100 km/h"],
+        ["2.3 t", "five seats"],
+      ],
+      drives:
+        "Planted and unflappable: all-wheel drive, a heavy battery and soft springs. Calm in the wet, slow to rotate.",
+      accent: "#3fd6c6",
+    },
+    cybercab: {
+      id: "cybercab",
+      name: "Cybercab",
+      model: "Tesla",
+      maker: "Tesla FSD",
+      dir: JO,
+      glb: "cybercab.glb",
+      meta: "cybercab.json",
+      tex: ["cybercab_cover"],
+      load: Wet,
+      spec: oE,
+      sound: "cybercab",
+      cam: {
+        h: 0.98,
+        dist: 1,
+        look: 1.06,
+        inside: { Hood: [0, 1.12, -0.42], Bumper: [0, 0.5, -2.3] },
+      },
+      hl: [0.62, 0.72, -2.12],
+      orbit: { R: 6.8, h: 1.55, look: 0.62 },
+      stats: [
+        ["250 kW", "rear motor RWD"],
+        ["4.4 s", "0-100 km/h"],
+        ["1.5 t", "two seats"],
+      ],
+      drives:
+        "Light and eager: rear-drive, a short wheelbase and a quick rack. Turns in sharply, lets the tail help.",
+      accent: "#e8c27a",
+    },
   },
-  YQ = new Map();
+  KMt = () => !!globalThis.SF_LITE || globalThis.SF_TIER === "mobile",
+  sst = () =>
+    !KMt() &&
+    (globalThis.SF_Q === "ultra" || /[?&]subd\b/.test(location.search));
+async function YMt(o, t) {
+  let e = "assets/car/" + (sst() ? "ao_subd.bin" : "ao_plain.bin"),
+    [s, n] = await Promise.all([
+      new ko().loadAsync("assets/car/tire.webp").catch(() => null),
+      bo(e).catch(() => null),
+    ]),
+    i = await vE(o, t, s, Pu("car"), null, n);
+  return (R0(i.body, oM("player_ferrari", vo.emoji)), i);
+}

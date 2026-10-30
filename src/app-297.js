@@ -1,194 +1,267 @@
-// app 297 — math
-// Lines 144155-144346 of readable/app.pretty.js (statement-aligned).
-function qJ({
-  D: i,
-  L: t,
-  mats: e = {},
-  tex: s = null,
-  headless: n = typeof document > "u",
-  strict: o = !1,
-}) {
-  vI(i, t);
-  let a = new ke();
-  a.name = "Landmarks";
-  let r = new Map(),
-    c = WJ(i, t, {
-      group: a,
-      mats: e,
-      tex: s,
-      headless: n,
-      C: (u, d) => {
-        let p = hu(u, d),
-          m = r.get(p);
-        return (
-          m || r.set(p, (m = {})),
-          new Proxy(m, {
-            get: (g, b) =>
-              typeof b == "string" ? (g[b] ||= new Ce()) : void 0,
-          })
-        );
-      },
-    });
-  if (!GJ())
-    for (let u of UJ) {
-      let d = performance.now();
-      try {
-        u.buildReal?.(c);
-      } catch (p) {
-        if (o) throw p;
-        console.error("landmarks:", u.NAME, p);
-      }
-      c.ms = { ...(c.ms || {}), [u.NAME]: Math.round(performance.now() - d) };
-    }
-  if (!n)
-    for (let [u, d] of r)
-      for (let [p, m] of Object.entries(d)) {
-        if (m.empty || !e[p]) continue;
-        let g = new _e(m.geometry(!0), e[p]);
-        ((g.name = `lmc_${u}_${p}`),
-          (g.matrixAutoUpdate = !1),
-          g.updateMatrix(),
-          (g.castShadow = !0),
-          (g.receiveShadow = !0),
-          a.add(g));
-      }
-  r.clear();
-  let h = 0;
-  function f(u, d, p = 0.016) {
-    for (let m of c.onUpdate) m(u, d, p);
-    if (!((h -= p) > 0)) {
-      h = 0.3;
-      for (let m of c.sites)
-        m.cull && (m.group.visible = Math.hypot(m.x - u, m.z - d) < m.cull);
+// app 297 — push
+// Lines 144632-144896 of readable/app.pretty.js (statement-aligned).
+function YQ(o, t, e = [], s = null, n = null, i = null) {
+  let a = n
+      ? (g, b) => KQ(g, b) === n
+      : (g, b) => {
+          let v = KQ(g, b),
+            x = v && o.regions?.[v];
+          return !x || x.loaded;
+        },
+    r = (g) => a(...b5t(g));
+  {
+    let g = o.edges.filter(
+      (v) => v.elev && !v.inner && v.s1 - v.s0 > 0.05 && r(v),
+    );
+    for (let v of g) az(null, v, v.s0, v.s1, t, e, o, s ? "top" : "all");
+    if (s)
+      for (let v = 0; v < 4; v++)
+        s.push((x = []) => {
+          for (let y = v; y < g.length; y += 4)
+            az(null, g[y], g[y].s0, g[y].s1, t, x, o, "under");
+          return x;
+        });
+    let b = o.juns.filter((v) => a(v.x, v.z) && rz(v, t));
+    for (let v of b) lz(null, v, t, e, o, s ? "top" : "all");
+    s &&
+      s.push((v = []) => {
+        for (let x of b) lz(null, x, t, v, o, "under");
+        return v;
+      });
+  }
+  {
+    let g = o.edges.filter(
+        (v) =>
+          v.cls === "motorway" &&
+          !v.elev &&
+          !v.sunk &&
+          !v.tunnel &&
+          !v.inner &&
+          v.s1 - v.s0 > 0.05 &&
+          r(v),
+      ),
+      b = s ? 6 : 1;
+    for (let v = 0; v < b; v++) {
+      let x = (y = []) => {
+        for (let M = v; M < g.length; M += b)
+          DC(null, g[M], g[M].s0, g[M].s1, t, y, o);
+        return y;
+      };
+      s ? s.push(x) : x(e);
     }
   }
+  let l = (g, b, v = 0) =>
+    i?.push({ kind: g, x: b[0], y: b[1], z: b[2], rot: v });
+  for (let g of o.edges)
+    if (r(g))
+      for (let b of GC(g, t))
+        for (let v of [b.L, b.R])
+          v &&
+            (e.push({
+              t: "circ",
+              x: v[0],
+              z: v[2],
+              r: 0.16,
+              y0: v[1] - 1.5,
+              y1: v[1] + 7,
+            }),
+            l("tpole", v));
+  for (let g of o.juns)
+    if (!g.elev && a(g.x, g.z))
+      for (let b of VC(g, t))
+        (e.push({
+          t: "circ",
+          x: b[0],
+          z: b[2],
+          r: 0.16,
+          y0: b[1] - 1.5,
+          y1: b[1] + 7,
+        }),
+          l("tpole", b));
+  for (let g of o.edges)
+    if (r(g))
+      for (let b of qC(g, t))
+        b.P &&
+          (t &&
+            !b.y &&
+            ((b.P[1] = t.driveHeight(b.P[0], b.P[2]) + 0.12), (b.y = !0)),
+          e.push({
+            t: "circ",
+            x: b.P[0],
+            z: b.P[2],
+            r: 0.17,
+            y0: b.P[1] - 3,
+            y1: b.P[1] + 11,
+          }),
+          l(
+            b.k % 3 === 1 ? "upolet" : "upole",
+            b.P,
+            Math.atan2(b.o.nx * b.sd, b.o.nz * b.sd),
+          ));
+  for (let g of x5t(o, t)) a(g.x, g.z) && e.push(g);
+  if (n) return e;
+  let c = o.terrain.bounds,
+    h = 40,
+    f = 1e5,
+    u = c.z0 + h,
+    d = On("bridges") ? { y0: -200, y1: 30 } : {};
+  (e.push(
+    { t: "box", x0: -f, z0: u, x1: c.x0 + h, z1: f, wall: !0 },
+    { t: "box", x0: -f, z0: -f, x1: c.x0 + h, z1: u, wall: !0, ...d },
+    { t: "box", x0: c.x1 - h, z0: 600, x1: f, z1: f, wall: !0 },
+    { t: "box", x0: c.x1 - h, z0: -f, x1: f, z1: 600, wall: !0, ...d },
+    { t: "box", x0: -f, z0: c.z1 - h, x1: f, z1: f, wall: !0 },
+  ),
+    bi.notch &&
+      e.push({
+        t: "box",
+        x0: c.x0 + h - 1,
+        z0: nc.z0 - h,
+        x1: nc.x1 + h,
+        z1: c.z1 - h + 1,
+        wall: !0,
+      }));
+  let p = Object.values(z0)
+      .filter((g) => !g.split)
+      .map((g) => g.bounds)
+      .sort((g, b) => g.x0 - b.x0),
+    m = c.x0 + h;
+  for (let g of p) {
+    (e.push({ t: "box", x0: m, z0: -f, x1: g.x0 + h, z1: u, wall: !0, ...d }),
+      e.push({
+        t: "box",
+        x0: g.x0 + h,
+        z0: g.z1 - h,
+        x1: g.x1 - h,
+        z1: u,
+        wall: !0,
+        ...d,
+      }));
+    let b = { y0: -200, y1: 2e3 };
+    (e.push(
+      {
+        t: "box",
+        x0: g.x0 - 400,
+        z0: g.z0 - 400,
+        x1: g.x0 + h,
+        z1: g.z1 - h,
+        wall: !0,
+        ...b,
+      },
+      {
+        t: "box",
+        x0: g.x1 - h,
+        z0: g.z0 - 400,
+        x1: g.x1 + 400,
+        z1: g.z1 - h,
+        wall: !0,
+        ...b,
+      },
+      {
+        t: "box",
+        x0: g.x0 - 400,
+        z0: g.z0 - 400,
+        x1: g.x1 + 400,
+        z1: g.z0 + h,
+        wall: !0,
+        ...b,
+      },
+    ),
+      (m = g.x1 - h));
+  }
   return (
-    (c.ms = {
-      ...(c.ms || {}),
-      vegOffRoads: fI(t, c.inst, c.colliders) + Mx(i, c.inst, c.colliders),
-    }),
-    {
-      group: a,
-      colliders: c.colliders,
-      inst: c.inst,
-      night: c.night,
-      update: f,
-      ms: c.ms,
-      sites: c.sites,
-    }
+    e.push({ t: "box", x0: m, z0: -f, x1: c.x1 - h, z1: u, wall: !0, ...d }),
+    u$(o, e),
+    e
   );
 }
-var qxt = typeof location < "u" && /[?&]oldlow\b/.test(location.search || ""),
-  jxt =
-    +(
-      typeof location < "u" && new URLSearchParams(location.search).get("thinK")
-    ) || 1;
-var XJ = (i) => mI(i),
-  yI = (i) =>
-    (i || "")
-      .toUpperCase()
-      .replace(/\bSTREET\b/g, "ST")
-      .replace(/\bAVENUE\b/g, "AVE")
-      .replace(/\bBOULEVARD\b/g, "BLVD")
-      .replace(/\bDRIVE\b/g, "DR")
-      .replace(/\bPLACE\b/g, "PL")
-      .replace(/\bTERRACE\b/g, "TER")
-      .replace(/\bCOURT\b/g, "CT")
-      .replace(/\bLANE\b/g, "LN")
-      .replace(/\bROAD\b/g, "RD")
-      .replace(/\bHIGHWAY\b/g, "HWY"),
-  Jc = (i) => {
-    let t = new ke();
-    return (
-      (t.name = i),
-      (t.matrixAutoUpdate = !1),
-      (t.matrixWorldNeedsUpdate = !0),
-      t
-    );
-  },
-  jJ =
-    (!!globalThis.SF_MP ||
-      (typeof location < "u" && /[?&]mp\b/.test(location.search || ""))) &&
-    !(typeof location < "u" && /[?&]nocarextra\b/.test(location.search || "")),
-  Pu = 520,
-  Cw = 2700,
-  Am = 5200;
-function KJ(i) {
-  let t = i.terrain.sea,
-    e = t.bits,
-    s = Object.values(i.regions || {})
-      .map((r) => r.sea)
-      .filter(Boolean),
-    n = (r) => r.toFixed(1),
-    o = `const SF_SEA = array<u32, ${e.length}>(${e.map((r) => (r >>> 0) + "u").join(",")});
-${s.map(
-  (r, l) =>
-    `const SF_SEA_R${l} = array<u32, ${r.bits.length}>(${r.bits.map((c) => (c >>> 0) + "u").join(",")});`,
-).join(`
-`)}
-fn sfSeaBit(i: i32, j: i32) -> f32 {
-  if (i < 0 || j < 0 || i >= ${t.nx} || j >= ${t.nz}) { return select(0.0, 1.0, j < 0 || i < 0 || (i >= ${t.nx} && j < ${Math.round((2600 - t.z0) / t.cell)})); }
-  let k = u32(j * ${t.nx} + i); return f32((SF_SEA[k >> 5u] >> (k & 31u)) & 1u);
+function x5t(o, t) {
+  let e = [],
+    s = o.seawallCode,
+    n = o.quayStep;
+  return (
+    o.seawall.forEach((i, a) => {
+      let r = s?.[a],
+        l = o.seawallY?.[a],
+        c = o.seawallSide?.[a] ?? 0,
+        h = 0;
+      for (let f = 0; f + 2 < i.length; f += 2) {
+        let u = i[f],
+          d = i[f + 1],
+          p = i[f + 2] - u,
+          m = i[f + 3] - d,
+          g = Math.hypot(p, m);
+        if (((h += g), g < 0.05)) continue;
+        let b = p / g,
+          v = m / g,
+          x = -v * c,
+          y = b * c,
+          M = h - g,
+          S = (T, E, R, P) => {
+            if (
+              (R === 253 && c && ((T = Math.max(0, T)), (E = Math.min(g, E))),
+              R === 252 || E - T < 0.05)
+            )
+              return;
+            let C = R === 251 || !c,
+              I = R === 253 && !!c,
+              L = I ? 1.2 : 3.4,
+              F = I ? 0.35 : C ? 0.6 : R / 10 + 0.35,
+              O = I ? (F + L) / 2 : C ? 0.6 : (Math.ceil(F * 2) / 2 + 3.4) / 2,
+              B = C && !I ? 0 : L - O,
+              H = (T + E) / 2;
+            e.push({
+              t: "obb",
+              x: u + b * H + x * B,
+              z: d + v * H + y * B,
+              hx: O,
+              hz: (E - T) / 2,
+              c: v,
+              s: b,
+              wall: !0,
+              sea: !0,
+              y0: -60,
+              y1: P > 0 ? Math.min(16, P - 1) : 16,
+            });
+          };
+        if (!r) {
+          S(-0.3, g + 0.3, 251, 0);
+          continue;
+        }
+        let w = (T) => (T <= 250 ? Math.ceil(T / 5) * 5 : T),
+          _ = -0.3,
+          z = -1,
+          A = 0;
+        for (
+          let T = Math.max(0, Math.floor((M - 1) / n));
+          T * n <= h + 1 && T < r.length;
+          T++
+        ) {
+          let E = Math.max(-0.3, T * n - n / 2 - M);
+          if (Math.min(g + 0.3, T * n + n / 2 - M) <= E) continue;
+          let P = w(r[T]),
+            C = l[T] / 10;
+          (P !== z || C !== A) &&
+            (z >= 0 && S(_, E, z, A), (_ = E), (z = P), (A = C));
+        }
+        z >= 0 && S(_, g + 0.3, z, A);
+        {
+          let T = r[Math.min(r.length - 1, Math.round(M / n))];
+          f > 0 &&
+            (T < 252 || T === 253) &&
+            e.push({
+              t: "circ",
+              x: u,
+              z: d,
+              r: T === 253 ? 0.35 : 0.6,
+              wall: !0,
+              sea: !0,
+              y0: -60,
+              y1: 16,
+            });
+        }
+      }
+    }),
+    e
+  );
 }
-// a sample at world p (a cell centre of the city's mask): a region's bit inside its box
-fn sfSeaAt(i: i32, j: i32) -> f32 {
-  let p = vec2f(${n(t.x0)}, ${n(t.z0)}) + (vec2f(f32(i), f32(j)) + 0.5) * ${n(t.cell)};
-${s.map(
-  (r, l) =>
-    `  { let q = (p - vec2f(${n(r.x0)}, ${n(r.z0)})) / ${n(r.cell)}; if (q.x >= 0.0 && q.y >= 0.0 && q.x < ${n(r.nx)} && q.y < ${n(r.nz)}) { let kk = u32(i32(q.y) * ${r.nx} + i32(q.x)); return f32((SF_SEA_R${l}[kk >> 5u] >> (kk & 31u)) & 1u); } }`,
-).join(`
-`)}
-  return sfSeaBit(i, j);
-}
-`,
-    a = `let q = (xz - vec2f(${t.x0.toFixed(1)}, ${t.z0.toFixed(1)})) / ${t.cell.toFixed(1)} - 0.5; let i = i32(floor(q.x)); let j = i32(floor(q.y)); let f = q - floor(q);
-  let a = mix(sfSeaAt(i, j), sfSeaAt(i + 1, j), f.x); let b = mix(sfSeaAt(i, j + 1), sfSeaAt(i + 1, j + 1), f.x);
-  return smoothstep(0.25, 0.75, mix(a, b, f.y));`;
-  return { fns: o, body: a };
-}
-function zx(i, t, e, s, n, o, a, { plateau: r = !1 } = {}) {
-  let l = null,
-    c = {};
-  for (let f of i.edges)
-    f.name !== e ||
-      f.inner ||
-      f.s1 - f.s0 < 8 ||
-      (vs(f, s, n, c),
-      c.d < 250 &&
-        (!l || c.d < l.d) &&
-        (l = { E: f, s: c.s, d: c.d, dd: c.d - c.w }));
-  let h = l || t.roadAt(s, n, 60);
-  return h ? wI(h.E, h.s, o, a, { plateau: r }) : [s, n, Math.atan2(-o, -a)];
-}
-function wI(i, t, e, s, { plateau: n = !1 } = {}) {
-  let o = n
-      ? Math.min(i.L - 0.6, Math.max(0.6, t))
-      : Math.min(i.s1 - 3, Math.max(i.s0 + 3, t)),
-    a = $g(i, o, o + 0.5),
-    [, r, l, , c, h, f] = a[0],
-    u = a[1][1] - r,
-    d = a[1][2] - l,
-    p = u * e + d * s >= 0 ? 1 : -1,
-    m = i.flags & 4 ? 0 : 2.3,
-    g = Math.max(1, i.lanes),
-    b = tp(i),
-    x = i.oneway
-      ? (2 * (f - m) - b) / g
-      : Math.max((f - m - (i.median ? 1.6 : 0) - b) / g, 2.6),
-    v = i.oneway
-      ? -(f - m) + x * (g - 0.5)
-      : (i.median ? 1.6 : 0) + x * (g - 0.5),
-    y = i.oneway ? 1 : p;
-  return [r + c * v * y, l + h * v * y, Math.atan2(-u * p, -d * p)];
-}
-var VJ = (i, t) => {
-    for (let [e, s] of Object.entries(h0)) {
-      let n = s.bounds;
-      if (i >= n.x0 && i <= n.x1 && t >= n.z0 && t <= n.z1) return e;
-    }
-    return null;
-  },
-  Vxt = (i) => {
-    let t = Math.floor(i.n / 2) * 3;
-    return [i.P[t], i.P[t + 2]];
-  };

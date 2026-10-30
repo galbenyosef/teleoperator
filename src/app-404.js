@@ -1,346 +1,559 @@
 // app 404 — math
-// Lines 196439-196782 of readable/app.pretty.js (statement-aligned).
-var CM = -5,
-  AN = 4,
-  MN = 512,
-  hv = 4,
-  tT = class i {
-    constructor(t, e) {
-      ((this.P = t),
-        (this.max = this.base = e),
-        (this.m = new Map()),
-        (this.q = new Map()),
-        (this.tick = 0),
-        (this.idle = 0),
-        (this.onReady = null));
+// Lines 199050-199606 of readable/app.pretty.js (statement-aligned).
+var R4 = { r: 15, v: 2.6, t: 0.4 },
+  Nit = 24,
+  RSt = 7,
+  ASt = 280,
+  Hit = { stops: [0, 12, 13, 14], trial: [0, 14, 15, 16] },
+  uN = new Set([
+    "race",
+    "police",
+    "taxi",
+    "food",
+    "courier",
+    "vip",
+    "trial",
+    "nearmiss",
+    "photo",
+  ]),
+  PSt = {
+    taxi: "stops",
+    food: "stops",
+    courier: "stops",
+    vip: "stops",
+    trial: "gates",
+    race: "race",
+    police: "police",
+    nearmiss: "nearmiss",
+    photo: "photo",
+  },
+  L0 = (o) => {
+    o = Math.max(0, o);
+    let t = Math.floor(o / 60);
+    return t + ":" + (o - t * 60).toFixed(1).padStart(4, "0");
+  },
+  Dit = (o) => (o <= 1 ? 3 : o <= 1.2 ? 2 : o <= 1.5 ? 1 : 0),
+  e9 = class {
+    constructor(t) {
+      (Object.assign(this, t),
+        (this.list = t.list || []),
+        (this.active = null),
+        (this.near = null),
+        (this.events = []),
+        (this._seen = new WeakSet()),
+        (this.lp = null),
+        (this._abandon = 0));
     }
-    static size(t) {
-      return MN / 2 ** t;
+    skill(t) {
+      let e = this.active;
+      e &&
+        e.kind === "nearmiss" &&
+        t.type === "skill" &&
+        t.key === "miss" &&
+        (e.count++, this.events.push({ type: "tick", d: e.d, what: "miss" }));
     }
-    get(t, e, s) {
-      let n = this.m.get(`${t},${e},${s}`);
-      return (n && (n.used = this.tick), n || null);
+    kindOf(t) {
+      return PSt[t.cat] || null;
     }
-    peek(t, e, s) {
-      return this.m.get(`${t},${e},${s}`) || null;
-    }
-    want(t, e, s, n) {
-      let o = `${t},${e},${s}`;
-      if (this.m.has(o)) return;
-      let a = this.q.get(o);
-      (!a || a.pri > n) && this.q.set(o, { z: t, i: e, j: s, pri: n });
-    }
-    render(t, e, s) {
-      let n = this.start(t, e, s);
-      for (; !n.it.next().done;);
-      return this.finish(n);
-    }
-    start(t, e, s) {
-      let n = `${t},${e},${s}`,
-        o = null;
-      if (this.m.size >= this.max) {
-        let u = null,
-          d = 1 / 0;
-        for (let [p, m] of this.m)
-          m.z > CM &&
-            m.used < d &&
-            m.used < this.tick &&
-            ((d = m.used), (u = p));
-        u && ((o = this.m.get(u).c), this.m.delete(u));
+    why(t) {
+      if (this.active) return "Another challenge is on";
+      if (t.cat === "race" && !this.race?.()) return null;
+      if (t.cat === "police") {
+        let e = this.police?.();
+        if (!e || e.enabled === !1) return "Police are off - Settings, World";
+        if (e.pursuit) return "Lose the police first";
       }
-      o ||
-        ((o = document.createElement("canvas")),
-        (o.width = o.height = MN + 2 * hv));
-      let a = 2 ** t,
-        r = MN / a,
-        l = e * r - hv / a,
-        c = s * r - hv / a,
-        h = o.getContext("2d");
-      this.q.delete(n);
-      let f = function* () {
-        (h.setTransform(1, 0, 0, 1, 0, 0),
-          h.clearRect(0, 0, o.width, o.height),
-          h.setTransform(a, 0, 0, a, -l * a, -c * a),
-          yield* HMt(h, this.P, a, [
-            l,
-            c,
-            l + r + (2 * hv) / a,
-            c + r + (2 * hv) / a,
-          ]),
-          h.setTransform(1, 0, 0, 1, 0, 0));
-      }.call(this);
-      return {
-        k: n,
-        it: f,
-        t: {
-          c: o,
-          z: t,
-          i: e,
-          j: s,
-          x0: l,
-          z0: c,
-          w: r + (2 * hv) / a,
-          used: this.tick,
+      return t.cat === "nearmiss" && this.traffic && !this.traffic()
+        ? "Needs traffic - Settings, World"
+        : null;
+    }
+    start(t) {
+      let e = this.why(t);
+      if (e) return e;
+      let s = this.v,
+        n = this.kindOf(t) || "stops",
+        i = {
+          d: t,
+          kind: n,
+          t: 0,
+          i: 0,
+          care: 1,
+          auto: !1,
+          legs: [],
+          stopT: 0,
+          count: 0,
+          msg: "",
         },
-      };
-    }
-    finish(t) {
-      return ((t.t.used = this.tick), this.m.set(t.k, t.t), t.t);
-    }
-    work(t) {
-      let e = performance.now(),
-        s = 0;
-      for (; (this.job || this.q.size) && performance.now() - e < t;) {
-        if (!this.job) {
-          let n = null;
-          for (let o of this.q.values()) (!n || o.pri < n.pri) && (n = o);
-          if (this.m.has(`${n.z},${n.i},${n.j}`)) {
-            this.q.delete(`${n.z},${n.i},${n.j}`);
-            continue;
+        a = this.router?.(),
+        r = s.forward ? s.forward() : { x: t.dir[0], z: t.dir[1] },
+        l = (c, h, f, u, d) => {
+          try {
+            return a ? a.routeTo(c, h, f, u, d, !0) : null;
+          } catch {
+            return null;
           }
-          this.job = this.start(n.z, n.i, n.j);
+        };
+      if (n === "stops") {
+        let c = t.spot || { x: s.pos.x, z: s.pos.z },
+          h = t.spot?.hx ?? r.x,
+          f = t.spot?.hz ?? r.z,
+          u = 0;
+        for (let d of t.stops) {
+          let p = l(c.x, c.z, h, f, d),
+            m = p?.len || Math.hypot(d.x - c.x, d.z - c.z) * 1.35,
+            g = m / Hit.stops[t.tier] + 8;
+          (i.legs.push({ S: d, len: m, par: g, pts: p?.pts || null }),
+            (u += g),
+            (c = p?.spot || d),
+            (h = c.hx ?? h),
+            (f = c.hz ?? f));
         }
-        for (; performance.now() - e < t;)
-          if (this.job.it.next().done) {
-            (this.finish(this.job), (this.job = null), s++);
-            break;
-          }
+        ((i.par = u),
+          (i.limit = u * 1.5),
+          t.cat === "taxi" && (i.clock = i.legs[0].par * 1.6 + 5),
+          t.cat === "food" && (i.temp = 1));
+      } else if (n === "gates" || (n === "race" && !this.race?.())) {
+        i.kind = "gates";
+        let c = t.stops[0],
+          h = l(s.pos.x, s.pos.z, r.x, r.z, c),
+          f = h?.pts || [
+            [s.pos.x, s.pos.z],
+            [c.x, c.z],
+          ],
+          u = h?.len || Math.hypot(c.x - s.pos.x, c.z - s.pos.z);
+        i.cps = [];
+        let d = 0;
+        for (let p = 1; p < f.length; p++)
+          ((d += Math.hypot(f[p][0] - f[p - 1][0], f[p][1] - f[p - 1][1])),
+            d >= ASt &&
+              p < f.length - 1 &&
+              (i.cps.push({ x: f[p][0], z: f[p][1] }), (d = 0)));
+        (i.cps.push({ x: c.x, z: c.z, fin: !0 }),
+          (i.pts = f),
+          (i.len = u),
+          (i.par = u / Hit.trial[t.tier] + 4),
+          (i.limit = i.par * 1.6));
+      } else if (n === "race") {
+        let c = this.race();
+        i.raceId = "ch_" + t.id;
+        try {
+          c.startSolo({
+            kind: "path",
+            id: i.raceId,
+            name: t.name,
+            sub: t.sub,
+            from: [t.x, t.z],
+            to: t.to,
+          });
+        } catch (h) {
+          console.warn("challenge race", h);
+        }
+        if (!c.S) return "No race fits here";
+        i.limit = 1e9;
+      } else if (n === "police") {
+        let c = this.police();
+        ((i.esc0 = c.escapes),
+          (i.bust0 = c.busts),
+          (i.limit = t.secs || 120),
+          (c.heat = Math.min(5, (t.heat || 1) + 0.05)),
+          c.startPursuit?.("STREET CHALLENGE"));
+      } else
+        n === "nearmiss"
+          ? (i.limit = t.secs || 60)
+          : n === "photo" && ((i.limit = 150), (i.framed = 0), (i.score = 0));
+      return (
+        (this.active = i),
+        (this.near = null),
+        (this.lp = { x: s.pos.x, z: s.pos.z }),
+        n === "stops" &&
+          this.handoff &&
+          (i.ho =
+            this.handoff(i, t.spot || { x: s.pos.x, z: s.pos.z }, "pickup") ||
+            null),
+        this.events.push({ type: "start", d: t, A: i }),
+        null
+      );
+    }
+    cancel(t = "abandoned") {
+      let e = this.active;
+      e &&
+        ((this.active = null),
+        this.events.push({ type: "fail", d: e.d, A: e, why: t }));
+    }
+    abandon() {
+      if (!this.active) return !1;
+      let t = this.t || 0;
+      return t - this._abandon < 2.5
+        ? ((this._abandon = -9),
+          this.active.kind === "race" && this.race?.()?.exit?.(),
+          this.cancel("abandoned"),
+          !0)
+        : ((this._abandon = t),
+          this.events.push({ type: "ask", d: this.active.d }),
+          !1);
+    }
+    raceResult(t) {
+      let e = this.active;
+      if (!e || e.kind !== "race" || t.id !== e.raceId) return !1;
+      e.got = !0;
+      let s = t.place,
+        n = t.of > 1 ? Math.max(0, 4 - s) : 0;
+      return n
+        ? (this.finish(e, n, s, -s * 1e7 - (t.ms || 0), {
+            place: s,
+            of: t.of,
+            ms: t.ms,
+          }),
+          !0)
+        : ((this.active = null),
+          this.events.push({
+            type: "fail",
+            d: e.d,
+            A: e,
+            why: "place",
+            place: s,
+            of: t.of,
+          }),
+          !0);
+    }
+    finish(t, e, s, n, i = {}) {
+      (t.auto && e > 1 && ((e = 1), (i.l5 = !0)),
+        (this.active = null),
+        this.events.push({
+          type: "result",
+          d: t.d,
+          A: t,
+          stars: e,
+          val: s,
+          q: n,
+          care: t.d.cat === "food" || t.d.cat === "vip" ? t.care : null,
+          ...i,
+        }));
+    }
+    update(t, e = !0, s = []) {
+      this.t = (this.t || 0) + t;
+      let n = this.v,
+        i = this.active,
+        a = n.pos.x,
+        r = n.pos.z,
+        l = this.lp && Math.hypot(a - this.lp.x, r - this.lp.z) > 80;
+      if (((this.lp = { x: a, z: r }), !i)) {
+        this.near = e ? this.findNear() : null;
+        for (let h of s) this._seen.add(h);
+        return;
       }
-      return (s && this.onReady && this.onReady(), s);
-    }
-    schedule() {
-      if (this.idle || (!this.q.size && !this.job)) return;
-      let t = (e) => {
-        ((this.idle = 0),
-          this.work(
-            e && e.timeRemaining
-              ? Math.max(2, Math.min(8, e.timeRemaining()))
-              : 3,
-          ),
-          (this.q.size || this.job) && this.schedule());
-      };
-      this.idle =
-        typeof requestIdleCallback == "function"
-          ? requestIdleCallback(t, { timeout: 250 })
-          : setTimeout(t, 40);
-    }
-    draw(t, e, s, n = 0, o = 0) {
-      let a = i.size(e),
-        r = Math.floor(s[0] / a),
-        l = Math.floor(s[2] / a),
-        c = Math.floor(s[1] / a),
-        h = Math.floor(s[3] / a),
-        f = [],
-        u = new Map(),
-        d = [],
-        p = 0,
-        m = (s[0] + s[2]) / 2,
-        g = (s[1] + s[3]) / 2,
-        b = (l - r + 1 + 2 * o) * (h - c + 1 + 2 * o);
-      b * 2 + 8 > this.max &&
-        (this.max = Math.min(400, Math.max(this.base, b * 2 + 8)));
-      for (let x = r; x <= l; x++)
-        for (let v = c; v <= h; v++) {
-          let y = this.get(e, x, v);
-          if (y) {
-            f.push(y);
-            continue;
+      if (l && i.kind !== "race") {
+        this.cancel("teleport");
+        return;
+      }
+      if (!e && i.kind !== "race" && i.kind !== "photo") {
+        i.paused = !0;
+        return;
+      }
+      if (i.ho && i.ho.phase === "pickup")
+        if (i.ho.done) i.ho = null;
+        else {
+          let h = i.d.spot;
+          if (h && Math.hypot(h.x - a, h.z - r) > Nit + 16)
+            (i.ho.cancel?.(), (i.ho = null));
+          else {
+            i.handing = !0;
+            return;
+          }
+        }
+      if (
+        ((i.handing = !1),
+        (i.paused = !1),
+        (i.t += t),
+        this.auto?.() && (i.auto = !0),
+        i.d.cat === "food" || i.d.cat === "vip")
+      )
+        this.careStep(i, t, s);
+      else for (let h of s) this._seen.add(h);
+      let c = Math.abs(n.speed ?? Math.hypot(n.vel.x, n.vel.z));
+      switch (i.kind) {
+        case "stops": {
+          let h = i.legs[i.i],
+            f = h.S,
+            u = Math.min(
+              Math.hypot(f.x - a, f.z - r),
+              f.alt ? Math.hypot(f.alt.x - a, f.alt.z - r) : 1e9,
+            );
+          if (((i.dist = u), i.d.cat === "taxi")) {
+            if (((i.clock -= t), i.clock <= 0)) {
+              this.cancel("time");
+              return;
+            }
+          } else if (i.t > i.limit) {
+            this.cancel(i.d.cat === "food" ? "cold" : "time");
+            return;
           }
           if (
-            (p++,
-            this.want(
-              e,
-              x,
-              v,
-              n + Math.hypot((x + 0.5) * a - m, (v + 0.5) * a - g) / a,
-            ),
-            e < AN)
+            (i.d.cat === "food" && (i.temp = Math.max(0, 1 - i.t / i.limit)),
+            i.d.cat === "vip" && i.care < 0.3)
           ) {
-            let M = [
-              this.peek(e + 1, 2 * x, 2 * v),
-              this.peek(e + 1, 2 * x + 1, 2 * v),
-              this.peek(e + 1, 2 * x, 2 * v + 1),
-              this.peek(e + 1, 2 * x + 1, 2 * v + 1),
-            ];
-            if (M.every(Boolean)) {
-              for (let S of M) ((S.used = this.tick), d.push(S));
-              continue;
-            }
+            this.cancel("vip");
+            return;
           }
-          for (let M = e - 1, S = x, w = v; M >= CM; M--) {
-            ((S = Math.floor(S / 2)), (w = Math.floor(w / 2)));
-            let z = this.get(M, S, w);
-            if (z) {
-              u.set(z, 1);
-              break;
-            }
-            M === CM && this.want(M, S, w, -1);
+          if (i.d.cat === "food" && i.care < 0.15) {
+            this.cancel("spilt");
+            return;
           }
+          if (
+            ((i.stopT = u < R4.r && c < R4.v ? i.stopT + t : 0),
+            i.ho &&
+              !i.ho.done &&
+              u > R4.r + 8 &&
+              (i.ho.cancel?.(), (i.ho = null)),
+            i.stopT >= R4.t &&
+              this.handoff &&
+              !i.ho?.done &&
+              (i.ho || (i.ho = this.handoff(i, f, "drop") || { done: !0 }),
+              !i.ho.done))
+          ) {
+            i.handing = !0;
+            return;
+          }
+          if (
+            i.stopT >= R4.t &&
+            ((i.ho = null),
+            (i.handing = !1),
+            i.i++,
+            (i.stopT = 0),
+            this.events.push({
+              type: "stop",
+              d: i.d,
+              A: i,
+              n: i.i,
+              of: i.legs.length,
+            }),
+            i.d.cat === "taxi" &&
+              i.i < i.legs.length &&
+              (i.clock += i.legs[i.i].par * 1.45),
+            i.i >= i.legs.length)
+          ) {
+            let d = Dit(i.t / i.par);
+            (i.d.cat === "food" &&
+              (d = Math.max(
+                1,
+                d - (i.care < 0.6 ? 1 : 0) - (i.care < 0.35 ? 1 : 0),
+              )),
+              i.d.cat === "vip" &&
+                (d = Math.min(d, i.care >= 0.85 ? 3 : i.care >= 0.6 ? 2 : 1)),
+              this.finish(i, Math.max(1, d), i.t, -i.t + (i.care || 0) * 10, {
+                par: i.par,
+              }));
+          }
+          return;
         }
-      if (o && !p)
-        for (let x = r - o; x <= l + o; x++)
-          for (let v = c - o; v <= h + o; v++)
-            (x < r || x > l || v < c || v > h) &&
-              (this.get(e, x, v) ||
-                this.want(
-                  e,
-                  x,
-                  v,
-                  n +
-                    100 +
-                    Math.hypot((x + 0.5) * a - m, (v + 0.5) * a - g) / a,
-                ));
-      for (let x of [...u.keys()].sort((v, y) => v.z - y.z))
-        t.drawImage(x.c, x.x0, x.z0, x.w, x.w);
-      for (let x of d) t.drawImage(x.c, x.x0, x.z0, x.w, x.w);
-      for (let x of f) t.drawImage(x.c, x.x0, x.z0, x.w, x.w);
-      return p;
+        case "gates": {
+          let h = i.cps[i.i],
+            f = Math.hypot(h.x - a, h.z - r);
+          if (((i.dist = f), i.t > i.limit)) {
+            this.cancel("time");
+            return;
+          }
+          f < (h.fin ? 16 : 22) &&
+            (i.i++,
+            this.events.push({
+              type: "cp",
+              d: i.d,
+              A: i,
+              n: i.i,
+              of: i.cps.length,
+            }),
+            i.i >= i.cps.length &&
+              this.finish(i, Math.max(1, Dit(i.t / i.par)), i.t, -i.t, {
+                par: i.par,
+              }));
+          return;
+        }
+        case "race": {
+          !this.race?.()?.S && !i.got
+            ? (i.gone = (i.gone || 0) + t) > 0.6 && this.cancel("quit")
+            : (i.gone = 0);
+          return;
+        }
+        case "police": {
+          let h = this.police?.();
+          if (!h) {
+            this.cancel("off");
+            return;
+          }
+          if (h.busts > i.bust0) {
+            this.cancel("busted");
+            return;
+          }
+          if (h.escapes > i.esc0) {
+            let f = i.t / i.limit;
+            this.finish(i, f <= 0.45 ? 3 : f <= 0.7 ? 2 : 1, i.t, -i.t, {
+              heat: i.d.heat,
+            });
+            return;
+          }
+          if (i.t > i.limit) {
+            this.cancel("time");
+            return;
+          }
+          !h.pursuit &&
+            i.t > 2 &&
+            ((h.heat = Math.max(h.heat, 1.02)),
+            h.startPursuit?.("STREET CHALLENGE"));
+          return;
+        }
+        case "nearmiss":
+          if (i.t >= i.limit) {
+            let h = i.d.stars || [3, 6, 10],
+              f = i.count,
+              u = f >= h[2] ? 3 : f >= h[1] ? 2 : f >= h[0] ? 1 : 0;
+            u
+              ? this.finish(i, u, f, f)
+              : ((this.active = null),
+                this.events.push({
+                  type: "fail",
+                  d: i.d,
+                  A: i,
+                  why: "few",
+                  n: f,
+                }));
+          }
+          return;
+        case "photo":
+          i.inPhoto ? this.photoClosed() : i.t > i.limit && this.cancel("time");
+          return;
+      }
     }
-  },
-  O0 = (i, t, e, s, n, o) => ({
-    cx: i,
-    cy: t,
-    ux: e,
-    uy: s,
-    hw: n,
-    hh: o,
-    r: Math.hypot(n, o),
-  });
-function DMt(i, t) {
-  let e = t.cx - i.cx,
-    s = t.cy - i.cy;
-  if (e * e + s * s > (i.r + t.r) ** 2) return !1;
-  for (let n = 0; n < 4; n++) {
-    let o = n === 0 ? i.ux : n === 1 ? -i.uy : n === 2 ? t.ux : -t.uy,
-      a = n === 0 ? i.uy : n === 1 ? i.ux : n === 2 ? t.uy : t.ux,
-      r =
-        i.hw * Math.abs(i.ux * o + i.uy * a) +
-        i.hh * Math.abs(-i.uy * o + i.ux * a),
-      l =
-        t.hw * Math.abs(t.ux * o + t.uy * a) +
-        t.hh * Math.abs(-t.uy * o + t.ux * a);
-    if (Math.abs(e * o + s * a) > r + l) return !1;
-  }
-  return !0;
-}
-var Dp = (i, t) => {
-  for (let e of i) if (DMt(e, t)) return !0;
-  return !1;
-};
-function ist(i, t, e) {
-  (i.setTransform(e.ux, e.uy, -e.uy, e.ux, e.cx, e.cy),
-    i.drawImage(t, -t.width / 2, -t.height / 2),
-    i.setTransform(1, 0, 0, 1, 0, 0));
-}
-var SN = (i, t) =>
-    Math.abs(i) < 0.26
-      ? t > 0
-        ? [-i, -t]
-        : [i, t]
-      : i < 0
-        ? [-i, -t]
-        : [i, t],
-  ost = (i, t, e, s) =>
-    ar(i.names[t], s, {
-      color:
-        i.nameCol[t] ||
-        (e <= 1 ? zs.labelHwy : e <= 3 ? zs.labelMajor : zs.label),
-      weight: e <= 3 ? 700 : 600,
-      halo: zs.halo,
-      haloW: Math.max(2, s * 0.24),
-    }),
-  UMt = `
-#mini { pointer-events: auto; cursor: pointer; box-shadow: 0 4px 24px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.4); }
-body.touch #mini { display: block; left: auto; right: max(10px, 2.5vw); top: max(30px, 4vh); bottom: auto; width: 88px; height: 88px; }
-@media (max-width: 520px) { body.touch #where { top: 150px; left: 0; right: 0; text-align: center; } }
-#bigmap { position: fixed; inset: 0; z-index: 14; display: none; background: ${zs.water}; touch-action: none; cursor: grab; }
-body.bigmap #bigmap { display: block; }
-#bigmap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-#bigmap::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 110px; background: linear-gradient(rgba(7,9,11,.7), rgba(7,9,11,0)); pointer-events: none; }
-#bigmap .ttl, #bigmap .bar { z-index: 1; }
-#bigmap .bar { position: absolute; right: max(14px, 2vw); top: max(14px, 2vh); display: flex; gap: 6px; }
-#bigmap button { background: rgba(8,10,12,.75); color: var(--ink, #eee); border: 1px solid rgba(255,255,255,.2); border-radius: 3px; min-width: 38px; height: 38px; font: 800 16px ${kr}; cursor: pointer; }
-#bigmap button:hover { border-color: var(--acc, #ff5a1f); }
-#bigmap button.mini { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; padding: 0 6px; }
-#bigmap button.mini small { font: 700 7px "JetBrains Mono", ui-monospace, monospace; letter-spacing: .1em; opacity: .7; margin-bottom: 2px; }
-#bigmap .ttl { position: absolute; left: max(16px, 2.5vw); top: max(14px, 2vh); font: 800 20px ${kr}; font-stretch: 118%; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 1px 10px rgba(0,0,0,.7); pointer-events: none; }
-#bigmap .ttl small { display: block; font: 600 10px "JetBrains Mono", ui-monospace, monospace; letter-spacing: .2em; color: rgba(243,244,241,.6); margin-top: 4px; }
-#bigmap .hint { position: absolute; left: 50%; bottom: max(14px, 2vh); transform: translateX(-50%); font: 600 10px "JetBrains Mono", ui-monospace, monospace; letter-spacing: .16em; color: rgba(243,244,241,.6); white-space: nowrap; pointer-events: none; text-transform: uppercase; }
-@media (max-width: 520px) { #bigmap .ttl { display: none; } #bigmap .hint { bottom: 64px; } }
-#bigmap .tp { position: absolute; z-index: 2; transform: translate(-50%, 14px); display: none; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; max-width: min(300px, 92vw); }
-#bigmap .tp.on { display: flex; }
-#bigmap .tp .tpGo { background: var(--acc, #ff5a1f); color: #0b0c0e; border: 0; padding: 0 16px; font: 800 13px ${kr}; letter-spacing: .12em; text-transform: uppercase; height: 40px; white-space: nowrap; border-radius: 3px; box-shadow: 0 4px 18px rgba(0,0,0,.5); }
-#bigmap .tp .tpDrive { background: #3fd6c6; color: #06221f; border: 0; padding: 0 14px; font: 800 13px ${kr}; letter-spacing: .12em; text-transform: uppercase; height: 40px; white-space: nowrap; border-radius: 3px; box-shadow: 0 4px 18px rgba(0,0,0,.5); }
-#bigmap .tp small { flex-basis: 100%; text-align: center; font: 600 10px "JetBrains Mono", ui-monospace, monospace; letter-spacing: .12em; color: #f3f4f1; text-shadow: 0 1px 6px #000; text-transform: uppercase; }
-#bigmap .tp small:empty { display: none; }
-#bigmap .tpMsg { position: absolute; left: 50%; top: 72px; transform: translateX(-50%); z-index: 2; background: rgba(8,10,12,.82); color: #f3f4f1; padding: 8px 14px; border-radius: 3px; font: 600 11px "JetBrains Mono", ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: opacity .2s; pointer-events: none; }
-#bigmap .tpMsg.on { opacity: 1; }
-/* (credits70) the map data's attribution, as the ODbL asks: the full map's corner, under the minimap's rim */
-#bigmap .osm { position: absolute; right: max(10px, 1.2vw); bottom: 3px; z-index: 1; font: 600 10px/12px var(--font, sans-serif); letter-spacing: .02em; color: rgba(243,244,241,.72); text-decoration: none; text-shadow: 0 1px 4px #000; }
-#bigmap .osm:hover { color: #fff; text-decoration: underline; }
-#miniOsm { position: fixed; z-index: 6; display: none; left: calc(var(--safe-l) + clamp(150px, 15vw, 210px) / 2 - clamp(140px, 13.5vw, 190px) / 2); bottom: calc(max(10px, 2vh) + 52px + 8px); width: clamp(140px, 13.5vw, 190px); text-align: center; font: 600 8px/10px var(--font, sans-serif); letter-spacing: .02em; color: rgba(243,244,241,.75); text-decoration: none; text-shadow: 0 0 3px #000, 0 1px 2px #000; white-space: nowrap; }
-body.play #miniOsm { display: block; }
-body.touch.play #miniOsm { left: auto; right: calc(var(--sr) + 10px); top: calc(var(--st) + 84px); bottom: auto; width: auto; text-align: right; font-size: 7.5px; }
-body.touch:not(.play) #miniOsm, body.hud-off #miniOsm, body.cine #miniOsm, body.photo #miniOsm, body.picking #miniOsm, body.garage #miniOsm, body.bigmap #miniOsm { display: none; }
-`;
-function ast(i, t, e, s, n) {
-  if (!(!t || t.length < 2)) {
-    i.lineJoin = i.lineCap = "round";
-    for (let [o, a] of [
-      [s * 1.9, "rgba(6,10,14,.75)"],
-      [s, n],
-    ])
-      (i.beginPath(),
-        t.forEach((r, l) => {
-          let [c, h] = e(r[0], r[1]);
-          l ? i.lineTo(c, h) : i.moveTo(c, h);
-        }),
-        (i.lineWidth = o),
-        (i.strokeStyle = a),
-        i.stroke());
-  }
-}
-function rst(i, t, e, s, n, o) {
-  (i.save(),
-    i.translate(t, e),
-    (i.shadowColor = "rgba(0,0,0,.7)"),
-    (i.shadowBlur = s * 0.8),
-    (i.fillStyle = "rgba(8,10,12,.92)"),
-    i.beginPath(),
-    i.arc(0, 0, s * 1.15, 0, 7),
-    i.fill(),
-    (i.shadowBlur = 0),
-    i.rotate(n + Math.PI / 2),
-    (i.fillStyle = o),
-    i.beginPath(),
-    i.moveTo(0, -s),
-    i.lineTo(s * 0.78, s * 0.72),
-    i.lineTo(0, s * 0.3),
-    i.lineTo(-s * 0.78, s * 0.72),
-    i.closePath(),
-    i.fill(),
-    i.restore());
-}
-function LM(i, t, e, s, n, o = "") {
-  (i.save(),
-    (i.shadowColor = "rgba(0,0,0,.6)"),
-    (i.shadowBlur = s * 0.6),
-    (i.fillStyle = n),
-    i.beginPath(),
-    i.arc(t, e - s * 1.25, s, Math.PI * 0.82, Math.PI * 0.18),
-    i.lineTo(t, e),
-    i.closePath(),
-    i.fill(),
-    (i.shadowBlur = 0),
-    (i.fillStyle = "rgba(8,10,12,.9)"),
-    i.beginPath(),
-    i.arc(t, e - s * 1.25, s * 0.48, 0, 7),
-    i.fill(),
-    o &&
-      ((i.fillStyle = n),
-      (i.font = `800 ${s * 0.8}px ${kr}`),
-      (i.textAlign = "center"),
-      (i.textBaseline = "middle"),
-      i.fillText(o, t, e - s * 1.22)),
-    i.restore());
-}
+    photoFrame(t) {
+      let e = this.active;
+      if (!e || e.kind !== "photo" || !this.project) return;
+      let s = e.d.look,
+        n = this.project(s.x, s.y, s.z);
+      ((e.t += t), (e.inPhoto = !0));
+      let i = n && n[2] && Math.abs(n[0]) < 0.92 && Math.abs(n[1]) < 0.92,
+        a = i ? 1 - Math.max(Math.abs(n[0]), Math.abs(n[1])) : 0;
+      ((e.inFrame = !!i),
+        (e.score = a),
+        (e.framed = i ? e.framed + t : 0),
+        (e.low = i ? Math.min(e.low ?? 1, a) : 1),
+        e.framed >= 0.5 && (e.best = Math.max(e.best || 0, e.low)),
+        i &&
+          a > 0.7 &&
+          e.framed >= 0.8 &&
+          e.low > 0.7 &&
+          this.finish(e, 3, Math.round(a * 100), a),
+        i ? e.framed > 1.2 && ((e.framed = 0.5), (e.low = a)) : (e.low = 1));
+    }
+    photoClosed() {
+      let t = this.active;
+      !t ||
+        t.kind !== "photo" ||
+        !t.inPhoto ||
+        ((t.inPhoto = !1),
+        t.best > 0 &&
+          this.finish(
+            t,
+            t.best > 0.7 ? 3 : t.best > 0.4 ? 2 : 1,
+            Math.round(t.best * 100),
+            t.best,
+          ));
+    }
+    careStep(t, e, s) {
+      let n = this.v,
+        i = t.d.cat === "food";
+      for (let h of s) {
+        if (
+          this._seen.has(h) ||
+          (this._seen.add(h), h.C?.kerb && (h.v || 0) < 9)
+        )
+          continue;
+        let f = h.v || 0;
+        if (f > 2.5) {
+          let u = Math.min(0.3, 0.06 + 0.025 * (f - 2.5));
+          ((t.care = Math.max(0, t.care - u)),
+            this.events.push({
+              type: "spill",
+              d: t.d,
+              A: t,
+              k: u,
+              why: "hit",
+            }));
+        }
+      }
+      let a = t.pv || { x: n.vel.x, z: n.vel.z },
+        r = (n.vel.x - a.x) / Math.max(e, 0.001),
+        l = (n.vel.z - a.z) / Math.max(e, 0.001);
+      ((t.pv = { x: n.vel.x, z: n.vel.z }),
+        (t.acc =
+          (t.acc ?? 0) +
+          (Math.hypot(r, l) - (t.acc ?? 0)) * Math.min(1, e / 0.15)));
+      let c = i ? 8.8 : 7.8;
+      (t.acc > c &&
+        t.acc < 40 &&
+        ((t.care = Math.max(0, t.care - (t.acc - c) * (i ? 0.025 : 0.035) * e)),
+        (t.harsh = (t.harsh || 0) + e)),
+        (n.airTime || 0) > 0
+          ? (t.air = Math.max(t.air || 0, n.airTime))
+          : ((t.air || 0) > 0.25 &&
+              ((t.care = Math.max(0, t.care - (i ? 0.12 : 0.15))),
+              this.events.push({
+                type: "spill",
+                d: t.d,
+                A: t,
+                k: 0.12,
+                why: "air",
+              })),
+            (t.air = 0)));
+    }
+    findNear() {
+      let t = this.v;
+      if (Math.abs(t.speed ?? 0) > RSt) return null;
+      let s = null,
+        n = Nit;
+      for (let i of this.list) {
+        if (!uN.has(i.cat)) continue;
+        let a = i.spot?.x ?? i.x,
+          r = i.spot?.z ?? i.z,
+          l = Math.hypot(a - t.pos.x, r - t.pos.z);
+        l < n && ((n = l), (s = i));
+      }
+      return s;
+    }
+    target() {
+      let t = this.active;
+      if (!t) return null;
+      if (t.kind === "stops") {
+        let e = t.legs[t.i]?.S;
+        return e
+          ? {
+              x: e.x,
+              z: e.z,
+              S: e,
+              pts: t.legs[t.i].pts,
+              label:
+                t.d.cat === "food" && t.i === 0 ? e.addr : e.addr || "Stop",
+            }
+          : null;
+      }
+      if (t.kind === "gates") {
+        let e = t.cps[t.i];
+        return e
+          ? {
+              x: e.x,
+              z: e.z,
+              pts: t.pts,
+              label: e.fin
+                ? "Finish"
+                : "Checkpoint " + (t.i + 1) + " / " + t.cps.length,
+              cp: !0,
+              fin: !!e.fin,
+              next: t.cps[t.i + 1] || null,
+            }
+          : null;
+      }
+      if (t.kind === "photo") {
+        let e = t.d.look;
+        return { x: t.d.spot.x, z: t.d.spot.z, label: e.name, look: e };
+      }
+      return null;
+    }
+  };

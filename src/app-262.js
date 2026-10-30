@@ -1,181 +1,125 @@
 // app 262 — box
-// Lines 132035-132353 of readable/app.pretty.js (statement-aligned).
-function Igt(i) {
-  let t = i.lod,
-    e = 1.2,
-    s = 2.35,
-    n = s - 0.22,
-    o = -3.28,
-    a = 0.55,
-    r = 2.88,
-    l = rw("vanSide"),
-    c = (f, u, d, p, m) => {
-      let g = (y) =>
-          l[0] +
-          (l[2] - l[0]) * (f > 0 ? (n - y) / (n - o) : (y - o) / (n - o)),
-        b = (y) => l[1] + ((l[3] - l[1]) * (y - a)) / (r - a),
-        [x, v] = f > 0 ? [d, u] : [u, d];
-      i.quad(
-        [f * e, p, x],
-        [f * e, p, v],
-        [f * e, m, v],
-        [f * e, m, x],
-        "vanSide",
-        !1,
-        [g(x), b(p), g(v), b(m)],
-      );
-    };
-  for (let f of [1, -1])
-    t
-      ? c(f, o, n, a, r)
-      : (c(f, o, 1.25, a, r),
-        c(f, 2.05, n, a, r),
-        c(f, 1.25, 2.05, 2.5, r),
-        c(f, 1.25, 2.05, a, 0.62));
+// Lines 132613-132897 of readable/app.pretty.js (statement-aligned).
+function o3t(o) {
+  let t = o.lod;
   if (
-    (i.box(
+    (KI(o, {
+      zb: 2.5,
+      zf: 4.62,
+      hw: 1.24,
+      yb: 0.62,
+      roof: 2.95,
+      wBot: 1.3,
+      wTop: 2.78,
+      rake: 0.14,
+      gH: 0.55,
+      arch: [3.5, 0.52],
+      paint: "white",
+      door: "doorGr",
+      stepZ: [3.95, 4.45],
+      stepY: 0.4,
+      sideBot: 1.25,
+      winBack: 3.2,
+      markers: !1,
+      lampY: 0.14,
+    }),
+    o.box(
+      -1.28,
+      1.28,
+      0.36,
+      0.66,
+      4.5,
+      4.78,
+      {
+        px: "black",
+        nx: "black",
+        py: "black",
+        pz: "grey",
+        ny: "black",
+        nz: "black",
+      },
+      0.06,
+    ),
+    !t)
+  )
+    for (let i of [1, -1])
+      o.box(i * 0.62 - 0.1, i * 0.62 + 0.1, 2.95, 3.12, 3.9, 4.1, "amber");
+  let e = 1.25;
+  (o.quad(
+    [e, 0.98, 2.4],
+    [e, 0.98, -3.6],
+    [e, 3.42, -3.6],
+    [e, 3.42, 2.4],
+    "garbSide",
+  ),
+    o.quad(
+      [-e, 0.98, -3.6],
+      [-e, 0.98, 2.4],
+      [-e, 3.42, 2.4],
+      [-e, 3.42, -3.6],
+      "garbSide",
+    ),
+    o.box(
       -e,
       e,
-      0.55,
-      3.1,
-      -3.5,
-      s,
+      0.98,
+      3.75,
+      -3.6,
+      2.4,
       {
         px: null,
         nx: null,
-        py: "navy",
-        pz: "vanFront",
-        nz: "vanRear",
+        py: "green",
+        pz: "green",
+        nz: "green",
         ny: "chassis",
       },
-      0.22,
+      0.32,
+    ));
+  let s = [
+      [-3.55, 0.78],
+      [-4.72, 0.78],
+      [-4.74, 1.55],
+      [-4.5, 3.05],
+      [-3.55, 3.55],
+    ],
+    n = ["under", "rear", "rear", "top", "fr"];
+  if (
+    (o.loftX(
+      [-1.2, 1.2],
+      [s, s],
+      n,
+      (i) =>
+        i === "under"
+          ? "black"
+          : i === "rear"
+            ? "hopper"
+            : i === "fr"
+              ? null
+              : "green",
+      "green",
     ),
     !t)
-  ) {
-    i.box(-e - 0.02, e + 0.02, 0.5, 0.64, -3.52, s - 0.3, {
-      px: "grey",
-      nx: "grey",
-      py: "black",
-      ny: "black",
-      pz: "grey",
-      nz: "grey",
-    });
-    for (let f of [1, -1])
-      i.box(f * e - 0.01, f * e + 0.03, 2.98, 3.02, -3.3, s - 0.3, "navy");
-  }
-  for (let f of [1, -1]) {
-    let u = f * 0.05,
-      d = f * 1.06;
-    i.quad(
-      f > 0 ? [u, 1.55, s + 0.005] : [d, 1.55, s + 0.005],
-      f > 0 ? [d, 1.55, s + 0.005] : [u, 1.55, s + 0.005],
-      f > 0 ? [d, 2.62, s + 0.005] : [u, 2.62, s + 0.005],
-      f > 0 ? [u, 2.62, s + 0.005] : [d, 2.62, s + 0.005],
-      "wind",
-    );
-  }
-  if (!t) {
-    i.box(-1.1, 1.1, 2.66, 2.72, s - 0.02, s + 0.12, "black");
-    for (let f = -1; f <= 1; f++)
-      i.box(
-        f * 0.4 - 0.05,
-        f * 0.4 + 0.05,
-        3.1,
-        3.14,
-        s - 0.2,
-        s - 0.1,
-        "amber",
-      );
-  }
-  let h = [
-    [s - 0.05, 1.45, 1.02],
-    [s + 0.5, 1.38, 1],
-    [3.28, 1.26, 0.96],
-  ];
-  for (let f = 0; f + 1 < h.length; f++) {
-    let u = h[f],
-      d = h[f + 1],
-      p = ([b, x, v]) => [
-        [-v, 0.55, b],
-        [-v, x - 0.12, b],
-        [-v + 0.14, x, b],
-        [v - 0.14, x, b],
-        [v, x - 0.12, b],
-        [v, 0.55, b],
-      ],
-      m = p(u),
-      g = p(d);
-    for (let b = 0; b < 5; b++) i.quad(m[b], g[b], g[b + 1], m[b + 1], "navy");
-    f === h.length - 2 && i.poly(g, "grille", "x", "y", [0, 0, 1]);
-  }
-  for (let f of [1, -1]) {
-    let u = Math.min(f * 0.62, f * 0.92),
-      d = Math.max(f * 0.62, f * 0.92);
-    i.quad(
-      [u, 0.92, 3.285],
-      [d, 0.92, 3.285],
-      [d, 1.12, 3.285],
-      [u, 1.12, 3.285],
-      "head",
-      !0,
-    );
-  }
-  i.box(
-    -1.18,
-    1.18,
-    0.35,
-    0.62,
-    3.2,
-    3.5,
-    {
-      px: "black",
-      nx: "black",
-      py: "black",
-      pz: "grey",
-      ny: "black",
-      nz: "black",
-    },
-    0.05,
-  );
-  for (let f of [1, -1]) {
-    let u = f * (e + 0.004),
-      d = 1.25,
-      p = 2.05;
-    if (
-      (t &&
-        i.quad(
-          f > 0 ? [u, 0.62, p] : [u, 0.62, d],
-          f > 0 ? [u, 0.62, d] : [u, 0.62, p],
-          f > 0 ? [u, 2.5, d] : [u, 2.5, p],
-          f > 0 ? [u, 2.5, p] : [u, 2.5, d],
-          "black",
+  )
+    for (let i of [1, -1])
+      (o.tube([i * 1.23, 1.2, -3.7], [i * 1.23, 3, -4.35], 0.06, "black", 6),
+        o.tube(
+          [i * 1.23, 1.55, -3.85],
+          [i * 1.23, 2.55, -4.2],
+          0.04,
+          "chrome",
+          6,
         ),
-      t ||
-        i.box(
-          f > 0 ? e - 0.25 : -e - 0.02,
-          f > 0 ? e + 0.02 : -e + 0.25,
-          0.4,
-          0.46,
-          d,
-          p,
-          "grey",
-        ),
-      !t)
-    ) {
-      let m = f * (e + 0.28);
-      (i.tube([f * e, 2.3, s - 0.05], [m, 2.3, s + 0.08], 0.018, "chrome", 4),
-        i.box(m - 0.06, m + 0.06, 1.75, 2.35, s + 0.04, s + 0.12, {
-          px: "black",
-          nx: "black",
-          py: "black",
-          ny: "black",
-          pz: "black",
-          nz: "glass",
-        }));
-    }
-  }
-  for (let f of [1, -1])
-    i.box(f * 0.95 - 0.13, f * 0.95 + 0.13, 0.75, 1.05, -3.53, -3.5, {
+        o.box(i * 0.75 - 0.3, i * 0.75 + 0.3, 0.55, 0.61, -4.98, -4.7, "black"),
+        o.tube(
+          [i * 1.05, 0.62, -4.95],
+          [i * 1.05, 1.4, -4.8],
+          0.02,
+          "amber",
+          4,
+        ));
+  for (let i of [1, -1])
+    o.box(i * 1.08 - 0.1, i * 1.08 + 0.1, 2.35, 2.9, -4.62, -4.58, {
       nz: "tail",
       px: null,
       nx: null,
@@ -183,139 +127,161 @@ function Igt(i) {
       ny: null,
       pz: null,
     });
-  if ((i.box(-1.2, 1.2, 0.35, 0.58, -3.6, -3.42, "black"), !t)) {
-    let d = e - 0.03;
-    (i.box(-d, d, 0.62, 2.62, 1.2 - 0.03, 1.2, {
-      pz: "grey",
-      px: null,
-      nx: null,
-      py: null,
-      ny: null,
-      nz: null,
-    }),
-      i.quad(
-        [-d, 2.6, 2.12],
-        [d, 2.6, 2.12],
-        [d, 2.6, 1.2],
-        [-d, 2.6, 1.2],
+  (o.frame(-4.5, 3.9, 0.5, 0.98, 0.48),
+    t || o.box(0.62, 1.22, 0.55, 0.98, 1, 2.2, "black", 0.03),
+    o.axle(3.5, 0.52, 1.02, 0.3),
+    o.axle(-1.55, 0.52, 0.95, 0.3, !0),
+    o.axle(-2.85, 0.52, 0.95, 0.3, !0));
+  for (let i of [1, -1])
+    o.box(
+      i > 0 ? 0.6 : -1.32,
+      i > 0 ? 1.32 : -0.6,
+      1.08,
+      1.14,
+      -3.45,
+      -0.95,
+      "black",
+    );
+  o.flap(-3.5, 0.6, 1.25);
+}
+function a3t(o) {
+  let t = o.lod,
+    e = [
+      [6.7, 2.12, 0.86],
+      [7.6, 2.02, 0.84],
+      [8.28, 1.92, 0.8],
+    ];
+  for (let a = 0; a + 1 < e.length; a++) {
+    let r = ([h, f, u]) => [
+        [-u, 1.05, h],
+        [-u, f - 0.22, h],
+        [-u + 0.2, f - 0.02, h],
+        [u - 0.2, f - 0.02, h],
+        [u, f - 0.22, h],
+        [u, 1.05, h],
+      ],
+      l = r(e[a]),
+      c = r(e[a + 1]);
+    for (let h = 0; h < 5; h++) o.quad(l[h], c[h], c[h + 1], l[h + 1], "grey");
+    a === e.length - 2 && o.poly(c, "cgrille", "x", "y", [0, 0, 1]);
+  }
+  o.box(-0.84, 0.84, 1.8, 1.9, 8.26, 8.34, "chrome");
+  for (let a of [1, -1]) {
+    let r = a > 0 ? 0.78 : -1.28,
+      l = a > 0 ? 1.28 : -0.78;
+    (o.arch(r, l, 0.52, 7.35, 0.64, 0.05, Math.PI - 0.12, "grey", t ? 4 : 8),
+      o.quad(
+        a > 0 ? [r, 0.9, 8.1] : [r, 0.9, 8.1],
+        a > 0 ? [l, 0.9, 8.1] : [l, 0.9, 8.1],
+        a > 0 ? [l, 1.18, 7.96] : [l, 1.18, 7.96],
+        a > 0 ? [r, 1.18, 7.96] : [r, 1.18, 7.96],
         "grey",
-      ),
-      i.quad(
-        [-d, 0.64, 1.2],
-        [d, 0.64, 1.2],
-        [d, 0.64, 2.12],
-        [-d, 0.64, 2.12],
-        "black",
-      ),
-      i.box(0.35, 0.85, 0.64, 1.15, 1.35, 1.8, "black", 0.04),
-      i.box(0.35, 0.85, 1.15, 1.85, 1.3, 1.42, "black", 0.04),
-      i.box(-1, 1, 1.25, 1.62, 2.02, 2.12, "black", 0.03),
-      i.tube([0.6, 1.62, 1.95], [0.6, 1.62, 1.97], 0.2, "black", 10, 0.2, null),
-      i.tube([0.6, 1.3, 2.1], [0.6, 1.6, 1.97], 0.03, "black", 5));
-    let p = -3.5,
-      m = e - 0.18;
-    for (let g of [1, -1])
-      i.box(g * m - 0.06, g * m + 0.06, 0.6, 3, p - 0.06, p + 0.01, {
-        nz: "grey",
-        px: "grey",
-        nx: "grey",
-        py: "grey",
-        ny: null,
-        pz: null,
-      });
-    (i.box(-m - 0.06, m + 0.06, 2.9, 3.02, p - 0.06, p + 0.01, {
-      nz: "grey",
-      py: "grey",
-      ny: "grey",
+      ));
+    let c = a > 0 ? 0.86 : -1.2,
+      h = a > 0 ? 1.2 : -0.86;
+    o.quad(
+      [Math.min(c, h), 1, 8.12],
+      [Math.max(c, h), 1, 8.12],
+      [Math.max(c, h), 1.16, 8],
+      [Math.min(c, h), 1.16, 8],
+      "head",
+      !0,
+    );
+  }
+  if (
+    (o.box(-1.3, 1.3, 0.42, 0.8, 8.22, 8.5, "chrome", 0.07),
+    KI(o, {
+      zb: 4.95,
+      zf: 6.75,
+      hw: 1.2,
+      yb: 1,
+      roof: 3.25,
+      wBot: 2.15,
+      wTop: 3.05,
+      rake: 0.36,
+      gH: 1,
+      paint: "grey",
+      door: "doorG",
+      back: "grey",
+      posts: !0,
+      grille: !1,
+      stepZ: [5.3, 6],
+      stepY: 0.62,
+      winBack: 5.35,
+      lamps: !1,
+    }),
+    !t)
+  )
+    for (let a of [1, -1])
+      (o.tube([a * 1.05, 1.3, 4.82], [a * 1.05, 4.15, 4.82], 0.08, "chrome", 8),
+        o.tube(
+          [a * 1.05, 3.6, 4.82],
+          [a * 1.05, 4.15, 4.82],
+          0.1,
+          "black",
+          8,
+          0.1,
+          null,
+        ),
+        o.tube([a * 0.98, 0.78, 5.05], [a * 0.98, 0.78, 6.4], 0.3, "chrome", 8),
+        o.box(
+          a > 0 ? 0.7 : -1.3,
+          a > 0 ? 1.3 : -0.7,
+          0.34,
+          0.95,
+          4.72,
+          4.78,
+          "black",
+        ));
+  (o.frame(2.2, 8.2, 0.62, 1, 0.46),
+    o.box(-0.8, 0.8, 1.02, 1.18, 3.2, 4.4, "black"),
+    o.axle(7.35, 0.52, 1.03, 0.3, !1, "alloy"),
+    o.axle(4.25, 0.52, 0.94, 0.3, !0, "alloy"),
+    o.axle(2.95, 0.52, 0.94, 0.3, !0, "alloy"),
+    o.flap(2.2, 0.55, 1.3, 0.2, 0.95));
+  let s = 1.3,
+    n = -8.5,
+    i = 4.2;
+  (o.quad([s, 1.3, i], [s, 1.3, n], [s, 4.1, n], [s, 4.1, i], "trailerSide"),
+    o.quad(
+      [-s, 1.3, n],
+      [-s, 1.3, i],
+      [-s, 4.1, i],
+      [-s, 4.1, n],
+      "trailerSide",
+    ),
+    o.box(-s, s, 1.3, 4.1, n, i, {
       px: null,
       nx: null,
-      pz: null,
+      py: "white",
+      pz: "boxFront",
+      nz: "trailerDoors",
+      ny: "chassis",
     }),
-      i.box(-m - 0.06, m + 0.06, 0.6, 0.7, p - 0.06, p + 0.01, {
-        nz: "grey",
-        py: "grey",
-        ny: null,
+    o.box(-0.55, 0.55, 1.02, 1.3, n + 0.2, i - 0.4, "chassis"));
+  for (let a of [1, -1]) {
+    let r = a * (s - 0.05);
+    (o.quad(
+      a > 0 ? [r, 0.45, 0.6] : [r, 0.45, -5.3],
+      a > 0 ? [r, 0.45, -5.3] : [r, 0.45, 0.6],
+      a > 0 ? [r, 1.3, -5.3] : [r, 1.3, 0.6],
+      a > 0 ? [r, 1.3, 0.6] : [r, 1.3, -5.3],
+      "skirt",
+    ),
+      t ||
+        (o.box(a * 0.9 - 0.06, a * 0.9 + 0.06, 0.25, 1.3, 1.2, 1.32, "chassis"),
+        o.box(a * 0.9 - 0.12, a * 0.9 + 0.12, 0.2, 0.26, 1.14, 1.38, "black")),
+      o.box(a * 1 - 0.12, a * 1 + 0.12, 1, 1.2, n - 0.03, n, {
+        nz: "tail",
         px: null,
         nx: null,
-        pz: null,
-      }));
-    for (let g of [1, -1])
-      for (let b of [0.95, 1.75, 2.55])
-        i.box(
-          g * (m - 0.12) - 0.03,
-          g * (m - 0.12) + 0.03,
-          b,
-          b + 0.14,
-          p - 0.05,
-          p,
-          "chrome",
-        );
-    (i.tube([0.12, 0.8, p - 0.04], [0.12, 2.75, p - 0.04], 0.016, "chrome", 5),
-      i.box(0.06, 0.24, 1.42, 1.5, p - 0.07, p - 0.02, "chrome"),
-      i.box(-0.9, 0.9, 0.5, 0.56, -3.75, -3.58, {
-        py: "grey",
-        nz: "black",
-        px: "black",
-        nx: "black",
-        ny: "black",
-        pz: null,
-      }));
-    for (let g = -1; g <= 1; g++)
-      i.box(g * 0.2 - 0.04, g * 0.2 + 0.04, 3, 3.06, p - 0.04, p + 0.02, {
-        nz: "tail",
-        py: "black",
-        px: "black",
-        nx: "black",
+        py: null,
         ny: null,
         pz: null,
-      });
-    for (let g of [1, -1]) {
-      (i.box(
-        g * (e - 0.08) - 0.05,
-        g * (e - 0.08) + 0.05,
-        2.95,
-        3.03,
-        p - 0.04,
-        p + 0.02,
-        {
-          nz: "tail",
-          py: "black",
-          px: "black",
-          nx: "black",
-          ny: null,
-          pz: null,
-        },
-      ),
-        i.box(g * 0.95 - 0.06, g * 0.95 + 0.06, 0.62, 0.68, p - 0.035, p, {
-          nz: "tail",
-          px: null,
-          nx: null,
-          py: null,
-          ny: null,
-          pz: null,
-        }));
-      for (let [b, x] of [
-        [-3.3, "tail"],
-        [s - 0.45, "amber"],
-      ])
-        i.box(g * e - 0.02, g * e + 0.02, 0.75, 0.85, b - 0.05, b + 0.05, {
-          px: g > 0 ? x : null,
-          nx: g < 0 ? x : null,
-          py: null,
-          ny: null,
-          pz: null,
-          nz: null,
-        });
-    }
+      }));
   }
-  (i.frame(-3.3, 2.9, 0.42, 0.56, 0.45),
-    i.axle(2.55, 0.42, 0.98, 0.25),
-    i.axle(-1.95, 0.42, 0.92, 0.25, !0));
-  for (let [f, u, d] of [
-    [2.55, 0.8, 1.22],
-    [-1.95, 0.55, 1.22],
-  ])
-    (i.arch(u, d, 0.42, f, 0.52, 0, Math.PI, "black", t ? 3 : 6),
-      i.arch(-d, -u, 0.42, f, 0.52, 0, Math.PI, "black", t ? 3 : 6));
-  i.flap(-2.55, 0.55, 1.15, 0.18, 0.62);
+  (o.box(-1.25, 1.25, 0.5, 0.66, n - 0.12, n + 0.02, "black"),
+    o.axle(-6.35, 0.52, 0.94, 0.3, !0, "alloy"),
+    o.axle(-7.6, 0.52, 0.94, 0.3, !0, "alloy"),
+    o.flap(-8.25, 0.55, 1.3, 0.2, 0.95));
 }

@@ -1,6 +1,6 @@
-// app 29 — f4t
-// Lines 46596-46879 of readable/app.pretty.js (statement-aligned).
-var hU = `
+// app 29 — azt
+// Lines 46803-47086 of readable/app.pretty.js (statement-aligned).
+var dV = `
 struct Part { pos: vec3f, age: f32, vel: vec3f, life: f32, col: vec4f, size: f32, seed: f32, kind: f32, temp: f32 };
 struct Batch { p0: vec4f, p1: vec4f, dir: vec4f, sp: vec4f, sz: vec4f, col: vec4f, vel: vec4f, idx: vec4u };
 struct PSU {
@@ -23,8 +23,8 @@ struct PSU {
 };
 @group(1) @binding(0) var<uniform> S: PSU;
 `,
-  I4t =
-    hU +
+  Azt =
+    dV +
     `
 @group(1) @binding(1) var<storage, read_write> parts: array<Part>;
 @group(1) @binding(2) var<storage, read> batches: array<Batch>;
@@ -160,8 +160,8 @@ fn child() -> u32 { return S.cap2.x + atomicAdd(&ctr[0], 1u) % max(S.cap2.y, 1u)
   parts[i] = p;
 }
 `,
-  F4t =
-    hU +
+  Pzt =
+    dV +
     `
 @group(1) @binding(1) var<storage, read> parts: array<Part>;
 @group(0) @binding(4) var tDepth: DEPTH_T;

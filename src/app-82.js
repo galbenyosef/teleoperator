@@ -1,224 +1,316 @@
 // app 82 — math
-// Lines 71639-71860 of readable/app.pretty.js (statement-aligned).
-function xS(i, t, e) {
-  let s = i.kb;
-  if (((s.t += t), s.ph === "air")) {
-    ((s.vy -= 9.8 * t),
-      (i.x += s.vx * t),
-      (i.z += s.vz * t),
-      (s.y += s.vy * t),
-      (s.ang += s.w * t));
-    let n = e(i.x, i.z, s.y);
-    (n > -1e4 || (n = s.y0 ?? s.y),
-      s.t > 4 && (n = s.y + 1),
-      s.y <= n &&
-        s.vy < 0 &&
-        ((s.y = n),
-        s.n++,
-        -s.vy > 1.3 && s.n < 3
-          ? ((s.vy = -s.vy * 0.38),
-            (s.vx *= 0.55),
-            (s.vz *= 0.55),
-            (s.w *= 0.5))
-          : (s.ph = "slide")));
-  } else if (s.ph === "slide" || s.ph === "rest") {
-    let n = Math.exp(-6 * t);
-    ((s.vx *= n),
-      (s.vz *= n),
-      (i.x += s.vx * t),
-      (i.z += s.vz * t),
-      (s.y = e(i.x, i.z, s.y)));
-    let o = (((s.ang % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
-    ((o += (-Math.PI / 2 - o) * Math.min(1, t * 6)),
-      (s.ang = o),
-      s.ph === "slide" &&
-        Math.hypot(s.vx, s.vz) < 0.25 &&
-        ((s.ph = "rest"), (s.t = 0)),
-      s.ph === "rest" &&
-        s.t > s.rest &&
-        ((s.ph = "up"), (s.t = 0), (s.a0 = s.ang)));
-  } else {
-    s.y = e(i.x, i.z, s.y);
-    let n = Math.min(1, s.t / 0.8);
-    if (((s.ang = s.a0 * (1 - n * n * (3 - 2 * n))), n >= 1))
-      return (
-        (i.y = s.y),
-        (i.kb = null),
-        (i.mad = 3.5 + Math.random() * 2),
-        !0
-      );
+// Lines 72095-72408 of readable/app.pretty.js (statement-aligned).
+var bp = class {
+  constructor(t = {}) {
+    ((this.statics = t.statics || null),
+      (this.head = new Int32Array(8192)),
+      (this.next = new Int32Array(64)),
+      (this.bx = new Float32Array(64)),
+      (this.bz = new Float32Array(64)),
+      (this.stats = { ms: 0, n: 0 }));
   }
-  return ((i.y = s.y), !1);
-}
-var qR = (i, t) =>
-  ((Math.imul(i, 73856093) ^ Math.imul(t, 19349663)) >>> 0) & 8191;
-function Ul(i, t, e, s) {
-  if (i.t === "circ") {
-    let y = t - i.x,
-      M = e - i.z,
-      S = Math.hypot(y, M),
-      w = i.r + s;
-    return S >= w
-      ? null
-      : S > 1e-6
-        ? [(y / S) * (w - S), (M / S) * (w - S)]
-        : [w, 0];
-  }
-  if (i.t === "box") {
-    if (t < i.x0 - s || t > i.x1 + s || e < i.z0 - s || e > i.z1 + s)
-      return null;
-    let y = Math.max(i.x0, Math.min(i.x1, t)),
-      M = Math.max(i.z0, Math.min(i.z1, e)),
-      S = t - y,
-      w = e - M,
-      z = Math.hypot(S, w);
-    if (z > 1e-6) return z >= s ? null : [(S / z) * (s - z), (w / z) * (s - z)];
-    let _ = [t - i.x0, i.x1 - t, e - i.z0, i.z1 - e],
-      R = _.indexOf(Math.min(..._));
-    return R === 0
-      ? [-(_[0] + s), 0]
-      : R === 1
-        ? [_[1] + s, 0]
-        : R === 2
-          ? [0, -(_[2] + s)]
-          : [0, _[3] + s];
-  }
-  if (i.t === "poly") {
-    let y = i.bb;
-    if (t < y[0] - s || t > y[2] + s || e < y[1] - s || e > y[3] + s)
-      return null;
-    let M = i.pts,
-      S = M.length >> 1,
-      w = !1,
-      z = 1e18,
-      _ = 0,
-      R = 0;
-    for (let C = 0, P = S - 1; C < S; P = C++) {
-      let I = M[P * 2],
-        L = M[P * 2 + 1],
-        F = M[C * 2],
-        N = M[C * 2 + 1];
-      N > e != L > e && t < ((I - F) * (e - N)) / (L - N) + F && (w = !w);
-      let B = F - I,
-        H = N - L,
-        O = B * B + H * H,
-        D = O > 0 ? ((t - I) * B + (e - L) * H) / O : 0;
-      D = D < 0 ? 0 : D > 1 ? 1 : D;
-      let U = I + B * D,
-        G = L + H * D,
-        q = (t - U) ** 2 + (e - G) ** 2;
-      q < z && ((z = q), (_ = U), (R = G));
+  step(t, e, s = [], n = {}) {
+    let i = performance.now();
+    ((e = Math.min(0.1, Math.max(1e-4, e))),
+      (this.frame = (this.frame || 0) + 1));
+    let a = t.length;
+    if (this.next.length < a) {
+      let g = Math.max(a, this.next.length * 2);
+      ((this.next = new Int32Array(g)),
+        (this.bx = new Float32Array(g)),
+        (this.bz = new Float32Array(g)));
     }
-    let T = Math.sqrt(z);
-    if (w) {
-      let C = _ - t,
-        P = R - e;
-      return T > 1e-6 ? [(C / T) * (T + s), (P / T) * (T + s)] : [s, 0];
+    let { head: r, next: l, bx: c, bz: h } = this;
+    r.fill(-1);
+    let f = n.R ?? 1e9,
+      u = n.cx ?? 0,
+      d = n.cz ?? 0,
+      p = this._act || (this._act = []);
+    p.length = 0;
+    for (let g = 0; g < a; g++) {
+      let b = t[g];
+      if (b.ro) {
+        ((c[g] = b.bx ?? b.x),
+          (h[g] = b.bz ?? b.z),
+          (b._nx = c[g]),
+          (b._nz = h[g]));
+        let M = yP(Math.floor(c[g] / 1), Math.floor(h[g] / 1));
+        ((l[g] = r[M]), (r[M] = g));
+        continue;
+      }
+      let v =
+        (n.skip && n.skip(b)) || Math.abs(b.x - u) > f || Math.abs(b.z - d) > f;
+      if (
+        ((v || b.bx === void 0 || !Number.isFinite(b.bx)) &&
+          ((b.bx = b.x + (b.sx || 0)), (b.bz = b.z + (b.sz || 0))),
+        (c[g] = b.bx),
+        (h[g] = b.bz),
+        v)
+      ) {
+        l[g] = -2;
+        continue;
+      }
+      let x = yP(Math.floor(b.bx / 1), Math.floor(b.bz / 1));
+      ((l[g] = r[x]), (r[x] = g));
+      let y = n.half && n.half(b);
+      if (
+        ((b._dtp = y ? Math.min(0.15, e * 2) : e),
+        (b._rest = !1),
+        y && (g + this.frame) & 1)
+      ) {
+        ((b._rest = !0),
+          (b.sx = b.bx - b.x),
+          (b.sz = b.bz - b.z),
+          (b.lag = Math.hypot(b.sx, b.sz)),
+          (b._nx = b.bx),
+          (b._nz = b.bz));
+        continue;
+      }
+      p.push(g);
     }
-    if (T >= s) return null;
-    let E = t - _,
-      A = e - R;
-    return T > 1e-6 ? [(E / T) * (s - T), (A / T) * (s - T)] : [s, 0];
-  }
-  let n = t - i.x,
-    o = e - i.z,
-    a = i.c,
-    r = -i.s,
-    l = i.s,
-    c = i.c,
-    h = n * a + o * r,
-    f = n * l + o * c;
-  if (Math.abs(h) > i.hx + s || Math.abs(f) > i.hz + s) return null;
-  let u = Math.max(-i.hx, Math.min(i.hx, h)),
-    d = Math.max(-i.hz, Math.min(i.hz, f)),
-    p = h - u,
-    m = f - d,
-    g = Math.hypot(p, m);
-  if (g > 1e-6) {
-    if (g >= s) return null;
-    let y = (s - g) / g;
-    return [(a * p + l * m) * y, (r * p + c * m) * y];
-  }
-  let b = i.hx - Math.abs(h),
-    x = i.hz - Math.abs(f);
-  if (b < x) {
-    let y = h >= 0 ? 1 : -1;
-    return [a * y * (b + s), r * y * (b + s)];
-  }
-  let v = f >= 0 ? 1 : -1;
-  return [l * v * (x + s), c * v * (x + s)];
-}
-function tb(i, t, e, s) {
-  let n = t - i.x,
-    o = e - i.z,
-    a = n * i.fx + o * i.fz,
-    r = n * i.fz - o * i.fx,
-    l = Math.max(-i.hl, Math.min(i.hl, a)),
-    c = Math.max(-i.hw, Math.min(i.hw, r)),
-    h = a - l,
-    f = r - c,
-    u = Math.hypot(h, f);
-  if (u > 1e-6) {
-    if (u >= s) return null;
-    let g = (s - u) / u;
-    return [(i.fx * h + i.fz * f) * g, (i.fz * h - i.fx * f) * g];
-  }
-  let d = i.hl - Math.abs(a),
-    p = i.hw - Math.abs(r);
-  if (p < d) {
-    let g = r >= 0 ? 1 : -1;
-    return [i.fz * g * (p + s), -i.fx * g * (p + s)];
-  }
-  let m = a >= 0 ? 1 : -1;
-  return [i.fx * m * (d + s), i.fz * m * (d + s)];
-}
-function vS(i, t, e, s, n, o) {
-  let a = (S, w) => {
-      let z = S - i.x,
-        _ = w - i.z;
-      return [z * i.fx + _ * i.fz, z * i.fz - _ * i.fx];
-    },
-    [r, l] = a(t, e),
-    [c, h] = a(s, n),
-    f = i.hl + o,
-    u = i.hw + o,
-    d = 0,
-    p = 1,
-    m = c - r,
-    g = h - l;
-  for (let [S, w, z] of [
-    [r, m, f],
-    [l, g, u],
-  ]) {
-    if (Math.abs(w) < 1e-9) {
-      if (Math.abs(S) > z) return null;
-      continue;
+    let m = (g, b, v) => {
+      let x = Math.floor(g / 1),
+        y = Math.floor(b / 1);
+      for (let M = x - 1; M <= x + 1; M++)
+        for (let S = y - 1; S <= y + 1; S++)
+          for (let w = r[yP(M, S)]; w >= 0; w = l[w]) v(w);
+    };
+    for (let g of p) {
+      let b = t[g],
+        v = c[g],
+        x = h[g];
+      if (n.fixed && n.fixed(b)) {
+        ((b._nx = v + (b.x - v) * Math.min(1, e * 3)),
+          (b._nz = x + (b.z - x) * Math.min(1, e * 3)),
+          (b._vx = 0),
+          (b._vz = 0),
+          b._sc && (b._sc.length = 0));
+        continue;
+      }
+      let y = b.x,
+        M = b.z,
+        S = b._sc || (b._sc = []);
+      if (this.statics && (b.ghost || 0) <= 0)
+        if (
+          b._scx === void 0 ||
+          Math.abs(v - b._scx) > 0.8 ||
+          Math.abs(x - b._scz) > 0.8 ||
+          Math.abs((b.y ?? 0) - b._scy) > 0.5 ||
+          (b._sct -= e) < 0
+        )
+          ((S.length = 0),
+            (b._scx = v),
+            (b._scz = x),
+            (b._scy = b.y ?? 0),
+            (b._sct = 0.8 + (g % 7) * 0.05),
+            this.statics(
+              v,
+              x,
+              b.y ?? 0,
+              (R) => {
+                S.push(R);
+              },
+              3,
+            ));
+        else
+          for (let R = S.length - 1; R >= 0; R--)
+            (S[R].dead || S[R].broken) && S.splice(R, 1);
+      else ((S.length = 0), (b._scx = void 0));
+      for (let R of s) {
+        if (Math.abs(R.x - v) > 7 || Math.abs(R.z - x) > 7) continue;
+        let P = wk(R, v, x, y, M, 0.3 + 0.12);
+        P && ((y = P[0]), (M = P[1]));
+      }
+      if (S.length && Math.hypot(y - v, M - x) > 0.05) {
+        let R = Math.hypot(y - v, M - x),
+          P = Math.min(R, 1.6) / R,
+          C = v + (y - v) * P,
+          I = x + (M - x) * P;
+        for (let L of S) {
+          if (L.t !== "circ" && L.t !== "obb") continue;
+          let F =
+              L.t === "circ"
+                ? { x: L.x, z: L.z, fx: 1, fz: 0, hl: L.r, hw: L.r }
+                : { x: L.x, z: L.z, fx: L.s, fz: L.c, hl: L.hz, hw: L.hx },
+            O = wk(F, v, x, C, I, 0.3 + 0.06);
+          if (O) {
+            ((y = O[0]), (M = O[1]));
+            break;
+          }
+        }
+      }
+      let w = n.gain ? n.gain(b) : 3,
+        _ = (y - v) * w,
+        z = (M - x) * w,
+        A = n.vmax ? n.vmax(b) : 1.8,
+        T = Math.hypot(_, z);
+      T > A && ((_ *= A / T), (z *= A / T));
+      let E = Math.hypot(_, z);
+      if (E > 0.3) {
+        let R = _ / E,
+          P = z / E,
+          C = 0,
+          I = 0;
+        (m(v + R, x + P, (L) => {
+          if (L === g) return;
+          let F = c[L] - v,
+            O = h[L] - x,
+            B = Math.hypot(F, O);
+          if (B > 2.2 || B < 1e-4) return;
+          let H = F * R + O * P,
+            N = F * P - O * R;
+          if (H < 0.1 || Math.abs(N) > 2 * 0.3 + 0.25) return;
+          let D = t[L];
+          if (
+            (D._vx || 0) * R + (D._vz || 0) * P > E * 0.9 &&
+            Math.abs(N) > 2 * 0.3
+          )
+            return;
+          let G = Math.abs(N) > 0.02 ? (N > 0 ? -1 : 1) : g < L ? -1 : 1,
+            W = (1 - B / 2.2) * E * 0.9;
+          ((C += P * G * W), (I -= R * G * W));
+        }),
+          (_ += C),
+          (z += I));
+      }
+      ((b._vx = _),
+        (b._vz = z),
+        (b._nx = v + _ * b._dtp),
+        (b._nz = x + z * b._dtp));
     }
-    let _ = (-z - S) / w,
-      R = (z - S) / w;
-    if (
-      (_ > R && ([_, R] = [R, _]),
-      (d = Math.max(d, _)),
-      (p = Math.min(p, R)),
-      d > p)
-    )
-      return null;
+    for (let g = 0; g < 4; g++) {
+      for (let b of p) ((c[b] = t[b]._nx), (h[b] = t[b]._nz));
+      for (let b of p) {
+        let v = t[b],
+          x = n.fixed && n.fixed(v),
+          y = c[b],
+          M = h[b];
+        (m(y, M, (S) => {
+          let w = t[S],
+            _ = w.ro || w._rest;
+          if (_ ? S === b : S <= b || l[S] === -2) return;
+          let z = _ || (n.fixed && n.fixed(w));
+          if (x && !z) return;
+          let A = c[S] - y,
+            T = h[S] - M,
+            E = Math.hypot(A, T),
+            R = 2 * 0.3 + 0.05;
+          if (E >= R) return;
+          let P, C;
+          if (E > 1e-5) ((P = A / E), (C = T / E));
+          else {
+            let O = (b * 2.399 + S) % 6.283;
+            ((P = Math.cos(O)), (C = Math.sin(O)));
+          }
+          let I = R - E,
+            L = x === z ? 0.5 : x ? 0 : 1,
+            F = 1 - L;
+          ((y -= P * I * L),
+            (M -= C * I * L),
+            (c[S] += P * I * F),
+            (h[S] += C * I * F));
+        }),
+          (c[b] = y),
+          (h[b] = M));
+      }
+      for (let b of p) {
+        let v = t[b];
+        if (n.fixed && n.fixed(v)) continue;
+        let x = c[b],
+          y = h[b];
+        if (n.clamp) {
+          let M = n.clamp(v, x, y);
+          M && ((x = M[0]), (y = M[1]));
+        }
+        if (n.wall) {
+          let M = n.wall(v, x, y);
+          M && ((x += M[0]), (y += M[1]));
+        }
+        for (let M of s) {
+          if (Math.abs(M.x - x) > 6 || Math.abs(M.z - y) > 6) continue;
+          let S = Gb(M, x, y, 0.3);
+          S && ((x += S[0]), (y += S[1]));
+        }
+        if (v._sc?.length) {
+          for (let M of v._sc) {
+            if (M.t === "poly") continue;
+            let S = lc(M, x, y, 0.3);
+            S && ((x += S[0]), (y += S[1]));
+          }
+          for (let M of v._sc) {
+            if (M.t !== "poly") continue;
+            let S = lc(M, x, y, 0.3);
+            S && ((x += S[0]), (y += S[1]));
+          }
+        }
+        ((c[b] = x), (h[b] = y), (v._nx = x), (v._nz = y));
+      }
+    }
+    for (let g of p) {
+      let b = t[g],
+        v = c[g],
+        x = h[g],
+        y = b.bx,
+        M = b.bz,
+        S = v - y,
+        w = x - M,
+        _ = Math.hypot(S, w),
+        z = ((n.vmax ? n.vmax(b) : 1.8) + 1.2) * b._dtp + 0.07;
+      if (
+        (_ > z && ((v = y + (S / _) * z), (x = M + (w / _) * z)),
+        b._sc?.length && _ > 1e-4)
+      ) {
+        let T = (P, C) => {
+            let I = 0;
+            for (let L of b._sc) {
+              let F = lc(L, P, C, 0.3);
+              F && (I = Math.max(I, Math.hypot(F[0], F[1])));
+            }
+            for (let L of s) {
+              if (Math.abs(L.x - P) > 6 || Math.abs(L.z - C) > 6) continue;
+              let F = Gb(L, P, C, 0.3);
+              F && (I = Math.max(I, Math.hypot(F[0], F[1])));
+            }
+            return I;
+          },
+          E = T(v, x),
+          R = E > 0.04 ? T(y, M) : 0;
+        if (E > 0.04 && E > R + 0.001) {
+          let P = v,
+            C = x;
+          for (let I of b._sc) {
+            let L = lc(I, P, C, 0.3);
+            L && ((P += L[0]), (C += L[1]));
+          }
+          T(P, C) <= Math.max(R, 0.04) + 0.001 && Math.hypot(P - y, C - M) <= z
+            ? ((v = P), (x = C))
+            : ((v = y), (x = M));
+        }
+        Math.max(E, R) > 0.12 &&
+        s.some(
+          (P) =>
+            Math.abs(P.x - v) < 6 &&
+            Math.abs(P.z - x) < 6 &&
+            Gb(P, v, x, 0.3 + 0.05),
+        )
+          ? ((b.wedge = (b.wedge || 0) + e),
+            b.wedge > 0.6 &&
+              ((b.ghost = 0.5),
+              (b.wedge = 0),
+              (this.stats.unwedged = (this.stats.unwedged || 0) + 1)))
+          : (b.wedge = 0);
+      }
+      let A = Math.hypot(v - y, x - M) / b._dtp;
+      ((b.vs = (b.vs || 0) + (A - (b.vs || 0)) * Math.min(1, b._dtp * 8)),
+        A > 0.05 &&
+          ((b.vhx = (v - y) / (A * b._dtp)), (b.vhz = (x - M) / (A * b._dtp))),
+        (b.bx = v),
+        (b.bz = x),
+        (b.sx = v - b.x),
+        (b.sz = x - b.z),
+        (b.lag = Math.hypot(b.sx, b.sz)),
+        b.ghost > 0 && (b.ghost -= e));
+    }
+    ((this.stats.n = p.length), (this.stats.ms = performance.now() - i));
   }
-  let b = [
-      [f, u],
-      [f, -u],
-      [-f, u],
-      [-f, -u],
-    ].map(([S, w]) => [S * 1.02, w * 1.02]),
-    x = null,
-    v = 1e18;
-  for (let [S, w] of b) {
-    let z = Math.hypot(S - r, w - l) + Math.hypot(c - S, h - w),
-      _ = [(S + r) / 2, (w + l) / 2];
-    (Math.abs(_[0]) < f * 0.98 && Math.abs(_[1]) < u * 0.98) ||
-      (z < v && ((v = z), (x = [S, w])));
-  }
-  if (!x) return null;
-  let [y, M] = x;
-  return [i.x + i.fx * y + i.fz * M, i.z + i.fz * y - i.fx * M];
-}
+};

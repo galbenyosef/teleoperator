@@ -1,7 +1,7 @@
-// app 408 — queryselector
-// Lines 198599-198787 of readable/app.pretty.js (statement-aligned).
-var vst = (i) =>
-    String(i ?? "").replace(
+// app 408 — math
+// Lines 200285-200392 of readable/app.pretty.js (statement-aligned).
+var Wit = (o) =>
+    String(o).replace(
       /[&<>"']/g,
       (t) =>
         ({
@@ -12,180 +12,99 @@ var vst = (i) =>
           "'": "&#39;",
         })[t],
     ),
-  Js = (i) => document.getElementById(i),
-  je = new URLSearchParams(location.search),
-  xn = !!globalThis.SF_LITE,
-  Mf = globalThis.SF_TIER === "safe",
-  Yu =
-    je.has("mobile") ||
-    je.has("touch") ||
-    /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent) ||
-    (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform)) ||
-    matchMedia("(pointer: coarse)").matches,
-  ki = je.has("test"),
-  dh = je.has("grid"),
-  XMt = je.has("spill") ? +je.get("spill") : null,
-  LN = !dh && !xn && !je.has("nodress"),
-  uv =
-    !dh &&
-    !je.has("nopeds") &&
-    (je.has("peds") || (!ki && yM().peds !== "off"));
-ba.on = uv;
-var IN = "assets/car/",
-  ai = globalThis.SF_MODE === "waymo",
-  uh = globalThis.SF_VARIANT === "taxi",
-  Jn = ai ? globalThis.SF_CAR : null,
-  fh = je.get("cam") ? je.get("cam").split(",").map(Number) : null,
-  yst = () => {
-    if (je.get("camg")) {
-      let i = je.get("camg").split(",").map(Number);
-      fh = [
-        i[0],
-        eo(i[0], i[2]) + i[1],
-        i[2],
-        i[3],
-        eo(i[3], i[5]) + i[4],
-        i[5],
-        i[6],
-      ];
-    }
-  };
-dh && yst();
-var Wp = (i, t, e = 0.3) => {
-    if (
-      (Js("stage").textContent !== i && (Js("stage").textContent = i),
-      t != null)
-    ) {
-      let s = Js("bar").firstElementChild.style;
-      ((s.transitionDuration = e + "s"),
-        (s.transform = `scaleX(${t.toFixed(3)})`));
-    }
+  A4 = (o) =>
+    (o < 0 ? "\u2212" : "") +
+    "$" +
+    Math.abs(Math.round(o)).toLocaleString("en-US"),
+  qit = (o) => {
+    let t = Math.max(0, (Date.now() - o) / 1e3);
+    return t < 60
+      ? "just now"
+      : t < 3600
+        ? Math.floor(t / 60) + " min ago"
+        : t < 86400
+          ? Math.floor(t / 3600) + " h ago"
+          : new Date(o).toLocaleDateString();
   },
-  iT = !1,
-  FN = () => {
-    (Js("title").classList.remove("gone", "ready"),
-      document.body.classList.add("nogpu"));
-  },
-  BM = (i) => {
-    console.error(i);
-    let t = String(i?.message || i);
-    if (!iT) {
-      if (Bg(i)) {
-        iT = !0;
-        let e = globalThis.SF_BOOT?.recover(),
-          s = Js("nogpu");
-        ((s.querySelector("h2").textContent = "Graphics could not continue"),
-          (s.querySelector("p").textContent = e?.changed
-            ? "The browser could not reserve enough graphics memory. Retry with lighter graphics."
-            : "The browser could not reserve graphics memory. Close other game tabs, then retry."),
-          (s.querySelector("small").textContent = ""));
-        let n = s.querySelector("button");
-        ((n.textContent = e?.changed ? "Retry with lighter graphics" : "Retry"),
-          (n.onclick = () => {
-            let o = new URL(location.href);
-            (e?.level && o.searchParams.set("gfx", e.level),
-              location.replace(o.toString()));
-          }),
-          FN());
-        return;
-      }
-      if (
-        (/lost|memory/i.test(t) || globalThis.SF_BOOT?.fail(),
-        i?.name === "ShaderStartupError" || i?.name === "AssetLoadError")
-      ) {
-        (console.error("Startup cause", i.cause), (iT = !0));
-        let e = i.name === "AssetLoadError",
-          s = Js("nogpu");
-        ((s.querySelector("h2").textContent = e
-          ? "Download interrupted"
-          : "Graphics could not start"),
-          (s.querySelector("p").textContent = e
-            ? "A game file could not finish downloading. Check your connection, then retry."
-            : "The browser could not finish preparing the graphics. Retry to start a fresh graphics session."),
-          (s.querySelector("small").textContent = String(i.cause?.message || "")
-            .split(
-              `
+  VSt = `
+#chWallet .w { pointer-events: auto; cursor: pointer; }
+#chWallet .pd { display: block; margin-top: 4px; font: 600 10px var(--mono, monospace); letter-spacing: .1em; color: #ffd36b; text-align: right; }
+#walletLog { position: fixed; z-index: 40; right: max(12px, 2.5vw); top: max(12px, 2.5vh); width: min(380px, calc(100vw - 24px)); max-height: min(560px, calc(100vh - 24px)); display: none; flex-direction: column;
+  border-radius: 12px; background: rgba(9,11,15,.94); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 14px 50px rgba(0,0,0,.5); color: #f3f4f1; font-family: var(--disp, sans-serif); }
+#walletLog.on { display: flex; }
+#walletLog header { display: flex; align-items: baseline; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
+#walletLog header h3 { margin: 0; font: 800 15px var(--disp, sans-serif); letter-spacing: .12em; text-transform: uppercase; }
+#walletLog header b { margin-left: auto; font: 800 20px var(--disp, sans-serif); font-variant-numeric: tabular-nums; }
+#walletLog header button { margin-left: 8px; width: 28px; height: 28px; border: 0; border-radius: 6px; background: rgba(255,255,255,.08); color: #fff; font-size: 16px; cursor: pointer; }
+#walletLog .pd { padding: 8px 16px; font: 600 11px/1.4 var(--mono, monospace); color: #ffd36b; background: rgba(255,211,107,.07); }
+#walletLog ol { list-style: none; margin: 0; padding: 4px 0; overflow-y: auto; }
+#walletLog li { display: grid; grid-template-columns: 1fr auto; gap: 1px 10px; padding: 7px 16px; border-bottom: 1px solid rgba(255,255,255,.05); }
+#walletLog li span { font: 600 13px var(--disp, sans-serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#walletLog li em { font: 800 13px var(--mono, monospace); font-style: normal; text-align: right; color: #7dffb0; } #walletLog li.neg em { color: #ff9a9a; }
+#walletLog li small { font: 500 10.5px var(--mono, monospace); color: rgba(243,244,241,.5); } #walletLog li small + small { text-align: right; }
+#walletLog li.pend em { color: #ffd36b; } #walletLog li.pend span::after { content: " \xB7 pending"; color: #ffd36b; font-size: 11px; }
+#walletLog footer { padding: 10px 16px 12px; font: 500 11px/1.45 var(--mono, monospace); color: rgba(243,244,241,.55); border-top: 1px solid rgba(255,255,255,.08); }
 `,
-            )[0]
-            .slice(0, 240)),
-          (s.querySelector("button").textContent = "Retry"),
-          (s.querySelector("button").onclick = () => location.reload()),
-          FN());
-        return;
+  o9 = class {
+    constructor(t) {
+      if (((this.pr = t), !document.getElementById("walletCss"))) {
+        let s = document.createElement("style");
+        ((s.id = "walletCss"),
+          (s.textContent = VSt),
+          document.head.appendChild(s));
       }
-      !navigator.gpu || /webgpu|adapter|device lost|GPU device/i.test(t)
-        ? KMt(navigator.gpu ? t : "")
-        : (Js("err").textContent = t);
+      let e = (this.el = document.createElement("div"));
+      ((e.id = "walletLog"),
+        e.setAttribute("role", "dialog"),
+        e.setAttribute("aria-label", "Wallet history"),
+        document.body.appendChild(e),
+        e.addEventListener("click", (s) => {
+          s.target.closest("[data-x]") && this.toggle(!1);
+        }),
+        addEventListener(
+          "keydown",
+          (s) => {
+            this.on &&
+              s.code === "Escape" &&
+              (this.toggle(!1), s.stopPropagation());
+          },
+          !0,
+        ),
+        t.onCash?.(() => {
+          this.on && this.render();
+        }));
+    }
+    toggle(t = !this.on) {
+      ((this.on = t), this.el.classList.toggle("on", t), t && this.render());
+    }
+    render() {
+      let t = this.pr,
+        e = t.p.cash || { base: 0, log: [] },
+        s = t.wallet(),
+        n = t.pendingCash?.() || 0,
+        i = e.base || 0,
+        a = (e.log || [])
+          .map((r) => (r.pend || (i += r.a), { e: r, bal: i }))
+          .reverse();
+      this.el.innerHTML = `<header><h3>Wallet</h3><b>${A4(s)}</b><button type="button" data-x="1" aria-label="Close">\xD7</button></header>
+      ${n > 0.5 ? `<div class="pd">+${A4(n)} pending: income over $15,000 in a short time is held here and comes in as the limit refills (about $1,800 a minute).</div>` : ""}
+      <ol>${a.map(({ e: r, bal: l }) => `<li class="${r.a < 0 ? "neg" : ""}${r.pend ? " pend" : ""}"><span title="${Wit(r.held || r.why)}">${Wit(r.why || "Cash")}</span><em>${r.a < 0 ? "\u2212" : "+"}${A4(Math.abs(r.a))}</em><small>${qit(r.t)}${r.rel ? " \xB7 released " + qit(r.rel) : ""}</small><small>${r.pend ? "not in the balance yet" : "balance " + A4(l)}</small></li>`).join("") || "<li><span>No changes yet</span></li>"}</ol>
+      <footer>${Math.abs(e.base || 0) > 0.5 ? `Before this history: ${A4(e.base)}${e.baseT ? "" : " (your wallet when the history began)"}. ` : ""}Cash buys parts in the Garage. mindblown tokens (\u25C6) are separate: they pay for AI wraps and cars.</footer>`;
     }
   };
-function KMt(i) {
-  let t = navigator.userAgent,
-    e =
-      /iPhone|iPad|iPod/.test(t) ||
-      (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform)),
-    s = /Android/.test(t),
-    n = /lost/i.test(i),
-    o = n
-      ? "The graphics device was reset (often the phone running out of memory). Close other tabs and reload."
-      : e
-        ? "On iPhone and iPad it runs in Safari on iOS / iPadOS 26 or later. On iOS 18, turn WebGPU on in Settings \u203A Apps \u203A Safari \u203A Advanced \u203A Feature Flags, then reload."
-        : s
-          ? "On Android it runs in Chrome 121 or later (Android 12+, a recent GPU). Update Chrome, or try another phone."
-          : "It runs in Chrome or Edge (113+), Safari 26+, or Firefox 141+ on Windows. Update the browser, or turn on hardware acceleration.",
-    a = Js("nogpu");
-  ((a.querySelector("h2").textContent = n
-    ? "The GPU stopped"
-    : i
-      ? "WebGPU did not start"
-      : "This game needs WebGPU"),
-    (a.querySelector("p").textContent =
-      (n || !i
-        ? ""
-        : "Your browser has WebGPU but no usable graphics adapter. ") + o),
-    (a.querySelector("small").textContent = i),
-    FN(),
-    (a.querySelector("button").onclick = () => location.reload()));
-}
-window.__sf = {};
-window.__sfL = { highwayAt: Hi };
-function Zn(i, t = "", e = "", s = {}) {
-  Cu.say(i, t, { cls: e, key: e || void 0, ...s });
-}
-Yu && document.body.classList.add("touch");
-var wst = (i) => {
-  let t = new URL(location.href);
-  (i === "waymo"
-    ? t.searchParams.set("mode", "waymo")
-    : t.searchParams.delete("mode"),
-    location.replace(t.toString()));
-};
-for (let i of document.querySelectorAll("#modes .mode"))
-  (i.setAttribute("aria-pressed", String((i.dataset.mode === "waymo") === ai)),
-    (i.onclick = (t) => {
-      (t.stopPropagation(),
-        (i.dataset.mode === "waymo") !== ai && wst(i.dataset.mode));
-    }));
-aet(document.getElementById("cities"));
-{
-  let i = document.querySelector("[data-mode-switch]");
-  i &&
-    ((i.querySelector("b").textContent = ai ? "Waymo taxi" : "Free roam"),
-    (i.onclick = () => wst(ai ? "free" : "waymo")));
-}
-if (uh) {
-  (document.body.classList.add("teleop"), (document.title = "Teleoperator"));
-  let i = document.querySelector("#title h1");
-  (i && !i.dataset.teleop && (i.innerHTML = "TELE<em>OPERATOR</em>"),
-    (document.querySelector("#title .sub").textContent =
-      "Remote-pilot robotaxis across real San Francisco"));
-}
-Vtt();
-ai &&
-  (document.body.classList.add("waymo"),
-  uh ||
-    (document.querySelector("#title .sub").textContent =
-      "Waymo \xB7 Taxi mode"),
-  (Js("keys").innerHTML =
-    "<b>W</b><b>A</b><b>S</b><b>D</b> drive &nbsp; lift off to regenerate &nbsp; stop at the kerb for fares &nbsp; <b>Tab</b> map &nbsp; <b>Esc</b> menu"),
-  (Js("keysT").innerHTML =
-    "Hold anywhere to drive \xB7 slide to steer \xB7 second finger or pull down to brake<br>stop at the glowing kerb to pick up and drop off"));
+var jit = "sf-drive.chfilter",
+  bN = { trap: "speed", zone: "speed", drift: "drift", jump: "jump" },
+  $it = (o) => "$" + Math.round(o).toLocaleString("en-US"),
+  Xit = {
+    time: "Out of time",
+    cold: "The food went cold",
+    spilt: "The order is ruined - it went everywhere",
+    vip: "The VIP got out: too rough a ride",
+    busted: "BUSTED - the police caught you",
+    abandoned: "Abandoned",
+    teleport: "Left behind (teleported)",
+    quit: "Left the race",
+    place: "Off the podium",
+    few: "Not enough near misses",
+    off: "The police were switched off",
+  };

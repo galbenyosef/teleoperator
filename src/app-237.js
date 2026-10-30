@@ -1,313 +1,314 @@
-// app 237 — addscaledvector
-// Lines 122500-122810 of readable/app.pretty.js (statement-aligned).
-function A2t(i, t) {
-  let e = $c(t),
-    s = T2t(i, e),
-    n = [],
-    o = [],
-    a = [],
-    r = s.C.y + i.ryTop,
-    l = Vc(oi, e).multiplyScalar(0.25 + e() * 0.3),
-    c = i.excurrent ? r * i.excurrent : i.fork + 0.6,
-    h = [],
-    f = [];
-  for (let m = 0; m <= 8; m++) {
-    let g = m / 8,
-      b = g * c;
-    (h.push(
-      Vs(
-        l.x * g * g + (e() - 0.5) * 0.08 * g,
-        b,
-        l.z * g * g + (e() - 0.5) * 0.08 * g,
-      ),
-    ),
-      f.push(
-        i.r0 *
-          (1 + 0.45 * Math.exp(-b / 0.35)) *
-          (i.excurrent ? 1 - 0.8 * g : 1 - 0.3 * g),
-      ));
-  }
-  n.push({ pts: h, rad: f, order: 0 });
-  let u = (m) => jk(h, Math.min(1, m / c)),
-    d = i.limbs;
-  for (let m = 0; m < d; m++) {
-    let g = m * 2.39996 + e() * 0.6,
-      b = ((i.el[0] + e() * (i.el[1] - i.el[0])) * Math.PI) / 180,
-      x;
-    i.excurrent
-      ? (x = i.fork + (m / d) * (c - i.fork) * 0.95 + e() * 0.5)
-      : (x = i.fork - 0.3 + e() * 0.9);
-    let v = u(x),
-      y = Vs(Math.cos(g) * Math.cos(b), Math.sin(b), Math.sin(g) * Math.cos(b)),
-      M = v.clone().addScaledVector(y, 3).sub(s.C).normalize(),
-      S = s.C.clone().addScaledVector(M, s.R(M) * (0.62 + e() * 0.18)),
-      w = S.distanceTo(v),
-      z = v
-        .clone()
-        .lerp(S, 0.45)
-        .addScaledVector(oi, i.rise * w * 0.18)
-        .addScaledVector(y, w * 0.1),
-      _ = MC(v, z, S, 6),
-      R = f[Math.min(8, Math.round((x / c) * 8))] * (i.excurrent ? 0.55 : 0.72);
-    n.push({
-      pts: _,
-      rad: _.map((E, A) => R * (1 - 0.72 * (A / 6))),
+// app 237 — pts
+// Lines 123067-123378 of readable/app.pretty.js (statement-aligned).
+function eI(o) {
+  let t = o.find((h) => h.order === 0);
+  if (!t || t.pts.length < 10 || Math.abs(t.pts[1]) > 0.6) return o;
+  let e = t.pts,
+    s = e[3],
+    n = e[0],
+    i = e[1],
+    a = e[2],
+    r = Math.min(e[4], 0.6),
+    l = {
+      order: 0,
+      pts: Float32Array.from([
+        n,
+        i - 0.8,
+        a,
+        s * 1.08,
+        r * 0.75,
+        ...e.subarray(0, 4),
+        Math.min(e[4], r * 0.85),
+        ...e.subarray(5),
+      ]),
+    },
+    c = o.map((h) => (h === t ? l : h));
+  for (let h = 0; h < 5; h++) {
+    let f = h * 1.2566 + 0.4 + 0.3 * Math.sin(h * 7.1),
+      u = Math.cos(f),
+      d = Math.sin(f),
+      p = 1.75 + 0.35 * Math.sin(h * 3.7);
+    c.push({
       order: 1,
+      pts: Float32Array.from([
+        n + u * s * 0.4,
+        i + s * 1.1 + 0.1,
+        a + d * s * 0.4,
+        s * 0.42,
+        r * 0.9,
+        n + u * s * 1.05,
+        i + s * 0.3,
+        a + d * s * 1.05,
+        s * 0.3,
+        r * 0.75,
+        n + u * s * p,
+        i - 0.3,
+        a + d * s * p,
+        s * 0.1,
+        r * 0.6,
+      ]),
     });
-    let T = i.n2 + Math.floor(e() * 3);
-    for (let E = 0; E < T; E++) {
-      let A = 0.22 + 0.76 * (E / T) + e() * 0.05,
-        C = jk(_, Math.min(1, A)),
-        P = ZX(_, Math.min(0.99, A)),
-        I = C.clone().sub(s.C);
-      ((I.y *= 0.6), I.normalize());
-      let L = P.clone()
-          .multiplyScalar(0.6)
-          .addScaledVector(Vc(P, e), 0.7)
-          .addScaledVector(I, 0.8)
-          .addScaledVector(oi, i.rise * 0.3)
-          .normalize(),
-        F = Math.max(
-          0.4,
-          (1.02 - s.rel(C)) * s.R(C.clone().sub(s.C).normalize()),
+  }
+  return c;
+}
+function evt(
+  o,
+  t,
+  e,
+  { orders: s = 2, sides: n = [9, 6, 4], minR: i = 0 } = {},
+) {
+  let a = e.barkTint || [1, 1, 1],
+    r = eI(
+      t.map((c) => ({
+        b: c,
+        order: c.order,
+        pts: Float32Array.from(
+          c.pts.flatMap((h, f) => [h.x, h.y, h.z, c.rad[f], 1]),
         ),
-        N = Math.min(F + 0.6, 1.2 + e() * 2) * (i.excurrent ? 1.1 : 1),
-        B = C.clone().addScaledVector(L, N),
-        H = C.clone()
-          .lerp(B, 0.5)
-          .addScaledVector(
-            oi,
-            (i.rise - 0.6) * N * 0.15 - (i.hang || 0) * N * 0.25,
-          ),
-        O = MC(C, H, B, 3),
-        D = R * (0.45 - 0.25 * A);
-      (n.push({
-        pts: O,
-        rad: O.map((G, q) => D * (1 - 0.7 * (q / 3))),
-        order: 2,
-      }),
-        e() >= (i.drop || 0) &&
-          a.push({ c: B.clone(), r: i.clump * (0.8 + 0.4 * e()), out: I }),
-        e() < 0.55 &&
-          a.push({ c: jk(O, 0.5), r: i.clump * (0.55 + 0.3 * e()), out: I }));
-      for (let G = 0; G < 2; G++) {
-        let q = 0.3 + 0.35 * G + e() * 0.1,
-          W = jk(O, q),
-          V = ZX(O, Math.min(0.99, q)),
-          Y = V.clone()
-            .addScaledVector(Vc(V, e), 0.9)
-            .addScaledVector(I, 0.5)
-            .normalize();
-        (i.flat && W.y > r - 0.4) ||
-          o.push({
-            p: W.clone().addScaledVector(Y, 0.2),
-            d: Y,
-            s: i.card[0] + e() * (i.card[1] - i.card[0]),
-            cell: i.cells[Math.floor(e() * 2)],
-            rel: s.rel(W),
-          });
-      }
-    }
-  }
-  if (i.tiers) {
-    let m = s.C.y - i.ryBot * 0.55,
-      g = r - 0.6;
-    for (let b of a) {
-      {
-        let y = b.c.clone().sub(s.C),
-          M = y.length(),
-          S = s.R(y.clone().normalize());
-        M > S * 0.95 && b.c.copy(s.C).addScaledVector(y, (S * 0.95) / M);
-      }
-      let x = Math.round(((b.c.y - m) / (g - m)) * (i.tiers - 1)),
-        v =
-          m + (Math.max(0, Math.min(i.tiers - 1, x)) / (i.tiers - 1)) * (g - m);
-      ((b.c.y += (v - b.c.y) * 0.65), (b.out.y *= 0.4), b.out.normalize());
-    }
-  }
-  for (let m of a) {
-    let g = i.per + Math.floor(e() * 3);
-    for (let b = 0; b < g; b++) {
-      let x = Vs(
-        e() * 2 - 1,
-        (e() * 2 - 1) * (i.clumpFlat || 0.8),
-        e() * 2 - 1,
-      );
-      x.length() > 1 && x.normalize();
-      let v = m.c
-        .clone()
-        .addScaledVector(x, m.r * 0.75)
-        .addScaledVector(m.out, m.r * 0.25)
-        .addScaledVector(oi, m.r * 0.15);
-      if (e() < i.gap * 0.3) continue;
-      let y = x
-        .clone()
-        .addScaledVector(m.out, 0.6)
-        .addScaledVector(oi, 0.25)
-        .normalize();
-      o.push({
-        p: v,
-        d: y,
-        s: i.card[0] + e() * (i.card[1] - i.card[0]),
-        cell: i.cells[Math.floor(e() * 2)],
-        rel: s.rel(v),
+      })),
+    ).map((c) =>
+      c.b && c.pts.length === c.b.pts.length * 5
+        ? c.b
+        : {
+            order: c.order,
+            pts: Array.from({ length: c.pts.length / 5 }, (h, f) =>
+              Js(c.pts[f * 5], c.pts[f * 5 + 1], c.pts[f * 5 + 2]),
+            ),
+            rad: Array.from(
+              { length: c.pts.length / 5 },
+              (h, f) => c.pts[f * 5 + 3],
+            ),
+          },
+    );
+  for (let c of r)
+    c.order > s ||
+      c.rad[0] < i ||
+      od(o, c.pts, c.rad, n[c.order], {
+        texW: c.order ? 0.6 : 1,
+        texH: c.order ? 0.8 : 1.3,
+        ao: (h) => {
+          let f = c.pts[h].y;
+          return c.order === 0 || c.pts[c.pts.length - 1].y < 0
+            ? 0.55 + 0.45 * Il(0, 1.6, f)
+            : 0.62 + 0.2 * (h / (c.pts.length - 1));
+        },
       });
+  let l = o.c;
+  for (let c = 0; c < l.length; c += 4)
+    ((l[c] *= a[0]), (l[c + 1] *= a[1]), (l[c + 2] *= a[2]));
+}
+function rJ(o, t = 1) {
+  let e = Jxt[o],
+    { br: s, cards: n, masses: i, E: a } = Qxt(e, t),
+    r = [],
+    l = [
+      {
+        sides: [10, 6, 4],
+        orders: 2,
+        keep: 1,
+        scale: 1,
+        inner: e.inner0 ?? 0.5,
+      },
+      {
+        sides: [7, 4, 3],
+        orders: 1,
+        keep: 0.3,
+        scale: 1.5,
+        inner: 1,
+        clump: 0.5,
+        cs: 0.85,
+      },
+      { sides: [5, 3, 3], orders: 0, keep: 0, inner: 0.5, clump: 1, cs: 1 },
+    ];
+  ["plane", "elm", "ficus"].includes(o) ||
+    ((l[1] = { ...l[1], keep: 0.3, scale: 1.6, clump: 0 }),
+    (l[2] = { ...l[2], keep: 0.05, scale: 3.3, clump: 0 }));
+  for (let [c, h] of l.entries()) {
+    let f = new xa(),
+      u = new xa(),
+      d = new xa(),
+      p = Sh(t * 7 + c);
+    (evt(f, s, e, h),
+      h.keep > 0 && tvt(u, n, a, e, p, h),
+      sJ(d, i.inner, a, e, p, { keep: h.inner, dark: 0.8 }),
+      h.clump && sJ(d, i.clump, a, e, p, { keep: h.clump, scale: h.cs }));
+    let m = [
+      { mat: e.bark, geo: f.geo() },
+      { mat: "leafmass", geo: d.geo() },
+    ];
+    (u.count && m.push({ mat: "leaf", geo: u.geo() }), r.push(m));
+  }
+  return r;
+}
+var e2 = {
+    canary: [0, 0, 0.25, 1],
+    queen: [0.25, 0, 0.25, 1],
+    fan: [0.5, 0, 0.25, 0.25],
+    windmill: [0.75, 0, 0.25, 0.25],
+    cordy: [0.5, 0.25, 0.25, 0.25],
+    dead: [0.75, 0.25, 0.25, 0.25],
+  },
+  sI = (o, t) => t >= 1 || Math.floor((o + 1) * t) > Math.floor(o * t);
+function jz(
+  o,
+  {
+    S: t,
+    hd: e,
+    el: s,
+    bend: n,
+    L: i,
+    W: a,
+    seg: r,
+    fold: l = 0.42,
+    twist: c = 0,
+    C: h,
+    uv: f,
+    ao: u = () => 1,
+    dead: d = !1,
+    plume: p = !1,
+    base: m = 0.12,
+  },
+) {
+  let g = e.clone().cross(hi).normalize(),
+    b = [],
+    v = [],
+    x = t.clone();
+  for (let y = 0; y <= r; y++) {
+    let M = y / r,
+      S = s - n * Math.pow(M, 1.5),
+      w = e
+        .clone()
+        .multiplyScalar(Math.cos(S))
+        .addScaledVector(hi, Math.sin(S));
+    if (y) {
+      let O = (y - 0.5) / r,
+        B = s - n * Math.pow(O, 1.5);
+      x = x
+        .clone()
+        .addScaledVector(
+          e
+            .clone()
+            .multiplyScalar(Math.cos(B))
+            .addScaledVector(hi, Math.sin(B)),
+          i / r,
+        );
+    }
+    let _ = g.clone().applyAxisAngle(w, c * M),
+      z = _.clone().cross(w).normalize();
+    z.y < 0 && Math.abs(S) < 1.2 && z.negate();
+    let A = a * (M < m ? 0.3 + (0.7 * M) / m : 1),
+      T = A * l * 0.5 * (1 - 0.6 * M),
+      E = x.clone().sub(h).normalize(),
+      R = z
+        .clone()
+        .multiplyScalar(z.y < 0 ? -0.2 : 0.2)
+        .addScaledVector(E, 0.9)
+        .addScaledVector(hi, 0.45)
+        .normalize(),
+      P = u(M),
+      C = d ? 0.02 : 0.3 + 0.7 * M,
+      I = [P, P, P, C],
+      L = f[1] + f[3] * (1 - M * 0.995),
+      F = (O) => f[0] + f[2] * (0.02 + 0.96 * O);
+    (b.push([
+      o.v(
+        x
+          .clone()
+          .addScaledVector(_, -A / 2)
+          .addScaledVector(z, T),
+        R.clone().addScaledVector(_, -0.25).normalize(),
+        F(0),
+        L,
+        I,
+      ),
+      o.v(x, R, F(0.5), L, I),
+      o.v(
+        x
+          .clone()
+          .addScaledVector(_, A / 2)
+          .addScaledVector(z, T),
+        R.clone().addScaledVector(_, 0.25).normalize(),
+        F(1),
+        L,
+        I,
+      ),
+    ]),
+      p &&
+        v.push([
+          o.v(x.clone().addScaledVector(z, -A * 0.38), R, F(0.1), L, I),
+          o.v(x.clone().addScaledVector(z, A * 0.3), R, F(0.9), L, I),
+        ]));
+  }
+  for (let y = 0; y < r; y++) {
+    let M = b[y],
+      S = b[y + 1];
+    if ((o.q(M[0], M[1], S[1], S[0]), o.q(M[1], M[2], S[2], S[1]), p)) {
+      let w = v[y],
+        _ = v[y + 1];
+      o.q(w[0], w[1], _[1], _[0]);
     }
   }
-  let p = {
-    inner: [],
-    clump: a.map((m) => ({
-      p: m.c.clone().addScaledVector(m.out, m.r * 0.2),
-      s: m.r * 2.3,
-      cell: i.mass,
-      out: m.out,
-      rel: s.rel(m.c),
-    })),
-  };
-  for (let m = 0; m < 6; m++) {
-    let g = (m / 6) * Math.PI * 2 + e(),
-      b = Vs(Math.cos(g), (e() - 0.5) * 0.6, Math.sin(g)).normalize(),
-      x = s.C.clone()
-        .addScaledVector(b, s.R(b) * 0.35)
-        .addScaledVector(oi, -i.ryBot * 0.1);
-    p.inner.push({
-      p: x,
-      s: Math.min(i.rx, i.ryTop) * 1.1,
-      cell: 3,
-      out: b,
-      rel: 0.3,
-    });
-  }
-  return { br: n, cards: o, masses: p, E: s };
 }
-function QX(i, t, e, s, n, { scale: o = 1, keep: a = 1, dark: r = 1 } = {}) {
-  for (let l of t) {
-    if (a < 1 && n() > a) continue;
-    let c = l.s * o,
-      h = l.out.clone();
-    ((h.y *= 0.4), h.applyAxisAngle(oi, (n() - 0.5) * 0.9).normalize());
-    let f = oi.clone().cross(h).normalize(),
-      u = h.clone().cross(f).normalize(),
-      d = l.cell % 2,
-      p = l.cell >> 1,
-      m = [];
-    for (let g of [0, 1])
-      for (let b of [-0.5, 0.5]) {
-        let x = l.p
-            .clone()
-            .addScaledVector(f, b * c)
-            .addScaledVector(u, (g - 0.5) * c * 0.9),
-          v = x.clone().sub(e.C);
-        ((v.y *= 1.3), v.normalize());
-        let y = h
-            .clone()
-            .multiplyScalar(0.3)
-            .addScaledVector(v, 0.7)
-            .normalize(),
-          M = e.rel(x),
-          S =
-            (0.35 + 0.65 * ul(0.1, 1, M)) *
-            (0.75 + 0.25 * (0.5 + 0.5 * v.y)) *
-            r *
-            nK(e, s, x),
-          w = sK(s, l.p);
-        m.push(
-          i.v(
-            x,
-            y,
-            (d + 0.02 + 0.96 * (b + 0.5)) / 2,
-            (p + 0.02 + 0.96 * (1 - g)) / 2,
-            [
-              S * w[0] * (s.massTint?.[0] ?? 1),
-              S * w[1] * (s.massTint?.[1] ?? 1),
-              S * w[2] * (s.massTint?.[2] ?? 1),
-              0.2 + 0.5 * ul(0.5, 1, M),
-            ],
-          ),
-        );
-      }
-    i.q(m[0], m[1], m[3], m[2]);
+function QL(
+  o,
+  {
+    S: t,
+    Fu: e,
+    Fx: s,
+    len: n,
+    wid: i,
+    uv: a,
+    C: r,
+    nu: l = 4,
+    nx: c = 4,
+    sag: h = 0.2,
+    cup: f = 0.15,
+    droop: u = 0,
+    pleat: d = 0,
+    ao: p = () => 1,
+    tr: m = 0.6,
+  },
+) {
+  let g = s.clone().cross(e).normalize(),
+    b = [];
+  for (let v = 0; v <= l; v++) {
+    let x = v / l,
+      y = [];
+    for (let M = 0; M <= c; M++) {
+      let S = M / c - 0.5,
+        w = Math.max(0, Math.hypot(S * 2, (x - 0.55) * 2.2) - 0.35),
+        _ = d ? (M % 2 ? 1 : -1) * d * n * x : 0,
+        z = t
+          .clone()
+          .addScaledVector(e, x * n)
+          .addScaledVector(s, S * i)
+          .addScaledVector(g, _ - f * n * 4 * S * S * x)
+          .addScaledVector(hi, -h * n * x * x - u * n * w * w),
+        A = g
+          .clone()
+          .multiplyScalar(g.y < 0 ? -0.45 : 0.45)
+          .addScaledVector(s, d ? (M % 2 ? 0.3 : -0.3) : 0)
+          .addScaledVector(z.clone().sub(r).normalize(), 0.9)
+          .addScaledVector(hi, 0.35)
+          .normalize(),
+        T = p(x);
+      y.push(
+        o.v(
+          z,
+          A,
+          a[0] + a[2] * (0.5 + S * 0.99),
+          a[1] + a[3] * (0.996 - x * 0.99),
+          [T, T, T, m * (0.4 + 0.6 * x)],
+        ),
+      );
+    }
+    b.push(y);
   }
+  for (let v = 0; v < l; v++)
+    for (let x = 0; x < c; x++)
+      o.q(b[v][x], b[v + 1][x], b[v + 1][x + 1], b[v][x + 1]);
 }
-var yC = (i, t, e, s = 0) => {
-  let n =
-    Math.sin(i * 12.9898 + t * 47.137 + e * 78.233 + s * 37.719) * 43758.5453;
-  return n - Math.floor(n);
+var Jw = (o, t, e = 0) => {
+  for (let s = e * 4; s < o.c.length; s += 4)
+    ((o.c[s] *= t[0]), (o.c[s + 1] *= t[1]), (o.c[s + 2] *= t[2]));
 };
-function sK(i, t) {
-  let e = i.vary ?? 1,
-    s = 1.6,
-    n = Math.floor(t.x / s),
-    o = Math.floor(t.y / s),
-    a = Math.floor(t.z / s),
-    r = yC(n, o, a, 1),
-    l = yC(n, o, a, 2),
-    c = yC(t.x, t.y, t.z, 3),
-    h = 1 + e * (0.32 * (r - 0.5) + 0.12 * (c - 0.5)),
-    f = e * (l - 0.45) * 0.5;
-  return [h * (1 + 0.28 * f), h * (1 + 0.06 * f), h * (1 - 0.45 * f)];
-}
-function nK(i, t, e) {
-  let s = i.C.y - t.ryBot,
-    n = (e.y - s) / (t.ryBot + t.ryTop);
-  return 0.7 + 0.3 * ul(-0.05, 0.62, n);
-}
-function R2t(i, t, e, s, n, { scale: o = 1, keep: a = 1 } = {}) {
-  for (let r of t) {
-    if (a < 1 && n() > a * (0.5 + 0.8 * ul(0.4, 0.95, r.rel))) continue;
-    let l = r.s * o,
-      c = r.p.clone().sub(e.C);
-    ((c.y *= 0.7), c.normalize());
-    let h = c
-        .clone()
-        .addScaledVector(Vc(c, n), 0.45 + 0.2 * n())
-        .normalize(),
-      f = oi
-        .clone()
-        .multiplyScalar(s.hang ? 1 : 0.7)
-        .addScaledVector(r.d, s.hang ? 0.2 : 0.5);
-    (f.addScaledVector(h, -f.dot(h)),
-      f.lengthSq() < 1e-4 && (f = Vc(h, n)),
-      f.normalize(),
-      f.applyAxisAngle(h, (n() - 0.5) * 0.9));
-    let u = f.clone().cross(h).normalize(),
-      d = r.p.clone().addScaledVector(f, -l * 0.12),
-      p = r.cell % 4,
-      m = r.cell >> 2,
-      g = n() < 0.5,
-      b = (s.hang ? 0.05 : 0.18) * l,
-      x = [
-        [0, 0],
-        [0.55, b * 0.25],
-        [1, b],
-      ],
-      v = [],
-      y = sK(s, r.p);
-    for (let [M, S] of x)
-      for (let w of [-0.5, 0.5]) {
-        let z = d
-            .clone()
-            .addScaledVector(f, M * l)
-            .addScaledVector(u, w * l * (0.85 + 0.15 * M))
-            .addScaledVector(oi, -S),
-          _ = z.clone().sub(e.C);
-        ((_.y *= 1.3), _.normalize());
-        let R = h
-            .clone()
-            .multiplyScalar(0.35)
-            .addScaledVector(_, 0.65)
-            .normalize(),
-          T = e.rel(z),
-          E =
-            (0.3 + 0.7 * ul(0.25, 1.05, T)) *
-            (0.7 + 0.3 * (0.5 + 0.5 * _.y)) *
-            nK(e, s, z) *
-            (0.7 + 0.3 * M),
-          A = 0.25 + 0.75 * ul(0.5, 1, T),
-          C = (p + 0.01 + 0.98 * (g ? 0.5 - w : w + 0.5)) / 4,
-          P = (m + 0.995 - 0.985 * M) / 4;
-        v.push(i.v(z, R, C, P, [E * y[0], E * y[1], E * y[2], A]));
-      }
-    (i.q(v[0], v[1], v[3], v[2]), i.q(v[2], v[3], v[5], v[4]));
-  }
-}

@@ -1,341 +1,333 @@
-// app 91 — math
-// Lines 75291-75629 of readable/app.pretty.js (statement-aligned).
-function cy(i, t) {
-  let e = Math.max(0, Math.min(i.length - 1.0001, t * (i.length - 1))),
-    s = Math.floor(e),
-    n = e - s;
-  return i[s] * (1 - n) + i[s + 1] * n;
-}
-function lW(i, t, e, s, n, o) {
-  let a = Math.max(2, Math.round(o / 3.6)),
-    r = o / a,
-    l = 5;
-  for (let c = 0; c < a; c++) {
-    let h = c % 2 ? 1 : -1,
-      f = (-h * l) / 2,
-      u = (h * l) / 2,
-      d = n + c * r,
-      p = d + r;
-    for (let g of [0.15, 1.05])
-      ss(
+// app 91 — pts
+// Lines 75864-76194 of readable/app.pretty.js (statement-aligned).
+function Rk({
+  lonlat: o = null,
+  at: t = null,
+  grid: e = [0, 0],
+  bearing: s = null,
+  rot: n = 0,
+  dy: i = 0,
+} = {}) {
+  let [a, r] = o ? ji(o[0], o[1]) : t,
+    l = s != null ? (s * Math.PI) / 180 : n,
+    c = Math.cos(l),
+    h = Math.sin(l),
+    f = e[0],
+    u = e[1];
+  return {
+    x0: a,
+    z0: r,
+    gx: f,
+    gz: u,
+    c,
+    s: h,
+    rot: l,
+    dy: i,
+    fwd: (p, m) => {
+      let g = p - f,
+        b = m - u;
+      return [a + c * g - h * b, r + h * g + c * b];
+    },
+    inv: (p, m) => {
+      let g = p - a,
+        b = m - r;
+      return [f + c * g + h * b, u - h * g + c * b];
+    },
+    vec: (p, m) => [c * p - h * m, h * p + c * m],
+    ivec: (p, m) => [c * p + h * m, -h * p + c * m],
+    prot: (p) => p - l,
+    matrix: () =>
+      new fe().set(
+        c,
+        0,
+        -h,
+        a - c * f + h * u,
+        0,
+        1,
+        0,
         i,
-        [t[0] + e[0] * f + s[0] * g, d + 0.2, t[1] + e[1] * f + s[1] * g],
-        [t[0] + e[0] * u + s[0] * g, p + 0.2, t[1] + e[1] * u + s[1] * g],
-        0.06,
-        0.25,
-        Fs.red,
+        h,
+        0,
+        c,
+        r - h * f - c * u,
+        0,
+        0,
+        0,
+        1,
+      ),
+  };
+}
+function Wb(o) {
+  let t = (n, i) => {
+      let a = o.probe(n, i);
+      return a.road ? a.road.y : a.walk ? a.walk.y - o.CURB : o.terrainAt(n, i);
+    },
+    e = new Map(),
+    s = (n, i) => {
+      let a = Math.round(n * 64) * 4294967296 + Math.round(i * 64),
+        r = e.get(a);
+      return (
+        r === void 0 && ((r = t(n, i)), e.size > 4e5 && e.clear(), e.set(a, r)),
+        r
       );
-    ss(
-      i,
-      [t[0] + e[0] * f + s[0] * 1.15, d + 1.1, t[1] + e[1] * f + s[1] * 1.15],
-      [t[0] + e[0] * u + s[0] * 1.15, p + 1.1, t[1] + e[1] * u + s[1] * 1.15],
-      0.04,
-      0.04,
-      Fs.red,
+    };
+  return (n, i, a = null) => {
+    let r = s(n, i);
+    return (
+      a &&
+        ((a.dx = (s(n + 0.6, i) - s(n - 0.6, i)) / (2 * 0.6)),
+        (a.dz = (s(n, i + 0.6) - s(n, i - 0.6)) / (2 * 0.6))),
+      r
     );
-    let m = [t[0] + e[0] * u + s[0] * 0.6, t[1] + e[1] * u + s[1] * 0.6];
-    Us(
-      i,
-      m[0] + e[0] * h * 0.6,
-      m[1] + e[1] * h * 0.6,
-      e[0],
-      e[1],
-      0.6,
-      0.6,
-      p + 0.1,
-      p + 0.2,
-      Fs.red,
-    );
+  };
+}
+var mq = Be.prototype.vert,
+  gq = Be.prototype.geometry,
+  ah = null;
+function xpt(o, t, e) {
+  let s = o.p.a,
+    n = o.nm.a,
+    { c: i, s: a, x0: r, z0: l, gx: c, gz: h, dy: f } = e;
+  for (let u = t; u < o.v; u++) {
+    let d = s[u * 3] - c,
+      p = s[u * 3 + 2] - h;
+    ((s[u * 3] = r + i * d - a * p),
+      (s[u * 3 + 1] += f),
+      (s[u * 3 + 2] = l + a * d + i * p));
+    let m = n[u * 3],
+      g = n[u * 3 + 2];
+    ((n[u * 3] = i * m - a * g), (n[u * 3 + 2] = a * m + i * g));
   }
 }
-function Kht(i, t, e, s, n, o, a) {
-  let r = o * 0.17,
-    l = 0.9,
-    c = -n,
-    h = s,
-    f = (u, d, p) => [t + s * u + c * d, p, e + n * u + h * d];
-  for (let u of [-1, 1])
-    (xs(
-      i,
-      f(-o / 2, u * r * 0.8, 0.2),
-      f(o * 0.2, u * r, 0.2),
-      f(o * 0.2, u * r, l),
-      f(-o / 2, u * r * 0.8, l),
-      Fs.hull,
-      f(0, u * 10, l),
-    ),
-      xs(
-        i,
-        f(o * 0.2, u * r, 0.2),
-        f(o / 2, 0, 0.4),
-        f(o / 2, 0, l + 0.2),
-        f(o * 0.2, u * r, l),
-        Fs.hull,
-        f(o, u * 10, l),
-      ));
-  (Fi(
-    i,
-    [
-      f(-o / 2, -r * 0.8, l),
-      f(o * 0.2, -r, l),
-      f(o * 0.2, r, l),
-      f(-o / 2, r * 0.8, l),
-    ],
-    Fs.plank,
-  ),
-    E0(
-      i,
-      f(o * 0.2, -r, l),
-      f(o / 2, 0, l + 0.2),
-      f(o * 0.2, r, l),
-      Fs.plank,
-      f(0, 0, 50),
-    ),
-    Us(
-      i,
-      t - s * o * 0.08,
-      e - n * o * 0.08,
-      s,
-      n,
-      o * 0.16,
-      r * 0.55,
-      l,
-      l + 0.6,
-      Fs.hull,
-    ),
-    a() < 0.75 &&
-      es(
-        i,
-        t + s * o * 0.05,
-        e + n * o * 0.05,
-        0.06,
-        l,
-        l + o * 1.25,
-        4,
-        Fs.mast,
-      ));
+function bq(o) {
+  let t = ah,
+    e = t.touched.get(o);
+  e === void 0 || e >= o.v || (xpt(o, e, t.F), t.touched.set(o, o.v));
 }
-Ug();
-var hW = 520,
-  Yht = 5200,
-  zS = [-3260, -1220];
-function fW(i, t) {
-  let e = XR(i, t);
-  if (!e || i._fmpad) return e;
-  ((i._fmpad = !0),
-    (i.pads ||= []).push({
-      bb: e.bb,
-      poly: e.flat,
-      y: e.yAt,
-      cap: e.cap,
-      name: "Fort Mason",
-    }));
-  let s = i.terrain,
-    [n, o, a, r] = e.bb;
-  for (
-    let l = Math.max(0, Math.floor((o - 4 - s.z0) / s.step));
-    l <= Math.min(s.nz - 1, Math.ceil((r + 4 - s.z0) / s.step));
-    l++
-  )
-    for (
-      let c = Math.max(0, Math.floor((n - 4 - s.x0) / s.step));
-      c <= Math.min(s.nx - 1, Math.ceil((a + 4 - s.x0) / s.step));
-      c++
-    ) {
-      let h = s.x0 + c * s.step,
-        f = s.z0 + l * s.step;
-      if (!e.inPad(h, f)) continue;
-      let u = l * s.nx + c,
-        d = e.yAt(h, f) - 0.45;
-      s.h[u] > d && (s.h[u] = d);
-    }
+function vpt(...o) {
   return (
-    i.seawallCode &&
-      i.quayStep &&
-      i.seawall.forEach((l, c) => {
-        let h = i.seawallCode[c];
-        if (!h) return;
-        let f = 0;
-        for (let u = 0; u + 2 < l.length; u += 2) {
-          let d = l[u],
-            p = l[u + 1],
-            m = Math.hypot(l[u + 2] - d, l[u + 3] - p);
-          for (
-            let g = Math.ceil(f / i.quayStep);
-            g * i.quayStep <= f + m && g < h.length;
-            g++
-          ) {
-            let b = (g * i.quayStep - f) / (m || 1),
-              x = d + (l[u + 2] - d) * b;
-            p + (l[u + 3] - p) * b < -1318 &&
-              x > -3450 &&
-              x < -3195 &&
-              h[g] <= 250 &&
-              (h[g] = 251);
-          }
-          f += m;
-        }
-      }),
-    e
+    ah && !ah.touched.has(this) && ah.touched.set(this, this.v),
+    mq.apply(this, o)
   );
 }
-function uW(i, t) {
-  for (let e of i.colliders) t.colliders.push(e);
-  for (let e of i.cars)
-    (t.inst.push({
-      kind: "car",
-      x: e.x,
-      y: e.y + 0.02,
-      z: e.z,
-      rot: e.rot,
-      pitch: 0,
-      color: e.color,
-      type: e.type,
-    }),
-      t.colliders.push({
-        t: "obb",
-        x: e.x,
-        z: e.z,
-        hx: 0.93,
-        hz: 2.35,
-        c: Math.cos(e.rot),
-        s: Math.sin(e.rot),
-        parked: !0,
-        type: e.type,
-        y0: e.y - 1.5,
-        y1: e.y + 2.5,
-      }));
-  for (let e of i.trees)
-    (t.inst.push({
-      kind: "tree",
-      sp: e.sp,
-      x: e.x,
-      y: e.y,
-      z: e.z,
-      rot: (e.x * 7.1) % 6.28,
-      scale: e.scale,
-      park: !0,
-    }),
-      t.colliders.push({
-        t: "circ",
-        x: e.x,
-        z: e.z,
-        r: 0.4,
-        y0: e.y - 1.5,
-        y1: e.y + 6,
-      }));
+function ypt(o = !1) {
+  let t = !1;
+  ah && ah.touched.has(this) && (bq(this), (t = !0));
+  let e = gq.call(this, o);
+  return (t && (e.userData.lmFramed = !0), e);
 }
-var Dd = {
-  plan: null,
-  near: null,
-  far: null,
-  mats: [],
-  started: !1,
-  built: !1,
-  nightV: [0, 0],
-  stats: {},
-  dist(i, t) {
-    let e = this.plan;
-    return e
-      ? e.inPad(i, t)
-        ? 0
-        : Math.min(tm(e.flat, i, t), Math.hypot(i - zS[0], t - zS[1]) - 120)
-      : Math.hypot(i - zS[0], t - zS[1]);
-  },
-  setNight(i, t) {
-    this.nightV = [i, t];
-    for (let e of this.mats) e.color.setRGB(0, t, i);
-  },
-  start({ D: i, L: t, scene: e, mobile: s = !1, mb: n = null }) {
-    if (this.started || ((this.plan = XR(i, t)), !this.plan)) return;
-    this.started = !0;
-    let o = performance.now(),
-      a = cW(this.plan, { mobile: s });
-    this.stats.buildMs = Math.round(performance.now() - o);
-    let r = this.materials(a.A),
-      l = new ke();
-    l.name = "FortMasonNear";
-    let c = new ke();
-    c.name = "FortMasonFar";
-    let h = a.BN.meshes(r, l),
-      f = a.BF.meshes(r, c, { fmf: { shadow: !0 } });
-    ((l.visible = !1),
-      (c.visible = !1),
-      e.add(l, c),
-      (this.near = l),
-      (this.far = c));
-    let u = 0;
-    for (let d of [...h, ...f])
-      u +=
-        (d.geometry.index
-          ? d.geometry.index.count
-          : d.geometry.attributes.position.count) / 3;
-    ((this.stats.tris = Math.round(u)),
-      (this.stats.meshes = h.length + f.length),
-      (this.stats.ms = Math.round(performance.now() - o)),
-      (this.built = !0),
-      s &&
-        n?.dropCpu &&
-        setTimeout(() => {
-          (n.dropCpu(l), n.dropCpu(c));
-        }, 2500),
-      console.log(
-        `fort mason: ${this.stats.tris} triangles in ${this.stats.meshes} meshes, ${this.plan.cars.length} parked cars, ${this.stats.ms} ms`,
-      ));
-  },
-  materials(i) {
-    let t = (o, a = {}) => {
-        let r = new Ee({
-          color: 16777215,
-          roughness: 0.8,
-          metalness: 0,
-          vertexColors: !0,
-          ...a,
-        });
-        return ((r.userData.mbAlbedo = o), r);
-      },
-      e = { atlas: t(oW), solid: t(Hg), text: t(Dg, { alphaTest: 0.5 }) },
-      s = new go(),
-      n = (o, a, r) =>
-        s.load(
-          o,
-          (l) => {
-            ((l.flipY = !1),
-              (l.colorSpace = a ? is : On),
-              (l.anisotropy = 8),
-              (l.wrapS = l.wrapT = ti),
-              (l.needsUpdate = !0),
-              r(l));
-          },
-          void 0,
-          () => console.warn("fort mason: missing", o),
-        );
-    return (
-      n("assets/tex/lm/fortmason/facades.webp", !0, (o) => {
-        ((e.atlas.map = o), (e.atlas.needsUpdate = !0));
-      }),
-      n("assets/tex/lm/fortmason/facades_mask.webp", !1, (o) => {
-        ((e.atlas.userData.mbExtraMap = o), (e.atlas.needsUpdate = !0));
-      }),
-      n("assets/tex/lm/waterfront/tiles.webp", !0, (o) => {
-        ((e.solid.map = o), (e.solid.needsUpdate = !0));
-      }),
-      (e.text.map = i.texture()),
-      (this.mats = Object.values(e)),
-      this.setNight(...this.nightV),
-      e
-    );
-  },
-  update(i, t) {
-    if (!this.built) return;
-    let e = t.position.x,
-      s = t.position.z,
-      n = this.dist(e, s),
-      o = this.near.visible ? n < hW + 40 : n < hW;
-    ((this.near.visible = o), (this.far.visible = !o && n < Yht));
-  },
+function wpt(o, t) {
+  let [e, s] = [t.c, t.s];
+  if (o.t === "box") {
+    let [n, i] = t.fwd((o.x0 + o.x1) / 2, (o.z0 + o.z1) / 2),
+      a = {
+        ...o,
+        t: "obb",
+        x: n,
+        z: i,
+        hx: (o.x1 - o.x0) / 2,
+        hz: (o.z1 - o.z0) / 2,
+        c: e,
+        s: -s,
+      };
+    return (delete a.x0, delete a.z0, delete a.x1, delete a.z1, a);
+  }
+  if (o.t === "obb") {
+    let [n, i] = t.fwd(o.x, o.z);
+    return { ...o, x: n, z: i, s: e * o.s - s * o.c, c: s * o.s + e * o.c };
+  }
+  if (o.t === "circ") {
+    let [n, i] = t.fwd(o.x, o.z);
+    return { ...o, x: n, z: i };
+  }
+  if (o.t === "poly") {
+    let n = o.pts.map((l) => (Array.isArray(l) ? t.fwd(l[0], l[1]) : l)),
+      i = null;
+    if (!Array.isArray(o.pts[0])) {
+      i = new Float64Array(o.pts.length);
+      for (let l = 0; l < o.pts.length; l += 2) {
+        let [c, h] = t.fwd(o.pts[l], o.pts[l + 1]);
+        ((i[l] = c), (i[l + 1] = h));
+      }
+    }
+    let a = i || n,
+      r = [1e9, 1e9, -1e9, -1e9];
+    for (let l = 0; l < (i ? i.length / 2 : n.length); l++) {
+      let c = i ? i[l * 2] : n[l][0],
+        h = i ? i[l * 2 + 1] : n[l][1];
+      ((r[0] = Math.min(r[0], c)),
+        (r[1] = Math.min(r[1], h)),
+        (r[2] = Math.max(r[2], c)),
+        (r[3] = Math.max(r[3], h)));
+    }
+    return { ...o, pts: a, bb: r };
+  }
+  return o;
+}
+var Mpt = (o) => {
+  let t = !0;
+  return (
+    o.traverse((e) => {
+      e.isMesh && !e.geometry?.userData?.lmFramed && (t = !1);
+    }),
+    t
+  );
 };
-as();
-Oa();
-En();
-f0();
+function Ak(o, t, e) {
+  let s = t.F,
+    n = new le();
+  n.name = "lm_" + (t.name || "site");
+  let i = {
+      C: o.C ? (u, d) => o.C(...s.fwd(u, d)) : null,
+      group: n,
+      colliders: [],
+      inst: [],
+      mats: o.mats,
+      night: o.night,
+      TEX: o.tex,
+      F: s,
+      rc: o,
+      site: t,
+      real: !0,
+    },
+    a = (t.set || []).map(([u, d, p]) => {
+      let m = u[d];
+      return ((u[d] = p), [u, d, m]);
+    }),
+    r = o.ground;
+  oR({
+    ground: (u, d, p) => {
+      let [m, g] = s.fwd(u, d),
+        b = r(m, g, p);
+      if (p) {
+        let [v, x] = s.ivec(p.dx, p.dz);
+        ((p.dx = v), (p.dz = x));
+      }
+      return b - s.dy;
+    },
+    surfaceAt: (u, d) => o.L.surfaceAt(...s.fwd(u, d)),
+    driveHeight: (u, d, p) => {
+      let [m, g] = s.fwd(u, d),
+        b = o.L.driveHeight(m, g, p);
+      if (p) {
+        let [v, x] = s.ivec(p.dx, p.dz);
+        ((p.dx = v), (p.dz = x));
+      }
+      return b - s.dy;
+    },
+  });
+  let c = ah;
+  ((ah = { F: s, touched: new Map() }),
+    (Be.prototype.vert = vpt),
+    (Be.prototype.geometry = ypt));
+  let h = new Set(o.group.children);
+  try {
+    e(i);
+  } catch (u) {
+    console.error("landmark site", t.name, u);
+  } finally {
+    for (let u of ah.touched.keys()) bq(u);
+    ((ah = c),
+      ah || ((Be.prototype.vert = mq), (Be.prototype.geometry = gq)),
+      oR(null));
+    for (let [u, d, p] of a.reverse()) u[d] = p;
+  }
+  for (let u of o.group.children.slice()) h.has(u) || n.add(u);
+  let f = n.children.filter((u) => !Mpt(u));
+  if (f.length) {
+    let u = new le();
+    ((u.name = n.name + "_f"),
+      (u.matrixAutoUpdate = !1),
+      u.matrix.copy(s.matrix()),
+      (u.matrixWorldNeedsUpdate = !0));
+    for (let d of f) u.add(d);
+    n.add(u);
+  }
+  for (let u of i.colliders) {
+    let d = wpt(u, s);
+    if (d.y1 === void 0 && o.ground) {
+      let p = d.x ?? (d.bb ? (d.bb[0] + d.bb[2]) / 2 : 0),
+        m = d.z ?? (d.bb ? (d.bb[1] + d.bb[3]) / 2 : 0),
+        g = o.ground(p, m);
+      ((d.y0 = g - 6), (d.y1 = g + 24));
+    }
+    o.colliders.push(d);
+  }
+  for (let u of i.inst) {
+    let [d, p] = s.fwd(u.x, u.z);
+    o.inst.push({ ...u, x: d, z: p, y: u.y + s.dy, rot: s.prot(u.rot || 0) });
+  }
+  if (n.children.length) {
+    o.group.add(n);
+    let [u, d] = s.fwd(s.gx, s.gz);
+    o.sites.push({ group: n, x: t.cx ?? u, z: t.cz ?? d, cull: t.cull ?? 0 });
+  }
+  return n;
+}
+function Du(o) {
+  return (
+    o.claims ||
+      (o.claims = {
+        bSkip: new Uint8Array(o.bld.n),
+        pSkip: new Uint8Array(o.props.n),
+        list: [],
+        done: !1,
+      }),
+    o.claims
+  );
+}
+var Spt = (o) => (o && Array.isArray(o[0]) ? o.flat() : o),
+  ow = null,
+  aw = null;
+function kpt(o) {
+  if (aw && aw.D === o && aw.n === o.props.n) return aw.g;
+  let t = o.props,
+    e = new Map();
+  for (let s = 0; s < t.n; s++) {
+    let n =
+        Math.floor(t.pf[s * 5] / 64) * 100003 +
+        Math.floor(t.pf[s * 5 + 1] / 64),
+      i = e.get(n);
+    (i || e.set(n, (i = [])), i.push(s));
+  }
+  return ((aw = { D: o, g: e, n: t.n }), e);
+}
+function zpt(o) {
+  if (ow && ow.D === o && ow.n === o.bld.n) return ow.a;
+  let t = o.bld,
+    e = new Float32Array(t.n * 4);
+  for (let s = 0; s < t.n; s++) {
+    let n = 1e9,
+      i = 1e9,
+      a = -1e9,
+      r = -1e9,
+      l = t.bRing[s];
+    for (let c = t.rStart[l]; c < t.rStart[l + 1]; c++) {
+      let h = t.pts[c * 2],
+        f = t.pts[c * 2 + 1];
+      (h < n && (n = h), h > a && (a = h), f < i && (i = f), f > r && (r = f));
+    }
+    e.set([n, i, a, r], s * 4);
+  }
+  return ((ow = { D: o, a: e, n: t.n }), e);
+}
+function _pt(o, t, e) {
+  let s = o.bld,
+    n = s.bRing[t],
+    i = s.rStart[n],
+    a = s.rStart[n + 1],
+    r = 0,
+    l = 0,
+    c = 0,
+    h = 0;
+  for (let u = i; u < a; u++) {
+    let d = s.pts[u * 2],
+      p = s.pts[u * 2 + 1],
+      m = u + 1 < a ? u + 1 : i,
+      g = (d + s.pts[m * 2]) / 2,
+      b = (p + s.pts[m * 2 + 1]) / 2;
+    ((c += d), (h += p), (r += 2), rn(e, d, p) && l++, rn(e, g, b) && l++);
+  }
+  let f = a - i;
+  return (rn(e, c / f, h / f) && (l += 2), (r += 2), l / r);
+}

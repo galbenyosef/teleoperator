@@ -34,10 +34,11 @@
 //                        --check -` and round-trips byte-exact to its
 //                        readable line range.
 //   HTML documents     -> inline <script>/<style> scan (byte ranges + sha256):
-//                        index.html carries 3 inline platform shims, shell.html
-//                        and shell-index.html carry 5 inline scripts + 2 inline
+//                        index.html carries 4 inline platform shims, shell.html
+//                        and shell-index.html carry 6 inline scripts + 2 inline
 //                        styles each -> readable/<doc>-inline-N.pretty.{js,css}
-//                        twins + readable/index-inline-map.json.
+//                        twins + readable/index-inline-map.json (2026-10-30
+//                        refresh: was 3 / 5+2 each before the redeploy).
 //
 // Non-standalone parts are indexed but never sliced (skipped sections): the
 // captured bundle is a single esbuild-style concatenation whose statements are
@@ -76,7 +77,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const proj = path.resolve(here, "..");
 const PINNED = "3.9.6";
 const MAX_WINDOW = 350;
-const TODAY = "2026-10-13";
+const TODAY = "2026-10-30";
 const ROOT = ""; // root-served capture: served path == disk rel
 
 const sha256 = (buf) => crypto.createHash("sha256").update(buf).digest("hex");
@@ -269,29 +270,38 @@ const WHOLE_FILE = {
 
 // ── content-anchored vendor regions inside app.js ───────────────────────
 // Each entry: find the statement range by anchors, then guard the claimed text.
+// Anchors are SEMANTIC where the minifier renumbers identifiers between builds
+// (2026-10-30 refresh: `var L9, aH, …` became `var aA, cU, …`,
+// `function wi(i, …)` became `function wi(o, …)`, `EffectComposer: () => XA`
+// became `() => M7`). Only markers the build cannot rename — runtime strings,
+// stable API names, `t = !1` signatures — are used.
 function claimAppVendor(rel, tag, stmts, claim) {
   if (tag !== "app") return;
-  const idx = (re, from = 0) => stmts.findIndex((s, i) => i >= from && re.test(s.text));
+  const idx = (re, from = 0) =>
+    stmts.findIndex((s, i) => i >= from && (typeof re === "function" ? re(s) : re.test(s.text)));
   const idxLast = (re, from, to) => {
-    for (let i = Math.min(to, stmts.length - 1); i >= from; i--) if (re.test(stmts[i].text)) return i;
+    for (let i = Math.min(to, stmts.length - 1); i >= from; i--)
+      if (typeof re === "function" ? re(stmts[i]) : re.test(stmts[i].text)) return i;
     return -1;
   };
-  const iCore = idx(/^var L9,\s+aH,\s+rH,\s+I9,/);
-  const iCoreEnd = idx(/ACESFilmicToneMapping: \(\) =>/, iCore + 1);
+  const isBgu = (s) =>
+    /^function [A-Za-z_$][\w$]*\(/.test(s.text) && s.text.includes("THREE.BufferGeometryUtils");
+  const iCore = idx((s) => /^var [\s\S]*__THREE__/.test(s.text));
+  const iCoreEnd = idx(/ACESFilmicToneMapping:\s*\(\)\s*=>/, iCore + 1);
   const iWebglStart = iCoreEnd + 1;
   const iWebglEnd = idx(/three\.js r\$\{/, iWebglStart);
   const iAddonsStart = iWebglEnd + 1;
-  const iBguStart = idx(/function wi\(i, t = !1\)/);
-  const iBguEnd = idx(/^function xC\(i, t\)/, iBguStart);
-  const iAddonsEnd = idxLast(/b9H79Tebbbe/, iAddonsStart, iBguStart - 1);
+  const iBguStart = idx(isBgu);
   const iGltfStart = idx(/setDRACOLoader\(/);
-  const iWgsl = idx(/fn crH\(p: vec2f\)/);
+  const iBguEnd = idxLast(isBgu, iBguStart + 1, iGltfStart - 1);
+  const iAddonsEnd = idxLast(/b9H79Tebbbe/, iAddonsStart, iBguStart - 1);
+  const iWgsl = idx((s) => /^var [A-Za-z_$][\w$]*\s*=\s*`/.test(s.text) && /fn crH\(p: vec2f\)/.test(s.text));
   const iGltfEnd = iWgsl - 1;
   const region = (a, b) => stmts.slice(a, b + 1).map((s) => s.text).join("\n");
   const need = (cond, why) => {
     if (!cond) throw new Error(`${rel}: vendor anchor failed — ${why}`);
   };
-  need(iCore > 0, "three.js core module anchor (`var L9, aH, rH, I9,`) not found");
+  need(iCore > 0, "three.js core module anchor (var statement containing __THREE__) not found");
   need(iCoreEnd > iCore, "three.js core export table anchor (ACESFilmicToneMapping) not found after the core module");
   need(iWebglEnd > iWebglStart, "three.js WebGLRenderer module anchor (`three.js r${...}`) not found");
   need(iAddonsEnd > iAddonsStart, "three.js addon bundle anchor (MeshoptSimplifier) not found");
@@ -299,13 +309,16 @@ function claimAppVendor(rel, tag, stmts, claim) {
   need(iGltfStart > 0 && iWgsl > iGltfStart, "GLTFLoader anchors not found");
   need(iBguStart > iAddonsEnd && iBguEnd < iGltfStart, "vendor regions are not in the expected order");
   need(iCore - 1 >= 0 && !/^\s*$/.test(stmts[iCore - 1].text), "prelude statement before the core module missing");
-  need(/^var xm = `/.test(stmts[iWgsl].text), "app WGSL resume anchor (`var xm = ...fn crH`) not found after GLTFLoader");
+  need(
+    /^var [A-Za-z_$][\w$]*\s*=\s*`/.test(stmts[iWgsl].text),
+    "app WGSL resume anchor (`var … = `…fn crH`) not found after GLTFLoader",
+  );
 
   const guards = [
-    ["three-core", [/(L9 = "186")/, /window\.__THREE__/, /isShaderMaterial/, /ACESFilmicToneMapping/]],
+    ["three-core", [/__THREE__/, /"186"/, /isShaderMaterial/, /ACESFilmicToneMapping/]],
     ["three-webgl", [/isWebGLRenderer/, /WEBGL_multisampled_render_to_texture/, /three\.js r\$\{/]],
-    ["three-addons", [/name: "CopyShader"/, /EffectComposer: \(\) => XA/, /MeshoptSimplifier: \(\) => act/, /b9H79Tebbbe/]],
-    ["three-buffergeometry", [/THREE\.BufferGeometryUtils/, /function wi\(i, t = !1\)/, /mergeAttributes|toTrianglesDrawMode|toNonIndexed/]],
+    ["three-addons", [/name: "CopyShader"/, /EffectComposer:\s*\(\)\s*=>\s*[\w$]+/, /MeshoptSimplifier:\s*\(\)\s*=>\s*[\w$]+/, /b9H79Tebbbe/]],
+    ["three-buffergeometry", [/THREE\.BufferGeometryUtils/, /function [A-Za-z_$][\w$]*\([A-Za-z_$][\w$]*, t = !1\)/, /mergeAttributes|toTrianglesDrawMode|toNonIndexed/]],
     ["three-gltfloader", [/setDRACOLoader\(/, /KHR_BINARY_GLTF/, /THREE\.GLTFLoader/, /setKTX2Loader\(/]],
   ];
   const claims = [
@@ -745,7 +758,7 @@ async function main() {
       "module, the addon bundle with CopyShader/EffectComposer/MeshoptSimplifier, the BufferGeometryUtils " +
       "fragment, the GLTFLoader module) — content-anchored, guarded and asserted; and the platform's PWA " +
       "worker __mb/app/worker.js (platform machinery). Stylesheet rule — style.css is wholeFile. Inline " +
-      "scan: index.html (3 inline platform shims), shell.html and shell-index.html (5 inline scripts + 2 " +
+      "scan: index.html (4 inline platform shims), shell.html and shell-index.html (6 inline scripts + 2 " +
       "inline styles each) → readable/<doc>-inline-N.pretty.{js,css} twins recorded in " +
       "readable/index-inline-map.json with byte ranges + sha256. Identifiers in src/ are the bundle's own " +
       "minified names — the rename campaign (PLAN §5) is recorded as an open task in README.md, not " +

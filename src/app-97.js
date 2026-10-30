@@ -1,277 +1,232 @@
 // app 97 — math
-// Lines 77691-77965 of readable/app.pretty.js (statement-aligned).
-var Dh = [-3470, 1240],
-  RW = Math.hypot(100, -16),
-  nb = [100 / RW, -16 / RW],
-  Hh = [-nb[1], nb[0]],
-  Ur = -168,
-  C0 = 168,
-  lft = 14,
-  cft = 0.072,
-  hft = 6.3,
-  fft = 0.08,
-  ou = (i, t) => {
-    let e = i - Dh[0],
-      s = t - Dh[1];
-    return [e * nb[0] + s * nb[1], e * Hh[0] + s * Hh[1]];
-  },
-  em = (i, t) => [Dh[0] + nb[0] * i + Hh[0] * t, Dh[1] + nb[1] * i + Hh[1] * t];
-function uft(i, t) {
-  for (let e = 0; e < i.n; e++) {
-    let [s, n] = ou(i.P[e * 3], i.P[e * 3 + 1]);
-    if (s < Ur || s > C0 || Math.abs(n) > t) return !1;
-  }
-  return !0;
-}
-var my = (i) =>
-    i.name === "Geary Boulevard" &&
-    i.cls === "primary" &&
-    !i.elev &&
-    uft(i, 25),
-  dft = (i) => i.name === "Geary Boulevard" && i.cls === "tertiary" && !i.elev;
-function LS(i, t) {
-  let e = [0, 1].map(() => ({
-      v: new Float64Array(C0 - Ur + 1).fill(NaN),
-      w: new Float64Array(C0 - Ur + 1).fill(NaN),
-      y: new Float64Array(C0 - Ur + 1).fill(NaN),
-      d: new Float64Array(C0 - Ur + 1).fill(1e9),
-    })),
-    s = {};
-  for (let n of i.edges)
-    if (t(n))
-      for (let o = 0; o <= n.L; o += 0.5) {
-        Ot(n, o, s);
-        let [a, r] = ou(s.x, s.z),
-          l = Math.round(a) - Ur;
-        if (l < 0 || l > C0 - Ur || Math.abs(r) > 40) continue;
-        let c = r < 0 ? 0 : 1,
-          h = e[c],
-          f = Math.abs(a - Math.round(a));
-        f < h.d[l] &&
-          ((h.d[l] = f), (h.v[l] = r), (h.w[l] = s.w), (h.y[l] = s.y));
+// Lines 78202-78431 of readable/app.pretty.js (statement-aligned).
+function Oq(o, t, e, s = 0.15) {
+  let n = o.trench;
+  if (!n || !n.F) return;
+  let { N: i, F: a, br: r, yDeck: l } = n,
+    c = [0, 1, 0],
+    h = (g, b, v, x, y, M) =>
+      t.quad(g, b, v, x, [0, 0], [1, 0], [1, 1], [0, 1], y, M),
+    f = r.W[0] + 0.4 + 2.8,
+    u = {};
+  ys(r, gf[0], gf[1], u);
+  let d = u.dx,
+    p = u.dz,
+    m =
+      Math.abs(d * mf[0] + p * mf[1]) > 0.3
+        ? f / Math.abs(d * mf[0] + p * mf[1])
+        : f;
+  for (let g = 0; g < 2; g++) {
+    let b = g ? 1 : -1,
+      v = i[g],
+      x = a[g],
+      y = [mf[0] * b, 0, mf[1] * b],
+      M = [-y[0], 0, -y[2]],
+      S = (E) => ei(v.v, E) + b * (ei(v.w, E) + Lpt),
+      w = (E) => ei(v.y, E),
+      _ = (E) => Math.max(ei(x.y, E) + s, w(E)),
+      z = (E, R, P) => {
+        let [C, I] = Um(E, S(E) + b * R);
+        return [C, P, I];
+      },
+      A = null,
+      T = () => {
+        if (!A || A[1] - A[0] < 4) {
+          A = null;
+          return;
+        }
+        let [E, R] = A,
+          P = (E + R) / 2,
+          C = Um(E, S(E) + b * 0.15),
+          I = Um(R, S(R) + b * 0.15),
+          L = (C[0] + I[0]) / 2,
+          F = (C[1] + I[1]) / 2,
+          O = I[0] - C[0],
+          B = I[1] - C[1],
+          H = Math.hypot(O, B),
+          N = Math.abs(P) < m + 0.5;
+        (e.push({
+          t: "obb",
+          x: L,
+          z: F,
+          hx: 0.22,
+          hz: H / 2 + 0.05,
+          c: B / H,
+          s: O / H,
+          wall: !0,
+          y0: Math.min(w(E), w(R)) - 1,
+          y1: N ? l - 1.9 : Math.max(_(E), _(R)) + 1.1,
+        }),
+          (A = null));
+      };
+    for (let E = a0 + 2; E < el - 2; E += 2) {
+      let R = E + 2,
+        P = _(E) - w(E),
+        C = _(R) - w(R);
+      if (Math.min(P, C) < 0.25) {
+        T();
+        continue;
       }
-  for (let n of e)
-    for (let o of [n.v, n.w, n.y]) {
-      let a = NaN;
-      for (let r = 0; r < o.length; r++)
-        o[r] === o[r] ? (a = o[r]) : (o[r] = a);
-      a = NaN;
-      for (let r = o.length - 1; r >= 0; r--)
-        o[r] === o[r] ? (a = o[r]) : (o[r] = a);
-    }
-  return e;
-}
-var Kn = (i, t) => {
-  let e = Math.min(C0 - Ur, Math.max(0, t - Ur)),
-    s = Math.min(C0 - Ur - 1, Math.floor(e)),
-    n = e - s;
-  return i[s] + (i[s + 1] - i[s]) * n;
-};
-function CW(i) {
-  let t = i.edges.filter(my);
-  if (t.length < 4) {
-    console.warn("trench: express lanes not found", t.length);
-    return;
-  }
-  let e = i.edges.find(
-    (y) =>
-      y.name === "Fillmore Street" &&
-      y.elev &&
-      Math.hypot(y.P[0] - Dh[0], y.P[1] - Dh[1]) < 40,
-  );
-  if (!e) {
-    console.warn("trench: no bridge");
-    return;
-  }
-  let s = {};
-  vs(e, Dh[0], Dh[1], s);
-  let n = s.y,
-    o = n - hft,
-    a = LS(i, my),
-    r = (y) => o + cft * Math.max(0, Math.abs(y) - lft),
-    l = [];
-  for (let y of t) {
-    let M = [],
-      S = [];
-    for (let T = 0; T + 1 < y.n; T++) {
-      let E = y.S[T + 1] - y.S[T],
-        A = Math.max(1, Math.ceil(E / 4));
-      for (let C = 0; C < A; C++) {
-        let P = C / A;
-        (M.push(
-          y.P[T * 3] + (y.P[T * 3 + 3] - y.P[T * 3]) * P,
-          y.P[T * 3 + 1] + (y.P[T * 3 + 4] - y.P[T * 3 + 1]) * P,
-          y.P[T * 3 + 2] + (y.P[T * 3 + 5] - y.P[T * 3 + 2]) * P,
-        ),
-          S.push(y.W[T] + (y.W[T + 1] - y.W[T]) * P));
-      }
-    }
-    (M.push(y.P[(y.n - 1) * 3], y.P[(y.n - 1) * 3 + 1], y.P[(y.n - 1) * 3 + 2]),
-      S.push(y.W[y.n - 1]));
-    let w = S.length,
-      z = [];
-    for (let T = 0; T < w; T++) z.push(M[T * 3 + 2]);
-    let _ = z.map((T, E) => Math.min(T, r(ou(M[E * 3], M[E * 3 + 1])[0])));
-    for (let T = 0; T < 4; T++)
-      _ = _.map((E, A) =>
-        A === 0 || A === w - 1
-          ? E
-          : Math.min(z[A], (_[A - 1] + 2 * E + _[A + 1]) / 4),
+      let I = _(E),
+        L = _(R);
+      h(
+        z(E, 0, w(E) - 0.1),
+        z(R, 0, w(R) - 0.1),
+        z(R, 0, w(R) + 0.9),
+        z(E, 0, w(E) + 0.9),
+        Opt,
+        M,
       );
-    for (let T = 0; T < w; T++) M[T * 3 + 2] = _[T];
-    let R = y.L - y.s1;
-    ((y.P = new Float32Array(M)),
-      (y.W = new Float32Array(S)),
-      dr(y),
-      (y.s0 = Math.min(y.s0, y.L)),
-      (y.s1 = Math.max(y.s0, y.L - R)),
-      y.tunnelR && (y.tunnelR.L = y.L),
-      l.push(y));
-  }
-  let c = new Set();
-  for (let y of t) c.add(y.ja).add(y.jb);
-  for (let y of c) {
-    let M = i.juns[y];
-    if (!M) continue;
-    let S = i.edges.filter((_) => _.ja === y || _.jb === y);
-    if (!S.every((_) => t.includes(_))) continue;
-    let w = S[0],
-      z = w.ja === y ? w.P[2] : w.P[(w.n - 1) * 3 + 2];
-    M.y = z;
-    for (let _ of M.rings) _.y && _.y.fill(z);
-  }
-  let h = i.terrain,
-    f = LS(i, my),
-    u = (y) => Math.min(Kn(f[0].y, y), Kn(f[1].y, y)),
-    d = (y) => Kn(f[0].v, y) - Kn(f[0].w, y) - 4.5,
-    p = (y) => Kn(f[1].v, y) + Kn(f[1].w, y) + 4.5,
-    m = [em(Ur, -40), em(Ur, 40), em(C0, -40), em(C0, 40)],
-    g = Math.min(...m.map((y) => y[0])),
-    b = Math.max(...m.map((y) => y[0])),
-    x = Math.min(...m.map((y) => y[1])),
-    v = Math.max(...m.map((y) => y[1]));
-  for (
-    let y = Math.max(0, Math.floor((x - h.z0) / h.step));
-    y <= Math.min(h.nz - 1, Math.ceil((v - h.z0) / h.step));
-    y++
-  )
-    for (
-      let M = Math.max(0, Math.floor((g - h.x0) / h.step));
-      M <= Math.min(h.nx - 1, Math.ceil((b - h.x0) / h.step));
-      M++
-    ) {
-      let [S, w] = ou(h.x0 + M * h.step, h.z0 + y * h.step);
-      if (S < Ur + 4 || S > C0 - 4 || w < d(S) || w > p(S)) continue;
-      let z = y * h.nx + M;
-      h.h[z] = Math.min(h.h[z], u(S) - 0.35);
-    }
-  i.trench = { yDeck: n, yF: o, br: e, N: f, N0: a };
-}
-function LW(i) {
-  let t = i.trench;
-  if (!t) return;
-  let e = LS(i, my),
-    s = LS(i, dft);
-  ((t.N = e), (t.F = s));
-  let n = (c, h) => c > Ur && c < C0 && h > Kn(s[0].v, c) && h < Kn(s[1].v, c),
-    o = 0,
-    a = 0,
-    r = (c, h) => c > -3760 && c < -3150 && h > 1100 && h < 1360;
-  for (let [, c] of i.walks)
-    for (let h of c) {
-      if (!h.ys) continue;
-      let f = h[0];
-      if (!r(f[0], f[1])) continue;
-      let u = 0,
-        d = 0,
-        p = f.length / 2;
-      for (let v = 0; v < p; v++) ((u += f[v * 2]), (d += f[v * 2 + 1]));
-      let [m, g] = ou(u / p, d / p);
-      if (!n(m, g)) continue;
-      let b = g > Kn(e[0].v, m) && g < Kn(e[1].v, m),
-        x = g < 0 ? 0 : 1;
-      (h.forEach((v, y) => {
-        let M = h.ys[y];
-        for (let S = 0; S < M.length; S++) {
-          let [w, z] = ou(v[S * 2], v[S * 2 + 1]);
-          M[S] = Kn(
-            b
-              ? e[
-                  Math.abs(z - Kn(e[0].v, w)) < Math.abs(z - Kn(e[1].v, w))
-                    ? 0
-                    : 1
-                ].y
-              : s[x].y,
-            w,
-          );
-        }
-      }),
-        (h.keep = !b),
-        o++);
-    }
-  for (let [, c] of i.curbs)
-    for (let h of c)
-      if (!(!h.ys || (!r(h[0], h[1]) && !r(h[h.length - 2], h[h.length - 1]))))
-        for (let f = 0; f < h.ys.length; f++) {
-          let [u, d] = ou(h[f * 2], h[f * 2 + 1]);
-          if (n(u, d)) {
-            for (let p of e)
-              if (Math.abs(d - Kn(p.v, u)) < Kn(p.w, u) + 1.2) {
-                ((h.ys[f] = Kn(p.y, u)), a++);
-                break;
-              }
-          }
-        }
-  {
-    let c = i.props,
-      h = i.meta?.roads?.curb ?? 0.15,
-      f = 0;
-    for (let u = 0; u < c.n; u++) {
-      if (!r(c.pf[u * 5], c.pf[u * 5 + 1])) continue;
-      let [d, p] = ou(c.pf[u * 5], c.pf[u * 5 + 1]);
-      if (!n(d, p)) continue;
-      let m = Kn(e[0].v, d) - Kn(e[0].w, d),
-        g = Kn(e[1].v, d) + Kn(e[1].w, d);
-      if (p > m && p < g) {
-        let b =
-          Math.abs(p - Kn(e[0].v, d)) < Math.abs(p - Kn(e[1].v, d)) ? 0 : 1;
-        c.pf[u * 5 + 2] -= Kn(t.N0[b].y, d) - Kn(e[b].y, d);
-      } else {
-        let b = p < 0 ? 0 : 1;
-        if (Math.abs(p - Kn(s[b].v, d)) > Kn(s[b].w, d) + 0.3)
-          c.pf[u * 5 + 2] = Kn(s[b].y, d) + h;
-        else continue;
-      }
-      f++;
-    }
-    t.props = f;
-  }
-  ((t.walks = o), (t.curbs = a));
-  let l = i.meta?.roads?.curb ?? 0.15;
-  for (let c of i.edges) {
-    if (!my(c)) continue;
-    let h = 0;
-    for (let f = Ur; f <= C0; f += 2)
-      for (let u of [0, 1])
-        h = Math.max(
-          h,
-          Math.abs(Kn(s[u].v, f) - Kn(e[u].v, f)) -
-            Kn(s[u].w, f) -
-            Kn(e[u].w, f),
+      let F = Math.floor((E + 1e3) / 6),
+        O = 0.86 + (0.22 * (((F * 2654435761) >>> 0) % 1e3)) / 1e3,
+        B = [PP[0] * O, PP[1] * O, PP[2] * O, 0];
+      if (
+        (h(
+          z(E, 0, w(E) + 0.9),
+          z(R, 0, w(R) + 0.9),
+          z(R, 0, L + 0.08),
+          z(E, 0, I + 0.08),
+          B,
+          M,
+        ),
+        Math.floor((R + 1e3) / 6) !== F)
+      ) {
+        let H = Math.floor((R + 1e3) / 6) * 6 - 1e3;
+        h(
+          z(H - 0.04, -0.01, w(H) - 0.1),
+          z(H + 0.04, -0.01, w(H) - 0.1),
+          z(H + 0.04, -0.01, _(H) + 0.08),
+          z(H - 0.04, -0.01, _(H) + 0.08),
+          Bpt,
+          M,
         );
-    ((c.sw = Math.max(c.sw || 0, Math.min(12, h + 0.5))),
-      (c.walkY = (f, u, d) => {
-        let [p, m] = ou(f, u),
-          g = Kn(e[0].v, p),
-          b = Kn(e[1].v, p);
-        return m < g ? Kn(s[0].y, p) + l : m > b ? Kn(s[1].y, p) + l : d + l;
-      }));
+      }
+      if (
+        (h(
+          z(E, -0.12, I + 0.08),
+          z(R, -0.12, L + 0.08),
+          z(R, -0.12, L + 0.3),
+          z(E, -0.12, I + 0.3),
+          lw,
+          M,
+        ),
+        h(
+          z(E, -0.12, I + 0.3),
+          z(R, -0.12, L + 0.3),
+          z(R, 0.4, L + 0.3),
+          z(E, 0.4, I + 0.3),
+          lw,
+          c,
+        ),
+        h(
+          z(R, 0.4, L + 0.3),
+          z(E, 0.4, I + 0.3),
+          z(E, 0.4, I - 0.1),
+          z(R, 0.4, L - 0.1),
+          lw,
+          y,
+        ),
+        Math.abs(E + 1) > m + 0.5)
+      ) {
+        for (let D of [1.05, 0.55])
+          h(
+            z(E, 0.2, I + 0.3 + D),
+            z(R, 0.2, L + 0.3 + D),
+            z(R, 0.2, L + 0.3 + D + 0.05),
+            z(E, 0.2, I + 0.3 + D + 0.05),
+            CP,
+            M,
+          );
+        let H = z(E, 0.17, I + 0.3),
+          N = z(E, 0.23, I + 0.3);
+        h(H, N, [N[0], I + 1.4, N[2]], [H[0], I + 1.4, H[2]], CP, M);
+      }
+      ((A = A ? [A[0], R] : [E, R]),
+        (A[1] - A[0] >= 8 || Math.abs(R) < m + 1 != Math.abs(E) < m + 1) &&
+          T());
+    }
+    T();
+  }
+  {
+    let g = [];
+    for (let b = 0; b <= r.L + 0.01; b += 2)
+      (Ot(r, Math.min(b, r.L), u), g.push([u.x, u.z, u.y, u.nx, u.nz, u.w]));
+    for (let b of [-1, 1])
+      for (let v = 0; v + 1 < g.length; v++) {
+        let [x, y, M, S, w, _] = g[v],
+          [z, A, T, E, R, P] = g[v + 1],
+          C = (q, j, K) => [q[0] + q[3] * j * b, K, q[1] + q[4] * j * b],
+          I = g[v],
+          L = g[v + 1],
+          F = _ + 0.4,
+          O = _ + 3.2,
+          B = P + 0.4,
+          H = P + 3.2,
+          N = [S * b, 0, w * b],
+          D = [-S * b, 0, -w * b];
+        (b > 0
+          ? (q, j, K, nt) => h(q, j, K, nt, Lq, c)
+          : (q, j, K, nt) => h(j, q, nt, K, Lq, c))(
+          C(I, F, M + 0.2),
+          C(L, B, T + 0.2),
+          C(L, H, T + 0.2),
+          C(I, O, M + 0.2),
+        );
+        let G =
+          b > 0
+            ? [
+                C(L, H, T - 1.6),
+                C(I, O, M - 1.6),
+                C(I, O, M + 0.2),
+                C(L, H, T + 0.2),
+              ]
+            : [
+                C(I, O, M - 1.6),
+                C(L, H, T - 1.6),
+                C(L, H, T + 0.2),
+                C(I, O, M + 0.2),
+              ];
+        h(...G, lw, N);
+        let W = [
+          C(I, F, M - 1.6),
+          C(I, O, M - 1.6),
+          C(L, H, T - 1.6),
+          C(L, B, T - 1.6),
+        ];
+        h(
+          ...(b > 0 ? W : W.slice().reverse()),
+          [0.3, 0.3, 0.29, 0],
+          [0, -1, 0],
+        );
+        let V = C(I, O - 0.15, M + 0.35),
+          $ = C(L, H - 0.15, T + 0.35);
+        (h(V, $, [$[0], T + 1.35, $[2]], [V[0], M + 1.35, V[2]], Npt, N),
+          h(
+            C(I, O - 0.25, M + 0.2),
+            C(L, H - 0.25, T + 0.2),
+            C(L, H - 0.25, T + 0.35),
+            C(I, O - 0.25, M + 0.35),
+            lw,
+            D,
+          ));
+        let J = C(I, O - 0.15, M + 1.35),
+          X = C(L, H - 0.15, T + 1.35);
+        h(J, X, [X[0], T + 1.45, X[2]], [J[0], M + 1.45, J[2]], CP, N);
+        let tt = Math.hypot(z - x, A - y),
+          Z = C([(x + z) / 2, (y + A) / 2, 0, S, w], O - 0.15, 0);
+        tt > 0.2 &&
+          e.push({
+            t: "obb",
+            x: Z[0],
+            z: Z[2],
+            hx: 0.2,
+            hz: tt / 2 + 0.05,
+            c: (A - y) / tt,
+            s: (z - x) / tt,
+            y0: Math.min(M, T) - 0.5,
+            y1: Math.max(M, T) + 1.5,
+            rail: !0,
+          });
+      }
   }
 }
-var e7 = [0.3, 0.295, 0.275, 0],
-  py = [0.46, 0.45, 0.42, 0],
-  pft = [0.2, 0.2, 0.19, 0],
-  mft = [0.12, 0.12, 0.115, 0],
-  s7 = [0.09, 0.1, 0.1, 0],
-  gft = [0.18, 0.42, 0.55, 0],
-  PW = [0.48, 0.47, 0.44, 0];

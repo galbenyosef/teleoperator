@@ -1,349 +1,313 @@
-// app 45 — field
-// Lines 59461-59807 of readable/app.pretty.js (statement-aligned).
-V5.SkyShader = {
-  name: "SkyShader",
-  uniforms: {
-    turbidity: { value: 2 },
-    rayleigh: { value: 1 },
-    mieCoefficient: { value: 0.005 },
-    mieDirectionalG: { value: 0.8 },
-    sunPosition: { value: new xt() },
-    cloudScale: { value: 2e-4 },
-    cloudSpeed: { value: 2e-5 },
-    cloudCoverage: { value: 0.4 },
-    cloudDensity: { value: 0.4 },
-    cloudElevation: { value: 0.5 },
-    showSunDisc: { value: 1 },
-    time: { value: 0 },
-  },
-  vertexShader: `
-		uniform vec3 sunPosition;
-		uniform float rayleigh;
-		uniform float turbidity;
-		uniform float mieCoefficient;
-
-		varying vec3 vWorldPosition;
-		varying vec3 vSunDirection;
-		varying float vSunfade;
-		varying vec3 vBetaR;
-		varying vec3 vBetaM;
-		varying float vSunE;
-
-		// constants for atmospheric scattering
-		const float e = 2.71828182845904523536028747135266249775724709369995957;
-		const float pi = 3.141592653589793238462643383279502884197169;
-
-		// wavelength of used primaries, according to preetham
-		const vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );
-		// this pre-calculation replaces older TotalRayleigh(vec3 lambda) function:
-		// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))
-		const vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );
-
-		// mie stuff
-		// K coefficient for the primaries
-		const float v = 4.0;
-		const vec3 K = vec3( 0.686, 0.678, 0.666 );
-		// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K
-		const vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );
-
-		// earth shadow hack
-		// cutoffAngle = pi / 1.95;
-		const float cutoffAngle = 1.6110731556870734;
-		const float steepness = 1.5;
-		const float EE = 1000.0;
-
-		float sunIntensity( float zenithAngleCos ) {
-			zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );
-			return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );
-		}
-
-		vec3 totalMie( float T ) {
-			float c = ( 0.2 * T ) * 10E-18;
-			return 0.434 * c * MieConst;
-		}
-
-		void main() {
-
-			vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
-			vWorldPosition = worldPosition.xyz;
-
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-			gl_Position.z = gl_Position.w; // set z to camera.far
-
-			vSunDirection = normalize( sunPosition );
-
-			vSunE = sunIntensity( vSunDirection.y );
-
-			vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );
-
-			float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );
-
-			// extinction (absorption + out scattering)
-			// rayleigh coefficients
-			vBetaR = totalRayleigh * rayleighCoefficient;
-
-			// mie coefficients
-			vBetaM = totalMie( turbidity ) * mieCoefficient;
-
-		}`,
-  fragmentShader: `
-		varying vec3 vWorldPosition;
-		varying vec3 vSunDirection;
-		varying vec3 vBetaR;
-		varying vec3 vBetaM;
-		varying float vSunE;
-
-		uniform float mieDirectionalG;
-		uniform float cloudScale;
-		uniform float cloudSpeed;
-		uniform float cloudCoverage;
-		uniform float cloudDensity;
-		uniform float cloudElevation;
-		uniform float showSunDisc;
-		uniform float time;
-
-		// gradient at a lattice corner; sinless hash so every GPU produces the same clouds
-		vec2 gradient( vec2 i ) {
-			vec3 p = fract( i.xyx * vec3( 0.1031, 0.1030, 0.0973 ) );
-			p += dot( p, p.yzx + 33.33 );
-			return fract( ( p.xx + p.yz ) * p.zy ) * 2.0 - 1.0;
-		}
-
-		// 2D gradient noise: isotropic lobes like Perlin at value-noise cost
-		float noise( vec2 p ) {
-			vec2 i = floor( p );
-			vec2 f = fract( p );
-			vec2 u = f * f * f * ( f * ( f * 6.0 - 15.0 ) + 10.0 ); // quintic fade
-			float a = dot( gradient( i ), f );
-			float b = dot( gradient( i + vec2( 1.0, 0.0 ) ), f - vec2( 1.0, 0.0 ) );
-			float c = dot( gradient( i + vec2( 0.0, 1.0 ) ), f - vec2( 0.0, 1.0 ) );
-			float d = dot( gradient( i + vec2( 1.0, 1.0 ) ), f - vec2( 1.0, 1.0 ) );
-			return mix( mix( a, b, u.x ), mix( c, d, u.x ), u.y ) * 1.6; // ~[-1,1]
-		}
-
-		// fbm; per-octave drift makes clouds billow instead of scrolling as a rigid stamp
-		float fbm( vec2 p, float drift ) {
-			float result = 0.0;
-			float amplitude = 1.0;
-			for ( int i = 0; i < 4; i ++ ) {
-				result += amplitude * noise( p );
-				amplitude *= 0.5;
-				p = p * 2.0 + drift;
-			}
-			return result;
-		}
-
-		// constants for atmospheric scattering
-		const float pi = 3.141592653589793238462643383279502884197169;
-
-		const float n = 1.0003; // refractive index of air
-		const float N = 2.545E25; // number of molecules per unit volume for air at 288.15K and 1013mb (sea level -45 celsius)
-
-		// optical length at zenith for molecules
-		const float rayleighZenithLength = 8.4E3;
-		const float mieZenithLength = 1.25E3;
-		// 66 arc seconds -> degrees, and the cosine of that
-		const float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;
-
-		// 3.0 / ( 16.0 * pi )
-		const float THREE_OVER_SIXTEENPI = 0.05968310365946075;
-		// 1.0 / ( 4.0 * pi )
-		const float ONE_OVER_FOURPI = 0.07957747154594767;
-
-		float rayleighPhase( float cosTheta ) {
-			return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );
-		}
-
-		float hgPhase( float cosTheta, float g ) {
-			float g2 = pow( g, 2.0 );
-			float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );
-			return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );
-		}
-
-		void main() {
-
-			vec3 direction = normalize( vWorldPosition - cameraPosition );
-
-			// optical length
-			// cutoff angle at 90 to avoid singularity in next formula.
-			float zenithAngle = acos( max( 0.0, direction.y ) );
-			float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );
-			float sR = rayleighZenithLength * inverse;
-			float sM = mieZenithLength * inverse;
-
-			// combined extinction factor
-			vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );
-
-			// in scattering
-			float cosTheta = dot( direction, vSunDirection );
-
-			float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );
-			vec3 betaRTheta = vBetaR * rPhase;
-
-			float mPhase = hgPhase( cosTheta, mieDirectionalG );
-			vec3 betaMTheta = vBetaM * mPhase;
-
-			vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );
-			Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - vSunDirection.y, 5.0 ), 0.0, 1.0 ) );
-
-			// nightsky
-			float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]
-			float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]
-			vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );
-			vec3 L0 = vec3( 0.1 ) * Fex;
-
-			// composition + solar disc
-			float sundisc = clamp( ( cosTheta - sunAngularDiameterCos ) * 50000.0, 0.0, 1.0 ) * showSunDisc;
-			vec3 sundiscColor = ( 760.0 * sundisc ) * min( vSunE * Fex, 80.0 );
-
-			vec3 texColor = ( Lin + L0 ) * 0.04 + sundiscColor + vec3( 0.0, 0.0003, 0.00075 );
-
-			// Clouds
-			if ( direction.y > 0.0 && cloudCoverage > 0.0 ) {
-
-				// Project to cloud plane (higher elevation = clouds appear lower/closer)
-				float elevation = mix( 1.0, 0.1, cloudElevation );
-				vec2 cloudUV = direction.xz / ( direction.y * elevation );
-				cloudUV *= cloudScale;
-				cloudUV += time * cloudSpeed;
-
-				// Cloud density field
-				float evolve = time * cloudSpeed * 300.0;
-				float cloudNoise = clamp( fbm( cloudUV * 1000.0, evolve ) * 0.7 + 0.5, 0.0, 1.0 );
-
-				// Large-scale coverage variation: clear gaps next to dense banks
-				float region = noise( cloudUV * 300.0 ) * 0.37 + 0.5;
-				float cov = clamp( cloudCoverage + ( region - 0.5 ) * 0.6, 0.0, 1.0 );
-
-				// Carve clouds where noise rises above the coverage level
-				float threshold = 1.0 - cov;
-				float cloudMask = smoothstep( threshold, threshold + 0.3, cloudNoise );
-
-				// Fade clouds near horizon (adjusted by elevation)
-				float horizonFade = smoothstep( 0.0, 0.03 + 0.06 * cloudElevation, direction.y );
-				cloudMask *= horizonFade;
-
-				// Cloud lighting from the sky's own radiance
-				float dayFactor = smoothstep( -0.08, 0.3, vSunDirection.y );
-				vec3 sunColor = vSunE * Fex * 0.22 * 0.04; // 0.22 ~ albedo/pi, 0.04 = exposure; the aerial composite adds the eye-leg extinction
-				vec3 skyAmbient = Lin * 0.04 + vec3( 0.0, 0.0003, 0.00075 );
-
-				// Beer-powder self-shadow from the sampled density
-				float depth = max( 0.0, cloudNoise - threshold );
-				float beer = exp( depth * -4.0 );
-				float powder = 1.0 - beer * beer; // beer*beer == exp(-8*depth)
-				float shade = mix( 0.45, 1.0, clamp( beer * powder * 2.6, 0.0, 1.0 ) ); // 2.6 = 1/0.385, normalizes beer*powder peak to 1
-
-				// Henyey-Greenstein forward lobe ( g = 0.7 ): silver lining on rims toward the sun
-				float silver = clamp( 0.51 / pow( 1.49 - cosTheta * 1.4, 1.5 ), 0.0, 3.0 ); // 0.51=1-g^2, 1.49=1+g^2, 1.4=2g
-				float edge = cloudMask * ( 1.0 - cloudMask ) * 4.0;
-
-				vec3 cloudColor = skyAmbient + sunColor * shade;
-				cloudColor += sunColor * silver * edge * 0.6;
-				cloudColor *= max( dayFactor, 0.03 );
-
-				// Cloud opacity via Beer's law: density sets how solid the clouds get
-				float alpha = ( 1.0 - exp( depth * cloudDensity * -12.0 ) ) * horizonFade;
-
-				// Occlude the sun disc/glow behind opaque cloud
-				texColor -= L0 * 0.04 * alpha;
-
-				// Composite through the atmosphere so distant clouds dissolve into haze
-				vec3 cloudAerial = mix( texColor, cloudColor, Fex );
-				texColor = mix( texColor, cloudAerial, alpha );
-
-			}
-
-			gl_FragColor = vec4( texColor, 1.0 );
-
-			#include <tonemapping_fragment>
-			#include <colorspace_fragment>
-
-		}`,
-};
-var eR = {
-  Float32Array,
-  Float64Array,
-  Int32Array,
-  Uint32Array,
-  Int16Array,
-  Uint16Array,
-  Uint8Array,
-  Int8Array,
-};
-function ga(i) {
-  let t = new Uint8Array(i),
-    e = new DataView(t.buffer, t.byteOffset).getUint32(0, !0),
-    s = JSON.parse(new TextDecoder().decode(t.subarray(4, 4 + e))),
-    n = t.byteOffset + 4 + e,
-    o = { meta: s.meta };
-  for (let [a, [r, l, c, h]] of Object.entries(s.arrays))
-    o[a] = h
-      ? zct(
-          eR[r],
-          t.subarray(
-            n - t.byteOffset + l,
-            n - t.byteOffset + l + c * eR[r].BYTES_PER_ELEMENT,
-          ),
-          c,
-          h,
-        )
-      : new eR[r](t.buffer, n + l, c);
-  return o;
-}
-var _ct = (i) => {
-  let t = /^(F?)D(\d*)S$/.exec(i || "");
-  return t ? { f: !!t[1], k: +(t[2] || 1) } : null;
-};
-function zct(i, t, e, s) {
-  let n = i.BYTES_PER_ELEMENT,
-    o = new i(e),
-    a = new Uint8Array(o.buffer);
-  for (let l = 0; l < n; l++) {
-    let c = l * e;
-    for (let h = 0, f = l; h < e; h++, f += n) a[f] = t[c + h];
-  }
-  let r = _ct(s);
-  if (r) {
-    let l = r.f ? new Int32Array(o.buffer) : o,
-      c = r.k;
-    for (let h = c; h < e; h++) l[h] = l[h] + l[h - c];
-  }
-  return o;
-}
-as();
-var Ect = [
-    0, 0.6, 1.5, 3, 5, 8, 12, 18, 26, 36, 50, 70, 95, 130, 175, 235, 310,
-  ],
-  Tct = [1.5, 5, 12, 26, 50, 95, 175],
-  Act = (i) => Math.min(8, Math.max(1, Math.round(i / 10)));
-function Rct(i) {
-  let t = [];
-  for (let e of Ect) e < i - 0.6 && t.push(e);
-  return (t.push(Math.max(0, i - 0.2)), t);
-}
-function sR(i) {
-  let t = i,
-    e = t.meta;
-  if (e.field.delta && t.field) {
-    let s = t.field,
-      n = e.field.w,
-      o = e.field.h;
-    for (let a = 0; a < o; a++) {
+// app 45 — math
+// Lines 60039-60349 of readable/app.pretty.js (statement-aligned).
+function WV(o, t) {
+  let e = t.field,
+    s = o.meta.field,
+    n = s.w,
+    i = s.h;
+  if (s.delta)
+    for (let a = 0; a < i; a++) {
       let r = 0;
       for (let l = a * n, c = l + n; l < c; l++)
-        ((r = (r + s[l]) & 255), (s[l] = r));
+        ((r = (r + e[l]) & 255), (e[l] = r));
     }
-    ((t.field = s), (e.field = { ...e.field, delta: !1 }));
+  return ((o.field = e), (o.meta.field = { ...s, delta: !1 }), o);
+}
+function P7(o) {
+  let t = o.meta.field;
+  return { data: o.field, w: t.w, h: t.h, x0: t.x0, z0: t.z0, cell: t.cell };
+}
+function Eb(o, t, e) {
+  if (!o.field) return 1;
+  let s = o.meta.field,
+    n = (t - s.x0) / s.cell - 0.5,
+    i = (e - s.z0) / s.cell - 0.5;
+  if (n < 0 || i < 0 || n >= s.w - 1 || i >= s.h - 1) return 1;
+  let a = Math.floor(n),
+    r = Math.floor(i),
+    l = n - a,
+    c = i - r,
+    h = o.field,
+    f = r * s.w + a;
+  return (
+    ((h[f] * (1 - l) + h[f + 1] * l) * (1 - c) +
+      (h[f + s.w] * (1 - l) + h[f + s.w + 1] * l) * c) /
+    255
+  );
+}
+function C7(o, t) {
+  let e = t.bld,
+    s = o.wall,
+    n = o.roof,
+    i = e.pts0 || e.pts,
+    a = null,
+    r = [],
+    l = null,
+    c = 0,
+    h = [];
+  function f(v) {
+    ((a = v), (r = []), (l = null), (h = []));
+    let x = v.i;
+    if (!(o.bOff[x + 1] > o.bOff[x])) {
+      a = null;
+      return;
+    }
+    let y = o.bOff[x];
+    c = v.top - v.rh;
+    for (let M = e.bRing[x]; M < e.bRing[x + 1]; M++) {
+      let S = e.rStart[M],
+        w = e.rStart[M + 1],
+        _ = w - S;
+      for (let z = 0; z < _; z++) {
+        let A = S + z,
+          T = S + ((z + 1) % _),
+          E = e.pts[A * 2],
+          R = e.pts[A * 2 + 1],
+          P = e.pts[T * 2],
+          C = e.pts[T * 2 + 1],
+          I = Math.hypot(P - E, C - R) || 1e-6,
+          L = v.base + s[y] / 4,
+          F = Yut(c - L),
+          O = Kut(
+            i === e.pts
+              ? I
+              : Math.hypot(i[T * 2] - i[A * 2], i[T * 2 + 1] - i[A * 2 + 1]) ||
+                  1e-6,
+          );
+        (r.push({
+          ax: E,
+          az: R,
+          dx: (P - E) / I,
+          dz: (C - R) / I,
+          len: I,
+          nx: -(C - R) / I,
+          nz: (P - E) / I,
+          gE: L,
+          nU: O,
+          lv: F,
+          off: y + 1,
+        }),
+          (y += 1 + O * F.length),
+          h.push(E, R, n[A]));
+      }
+    }
   }
-  return {
-    meta: e,
-    field: t.field || null,
-    bOff: t.bOff,
-    wall: t.wall,
-    roof: t.roof,
-    lmOff: t.lmOff,
-    lmData: t.lmData,
-    lmKeys: e.lm || [],
+  function u(v, x, y, M, S) {
+    if (l) {
+      let z = l,
+        A = (v - z.ax) * z.dx + (x - z.az) * z.dz,
+        T = Math.abs((v - z.ax) * z.nx + (x - z.az) * z.nz);
+      if (
+        A > -0.3 &&
+        A < z.len + 0.3 &&
+        T < (S ? 0.6 : 2.2) &&
+        (!S || y * z.nx + M * z.nz > 0.7)
+      )
+        return z;
+    }
+    let w = null,
+      _ = 1 / 0;
+    for (let z of r) {
+      let A = Math.max(
+          0,
+          Math.min(z.len, (v - z.ax) * z.dx + (x - z.az) * z.dz),
+        ),
+        T = z.ax + z.dx * A - v,
+        E = z.az + z.dz * A - x,
+        R = Math.hypot(T, E);
+      (S && y * z.nx + M * z.nz < 0.5 && (R += 3), R < _ && ((_ = R), (w = z)));
+    }
+    return (l = w);
+  }
+  function d(v, x, y, M) {
+    let S = Math.max(
+        0,
+        Math.min(1, ((x - v.ax) * v.dx + (M - v.az) * v.dz) / v.len),
+      ),
+      w = v.lv,
+      _ = w.length,
+      z = S * v.nU - 0.5;
+    (z < 0 && (z = 0), z > v.nU - 1 && (z = v.nU - 1));
+    let A = Math.floor(z),
+      T = Math.min(v.nU - 1, A + 1),
+      E = z - A,
+      R = y - v.gE,
+      P = 0;
+    for (; P + 1 < _ && w[P + 1] <= R;) P++;
+    let C = Math.min(_ - 1, P + 1),
+      I = C > P ? Math.max(0, Math.min(1, (R - w[P]) / (w[C] - w[P]))) : 0,
+      L = (O, B) => s[v.off + O * _ + B];
+    return (
+      ((L(A, P) * (1 - I) + L(A, C) * I) * (1 - E) +
+        (L(T, P) * (1 - I) + L(T, C) * I) * E) /
+      255
+    );
+  }
+  function p(v, x) {
+    let y = 255,
+      M = 1 / 0;
+    for (let S = 0; S < h.length; S += 3) {
+      let w = (h[S] - v) ** 2 + (h[S + 1] - x) ** 2;
+      w < M && ((M = w), (y = h[S + 2]));
+    }
+    return y / 255;
+  }
+  function m(v, x, y, M, S, w) {
+    if (!a) return 0;
+    let _;
+    if (S > 0.7 && x > c - 1.2) _ = p(v, y);
+    else {
+      let z = u(v, y, M, w, Math.abs(S) < 0.5);
+      _ = z ? d(z, v, x, y) : 1;
+    }
+    return Math.max(_, 1 / 255);
+  }
+  function g(v, x, y, M, S, w) {
+    if (!a || x - v < 1.2) return null;
+    let _ = u(y, M, S, w, !0);
+    if (!_) return null;
+    let z = [];
+    for (let A of Xut) {
+      let T = _.gE + A;
+      T > v + 0.6 && T < x - 0.6 && z.push(T);
+    }
+    return z.length ? z : null;
+  }
+  function b(v, x, y) {
+    if (!a) return 0;
+    let M = u(v, y, 0, 0, !1);
+    return Math.max(M ? d(M, v, x, y) : 1, 1 / 255);
+  }
+  return { set: f, vert: m, split: g, vertOut: b };
+}
+function L7(o, t, e) {
+  let s = new Map();
+  o.lmKeys.forEach((r, l) => s.set(r, l));
+  let n = 0,
+    i = 0,
+    a = new Set();
+  return (
+    t.updateMatrixWorld?.(!0),
+    t.traverse((r) => {
+      if (!r.isMesh || r.isInstancedMesh || !r.geometry?.attributes?.position)
+        return;
+      let l = r.geometry,
+        c = `${e}:${n++}:${r.name}:${l.attributes.position.count}`;
+      if (a.has(l)) return;
+      a.add(l);
+      let h = s.get(c);
+      if (h === void 0) return;
+      let f = o.lmOff[h],
+        u = o.lmOff[h + 1],
+        d = l.attributes.position.count;
+      if (u - f !== d) return;
+      let p = new Float32Array(d * 2);
+      for (let m = 0; m < d; m++) p[m * 2] = Math.max(o.lmData[f + m], 1) / 255;
+      (l.setAttribute("uv1", new Te(p, 2)), i++);
+      for (let m of Array.isArray(r.material) ? r.material : [r.material])
+        m && !m.userData.mbSkyVis && (m.userData.mbSkyVis = 1);
+    }),
+    i
+  );
+}
+var qV = (o, t, e) => Math.min(e, Math.max(t, o));
+function jV(o) {
+  let t = [],
+    e = (n, i, a) => {
+      !n?.P ||
+        !i ||
+        i.tn?.open ||
+        t.push({
+          P: n.P,
+          n: n.n ?? n.P.length / 3,
+          W: (i.W || 5) + 2,
+          roof: i.roof || 7,
+          name: a,
+        });
+    };
+  for (let n of o?.edges || [])
+    n.tunnelR && e(n.tunnelR.E || n, n.tunnelR, n.name);
+  for (let n of o?.highways?.presidio || [])
+    n.tunnelR && e(n.tunnelR.E, n.tunnelR, "Presidio Parkway");
+  let s = { depth: 0, near: 1e9, name: "" };
+  return (n, i, a) => {
+    ((s.depth = 0), (s.near = 1e9), (s.name = ""));
+    for (let r of t) {
+      let l = r.P,
+        c = 0,
+        h = null,
+        f = 0;
+      for (let p = 0; p + 1 < r.n; p++)
+        f += Math.hypot(l[p * 3 + 3] - l[p * 3], l[p * 3 + 4] - l[p * 3 + 1]);
+      for (let p = 0; p + 1 < r.n; p++) {
+        let m = l[p * 3],
+          g = l[p * 3 + 1],
+          b = l[p * 3 + 3],
+          v = l[p * 3 + 4],
+          x = Math.hypot(b - m, v - g) || 1e-6,
+          y = (b - m) / x,
+          M = (v - g) / x,
+          S = n - m,
+          w = a - g,
+          _ = S * y + w * M,
+          z = qV(_ / x, 0, 1),
+          A = m + (b - m) * z,
+          T = g + (v - g) * z,
+          E = Math.hypot(n - A, a - T);
+        ((!h || E < h.d) &&
+          (h = {
+            d: E,
+            s: c + _,
+            y: l[p * 3 + 2] + (l[p * 3 + 5] - l[p * 3 + 2]) * z,
+            v: Math.abs(-S * M + w * y),
+          }),
+          (c += x));
+      }
+      if (
+        !h ||
+        ((s.near = Math.min(s.near, h.d)),
+        h.v > r.W || i > h.y + r.roof + 1.5 || i < h.y - 4)
+      )
+        continue;
+      let u = Math.min(h.s, f - h.s),
+        d = qV((u + 15) / 35, 0, 1);
+      d > s.depth && ((s.depth = d), (s.name = r.name));
+    }
+    return s;
   };
+}
+es();
+Ya();
+var dw = {};
+Kh(dw, {
+  NAME: () => x1t,
+  RESERVE: () => v1t,
+  build: () => y1t,
+  buildReal: () => M1t,
+  realClaims: () => w1t,
+});
+es();
+await oc();
+Ab();
+await fp();
+await up();
+Pn();
+await oc();
+await up();
+await fp();
+var V7 = Rt([0.47, 0.44, 0.4], Tt.planks),
+  Lb = Rt([0.2, 0.18, 0.15], Tt.pile),
+  Cb = Rt([0.05, 0.06, 0.06], Tt.metal);
+function xW(o) {
+  for (let [t, e] of [
+    ["pier39", cdt],
+    ["wharf", W7],
+    ["hyde", j7],
+    ["aquatic", $7],
+  ])
+    try {
+      e(o);
+    } catch (s) {
+      console.error("waterfront north:", t, s);
+    }
 }

@@ -1,256 +1,134 @@
 // app 144 — math
-// Lines 92612-92865 of readable/app.pretty.js (statement-aligned).
-function Cut(i, t) {
-  let e = Ly,
-    s = Iy(i, -7300.8, -1399.2),
-    n = i.juns.find(
-      (N) => N.polys.length && Math.hypot(N.x + 7307.5, N.z + 1387) < 6,
-    );
+// Lines 93135-93266 of readable/app.pretty.js (statement-aligned).
+function smt(o, t) {
+  let e = to,
+    s = Tw(o, 275.3, 1005.2),
+    n = Tw(o, 243.7, 1035.7);
   if (!s || !n) {
-    console.warn("highways: Golden Gate ends not found");
+    console.warn("highways: Bay Bridge ends not found");
     return;
   }
-  let o = oj(i, s, "b"),
-    a = o ? Put(o, "b")[2] : s.y,
-    r = n.y,
-    l = (N, B) => e.at(N, B),
-    c = (N, B, H) => {
-      let O = [];
-      for (let D = N; D <= B + 0.01; D += 20) O.push(l(Math.min(D, B), H));
-      return O;
-    },
-    h = (N) => e.s(N[0], N[1]),
-    f = i.juns.find(
-      (N) =>
-        N.region === "marin" &&
-        Math.hypot(N.x - Wh[Wh.length - 1][0], N.z - Wh[Wh.length - 1][1]) < 3,
-    ),
-    u = i.juns.find(
-      (N) =>
-        N.region === "marin" && Math.hypot(N.x - D7[0][0], N.z - D7[0][1]) < 3,
-    );
-  if (f && u)
-    return Lut(i, t, {
-      A: e,
-      J0: s,
-      JT: n,
-      E0: o,
-      y0: a,
-      yT: r,
-      JN: f,
-      JS: u,
-      straight: c,
-      sOf: h,
-    });
-  let d = Wh[Wh.length - 1],
-    p = Wh[Wh.length - 2],
-    m = U7(d[0] - p[0], d[1] - p[1]),
-    g = [m[1], -m[0]],
-    b = 27,
-    x = [d[0] + m[0] * 22 + g[0] * 5, d[1] + m[1] * 22 + g[1] * 5],
-    v = e.deck(h(x)),
-    y = [];
-  for (let N = 0; N < 40; N++) {
-    let B = -(N / 40) * Math.PI * 2;
-    y.push([x[0] + Math.cos(B) * b, x[1] + Math.sin(B) * b]);
+  let i = r$(o, s, "b"),
+    a = e.lower(22);
+  if (i) {
+    let H = i.P[2];
+    for (let N = 0; N < i.n; N++) {
+      let D = i.S[N] / i.L;
+      i.P[N * 3 + 2] =
+        H + (a - H) * D * D * (3 - 2 * D) * 0.35 + (a - H) * D * 0.65;
+    }
+    ((i.flags |= 67),
+      (i.elev = !0),
+      (i.layered = !0),
+      (i.layer = 1),
+      (s.y = a));
   }
-  let M = $S(i, { x: x[0], z: x[1], y: v, ring: y }),
-    S = Math.sqrt(b * b - 25),
-    w = [x[0] - g[0] * 5, x[1] - g[1] * 5],
-    z = [x[0] + g[0] * 5, x[1] + g[1] * 5],
-    _ = yb([...vb, ...c(h(vb[vb.length - 1]) + 20, 1722, e.half), ...Wh, w], 8),
-    R = yb(
-      [
-        z,
-        [z[0] - m[0] * 12, z[1] - m[1] * 12],
-        ...sj,
-        ...c(h(XS[0]) + 20, 1722, -e.half).reverse(),
-        ...XS,
-      ],
-      8,
-    );
-  aj(_, R, 2 * e.lw + e.median, [40, 0], [0, 40]);
-  let T = (N) => e.deck(h(N)),
-    E = (N, B, H, O) => {
-      let D = [0];
-      for (let G = 1; G < N.length; G++)
-        D.push(
-          D[G - 1] + Math.hypot(N[G][0] - N[G - 1][0], N[G][1] - N[G - 1][1]),
-        );
-      let U = D[D.length - 1];
-      return N.map((G, q) => {
-        let W = H ? U - D[q] : D[q];
-        if (W > O + 40) return G;
-        let V = Math.max(0, Math.min(1, (W - O) / 40));
-        return [G[0], G[1], B + (G[2] - B) * V * V * (3 - 2 * V)];
-      });
+  let r = e.portal - 60,
+    l = (H, N, D = 12) => {
+      let U = [],
+        G = Math.ceil(Math.abs(N - H) / D);
+      for (let W = 0; W <= G; W++) U.push(e.at(H + ((N - H) * W) / G));
+      return U;
     },
-    A = wb(_, T, a, null);
-  A = E(A, v, !0, S + 2);
-  let C = wb(R, T, null, r);
-  C = E(C, v, !1, S + 2);
-  let P = o ? o.W[o.n - 1] : 7.2,
-    I = {
-      lanes: 3,
-      laneW: (e.lw * 2) / 3,
-      name: "Golden Gate Bridge",
-      rank: o?.rank ?? 8,
-      maxspeed: 45,
-      dist: "presidio",
-      custom: "gg",
-      way: 595194543,
+    c = (H) => e.upper(e.s(H[0], H[1])),
+    h = (H) => e.lower(e.s(H[0], H[1])),
+    f = {
+      lanes: 5,
+      laneW: 3.6,
+      name: "San Francisco\u2013Oakland Bay Bridge",
+      rank: i?.rank ?? 8,
+      maxspeed: 50,
+      dist: "towers",
+      custom: "bb",
+      way: 661905446,
     },
-    L = cu(i, {
-      ...I,
-      pts: A,
-      w: (N, B) => {
-        let H = N * 8;
-        return H < 60 ? P + (e.lw - P) * Math.min(1, H / 60) : e.lw;
-      },
-      ja: s.id,
-      jb: M.id,
-      tb: S,
-    }),
-    F = cu(i, {
-      ...I,
-      pts: C,
-      w: e.lw,
-      ja: M.id,
-      jb: n.id,
-      ta: S,
-      way: 537838948,
-    });
-  ((L.W[0] = P),
-    s.type === "end" && (s.type = "j"),
-    (t.gg = {
-      axis: e,
-      nb: L,
-      sb: F,
-      plaza: M,
-      R: b,
-      C: x,
-      YP: v,
-      median: rj(L, F),
-    }),
-    (Mb.gg = t.gg));
-}
-var D7 = [
-  [-7686.1, -4084.2],
-  [-7674.6, -4070.7],
-  [-7668.5, -4063],
-  [-7664.9, -4058.5],
-];
-function Lut(
-  i,
-  t,
-  {
-    A: e,
-    J0: s,
-    JT: n,
-    E0: o,
-    y0: a,
-    yT: r,
-    JN: l,
-    JS: c,
-    straight: h,
-    sOf: f,
-  },
-) {
-  let u = i.edges.find((L) => L.ja === l.id),
-    d = i.edges.find((L) => L.jb === c.id),
-    p = u ? u.P[2] : l.y,
-    m = d ? d.P[d.n * 3 - 1] : c.y,
-    g = u ? u.W[0] : e.lw,
-    b = d ? d.W[d.n - 1] : e.lw,
-    x = yb([...vb, ...h(f(vb[vb.length - 1]) + 20, 1722, e.half), ...Wh], 8),
-    v = yb(
-      [...D7, ...sj, ...h(f(XS[0]) + 20, 1722, -e.half).reverse(), ...XS],
-      8,
+    u = $k(o, { ...n$(e.at(r)), y: e.lower(r) }),
+    d = $k(o, { ...n$(e.at(r)), y: e.upper(r) }),
+    p = rx(
+      [[275.3, 1005.2], ...l(e.s(275.3, 1005.2) + 12, r).slice(0)],
+      h,
+      a,
+      null,
+      60,
     ),
-    y = (L, F, N) => {
-      let B = [0];
-      for (let G = 1; G < L.length; G++)
-        B.push(
-          B[G - 1] + Math.hypot(L[G][0] - L[G - 1][0], L[G][1] - L[G - 1][1]),
-        );
-      let H = B[B.length - 1],
-        O = N ? L[L.length - 1] : L[0],
-        D = F.x - O[0],
-        U = F.z - O[1];
-      L.forEach((G, q) => {
-        let W = N ? H - B[q] : B[q];
-        if (W < 120) {
-          let V = 1 - W / 120,
-            Y = V * V * (3 - 2 * V);
-          ((G[0] += D * Y), (G[1] += U * Y));
-        }
-      });
-    };
-  (aj(x, v, 2 * e.lw + e.median, [40, 0], [0, 40]), y(x, l, !0), y(v, c, !1));
-  let M = (L) => e.deck(f(L)),
-    S = wb(x, M, a, p, 150),
-    w = wb(v, M, m, r, 150),
-    z = o ? o.W[o.n - 1] : 7.2,
-    _ = (L) => {
-      let F = [0];
-      for (let N = 1; N < L.length; N++)
-        F.push(
-          F[N - 1] + Math.hypot(L[N][0] - L[N - 1][0], L[N][1] - L[N - 1][1]),
-        );
-      return F;
-    },
-    R = _(S),
-    T = _(w),
-    E = R[R.length - 1],
-    A = {
-      lanes: 3,
-      laneW: (e.lw * 2) / 3,
-      name: "Golden Gate Bridge",
-      rank: o?.rank ?? 8,
-      maxspeed: 45,
-      dist: "presidio",
-      custom: "gg",
-      way: 595194543,
-    },
-    C = (L, F, N) => F + (N - F) * Math.min(1, Math.max(0, L / 60)),
-    P = cu(i, {
-      ...A,
-      pts: S,
-      w: (L) => {
-        let F = L * 8,
-          N = E - R[L];
-        return F < 60 ? C(F, z, e.lw) : N < 60 ? C(N, g, e.lw) : e.lw;
-      },
-      ja: s.id,
-      jb: l.id,
-    }),
-    I = cu(i, {
-      ...A,
-      pts: w,
-      w: (L) => {
-        let F = T[L];
-        return F < 60 ? C(F, b, e.lw) : e.lw;
-      },
-      ja: c.id,
+    m = qu(o, { ...f, pts: p, w: 9, ja: s.id, jb: u.id, layer: 1 }),
+    g = [...l(r, 22), [243.7, 1035.7]],
+    b = rx(g, c, null, n.y, 60),
+    v = qu(o, {
+      ...f,
+      pts: b,
+      w: 9,
+      ja: d.id,
       jb: n.id,
-      way: 537838948,
+      layer: 2,
+      way: 8921938,
     });
-  ((P.W[0] = z),
-    (P.W[P.n - 1] = g),
-    (I.W[0] = b),
-    s.type === "end" && (s.type = "j"),
-    l.type === "end" && (l.type = "j"),
-    c.type === "end" && (c.type = "j"),
-    (t.gg = {
-      axis: e,
-      nb: P,
-      sb: I,
-      plaza: null,
-      R: 0,
-      C: null,
-      YP: null,
-      marin: !0,
-      median: rj(P, I),
+  (s.type === "end" && (s.type = "j"), n.type === "end" && (n.type = "j"));
+  let x = 88,
+    y = 36,
+    M = Math.asin(y / x),
+    S = Math.sqrt(x * x - y * y),
+    w = [S * Math.cos(M), S * Math.sin(M)],
+    _ = Math.atan2(w[1], w[0] - x),
+    z = [[-60, 0], [-30, 0], [0, 0], w];
+  for (let H = 1; H < 24; H++) {
+    let N = _ - (2 * _ * H) / 24;
+    z.push([x + y * Math.cos(N), y * Math.sin(N)]);
+  }
+  z.push([w[0], -w[1]], [0, 0], [-30, 0], [-60, 0]);
+  for (let H = 0; H < 4; H++) {
+    let N = [z[0]];
+    for (let D = 0; D + 1 < z.length; D++) {
+      let U = z[D],
+        G = z[D + 1];
+      N.push(
+        [U[0] * 0.75 + G[0] * 0.25, U[1] * 0.75 + G[1] * 0.25],
+        [U[0] * 0.25 + G[0] * 0.75, U[1] * 0.25 + G[1] * 0.75],
+      );
+    }
+    (N.push(z[z.length - 1]), (z = N));
+  }
+  let A = ax(
+      z.map(([H, N]) => e.at(e.portal + H, N)),
+      6,
+    ),
+    T = e.lower(r),
+    E = e.upper(r),
+    R = 0,
+    P = [0];
+  for (let H = 1; H < A.length; H++)
+    P.push((R += Math.hypot(A[H][0] - A[H - 1][0], A[H][1] - A[H - 1][1])));
+  let C = A.map((H, N) => [H[0], H[1], T + (E - T) * (P[N] / R)]),
+    I = C.length >> 1,
+    L = (H) => {
+      let N = Math.min(P[H], R - P[H]);
+      return 9 - 1.8 * Math.min(1, Math.max(0, (N - 60) / 40));
+    },
+    F = $k(o, { x: C[I][0], z: C[I][1], y: C[I][2] }),
+    O = qu(o, {
+      ...f,
+      pts: C.slice(0, I + 1),
+      w: (H) => L(H),
+      lanes: 4,
+      name: "Yerba Buena Tunnel",
+      ja: u.id,
+      jb: F.id,
+      layer: 1,
+      custom: "loop",
     }),
-    (Mb.gg = t.gg));
+    B = qu(o, {
+      ...f,
+      pts: C.slice(I),
+      w: (H) => L(H + I),
+      lanes: 4,
+      name: "Yerba Buena Tunnel",
+      ja: F.id,
+      jb: d.id,
+      layer: 1,
+      custom: "loop",
+    });
+  ((O.covered = [62, O.L + 1]),
+    (B.covered = [-1, B.L - 62]),
+    (t.bb = { axis: e, eb: m, wb: v, loop: O, loop2: B, e1: i }));
 }
+var n$ = ([o, t]) => ({ x: o, z: t });

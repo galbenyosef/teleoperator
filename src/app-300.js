@@ -1,333 +1,183 @@
 // app 300 — math
-// Lines 145919-146249 of readable/app.pretty.js (statement-aligned).
-En();
-var Xxt = new Set([
-    "motorway",
-    "motorway_link",
-    "trunk",
-    "trunk_link",
-    "primary",
-    "primary_link",
-    "secondary",
-    "secondary_link",
-    "tertiary",
-    "tertiary_link",
-    "residential",
-    "unclassified",
-  ]),
-  JJ = 1.15,
-  MI = 3;
-function Kxt(i, t, e) {
-  let s = i.lg || {
-      med: i.oneway ? 0 : i.median ? 1.6 : 0,
-      park: i.flags & 4 ? 0 : 2.3,
-      bw: tp(i),
+// Lines 146542-146722 of readable/app.pretty.js (statement-aligned).
+function stt(o, t, { rng: e = S5t, storage: s = null } = {}) {
+  if (!s)
+    try {
+      s = globalThis.localStorage;
+    } catch {}
+  let n = k5t(o, t),
+    i = null;
+  try {
+    i = JSON.parse(s?.getItem(ett) || "null");
+  } catch {}
+  let a =
+      Array.isArray(i) && i.length >= 2
+        ? n.filter((h) => Math.hypot(h.p[0] - i[0], h.p[1] - i[1]) > 600)
+        : n,
+    r = a.length ? a : n,
+    c =
+      r[Math.min(r.length - 1, Math.max(0, Math.floor(e() * r.length)))]?.p ||
+      Yp(o, t, "California Street", -1371, 385, 1, -0.08, { plateau: !0 });
+  try {
+    s?.setItem(ett, JSON.stringify(c));
+  } catch {}
+  return c;
+}
+function ntt(o, t, e, s) {
+  let n = TM(o, t, s[0], s[1], { world: e });
+  return n ? [n.x, n.z, n.psi] : null;
+}
+await No();
+var E_ = {
+    motorway: 27,
+    motorway_link: 17,
+    trunk: 14.5,
+    trunk_link: 12,
+    primary: 13.5,
+    primary_link: 11,
+    secondary: 12.5,
+    secondary_link: 10,
+    tertiary: 11.5,
+    tertiary_link: 10,
+    residential: 9.5,
+    unclassified: 9,
+    busway: 11,
+  },
+  z5t = new Set(Object.keys(E_).filter((o) => o !== "busway")),
+  _5t = {
+    motorway: 1,
+    trunk: 1,
+    primary: 1,
+    secondary: 0.9,
+    tertiary: 0.7,
+    residential: 0.25,
+    unclassified: 0.2,
+  },
+  E5t = {
+    fidi: 1.6,
+    towers: 1.6,
+    union: 1.7,
+    tenderloin: 1.6,
+    chinatown: 1.3,
+    jackson: 1.3,
+    soma: 1.5,
+    mission: 1.3,
+    northbeach: 1.2,
+    wharf: 1.2,
+    marina: 1.15,
+  },
+  T5t = (o) => Math.min(1, (_5t[o.cls] ?? 0.55) * (E5t[o.dist] || 1)),
+  Jp = { cycle: 36, green: 14, yellow: 3.5, allRed: 1, C: 40, Cs: 26 },
+  R5t = [-900, 700],
+  itt = { minG: 6, hold: 8, minS: 6, maxS: 12, gapS: 2 },
+  tO = {
+    get dice() {
+      return globalThis.__SIGX?.dice;
     },
-    n = Math.max(1, i.lanes),
-    o = Math.max(0, e - 1.15),
-    a = n - 1;
-  if (i.oneway) {
-    let l = Math.max((2 * (e - s.park) - (s.bw || 0)) / n, 2.6),
-      c = -(e - s.park) + l * (a + 0.5);
-    return Math.max(-o, Math.min(o, c));
-  }
-  let r = Math.max((e - s.park - s.med - (s.bw || 0)) / n, 2.6);
-  return t * Math.min(o, s.med + r * (a + 0.5));
-}
-function SI(i, t, e, s, n = void 0) {
-  if (!i) return null;
-  let o = { x: -Math.sin(s), z: -Math.cos(s) },
-    a = { x: -o.z, z: o.x },
-    r = i.near(t, e, MI + 1.5);
-  for (let c of i.dynamic || [])
-    Math.abs(c.x - t) < 9 && Math.abs(c.z - e) < 9 && r.add(c);
-  for (let c of i.parked?.awake || [])
-    Math.abs(c.x - t) < 9 && Math.abs(c.z - e) < 9 && r.add(c);
-  let l = !!Hi(t, e, 1.5);
-  for (let c of r)
-    if (
-      !(c.dead || (c.wall && l)) &&
-      !(
-        n !== void 0 &&
-        c.y1 !== void 0 &&
-        (n > c.y1 + 0.3 || n + 1.4 < c.y0)
-      ) &&
-      i.test(c, t, e, a, o, JJ, MI)
-    )
-      return c;
-  return null;
-}
-function Lw(i, t, e, s, { r: n = 70, world: o = null } = {}) {
-  let a = {},
-    r = [];
-  for (let h of i.edges) {
-    if (h.inner || h.tunnel || h.tunnelR || !Xxt.has(h.cls) || h.s1 - h.s0 < 10)
-      continue;
-    let f = h._tpb;
-    if (!f) {
-      f = h._tpb = [1e18, 1e18, -1e18, -1e18];
-      let d = h.P;
-      for (let p = 0; p < h.n; p++)
-        ((f[0] = Math.min(f[0], d[p * 3])),
-          (f[1] = Math.min(f[1], d[p * 3 + 1])),
-          (f[2] = Math.max(f[2], d[p * 3])),
-          (f[3] = Math.max(f[3], d[p * 3 + 1])));
-    }
-    if (
-      e < f[0] - n - 30 ||
-      e > f[2] + n + 30 ||
-      s < f[1] - n - 30 ||
-      s > f[3] + n + 30
-    )
-      continue;
-    vs(h, e, s, a);
-    let u = a.d - a.w;
-    u > n || r.push({ E: h, s: a.s, v: a.v, dd: u });
-  }
-  r.sort((h, f) => h.dd - f.dd);
-  let l = {},
-    c = {};
-  for (let h of r.slice(0, 16)) {
-    let f = h.E,
-      u = f.oneway || h.v >= 0 ? 1 : -1;
-    for (let d of [0, 4, -4, 8, -8, 13, -13, 19, -19, 26, -26]) {
-      let p = Math.min(f.s1 - 5, Math.max(f.s0 + 5, h.s + d));
-      (Ot(f, p, l), Ot(f, Math.min(f.L ?? f.s1, p + 0.5), c));
-      let m = c.x - l.x,
-        g = c.z - l.z,
-        b = Math.hypot(m, g) || 1;
-      ((m /= b), (g /= b));
-      let x = Kxt(f, u, l.w),
-        v = l.x + l.nx * x,
-        y = l.z + l.nz * x;
-      if (
-        (t.inWorld && !t.inWorld(v, y) && !f.elev) ||
-        t.surfaceAt(v, y) !== "road"
-      )
-        continue;
-      let M = t.driveHeight(v, y);
-      if (Math.abs(M - l.y) > 0.7) continue;
-      let S = Math.atan2(-m * u, -g * u);
-      if (!SI(o, v, y, S, M))
-        return {
-          x: v,
-          z: y,
-          y: M,
-          psi: S,
-          E: f,
-          s: p,
-          dir: u,
-          d: Math.hypot(v - e, y - s),
-          name: f.name || "",
-        };
-    }
-  }
-  return null;
-}
-var Yxt = `
-#teleFade { position: fixed; inset: 0; z-index: 13; background: #050607; opacity: 0; pointer-events: none; transition: opacity .22s ease; }
-#teleFade.on { opacity: 1; pointer-events: auto; }
-#teleFade b { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 600 11px "JetBrains Mono", ui-monospace, monospace; letter-spacing: .2em; color: rgba(243,244,241,.55); text-transform: uppercase; }
-`,
-  z_ = class {
-    constructor({
-      map: t,
-      v: e,
-      R: s,
-      world: n,
-      traffic: o = null,
-      cc: a = null,
-      rides: r = () => null,
-      taxi: l = () => null,
-      fares: c = () => !1,
-      toast: h = () => {},
-    }) {
-      if (
-        ((this.map = t),
-        (this.v = e),
-        (this.R = s),
-        (this.world = n),
-        (this.traffic = o),
-        (this.cc = a),
-        (this.rides = r),
-        (this.taxi = l),
-        (this.fares = c),
-        (this.toast = h),
-        (this.on = !1),
-        (this.t = 0),
-        (this.target = null),
-        (this.readyN = 0),
-        (this.log = []),
-        (this.input = {
-          throttle: 0,
-          brake: 0,
-          steer: 0,
-          handbrake: 0,
-          nitro: 0,
-        }),
-        !s || !t || !t.P)
-      )
-        return;
-      let f = document.createElement("style");
-      ((f.textContent = Yxt),
-        document.head.appendChild(f),
-        (this.fade = document.createElement("div")),
-        (this.fade.id = "teleFade"),
-        (this.fade.innerHTML = "<b>Teleporting\u2026</b>"),
-        document.body.appendChild(this.fade),
-        (t.onPick = (u, d, p) => this.pick(u, d, p)),
-        (t.onPickGo = (u) => this.go(u)));
-    }
-    blocked(t, e, s, n) {
-      return SI(this.world, t, e, s, n);
-    }
-    cost() {
-      let t = this.rides();
-      return !t || !this.fares()
-        ? ""
-        : t.state === "ride" ||
-            t.state === "boarding" ||
-            t.state === "alighting"
-          ? "Cancels the current ride \xB7 no charge"
-          : t.state === "offer"
-            ? "Your fare will be re-offered nearby"
-            : "";
-    }
-    pick(t, e, s = 70) {
-      let n = Lw(this.R.data, this.R.layout, t, e, { r: s, world: this.world });
-      return n
-        ? ((n.sub = this.cost()), this.map.setPick?.(n), n)
-        : (this.map.setPick?.(null, "No road here - tap a street"), null);
-    }
-    go(t) {
-      if (!t || this.on) return !1;
-      let e = this.rides();
-      if (e && this.fares() && e.state !== "idle" && e.state !== "summary") {
-        let s =
-          e.state === "ride" ||
-          e.state === "boarding" ||
-          e.state === "alighting";
-        (e.cancel?.(), this.taxi()?.cancelled?.(s));
-      }
-      return (
-        this.fade?.classList.add("on"),
-        this.map.setPick?.(null),
-        this.map.open && this.map.toggle(!1),
-        (this.target = t),
-        (this.on = !0),
-        (this.t = 0),
-        (this.readyN = 0),
-        this.v.place(t.x, t.z, t.psi, t.y),
-        this.cc && (this.cc.init = !1),
-        this.traffic && (this.traffic.started = !1),
-        !0
-      );
-    }
-    pin() {
-      let t = this.v,
-        e = this.target;
-      ((t.pos.x = e.x),
-        (t.pos.z = e.z),
-        (t.psi = e.psi),
-        (t.vel.x = t.vel.z = 0),
-        (t.r = 0),
-        t.w?.fill?.(0),
-        (t.reverse = !1));
-    }
-    step(t) {
-      if (!this.on) return !1;
-      this.t += t;
-      let e = this.target,
-        s = this.R.readyAt ? this.R.readyAt(e.x, e.z) : !0;
-      if (
-        ((this.readyN = s ? this.readyN + 1 : 0),
-        (this.readyN >= 3 && this.t > 0.45) || this.t > 8)
-      ) {
-        (this.cc && (this.cc.init = !1),
-          (this.on = !1),
-          this.fade?.classList.remove("on"));
-        let n = this.traffic,
-          o = { x: -Math.sin(e.psi), z: -Math.cos(e.psi) },
-          a = { x: -o.z, z: o.x };
-        if (n?.cars && this.world)
-          for (let l of (n.colliders || []).filter(
-            (c) =>
-              c.traffic &&
-              !c.traffic.route &&
-              this.world.test(c, e.x, e.z, a, o, JJ, MI),
-          )) {
-            let c = n.cars.indexOf(l.traffic);
-            (c >= 0 && n.cars.splice(c, 1), (l.dead = !0));
-          }
-        let r = SI(this.world, e.x, e.z, e.psi, e.y);
-        (this.log.push({
-          x: e.x,
-          z: e.z,
-          t: +this.t.toFixed(2),
-          ready: s,
-          blocked: r
-            ? r.traffic
-              ? "traffic"
-              : r.parked
-                ? "parked"
-                : r.prop
-                  ? "prop " + (r.prop.kind || "")
-                  : r.t
-            : "",
-        }),
-          e.quiet || this.toast(e.name || "Teleported", "Teleported"));
-      }
-      return !0;
-    }
-  };
-var ZJ = "sf-drive.last-start",
-  Jxt = new Set([
-    "primary",
-    "secondary",
-    "tertiary",
-    "residential",
-    "unclassified",
-  ]);
-function Zxt() {
-  return globalThis.crypto?.getRandomValues
-    ? crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296
-    : Math.random();
-}
-function Qxt(i, t) {
-  let e = [],
-    s = {},
-    n = {},
-    o = {};
-  for (let a of i.edges) {
-    if (
-      !a.name ||
-      !Jxt.has(a.cls) ||
-      a.region ||
-      a.inner ||
-      a.layered ||
-      a.elev ||
-      a.tunnel ||
-      a.tunnelR ||
-      a.hwy ||
-      a.sunk ||
-      a.underpass ||
-      a.custom ||
-      a.s1 - a.s0 < 55 ||
-      (i.juns[a.ja]?.legs.length || 0) < 2 ||
-      (i.juns[a.jb]?.legs.length || 0) < 2 ||
-      (Ot(a, (a.s0 + a.s1) / 2, s),
-      Math.abs(s.gy) > 0.12 || s.w < 4.5 || !t.inWorld(s.x, s.z)) ||
-      (Ot(a, (a.s0 + a.s1) / 2 - 6, o),
-      Ot(a, (a.s0 + a.s1) / 2 + 6, n),
-      s.dx * o.dx + s.dz * o.dz < 0.9994 || s.dx * n.dx + s.dz * n.dz < 0.9994)
-    )
-      continue;
-    let r = wI(a, (a.s0 + a.s1) / 2, s.dx, s.dz),
-      l = t.probe(r[0], r[1]);
-    !l.road ||
-      l.road.J ||
-      l.road.E !== a ||
-      e.push({ id: a.id, name: a.name, p: r });
-  }
-  return e;
+    get vk() {
+      return globalThis.__SIGX?.vk;
+    },
+    get vb() {
+      return globalThis.__SIGX?.vb;
+    },
+  },
+  A5t = {
+    secondary: 1,
+    primary: 1,
+    trunk: 1,
+    tertiary: 0.6,
+    residential: 0.4,
+    unclassified: 0.35,
+    living_street: 0.25,
+    service: 0.25,
+  },
+  ott = (o, t) => {
+    let e =
+      Math.imul(o ^ 2654435769, 2246822507) ^
+      Math.imul(t + 1663821227, 3266489909);
+    return (
+      (e ^= e >>> 15),
+      (e = Math.imul(e, 739982445)),
+      (e ^= e >>> 12),
+      (e = Math.imul(e, 695872825)),
+      (e ^= e >>> 15),
+      (e >>> 0) / 4294967296
+    );
+  },
+  P5t = [
+    {
+      name: "Powell-Hyde",
+      out: [
+        ["Powell Street", "Ellis Street", -1264, 1114],
+        ["Powell Street", "Jackson Street", -1445, -10],
+        ["Hyde Street", "Jackson Street", -2167, 107],
+        ["Hyde Street", "Beach Street", -2381, -1237],
+      ],
+      back: [
+        ["Hyde Street", "Washington Street", -2152, 204],
+        ["Powell Street", "Washington Street", -1429, 88],
+      ],
+      n: 4,
+    },
+    {
+      name: "Powell-Mason",
+      out: [
+        ["Powell Street", "Ellis Street", -1264, 1114],
+        ["Powell Street", "Jackson Street", -1445, -10],
+        ["Mason Street", "Jackson Street", -1589, 14],
+        ["Taylor Street", "Taylor Street", -1913, -1077],
+      ],
+      back: [
+        ["Mason Street", "Washington Street", -1573, 112],
+        ["Powell Street", "Washington Street", -1429, 88],
+      ],
+      n: 4,
+    },
+    {
+      name: "California",
+      out: [
+        ["California Street", "Drumm Street", -257, 205],
+        ["California Street", "Van Ness Avenue", -2541, 574],
+      ],
+      back: [],
+      n: 4,
+      doubleEnded: !0,
+    },
+    {
+      name: "F Market",
+      out: [
+        ["Market Street", "Steuart Street", -132, 136],
+        ["Market Street", "Van Ness Avenue", -2270, 2254],
+      ],
+      back: [],
+      n: 6,
+      doubleEnded: !0,
+      tram: !0,
+      pref: "Market Street",
+    },
+  ];
+function eO(o) {
+  if (
+    ((o.tr =
+      !o.inner &&
+      o.ja >= 0 &&
+      o.jb >= 0 &&
+      o.ja !== o.jb &&
+      o.s1 - o.s0 > 0.05 &&
+      E_[o.cls] !== void 0),
+    (o.car = o.tr && z5t.has(o.cls)),
+    (o.cab = !!(o.flags & 16)),
+    !o.tr && !o.cab)
+  )
+    return !1;
+  let t = kf(o),
+    e = t > 0.5 && t < 0.55;
+  return (
+    (o.lg = {
+      med: o.oneway ? 0 : e ? 0.8 : t > 0.2 && t < 0.4 ? 1.6 : 0,
+      park: e ? 0.9 : o.flags & 4 ? 0 : 2.3,
+      bw: e ? 0 : Cp(o),
+    }),
+    !0
+  );
 }

@@ -1,106 +1,151 @@
 // app 375 — math
-// Lines 187490-187593 of readable/app.pretty.js (statement-aligned).
-var nN = { tree: 1, palm: 1 },
-  cwt = {
-    lamp: "medium",
-    lamp2: "medium",
-    plamp: "medium",
-    dlamp: "medium",
-    hydrant: "medium",
-    bench: "medium",
-    stop: "light",
-    meter: "light",
-    bin: "light",
-    newsbox: "light",
-    rack: "light",
-    cafe0: "light",
-    cafe1: "light",
-    cone: "light",
-    barricade: "light",
-    worksign: "light",
-    flexpost: "light",
-    signal: "heavy",
-    signalp: "heavy",
-    wpole: "heavy",
-    tree: "heavy",
-    palm: "heavy",
-    tpole: "heavy",
-    fpole: "heavy",
-    tlpole: "heavy",
-    upole: "heavy",
-    upolet: "heavy",
-    shelter: "medium",
-  };
-for (let [i, t] of Object.entries(cwt)) Pp[i] && (Pp[i].cls = t);
-var Qtt = {
-  light: { v0: 6 / 3.6, vb: 0, f: null, hit: !1, impT: 0, impact: 0, life: 20 },
-  medium: {
-    v0: 22 / 3.6,
-    vb: 18 / 3.6,
-    f: 0.08,
-    hit: !0,
-    impT: 0.15,
-    impact: 0.35,
-    life: 25,
-  },
-  heavy: {
-    v0: 40 / 3.6,
-    vb: 30 / 3.6,
-    f: 0.2,
-    hit: !0,
-    impT: 0.35,
-    impact: 0.75,
-    life: 30,
-  },
-};
-var hwt = {
-  lamp: 0.18,
-  lamp2: 0.25,
-  plamp: 0.15,
-  dlamp: 0.2,
-  hydrant: 0.2,
-  stop: 0.16,
-  signal: 0.16,
-  signalp: 0.16,
-  wpole: 0.16,
-  meter: 0.1,
-  bin: 0.32,
-  newsbox: 0.55,
-  bench: 0.45,
-  rack: 0.4,
-  cafe0: 0.55,
-  cafe1: 0.55,
-  cone: 0.22,
-  barricade: 0.6,
-  worksign: 0.35,
-  flexpost: 0.06,
-  tpole: 0.16,
-  fpole: 0.25,
-  tlpole: 0.22,
-  upole: 0.17,
-  upolet: 0.17,
-  tree: 0.3,
-  palm: 0.45,
-};
-function fwt(i, t, e) {
-  let s = i.vb ?? t.vb,
-    n = i.f ?? t.f ?? i.loss * Math.min(1, 16 / Math.max(e, 1)) ** 0.3;
-  return Math.sqrt(Math.max(0, e * e - s * s)) * (1 - n);
+// Lines 182920-183068 of readable/app.pretty.js (statement-aligned).
+es();
+Pn();
+var GB = [0.55, 0.8],
+  Lnt = 8.5;
+var Int = (o, t, e) =>
+    0.5 * (o.V.H || 1.45) * (1 - Math.cos(t) * Math.cos(e)) +
+    0.5 * o.V.bw * Math.abs(Math.sin(t)) * Math.abs(Math.cos(e)),
+  jv = new vi(),
+  Fnt = (o) =>
+    o.wreck && o.roll
+      ? 0.5 * (o.V.H || 1.45) * Math.min(1, Math.abs(Math.sin(o.roll)))
+      : 0,
+  Ont = (o) =>
+    o.wreck && o.pitch
+      ? 0.5 * (o.V.H || 1.45) * Math.min(1, Math.abs(Math.sin(o.pitch)))
+      : 0;
+function Bnt(o, t, e, s, n = null) {
+  let i = t.rb;
+  if (
+    ((t.airT = (t.airT || 0) + e),
+    (i.v.x = t.vx),
+    (i.v.z = t.vz),
+    (i.w.y = t.r),
+    Ic.set(0, i.y0, 0).applyQuaternion(i.q),
+    (i.p.x = o.x + Ic.x),
+    (i.p.z = o.z + Ic.z),
+    i.step(e, s, n, null, 1 / 120),
+    jv.setFromQuaternion(i.q, "YXZ"),
+    (o.pitch = -jv.x),
+    (o.heading = jv.y - Math.PI),
+    (o.roll = jv.z),
+    Ic.set(0, -i.y0, 0).applyQuaternion(i.q),
+    (o.x = i.p.x + Ic.x),
+    (o.z = i.p.z + Ic.z),
+    (o.y = i.p.y + Ic.y),
+    (t.vx = i.v.x),
+    (t.vz = i.v.z),
+    (t.r = i.w.y),
+    i.still < 0.35)
+  )
+    return !0;
+  let a = i.upY();
+  return (
+    (t.air = !1),
+    (t.vx = t.vz = t.r = 0),
+    a > 0.75
+      ? ((o.pitch = 0),
+        (o.roll = 0),
+        (o.y = s(o.x, o.z, o.y + 0.5)),
+        (t.flat = !1))
+      : ((t.flat = !0), (t.yOff = o.y - s(o.x, o.z, o.y + 1))),
+    (t.rb = null),
+    !1
+  );
 }
-var tet = 30,
-  uwt = 6,
-  dwt = 60,
-  eet = 9.81;
-function pwt() {
-  let t = document.createElement("canvas");
-  t.width = t.height = 64;
-  let e = t.getContext("2d"),
-    s = e.createRadialGradient(64 / 2, 64 / 2, 0, 64 / 2, 64 / 2, 64 / 2);
-  (s.addColorStop(0, "rgba(255,255,255,0.9)"),
-    s.addColorStop(0.35, "rgba(255,255,255,0.45)"),
-    s.addColorStop(1, "rgba(255,255,255,0)"),
-    (e.fillStyle = s),
-    e.fillRect(0, 0, 64, 64));
-  let n = new Sn(t);
-  return ((n.colorSpace = is), n);
+var Ic = new dt(),
+  RHt = new tn(),
+  Nnt = new dt();
+function Hnt(o, t) {
+  let e = o.wreck;
+  BO(
+    e,
+    -Math.sin(o.heading),
+    -Math.cos(o.heading),
+    t,
+    GB[0],
+    GB[1],
+    (e.aw ??= NO(o.V.L, o.V.bw, GB[1])),
+    "r",
+  );
+}
+var e6t = [
+    ["sedan", 0.31],
+    ["hatch", 0.15],
+    ["suv", 0.2],
+    ["pickup", 0.06],
+    ["van", 0.1],
+    ["taxi", 0.04],
+    ["waymo", 0.06],
+    ["boxtruck", 0.03],
+    ["stepvan", 0.025],
+    ["garbage", 0.008],
+    ["semi", 0.014],
+    ["moto", 0.03],
+  ],
+  m4 = {
+    boxtruck: { a: 1.4, T: 1.5, s0: 3.2, v: 0.85 },
+    stepvan: { a: 1.7, T: 1.4, s0: 3, v: 0.9 },
+    garbage: { a: 1.1, T: 1.7, s0: 3.5, v: 0.7 },
+    semi: { a: 0.9, T: 1.9, s0: 4, v: 0.9 },
+    moto: { a: 3.2, T: 1, s0: 2, v: 1.1 },
+  },
+  s6t = (o) =>
+    !!o && (o.hwy || (o.lanes >= 2 && /^(trunk|primary)/.test(o.cls || ""))),
+  n6t = [],
+  i6t = { m: 1 / 0, I: 1 / 0, vx: 0, vz: 0, w: 0, x: 0, z: 0 },
+  o6t = {
+    sedan: 0,
+    hatch: 1,
+    suv: 2,
+    pickup: 3,
+    van: 3,
+    taxi: 0,
+    waymo: 2,
+    police: 2,
+  },
+  a6t = ["VAN NESS AVE", "POLK ST", "STOCKTON ST", "KEARNY ST"],
+  r6t = [
+    "UNION ST",
+    "JACKSON ST",
+    "WASHINGTON ST",
+    "CLAY ST",
+    "SACRAMENTO ST",
+    "MARKET ST",
+    "BUSH ST",
+  ],
+  Lc = (o, t) => {
+    let e = o.hw >= 5.8 ? 2.3 : 0,
+      s = o.median ? 1.6 : 0,
+      n = Math.max((o.hw - e - s) / o.lanes, 2.6);
+    return s + (t + 0.5) * n;
+  },
+  l6t = (o, t) => ps[o].lanes > 1 || ns[t].lanes > 1,
+  la = (o, t, e) => (o < t ? t : o > e ? e : o),
+  g4 = [110, 420],
+  VB = 70,
+  Jf = 1.5,
+  c6t = 0.4;
+function cl(o, t, e = 1) {
+  let s = t.x - o.x,
+    n = t.z - o.z;
+  for (let i of [o, t]) {
+    let a = Math.cos(i.heading),
+      r = Math.sin(i.heading);
+    for (let [l, c, h] of [
+      [a, -r, i.V.bw / 2],
+      [r, a, i.V.L / 2],
+    ]) {
+      let f = i === o ? t : o,
+        u = Math.cos(f.heading),
+        d = Math.sin(f.heading),
+        p =
+          (Math.abs(l * u - c * d) * f.V.bw) / 2 +
+          (Math.abs(l * d + c * u) * f.V.L) / 2;
+      if (Math.abs(s * l + n * c) > (h + p) * e) return !1;
+    }
+  }
+  return !0;
 }

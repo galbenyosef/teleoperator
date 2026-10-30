@@ -1,387 +1,366 @@
 // app 311 — math
-// Lines 150406-150790 of readable/app.pretty.js (statement-aligned).
-var fo = 24,
-  yp = (i, t) => (i * 73856093) ^ (t * 19349663),
-  Cm = { spinP: 0.6, spinT: 1.2, spinK: 1.5, dwMax: 2, dwSum: 3 },
-  V_ = class {
-    constructor(t) {
-      ((this.big = []), (this.grid = new Map()));
-      for (let e of t) this.index(e);
-      ((this.hits = []),
-        (this.dynamic = []),
-        (this.onShove = null),
-        (this.onProp = null),
-        (this.parked = new j_(this)));
+// Lines 150074-150437 of readable/app.pretty.js (statement-aligned).
+var dwt = 9.81,
+  pwt = 90,
+  mwt = [
+    { id: "front", end: -1, deep: 0.36, hang: 0.24, off: 0.5 },
+    { id: "rear", end: 1, deep: 0.32, hang: 0.24, off: 0.5 },
+  ],
+  iOt = new fe(),
+  ktt = new fe(),
+  ra = new dt(),
+  ztt = new tn(),
+  gwt = new vi(),
+  U_ = class {
+    constructor(t, { scene: e = null, ground: s = null } = {}) {
+      ((this.D = t),
+        (this.scene = e),
+        (this.ground = s),
+        (this.st = null),
+        (this.loose = []));
     }
-    cells(t, e) {
-      let s =
-        t.t === "box"
-          ? [t.x0, t.z0, t.x1, t.z1]
-          : t.t === "circ"
-            ? [t.x - t.r, t.z - t.r, t.x + t.r, t.z + t.r]
-            : t.t === "poly"
-              ? t.bb
-              : [
-                  t.x - Math.max(2.6, t.hx, t.hz),
-                  t.z - Math.max(2.6, t.hx, t.hz),
-                  t.x + Math.max(2.6, t.hx, t.hz),
-                  t.z + Math.max(2.6, t.hx, t.hz),
-                ];
-      if (s[2] - s[0] > 2e3 || s[3] - s[1] > 2e3) return e(null);
-      for (let n = Math.floor(s[0] / fo); n <= Math.floor(s[2] / fo); n++)
-        for (let o = Math.floor(s[1] / fo); o <= Math.floor(s[3] / fo); o++)
-          e((n * 73856093) ^ (o * 19349663));
-    }
-    index(t) {
-      this.cells(t, (e) => {
-        if (e === null) {
-          this.big.push(t);
-          return;
-        }
-        let s = this.grid.get(e);
-        (s || this.grid.set(e, (s = [])), s.push(t));
-      });
-    }
-    unindex(t) {
-      this.cells(t, (e) => {
-        let s = e === null ? this.big : this.grid.get(e),
-          n = s ? s.indexOf(t) : -1;
-        n >= 0 && s.splice(n, 1);
-      });
-    }
-    setParked(t) {
-      if (((t = !!t), !t == !!this.parkedOff)) return 0;
-      if (!t) {
-        for (let n of [...this.parked.awake]) this.parked.sleep(n);
-        let s = new Set();
-        for (let n of this.grid.values()) for (let o of n) o.parked && s.add(o);
-        for (let n of this.big) n.parked && s.add(n);
-        this.parkedOff = [...s];
-        for (let n of this.parkedOff) this.unindex(n);
-        return this.parkedOff.length;
+    attach() {
+      this.reset(0, !0);
+      let t = this.D,
+        e = t.car;
+      if (((this.st = null), !e?.root || !t.parts.length)) return;
+      (e.root.updateMatrixWorld(!0), ktt.copy(e.root.matrixWorld).invert());
+      let s = [1 / 0, 1 / 0, 1 / 0],
+        n = [-1 / 0, -1 / 0, -1 / 0];
+      for (let i of t.parts) {
+        i.rel = new fe().multiplyMatrices(ktt, i.o.matrixWorld);
+        let a =
+          i.g0.boundingBox || (i.g0.computeBoundingBox(), i.g0.boundingBox);
+        if (a)
+          for (let r of [a.min.x, a.max.x])
+            for (let l of [a.min.y, a.max.y])
+              for (let c of [a.min.z, a.max.z])
+                (ra.set(r, l, c).applyMatrix4(i.rel),
+                  (s[0] = Math.min(s[0], ra.x)),
+                  (s[1] = Math.min(s[1], ra.y)),
+                  (s[2] = Math.min(s[2], ra.z)),
+                  (n[0] = Math.max(n[0], ra.x)),
+                  (n[1] = Math.max(n[1], ra.y)),
+                  (n[2] = Math.max(n[2], ra.z)));
       }
-      let e = this.parkedOff;
-      this.parkedOff = null;
-      for (let s of e) this.index(s);
-      return e.length;
+      ((this.box = { lo: s, hi: n }),
+        (this.st = mwt.map((i) => ({
+          P: i,
+          dmg: 0,
+          side: 0,
+          state: 0,
+          piece: null,
+          beam: null,
+          ang: 0,
+          angV: 0,
+          at: -1,
+        }))));
     }
-    test(t, e, s, n, o, a, r) {
-      return t.t === "poly"
-        ? Wvt(e, s, n, o, a, r, t)
-        : t.t === "circ"
-          ? qvt(e, s, n, o, a, r, t)
-          : t.t === "box"
-            ? wZ(
-                e,
-                s,
-                n,
-                o,
-                a,
-                r,
-                (t.x0 + t.x1) / 2,
-                (t.z0 + t.z1) / 2,
-                { x: 1, z: 0 },
-                { x: 0, z: 1 },
-                (t.x1 - t.x0) / 2,
-                (t.z1 - t.z0) / 2,
-              )
-            : wZ(
-                e,
-                s,
-                n,
-                o,
-                a,
-                r,
-                t.x,
-                t.z,
-                { x: t.c, z: -t.s },
-                { x: t.s, z: t.c },
-                t.hx,
-                t.hz,
-                !!(t.parked || t.traffic),
-              );
-    }
-    trafficView(t) {
-      let e = t.line ? 1 / 0 : t.remote ? t.m : zm(t.kind),
-        s = t.V?.L ?? 4.7,
-        n = t.V?.bw ?? 1.9,
-        o = this._tv || (this._tv = {});
-      return (
-        (o.m = e),
-        (o.I = (e * (s * s + n * n)) / 12),
-        (o.x = t.x),
-        (o.z = t.z),
-        t.remote
-          ? ((o.vx = t.vx || 0), (o.vz = t.vz || 0), (o.w = t.w || 0))
-          : t.wreck
-            ? ((o.vx = t.wreck.vx), (o.vz = t.wreck.vz), (o.w = t.wreck.r))
-            : ((o.vx = -Math.sin(t.heading) * t.v),
-              (o.vz = -Math.cos(t.heading) * t.v),
-              (o.w = 0)),
-        o
-      );
-    }
-    near(t, e, s) {
-      let n = new Set(this.big);
-      for (let o = Math.floor((t - s) / fo); o <= Math.floor((t + s) / fo); o++)
-        for (
-          let a = Math.floor((e - s) / fo);
-          a <= Math.floor((e + s) / fo);
-          a++
-        ) {
-          let r = this.grid.get((o * 73856093) ^ (a * 19349663));
-          if (r) for (let l of r) n.add(l);
-        }
-      return n;
-    }
-    muAt(t, e) {
-      let s = Qr(t, e);
-      return s === "road"
-        ? 1
-        : s === "walk"
-          ? 0.95
-          : s === "median"
-            ? 0.7
-            : s === "lot"
-              ? 0.75
-              : 0.6;
-    }
-    brakeNeed(t, e, s) {
-      let n = t.S?.box,
-        o = n?.hx ?? 0.97,
-        a = n?.hz ?? 2.27,
-        r = n?.off ?? 0.15,
-        l = { x: -Math.sin(t.psi), z: -Math.cos(t.psi) },
-        c = { x: -l.z, z: l.x },
-        h = s / 2,
-        f = t.pos.x + l.x * (r + h),
-        u = t.pos.z + l.z * (r + h),
-        d = h + a + 3,
-        p = this.near(f, u, d);
-      for (let b of this.dynamic)
-        Math.abs(b.x - f) < d + 4 && Math.abs(b.z - u) < d + 4 && p.add(b);
-      for (let b of this.parked.awake)
-        Math.abs(b.x - f) < d + 4 && Math.abs(b.z - u) < d + 4 && p.add(b);
-      let m = !!Hi(t.pos.x, t.pos.z, 1.5),
-        g = [];
-      for (let b of p)
-        b.dead ||
-          b.prop ||
-          (b.wall && m) ||
-          (b.y1 !== void 0 && (t.pos.y > b.y1 + 0.3 || t.pos.y + 1.4 < b.y0)) ||
-          (this.test(b, f, u, c, l, o, h + a) && g.push(b));
-      if (!g.length) return 0;
-      for (let b = 0.5; b <= s; b += 0.75) {
-        let x = t.pos.x + l.x * (r + b),
-          v = t.pos.z + l.z * (r + b);
-        for (let y of g) {
-          if (!this.test(y, x, v, c, l, o, a)) continue;
-          let M = y.traffic,
-            S =
-              M && !M.wreck
-                ? Math.max(
-                    0,
-                    M.v *
-                      (-Math.sin(M.heading) * l.x - Math.cos(M.heading) * l.z),
-                  )
-                : 0,
-            w = e - S;
-          if (w > 0.5) return (w * w) / (2 * Math.max(0.3, b - 0.5));
-        }
+    hit(t, e) {
+      if (!this.st || this.off) return;
+      let { lo: s, hi: n } = this.box;
+      for (let i of this.st) {
+        let a = i.P.end < 0 ? s[2] : n[2];
+        Math.abs(t.z - a) > 1.1 ||
+          ((i.dmg += e), (i.side += Math.sign(t.x || 0.001) * e));
       }
-      return 0;
     }
-    collide(t, e = 1 / 120) {
-      this.parked.awake.length && this.parked.step(e);
-      let s = t.S?.box,
-        n = s?.hx ?? 0.97,
-        o = s?.hz ?? 2.27,
-        a = s?.off ?? 0.15,
-        r = { x: -Math.sin(t.psi), z: -Math.cos(t.psi) },
-        l = { x: -r.z, z: r.x },
-        c = t.pos.x + r.x * a,
-        h = t.pos.z + r.z * a,
-        f = 0;
-      for (let u = 0; u < 3; u++) {
-        let d = null,
-          p = this.near(c, h, Math.max(3.5, o + 1.2));
-        for (let g of this.dynamic)
-          Math.abs(g.x - c) < 8 && Math.abs(g.z - h) < 8 && p.add(g);
-        for (let g of this.parked.awake)
-          Math.abs(g.x - c) < 8 && Math.abs(g.z - h) < 8 && p.add(g);
-        for (let g of p)
-          if (g.mv) {
-            let b = Math.max(0, Math.min(0.12, (t.simT || 0) - g.st0));
-            ((g.x = g.x0 + g.vx * b),
-              (g.z = g.z0 + g.vz * b),
-              (g.traffic.x = g.x),
-              (g.traffic.z = g.z));
+    settle(t, e, s = !1) {
+      if (this.st)
+        for (let n of this.st) {
+          if (n.state < 1 && n.dmg >= n.P.hang) {
+            if (!this.cut(n)) {
+              n.state = 3;
+              continue;
+            }
+            ((n.state = 1), (n.angV = 2.5));
           }
-        let m = !!Hi(t.pos.x, t.pos.z, 1.5);
-        for (let g of p) {
-          if (
-            g.dead ||
-            (g.wall && m) ||
-            (g.y1 !== void 0 && (t.pos.y > g.y1 + 0.3 || t.pos.y + 1.4 < g.y0))
-          )
-            continue;
-          let b = this.test(
-            g,
-            t.pos.x + r.x * a,
-            t.pos.z + r.z * a,
-            l,
-            r,
-            n,
-            o,
-          );
-          if (
-            (b &&
-              g.raceWall &&
-              g.nx !== void 0 &&
-              (b = Gvt(b, g, t.pos.x + r.x * a, t.pos.z + r.z * a, l, r, n, o)),
-            b && g.prop && this.onProp?.(g, t, b))
-          ) {
-            f = Math.max(f, 0.08);
-            continue;
-          }
-          b && (!d || b.d > d.d) && ((d = b), (b.c = g));
+          n.state === 1 &&
+            n.dmg >= n.P.off &&
+            ((n.state = 2), (n.at = e), this.tearOff(n, t, s));
         }
-        if (!d) break;
-        f = Math.max(
-          f,
-          d.c.parked || d.c.traffic
-            ? this.respondCar(t, d)
-            : this.respond(t, d),
-        );
+    }
+    cut(t) {
+      let e = this.D,
+        { lo: s, hi: n } = this.box,
+        i = t.P,
+        a = i.end < 0 ? s[2] : n[2],
+        r = s[1] + 0.45 * (n[1] - s[1]),
+        l = (P) => (i.end < 0 ? P < a + i.deep : P > a - i.deep),
+        c = [],
+        h = [],
+        f = new Map();
+      for (let P of e.parts) {
+        let C = P.p0.length < 900;
+        if (C) {
+          if (!P.cen) {
+            P.cen = [0, 0, 0];
+            for (let J = 0; J < P.p0.length; J += 3)
+              ((P.cen[0] += P.p0[J]),
+                (P.cen[1] += P.p0[J + 1]),
+                (P.cen[2] += P.p0[J + 2]));
+            P.cen = P.cen.map((J) => J / (P.p0.length / 3));
+          }
+          if ((ra.set(...P.cen).applyMatrix4(P.rel), !l(ra.z) || ra.y > r))
+            continue;
+        }
+        let I = P.g || P.g0,
+          L = I.index?.array,
+          F = L ? L.length : P.p0.length / 3,
+          O = P.rel,
+          B = (J) => (
+            ra
+              .set(P.p0[J * 3], P.p0[J * 3 + 1], P.p0[J * 3 + 2])
+              .applyMatrix4(O),
+            l(ra.z) && ra.y <= r
+          ),
+          H = [];
+        for (let J = 0; J < F; J += 3) {
+          let X = L ? L[J] : J,
+            tt = L ? L[J + 1] : J + 1,
+            Z = L ? L[J + 2] : J + 2;
+          (X === tt && tt === Z) ||
+            ((C || (B(X) && B(tt) && B(Z))) && H.push(J));
+        }
+        if (!H.length || !e.own(P)) continue;
+        let N = P.g;
+        if (!P.ownIdx) {
+          P.ownIdx = !0;
+          let J = N.index?.array,
+            X = P.p0.length / 3,
+            tt = new Uint32Array(J ? J.length : X);
+          if (J) tt.set(J);
+          else for (let Z = 0; Z < X; Z++) tt[Z] = Z;
+          ((P.idx0 = J || null), (P.iota = !J), N.setIndex(new Te(tt, 1)));
+        }
+        let D = N.index.array,
+          U = new yn().getNormalMatrix(O),
+          G = Array.isArray(P.o.material) ? P.o.material : null,
+          W = Object.entries(N.attributes).filter(
+            ([J]) => J !== "position" && J !== "normal",
+          ),
+          V = N.attributes.position.array,
+          $ = N.attributes.normal.array;
+        for (let J of H) {
+          let X = D[J],
+            tt = G
+              ? G[
+                  (
+                    N.groups.find(
+                      (q) => J >= q.start && J < q.start + q.count,
+                    ) || N.groups[0]
+                  )?.materialIndex ?? 0
+                ]
+              : P.o.material,
+            Z = f.get(tt);
+          Z ||
+            f.set(
+              tt,
+              (Z = {
+                pos: [],
+                nrm: [],
+                at: Object.fromEntries(
+                  W.map(([q, j]) => [q, { n: j.itemSize, v: [] }]),
+                ),
+              }),
+            );
+          for (let q of [D[J], D[J + 1], D[J + 2]]) {
+            (ra.set(V[q * 3], V[q * 3 + 1], V[q * 3 + 2]).applyMatrix4(O),
+              Z.pos.push(ra.x, ra.y, ra.z),
+              ra
+                .set($[q * 3], $[q * 3 + 1], $[q * 3 + 2])
+                .applyMatrix3(U)
+                .normalize(),
+              Z.nrm.push(ra.x, ra.y, ra.z));
+            for (let [j, K] of W) {
+              let nt = Z.at[j];
+              nt &&
+                (nt.v.push(K.getX(q)),
+                K.itemSize > 1 && nt.v.push(K.getY(q)),
+                K.itemSize > 2 && nt.v.push(K.getZ(q)),
+                K.itemSize > 3 && nt.v.push(K.getW(q)));
+            }
+          }
+          D[J + 1] = D[J + 2] = X;
+        }
+        ((N.index.needsUpdate = !0), (P.dirty = !0), (P.cut = !0));
       }
-      return f;
+      if (!f.size) return !1;
+      let u = new le();
+      u.name = "Panel_" + i.id;
+      let d = t.side >= 0 ? 1 : -1,
+        p = new dt(-d * n[0] * 0.9, r, a);
+      u.position.copy(p);
+      for (let [P, C] of f) {
+        let I = new Le(),
+          L = new Float32Array(C.pos);
+        for (let O = 0; O < L.length; O += 3)
+          ((L[O] -= p.x), (L[O + 1] -= p.y), (L[O + 2] -= p.z));
+        (I.setAttribute("position", new Te(L, 3)),
+          I.setAttribute("normal", new Te(new Float32Array(C.nrm), 3)));
+        for (let [O, B] of Object.entries(C.at))
+          I.setAttribute(O, new Te(new Float32Array(B.v), B.n));
+        (I.computeBoundingBox(), I.computeBoundingSphere());
+        let F = new ye(I, P);
+        ((F.castShadow = !0), u.add(F));
+      }
+      ((u.userData.side = d), e.car.root.add(u), (t.piece = u));
+      let m = 1 / 0,
+        g = -1 / 0,
+        b = 1 / 0,
+        v = -1 / 0,
+        x = 1 / 0,
+        y = -1 / 0;
+      for (let P of f.values())
+        for (let C = 0; C < P.pos.length; C += 3)
+          ((m = Math.min(m, P.pos[C])),
+            (g = Math.max(g, P.pos[C])),
+            (b = Math.min(b, P.pos[C + 1])),
+            (v = Math.max(v, P.pos[C + 1])),
+            (x = Math.min(x, P.pos[C + 2])),
+            (y = Math.max(y, P.pos[C + 2])));
+      let M = new le();
+      M.name = "CrashBeam_" + i.id;
+      let S = new me({ color: 1316118, roughness: 0.8, metalness: 0.1 }),
+        w = new me({ color: 2763823, roughness: 0.45, metalness: 0.7 }),
+        _ = g - m,
+        z = v - b,
+        A = y - x,
+        T = i.end < 0 ? y : x,
+        E = new ye(new Is(_ * 0.86, z * 0.78, A * 0.9 + 0.2), S);
+      (E.position.set((m + g) / 2, b + z * 0.5, T - i.end * (A * 0.45 - 0.1)),
+        M.add(E));
+      let R = new ye(new Is(_ * 0.92, Math.min(0.14, z * 0.3), 0.12), w);
+      (R.position.set((m + g) / 2, b + z * 0.42, T + i.end * (A * 0.55)),
+        M.add(R));
+      for (let P of M.children) P.castShadow = !0;
+      return (e.car.root.add(M), (t.beam = M), !0);
     }
-    pushLog(t, e, s, n) {
-      let o = t._push || (t._push = { x: 0, z: 0, n: 0, c: null });
-      ((o.x += e.x * s), (o.z += e.z * s), o.n++, (o.c = n));
-    }
-    respond(t, e) {
-      let s = e.n,
-        n = t.S.mass,
-        o = t.S.izz;
-      ((t.pos.x += s.x * (e.d + 0.002)),
-        (t.pos.z += s.z * (e.d + 0.002)),
-        this.pushLog(t, s, e.d, e.c));
-      let a = e.px - t.pos.x,
-        r = e.pz - t.pos.z,
-        l = t.r,
-        c = t.vel.x + l * r,
-        h = t.vel.z - l * a,
-        f = c * s.x + h * s.z;
-      if (f >= 0) return 0;
-      let u = r * s.x - a * s.z,
-        d = !!e.c?.raceWall,
-        m =
-          (-(1 + (d || f > -1.5 ? 0 : Math.min(0.35, 0.1 + -f * 0.012))) * f) /
-          (1 / n + (u * u) / o);
+    tearOff(t, e, s) {
+      let n = t.piece;
+      if (!n) return;
       if (
-        ((t.vel.x += (m * s.x) / n),
-        (t.vel.z += (m * s.z) / n),
-        (t.r += ((m * u) / o) * (d ? 0.15 : 0.3)),
-        d)
+        s &&
+        this.loose.some((u) => u.id === t.P.id && u.at < (e?.dents ?? 0))
       ) {
-        let S = t.vel.x * s.x + t.vel.z * s.z;
-        S > 0.3 && ((t.vel.x -= s.x * (S - 0.3)), (t.vel.z -= s.z * (S - 0.3)));
+        (n.removeFromParent(), (t.piece = null));
+        return;
       }
-      let g = -s.z,
-        b = s.x,
-        x = (t.vel.x + l * r) * g + (t.vel.z - l * a) * b,
-        v = d ? 0.08 : 0.18,
-        y = Math.max(-v * m, Math.min(v * m, -x * n * 0.5));
-      ((t.vel.x += (y * g) / n), (t.vel.z += (y * b) / n));
-      let M = Math.min(1, -f / 14);
-      return (
-        M > 0.05 && ((t.impact = Math.max(t.impact, M)), (t.drift *= 0.5)),
-        -f > 6 && (t.impactT = Math.max(t.impactT || 0, 0.25)),
-        M > 0.05 && (t.impactN = { x: s.x, z: s.z, s: M }),
-        this.hit(e, M, !1, !1, -f, Math.abs(x)),
-        M
-      );
+      n.updateMatrixWorld(!0);
+      let i = n.matrixWorld.clone();
+      (n.removeFromParent(),
+        i.decompose(n.position, n.quaternion, n.scale),
+        (this.scene || this.D.car.root.parent)?.add(n));
+      let a = e?.impactN || { x: 0, z: 0 },
+        r = (e?.vel?.x || 0) * 0.3 + a.x * 1.2,
+        l = (e?.vel?.z || 0) * 0.3 + a.z * 1.2,
+        c = Math.hypot(r, l),
+        h = c > 4 ? 4 / c : 1,
+        f = {
+          id: t.P.id,
+          at: t.at,
+          o: n,
+          t: 0,
+          rest: !1,
+          vel: new dt(r * h, 1.4, l * h),
+          w: new dt(
+            (Math.random() - 0.5) * 6,
+            (Math.random() - 0.5) * 4,
+            (Math.random() - 0.5) * 6,
+          ),
+        };
+      (this.loose.push(f), (t.piece = null));
     }
-    tangent(t, e, s, n) {
-      let o = n.px - t.x,
-        a = n.pz - t.z,
-        r = t.vx + t.w * a - (e ? e.vx + e.w * (n.pz - e.z) : 0),
-        l = t.vz - t.w * o - (e ? e.vz - e.w * (n.px - e.x) : 0);
-      return Math.abs(r * -s.z + l * s.x);
-    }
-    hit(t, e, s, n = !1, o = e * 14, a = 0) {
-      (this.hits.push({
-        x: t.px,
-        z: t.pz,
-        s: e,
-        t: performance.now(),
-        car: s,
-        parked: n,
-        v: o,
-        vt: a,
-        nx: t.n.x,
-        nz: t.n.z,
-        C: t.c,
-      }),
-        this.hits.length > 16 && this.hits.shift());
-    }
-    respondCar(t, e) {
-      let s = e.c,
-        n = e.n,
-        o = this.parked,
-        a = s.traffic,
-        r = a ? this.trafficView(a) : o.view((s.b || o.wake(s), s)),
-        l = a ? !!a.wreck && !a.bot && r.m < 1 / 0 : !0,
-        c = l ? 1 / t.S.mass / (1 / t.S.mass + 1 / r.m) : 1;
-      if (
-        ((t.pos.x += n.x * (e.d * c + 0.002)),
-        (t.pos.z += n.z * (e.d * c + 0.002)),
-        this.pushLog(t, n, e.d * c, s),
-        c < 1)
-      ) {
-        let v = e.d * (1 - c);
-        ((s.x -= n.x * v),
-          (s.z -= n.z * v),
-          a && ((a.x -= n.x * v), (a.z -= n.z * v)),
-          (r.x = s.x),
-          (r.z = s.z));
+    update(t, e) {
+      if (this.st)
+        for (let s of this.st) {
+          let n = s.piece;
+          if (!n || s.state !== 1) continue;
+          let i = 0.24 * Math.min(1.6, s.dmg / s.P.hang),
+            a = (e?.ax || 0) * 0.01 * s.P.end + (e?.ay || 0) * 0.006;
+          ((s.angV += ((i - s.ang) * 60 - s.angV * 5 + a * 60) * t),
+            (s.ang += s.angV * t),
+            n.rotation.set(
+              0.12 * Math.min(1, s.ang / 0.24) * -s.P.end,
+              0,
+              s.ang * n.userData.side,
+              "XYZ",
+            ),
+            (n.position.y =
+              this.box.lo[1] +
+              0.45 * (this.box.hi[1] - this.box.lo[1]) -
+              0.04 * Math.min(1, s.ang / 0.24)));
+        }
+      for (let s = this.loose.length - 1; s >= 0; s--) {
+        let n = this.loose[s],
+          i = n.o;
+        if (((n.t += t), n.t > pwt)) {
+          (i.removeFromParent(), this.dispose(i), this.loose.splice(s, 1));
+          continue;
+        }
+        if (n.rest) continue;
+        ((n.vel.y -= dwt * t),
+          i.position.addScaledVector(n.vel, t),
+          ztt.setFromEuler(gwt.set(n.w.x * t, n.w.y * t, n.w.z * t)),
+          i.quaternion.premultiply(ztt),
+          i.updateMatrixWorld(!0));
+        let a = 1 / 0;
+        for (let l of i.children) {
+          let c = l.geometry.boundingBox;
+          for (let h of [c.min.x, c.max.x])
+            for (let f of [c.min.y, c.max.y])
+              for (let u of [c.min.z, c.max.z])
+                (ra.set(h, f, u).applyMatrix4(l.matrixWorld),
+                  (a = Math.min(a, ra.y)));
+        }
+        let r = this.ground
+          ? this.ground(i.position.x, i.position.z, i.position.y + 1)
+          : 0;
+        Number.isFinite(r) &&
+          a < r &&
+          ((i.position.y += r - a),
+          n.vel.y < 0 && (n.vel.y *= -0.25),
+          (n.vel.x *= Math.max(0, 1 - 4 * t)),
+          (n.vel.z *= Math.max(0, 1 - 4 * t)),
+          n.w.multiplyScalar(Math.max(0, 1 - 5 * t)),
+          Math.hypot(n.vel.x, n.vel.z) < 0.15 &&
+            Math.abs(n.vel.y) < 0.6 &&
+            (n.rest = !0));
       }
-      let h = this._pv || (this._pv = {});
-      ((h.m = t.S.mass),
-        (h.I = t.S.izz),
-        (h.vx = t.vel.x),
-        (h.vz = t.vel.z),
-        (h.w = h.w0 = t.r),
-        (h.x = t.pos.x),
-        (h.z = t.pos.z));
-      let f = e.px - h.x,
-        u = e.pz - h.z,
-        d =
-          (h.vx + h.w * u - r.vx - r.w * (e.pz - r.z)) * n.x +
-          (h.vz - h.w * f - r.vz + r.w * (e.px - r.x)) * n.z;
-      if ((a || o.moved.add(s), d >= 0)) return 0;
-      let p =
-          d > -1.5 ? 0 : 0.2 - 0.1 * Math.min(1, Math.max(0, (-d - 8) / 20)),
-        m = Iu(h, r, n, e.px, e.pz, p, 0.15, Cm.spinP, a ? Cm.spinT : Cm.spinK);
-      t.impactT > 0 || (t._dw = 0);
-      let g = Math.max(-Cm.dwMax, Math.min(Cm.dwMax, h.w - h.w0)),
-        b = Math.max(-Cm.dwSum, Math.min(Cm.dwSum, (t._dw || 0) + g));
-      ((t.vel.x = h.vx),
-        (t.vel.z = h.vz),
-        (t.r = h.w0 + b - (t._dw || 0)),
-        (t._dw = b),
-        a
-          ? this.onShove && this.onShove(a, m * n.x, m * n.z, e.px, e.pz)
-          : o.kick(s, -m * n.x, -m * n.z));
-      let x = Math.min(1, -d / 14);
-      return (
-        x > 0.05 && ((t.impact = Math.max(t.impact, x)), (t.drift *= 0.5)),
-        -d > 2 &&
-          (t.impactT = Math.max(t.impactT || 0, 0.4 * Math.min(1, -d / 8))),
-        x > 0.05 && (t.impactN = { x: n.x, z: n.z, s: x }),
-        this.hit(e, x, !0, !a, -d, this.tangent(h, r, n, e)),
-        x
-      );
+    }
+    reset(t, e = !1) {
+      let s = this.D;
+      for (let n of s.parts)
+        if (n.cut && n.g) {
+          let i = n.g.index.array;
+          if (n.iota) for (let a = 0; a < i.length; a++) i[a] = a;
+          else i.set(n.idx0);
+          ((n.g.index.needsUpdate = !0), (n.dirty = !0), (n.cut = !1));
+        }
+      if (this.st)
+        for (let n of this.st)
+          (n.piece && (n.piece.removeFromParent(), this.dispose(n.piece)),
+            n.beam && (n.beam.removeFromParent(), this.dispose(n.beam)),
+            Object.assign(n, {
+              dmg: 0,
+              side: 0,
+              state: 0,
+              piece: null,
+              beam: null,
+              ang: 0,
+              angV: 0,
+              at: -1,
+            }));
+      for (let n = this.loose.length - 1; n >= 0; n--) {
+        let i = this.loose[n];
+        (e || t === 0 || i.at >= t) &&
+          (i.o.removeFromParent(), this.dispose(i.o), this.loose.splice(n, 1));
+      }
+    }
+    dispose(t) {
+      let e = t.name.startsWith("CrashBeam");
+      t.traverse((s) => {
+        s.isMesh && (s.geometry.dispose(), e && s.material.dispose());
+      });
     }
   };

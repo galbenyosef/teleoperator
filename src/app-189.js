@@ -1,344 +1,248 @@
 // app 189 — math
-// Lines 107249-107590 of readable/app.pretty.js (statement-aligned).
-function n$(i, t, e, s) {
-  if (i.hide) return;
-  if ($l) {
-    let c = ZV($l, i);
-    c && (t = t$(t, i, c));
-  }
-  let n = YV(i, s),
-    o = (i.tcut ? Math.min(i.top - i.rh, i.tcut) : i.top - i.rh) + QV(i),
-    a = Math.max(
-      i.minh > 0 ? i.minh : i.st === 7 ? -2.5 : i.base - 0.3,
-      i.cut || -1e9,
-    ),
-    r = n.st === 6 ? (n.glass ? 5 : [3, 4][n.office % 2]) : (VV[n.st] ?? 1),
-    l = [...n.wall, (r + 0.5) / 16];
-  for (let c of i.rings) {
-    let h = c.length / 2,
-      f = Cn(i.seed, 6) * 40;
-    for (let u = 0; u < h; u++) {
-      let d = c[u * 2],
-        p = c[u * 2 + 1],
-        m = c[((u + 1) % h) * 2],
-        g = c[((u + 1) % h) * 2 + 1];
-      (t.wall(d, p, m, g, a, a, o, o, l, f, i.base),
-        (f += Math.hypot(m - d, g - p)));
-    }
-  }
-  i.tcut ||
-    (i.rs
-      ? s$(
-          n.st === 6 ? t : e,
-          i,
-          o,
-          n.st === 6
-            ? l
-            : i.roofCol
-              ? [...i.roofCol.slice(0, 3).map((c) => c * 0.85), 0]
-              : i.tile
-                ? [...$V.slice(0, 3).map((c) => c * 0.85), 0]
-                : [...jV[i.seed % 3].map((c) => c * 0.45), 0],
-          n.st === 6,
-        )
-      : Hb(e, i.rings, o, kP(i, n).far, !0));
-}
-function EP(i) {
-  if (i.minh > i.base + 3) return null;
-  let t = i.rings[0],
-    e = 1e9,
-    s = 1e9,
-    n = -1e9,
-    o = -1e9;
-  for (let a = 0; a < t.length; a += 2)
-    ((e = Math.min(e, t[a])),
-      (n = Math.max(n, t[a])),
-      (s = Math.min(s, t[a + 1])),
-      (o = Math.max(o, t[a + 1])));
-  return { t: "poly", pts: t, bb: [e, s, n, o], y0: i.base - 2, y1: i.top };
-}
-var i$ = Math.PI / 180,
-  bk = [
-    { id: 260519113, name: "Sing Chong", floors: 4 },
-    { id: 260208816, name: "Sing Fat", floors: 4 },
-  ],
-  o$ = [-1096, 341],
-  mu = { o: [-1246.3, 1222], n: [-Math.sin(9.3 * i$), -Math.cos(9.3 * i$)] };
-mu.e = [-mu.n[1], mu.n[0]];
-var Ji = { c: [-1098, -813], r0: 5.2, r1: 19 },
-  Bpt = [
-    ["Drumm Street", 1, -14],
-    ["Main Street", -1, -16],
-    ["Front Street", 1, 14],
-    ["Beale Street", -1, 14],
-    ["Sutter Street", 1, -14],
-    ["2nd Street", -1, 16],
-    ["Montgomery Street", 1, -16],
-    ["New Montgomery Street", -1, 18],
-    ["Kearny Street", 1, -18],
-    ["4th Street", -1, 14],
-    ["Stockton Street", 1, -14],
-    ["5th Street", -1, -16],
-    ["7th Street", -1, 14],
-    ["Charles J. Brenham Place", 1, -12],
-    ["8th Street", -1, 16],
-    ["Grove Street", 1, -14],
-    ["Van Ness Avenue", 1, 16],
-    ["South Van Ness Avenue", -1, 16],
-    ["Church Street", 1, 14],
-    ["Church Street", -1, -14],
-  ],
-  Opt = [
-    ["Main Street", -230.626, 242.016, 0.707, -0.707, 0.707, 0.707, 3.391],
-    ["Front Street", -411.932, 393.547, 0.708, -0.706, -0.706, -0.708, 4.194],
-    ["Sutter Street", -570.184, 551.304, 0.704, -0.71, -0.71, -0.704, 7.169],
-    ["2nd Street", -666.98, 683.33, 0.714, -0.701, 0.701, 0.714, 9.558],
-    [
-      "Montgomery Street",
-      -787.285,
-      768.007,
-      0.703,
-      -0.711,
-      -0.711,
-      -0.703,
-      11.511,
-    ],
-    [
-      "New Montgomery Street",
-      -756.122,
-      776.307,
-      0.703,
-      -0.711,
-      0.711,
-      0.703,
-      10.767,
-    ],
-    ["Kearny Street", -916.037, 896.293, 0.705, -0.709, -0.709, -0.705, 13.97],
-    ["4th Street", -1102.276, 1118.825, 0.708, -0.706, 0.706, 0.708, 12.635],
-    [
-      "Stockton Street",
-      -1130.578,
-      1110.249,
-      0.708,
-      -0.706,
-      -0.706,
-      -0.708,
-      12.558,
-    ],
-    ["5th Street", -1302.519, 1319.714, 0.709, -0.705, 0.705, 0.709, 11.177],
-    ["7th Street", -1646.475, 1662.027, 0.66, -0.752, 0.752, 0.66, 13.394],
-    [
-      "Charles J. Brenham Place",
-      -1677.37,
-      1653.517,
-      0.66,
-      -0.752,
-      -0.752,
-      -0.66,
-      13.378,
-    ],
-    ["8th Street", -1880.836, 1896.212, 0.707, -0.707, 0.707, 0.707, 16.592],
-    [
-      "Van Ness Avenue",
-      -2250.703,
-      2223.167,
-      0.716,
-      -0.698,
-      -0.698,
-      -0.716,
-      16.739,
-    ],
-    [
-      "South Van Ness Avenue",
-      -2230.111,
-      2244.291,
-      0.716,
-      -0.698,
-      0.698,
-      0.716,
-      16.614,
-    ],
-    ["Church Street", -3092.612, 3098.296, -0.198, -0.98, 0.98, -0.198, 30.126],
-  ],
-  Hpt = () =>
-    Opt.map(([i, t, e, s, n, o, a, r]) => ({
-      name: i,
-      c: [t, e],
-      u: [s, n],
-      n: [o, a],
-      y: r,
-      hw: 1.75,
-      hl: 4.1,
-    })),
-  Dpt = null;
-function Upt(i, t) {
-  if (!t?.surfaceAt) return i;
-  let e = (n) => {
-      for (let o = -1; o <= 1; o += 0.25)
-        for (let a = -1; a <= 1; a += 0.5) {
-          let r = n.c[0] + n.u[0] * n.hl * o + n.n[0] * n.hw * a,
-            l = n.c[1] + n.u[1] * n.hl * o + n.n[1] * n.hw * a;
-          if (t.surfaceAt(r, l) === "road") return !1;
-        }
-      return !0;
-    },
-    s = [];
-  for (let n of i) {
-    if (e(n)) {
-      s.push(n);
-      continue;
-    }
-    let o = null;
-    for (let a = 0.5; a <= 6 && !o; a += 0.5)
-      for (let r of [1, -1]) {
-        let l = { ...n, c: [n.c[0] + n.u[0] * a * r, n.c[1] + n.u[1] * a * r] };
-        if (e(l)) {
-          o = l;
-          break;
-        }
-      }
-    o && s.push(o);
-  }
-  return s;
-}
-function h$(i, t, e = !1) {
-  return e ? Gpt(i, t) : (Dpt ||= Upt(Hpt(), t));
-}
-function Gpt(i, t) {
-  let e = i.edges.filter((a) => a.name === "Market Street" && !(a.layer > 0)),
-    s = {},
-    n = {},
-    o = [];
-  for (let [a, r, l] of Bpt) {
-    let c = null;
-    for (let w of i.edges)
-      if (w.name === a)
-        for (let z of [0, w.n - 1]) {
-          let _ = w.P[z * 3],
-            R = w.P[z * 3 + 1];
-          for (let T of e)
-            (vs(T, _, R, s),
-              s.d < 14 && (!c || s.d < c.d) && (c = { m: T, s: s.s, d: s.d }));
-        }
-    if (!c) continue;
-    Ot(c.m, Math.max(c.m.s0, Math.min(c.m.s1, c.s)), n);
-    let h = n.dx,
-      f = n.dz;
-    h - f < 0 && ((h = -h), (f = -f));
-    let u = l * (n.dx * h + n.dz * f),
-      d = Math.max(c.m.s0, Math.min(c.m.s1, c.s + u)),
-      p = null;
-    {
-      let w = n.x + h * l,
-        z = n.z + f * l,
-        _ = 1e9;
-      for (let R of e)
-        (vs(R, w, z, s),
-          s.d < _ &&
-            ((_ = s.d), (p = [R, Math.max(R.s0, Math.min(R.s1, s.s))])));
-    }
-    Ot(p[0], p[1], n);
-    let m = -f,
-      g = h;
-    (m + g > 0 && ((m = -m), (g = -g)), r < 0 && ((m = -m), (g = -g)));
-    let b = -1,
-      x = -1;
-    for (let w = 2; w < 40; w += 0.5) {
-      let z = t.surfaceAt(n.x + m * w, n.z + g * w);
-      if (z === "walk") (b < 0 && (b = w), (x = w));
-      else if (b > 0 && z !== "walk") break;
-    }
-    if (b < 0 || x - b < 6.4) continue;
-    let v = Math.min(b + 2.6 + 1.5, (b + x) / 2),
-      y = n.x + m * v,
-      M = n.z + g * v,
-      S = t.probe(y, M);
-    S.walk &&
-      o.push({
-        name: a,
-        c: [y, M],
-        u: [h, f],
-        n: [m, g],
-        y: S.walk.y,
-        hw: 1.75,
-        hl: 4.1,
-      });
-  }
-  return o;
-}
-var Wpt = (i, t, e, s, n) =>
-  [
-    [-1, -1],
-    [1, -1],
-    [1, 1],
-    [-1, 1],
-  ].map(([o, a]) => [
-    i[0] + t[0] * s * o + e[0] * n * a,
-    i[1] + t[1] * s * o + e[1] * n * a,
-  ]);
-function f$(i) {
-  i.claim({ name: "singchong", ids: bk.map((t) => t.id), poly: null });
-  for (let t of h$(i.D, i.L))
-    i.claim({
-      name: "bart",
-      poly: Wpt(t.c, t.u, t.n, t.hl + 1.2, t.hw + 0.9),
-      buildings: !1,
-    });
-  (i.claim({ name: "hallidie", ids: [128478751], poly: null }),
-    i.claim({
-      name: "hallidie",
-      poly: Ho.poly.map(([t, e]) => Ho.at(t, e)),
-      buildings: !1,
-    }),
-    i.claim({
-      name: "pioneer",
-      poly: Array.from({ length: 20 }, (t, e) => [
-        Ji.c[0] + Math.cos((e / 20) * 2 * Math.PI) * (Ji.r1 + 2.5),
-        Ji.c[1] + Math.sin((e / 20) * 2 * Math.PI) * (Ji.r1 + 2.5),
-      ]),
-      buildings: !1,
-    }));
-}
-function ra(
-  i,
+// Lines 107804-108049 of readable/app.pretty.js (statement-aligned).
+function ba(
+  o,
   t,
   e,
   s,
   n,
-  o,
+  i,
   a,
   r,
   l,
   { top: c = !0, bottom: h = !1, topCol: f = null } = {},
 ) {
   let u = (p, m, g) => [
-      t[0] + e[0] * n * p + s[0] * o * m,
+      t[0] + e[0] * n * p + s[0] * i * m,
       g,
-      t[1] + e[1] * n * p + s[1] * o * m,
+      t[1] + e[1] * n * p + s[1] * i * m,
     ],
-    d = (p, m, g, b, x) =>
-      ne(i, [p, m, g, b], l, x, (v) => [
-        v[0] * Math.abs(x[2]) + v[2] * Math.abs(x[0]) + (x[1] ? v[0] : 0),
-        x[1] ? v[2] : v[1],
+    d = (p, m, g, b, v) =>
+      oe(o, [p, m, g, b], l, v, (x) => [
+        x[0] * Math.abs(v[2]) + x[2] * Math.abs(v[0]) + (v[1] ? x[0] : 0),
+        v[1] ? x[2] : x[1],
       ]);
   (d(u(1, -1, a), u(1, 1, a), u(1, 1, r), u(1, -1, r), [e[0], 0, e[1]]),
     d(u(-1, 1, a), u(-1, -1, a), u(-1, -1, r), u(-1, 1, r), [-e[0], 0, -e[1]]),
     d(u(-1, 1, a), u(1, 1, a), u(1, 1, r), u(-1, 1, r), [s[0], 0, s[1]]),
     d(u(1, -1, a), u(-1, -1, a), u(-1, -1, r), u(1, -1, r), [-s[0], 0, -s[1]]),
     c &&
-      ne(
-        i,
+      oe(
+        o,
         [u(-1, -1, r), u(1, -1, r), u(1, 1, r), u(-1, 1, r)],
         f || l,
         [0, 1, 0],
         (p) => [p[0], p[2]],
       ),
     h &&
-      ne(
-        i,
+      oe(
+        o,
         [u(-1, -1, a), u(1, -1, a), u(1, 1, a), u(-1, 1, a)],
         l,
         [0, -1, 0],
         (p) => [p[0], p[2]],
       ));
+}
+function xz(o, t, e, s, n = 1.8) {
+  for (let i = 0; i + 1 < t.length; i++) {
+    let a = t[i],
+      r = t[i + 1],
+      l = Math.hypot(r[0] - a[0], r[2] - a[2]),
+      c = Math.max(1, Math.round(l / n));
+    (Ce(o, [a[0], a[1] + e, a[2]], [r[0], r[1] + e, r[2]], 0.035, s, 6),
+      Ce(
+        o,
+        [a[0], a[1] + e * 0.45, a[2]],
+        [r[0], r[1] + e * 0.45, r[2]],
+        0.018,
+        s,
+        4,
+      ));
+    for (let h = 0; h <= c; h++) {
+      let f = h / c;
+      (h === c && i + 2 < t.length) ||
+        Ce(
+          o,
+          [
+            a[0] + (r[0] - a[0]) * f,
+            a[1] + (r[1] - a[1]) * f,
+            a[2] + (r[2] - a[2]) * f,
+          ],
+          [
+            a[0] + (r[0] - a[0]) * f,
+            a[1] + (r[1] - a[1]) * f + e,
+            a[2] + (r[2] - a[2]) * f,
+          ],
+          0.025,
+          s,
+          4,
+        );
+    }
+  }
+}
+var pgt = {
+  B: [
+    [0, 0, 0, 1.4],
+    [0, 1.4, 0.75, 1.4],
+    [0.75, 1.4, 0.9, 1.15],
+    [0.9, 1.15, 0.75, 0.72],
+    [0, 0.72, 0.8, 0.72],
+    [0.8, 0.72, 1, 0.45],
+    [1, 0.45, 0.85, 0],
+    [0.85, 0, 0, 0],
+  ],
+  A: [
+    [0, 0, 0.5, 1.4],
+    [0.5, 1.4, 1, 0],
+    [0.22, 0.6, 0.78, 0.6],
+  ],
+  R: [
+    [0, 0, 0, 1.4],
+    [0, 1.4, 0.85, 1.4],
+    [0.85, 1.4, 1, 1.05],
+    [1, 1.05, 0.85, 0.72],
+    [0.85, 0.72, 0, 0.72],
+    [0.4, 0.72, 1, 0],
+  ],
+  T: [
+    [0, 1.4, 1, 1.4],
+    [0.5, 1.4, 0.5, 0],
+  ],
+  M: [
+    [0, 0, 0, 1.4],
+    [0, 1.4, 0.5, 0.7],
+    [0.5, 0.7, 1, 1.4],
+    [1, 1.4, 1, 0],
+  ],
+  U: [
+    [0, 1.4, 0, 0.2],
+    [0, 0.2, 0.2, 0],
+    [0.2, 0, 0.8, 0],
+    [0.8, 0, 1, 0.2],
+    [1, 0.2, 1, 1.4],
+  ],
+  N: [
+    [0, 0, 0, 1.4],
+    [0, 1.4, 1, 0],
+    [1, 0, 1, 1.4],
+  ],
+  I: [[0.5, 0, 0.5, 1.4]],
+};
+function lL(o, t, e, s, n, i, a, r = null) {
+  let l = (i / 1.4) * 0.72,
+    c = l * 0.45,
+    h = t.length * l + (t.length - 1) * c;
+  ((r = r || i * 0.13),
+    [...t].forEach((f, u) => {
+      let d = -h / 2 + u * (l + c);
+      for (let [p, m, g, b] of pgt[f] || []) {
+        let v = [d + p * l, (m / 1.4) * i],
+          x = [d + g * l, (b / 1.4) * i],
+          y = x[0] - v[0],
+          M = x[1] - v[1],
+          S = Math.hypot(y, M) || 1,
+          w = ((-M / S) * r) / 2,
+          _ = ((y / S) * r) / 2,
+          z = (A, T) => [
+            e[0] + s[0] * A + n[0] * 0.01,
+            e[1] + T,
+            e[2] + s[1] * A + n[2] * 0.01,
+          ];
+        oe(
+          o,
+          [
+            z(v[0] - w - ((y / S) * r) / 2, v[1] - _ - ((M / S) * r) / 2),
+            z(x[0] - w + ((y / S) * r) / 2, x[1] - _ + ((M / S) * r) / 2),
+            z(x[0] + w + ((y / S) * r) / 2, x[1] + _ + ((M / S) * r) / 2),
+            z(v[0] + w - ((y / S) * r) / 2, v[1] + _ - ((M / S) * r) / 2),
+          ],
+          a,
+          n,
+        );
+      }
+    }));
+}
+var mgt = Tn(ln.WIN, we.terracotta, 0.98, 0.9, 0.72),
+  iL = We(we.terracotta, 0.9, 0.82, 0.66),
+  ph = Lt(Ct.gloss, 0.5, 0.05, 0.03),
+  mK = We(we.greentile, 0.95),
+  ggt = Lt(Ct.matte, 0.1, 0.22, 0.2),
+  bgt = Lt(Ct.gold, 0.75, 0.55, 0.18),
+  cK = We(we.redbeam, 1),
+  hK = Lt(Ct.glass, 0.04, 0.045, 0.05),
+  xgt = Lt(Ct.glass, 0.06, 0.07, 0.075),
+  vgt = wn(0.95, 0.75, 0.45);
+function oL(o, t, e, s, n, i, a, r, l = 0.25) {
+  let c = Math.cos(s),
+    h = Math.sin(s),
+    f = (d, p, m) => [t + c * d - h * p, m, e + h * d + c * p],
+    u = 6;
+  for (let d = 0; d < 4; d++) {
+    let p = (m, g) => {
+      let b = d,
+        v = m,
+        x = g;
+      for (let y = 0; y < b; y++) {
+        let M = v;
+        ((v = -x), (x = M));
+      }
+      return [v, x];
+    };
+    for (let m = 0; m < u; m++)
+      for (let g = 0; g < 3; g++) {
+        let b = g / 3,
+          v = (g + 1) / 3,
+          x = m / u,
+          y = (m + 1) / u,
+          M = (_, z) => {
+            let A = n * (1 - z) + l * z,
+              T = -A + 2 * A * _,
+              E = r * Math.pow(Math.abs(_ - 0.5) * 2, 3) * (1 - z) ** 2,
+              R = i + a * (1 - Math.pow(1 - z, 1.7)) + E,
+              [P, C] = p(T, -A);
+            return f(P, C, R);
+          },
+          [S, w] = p(0, -1);
+        (oe(o, [M(x, b), M(y, b), M(y, v), M(x, v)], mK, [
+          c * S - h * w,
+          0.7,
+          h * S + c * w,
+        ]),
+          oe(
+            o,
+            [M(x, b), M(y, b), M(y, v), M(x, v)].map((_) => [
+              _[0],
+              _[1] - 0.12,
+              _[2],
+            ]),
+            g ? ggt : ph,
+            [-(c * S - h * w), -0.7, -(h * S + c * w)],
+          ));
+      }
+    for (let m = 0; m < u; m++) {
+      let g = m / u,
+        b = (m + 1) / u,
+        v = (w) => {
+          let _ = -n + 2 * n * w,
+            z = r * Math.pow(Math.abs(w - 0.5) * 2, 3),
+            [A, T] = p(_, -n);
+          return [A, T, i + z];
+        },
+        x = v(g),
+        y = v(b),
+        [M, S] = p(0, -1);
+      oe(
+        o,
+        [
+          f(x[0], x[1], x[2] - 0.3),
+          f(y[0], y[1], y[2] - 0.3),
+          f(y[0], y[1], y[2]),
+          f(x[0], x[1], x[2]),
+        ],
+        ph,
+        [c * M - h * S, 0, h * M + c * S],
+      );
+    }
+  }
+  return i + a;
 }

@@ -1,168 +1,234 @@
 // app 112 — math
-// Lines 82347-82512 of readable/app.pretty.js (statement-aligned).
-function jft({ B: i, colliders: t, inst: e }, s) {
-  let { L: n } = s,
-    o = At([0.3, 0.29, 0.27], Tt.conc),
-    a = At([0.55, 0.55, 0.56], Tt.metal),
-    r = At([0.03, 0.03, 0.03], Tt.paint),
-    l = At([0.08, 0.08, 0.08], Tt.metal),
-    c = (v, y) => {
-      let M = n.probe(v, y);
-      return (
-        M.road &&
-        !M.road.J &&
-        M.road.E &&
-        (M.road.E.flags & 16 ||
-          (M.road.E.flags & 32 && !M.road.E.median && !M.road.E.oneway))
-      );
-    },
-    h =
-      KW ||
-      (KW = Fft.concat(f7).map((v) => {
-        let y = [];
-        for (let M = 0; M < v.length; M += 2) y.push([v[M], v[M + 1]]);
-        return y;
-      })),
-    f =
-      YW ||
-      (YW = Nft.concat(Bft).map((v) => {
-        let y = [];
-        for (let M = 0; M < v.length; M += 2) y.push([v[M], v[M + 1]]);
-        return y;
-      })),
-    u = [];
-  for (let v of h.concat(f)) {
-    let y = f.includes(v),
-      M = [];
-    for (let w = 0; w + 1 < v.length; w++) {
-      let [z, _] = v[w],
-        [R, T] = v[w + 1],
-        E = Math.max(1, Math.ceil(Math.hypot(R - z, T - _) / (y ? 6 : 4)));
-      for (let A = 0; A < E; A++)
-        M.push([z + ((R - z) * A) / E, _ + ((T - _) * A) / E]);
+// Lines 82747-82978 of readable/app.pretty.js (statement-aligned).
+function m1t({ B: o, colliders: t, inst: e }, s, n) {
+  let { L: i } = s,
+    a = Rt([0.42, 0.44, 0.42], Tt.metal),
+    r = Rt([0.08, 0.08, 0.08], Tt.metal),
+    l = Rt([0.55, 0.54, 0.5], Tt.conc),
+    c = Rt([0.85, 0.7, 0.1], Tt.paint),
+    h = Rt([0.5, 0.62, 0.62], Tt.glass),
+    f = (u, d) => {
+      let p = i.probe(u, d);
+      return p.road && !p.road.J && p.road.E && !p.road.E.median;
+    };
+  for (let u of n) {
+    let d = 30,
+      p = null;
+    for (let m = 0; m + 1 < u.length; m++) {
+      let [g, b] = u[m],
+        [v, x] = u[m + 1],
+        y = Math.hypot(v - g, x - b);
+      if (y < 0.001) continue;
+      let M = (v - g) / y,
+        S = (x - b) / y,
+        w = -S,
+        _ = M;
+      for (let z = (46 - (d % 46)) % 46; z < y; z += 46) {
+        let A = g + M * z,
+          T = b + S * z,
+          E = A + w * 2.1,
+          R = T + _ * 2.1;
+        if (f(E, R) || fw(s.D, A, T, 3)) {
+          p = null;
+          continue;
+        }
+        let P = i.driveHeight(A, T),
+          C = o.get(
+            "railsR" +
+              Math.floor((E + 3e3) / 400) +
+              "_" +
+              Math.floor((R + 3e3) / 400),
+            "solid",
+          );
+        (e.push({ kind: "tlpole", x: E, y: P, z: R, rot: Math.atan2(-w, -_) }),
+          t.push({ t: "circ", x: E, z: R, r: 0.22, y0: P - 1.5, y1: P + 7 }));
+        let I = [A, P + 5.9, T];
+        (p &&
+          Math.hypot(I[0] - p[0], I[2] - p[2]) < 60 &&
+          rs(C, p, I, 0.02, 0.02, r),
+          (p = I));
+      }
+      d += y;
     }
-    M.push(v[v.length - 1]);
-    for (let w of M) w.push(n.driveHeight(w[0], w[1]) + 0.05);
-    let S = M.map((w, z) => {
-      let _ = (A, C) => {
-          let P = Math.hypot(C[0] - A[0], C[1] - A[1]) || 1;
-          return [-(C[1] - A[1]) / P, (C[0] - A[0]) / P];
-        },
-        R = _(M[Math.max(0, z - 1)], w),
-        T = _(w, M[Math.min(M.length - 1, z + 1)]);
-      if (!z) return T;
-      if (z === M.length - 1) return R;
-      let E = 1 + R[0] * T[0] + R[1] * T[1];
-      return E > 0.1 ? [(R[0] + T[0]) / E, (R[1] + T[1]) / E] : T;
-    });
-    for (let w = 0; w + 1 < M.length; w++) {
-      let [z, _, R] = M[w],
-        [T, E, A] = M[w + 1];
-      if (Math.hypot(T - z, E - _) < 0.001) continue;
-      let P = (z + T) / 2,
-        I = (_ + E) / 2;
-      if ((!y && c(P, I)) || by(s.D, P, I)) continue;
-      let L = i.get(
-          "railsR" +
-            Math.floor((P + 3e3) / 400) +
-            "_" +
-            Math.floor((I + 3e3) / 400),
-          "solid",
-        ),
-        [F, N] = S[w],
-        [B, H] = S[w + 1],
-        O = (D, U, G, q) =>
-          u.push({
-            g: L,
-            col: q,
-            points: [
-              [z + F * D, R + G, _ + N * D],
-              [T + B * D, A + G, E + H * D],
-              [T + B * U, A + G, E + H * U],
-              [z + F * U, R + G, _ + N * U],
-            ],
+  }
+  for (let [u, d] of p1t) {
+    let p = s.D.juns.find(
+      (g) =>
+        g.legs.some(([b]) => b.name === u) &&
+        g.legs.some(([b]) => b.name === d),
+    );
+    if (!p) continue;
+    let m = null;
+    for (let g of n)
+      for (let b = 0; b + 1 < g.length; b++) {
+        let [v, x] = g[b],
+          [y, M] = g[b + 1],
+          S = (y - v) ** 2 + (M - x) ** 2 || 1,
+          w = Math.max(
+            0,
+            Math.min(1, ((p.x - v) * (y - v) + (p.z - x) * (M - x)) / S),
+          ),
+          _ = Math.hypot(v + (y - v) * w - p.x, x + (M - x) * w - p.z);
+        _ < 28 &&
+          (!m || _ < m.d) &&
+          (m = {
+            d: _,
+            x: v + (y - v) * w,
+            z: x + (M - x) * w,
+            dx: (y - v) / Math.sqrt(S),
+            dz: (M - x) / Math.sqrt(S),
           });
-      if (!n.probe(P, I).road)
-        for (let [D, U] of [
-          [-1.3, -0.7575],
-          [-0.64, 0.64],
-          [0.7575, 1.3],
-        ])
-          O(D, U, -0.02, o);
-      for (let [D, U, G, q] of [
-        [0.6775, 0.7575, a, 0.006],
-        [-0.7575, -0.6775, a, 0.006],
-        [0.64, 0.6775, r, 0],
-        [-0.6775, -0.64, r, 0],
-      ])
-        O(D, U, q, G);
-    }
-  }
-  let d = (v) => (v === a ? 2 : v === r ? 1 : 0);
-  u.sort((v, y) => d(y.col) - d(v.col));
-  for (let { g: v, col: y, points: M } of sS(u)) nS(v, M, y);
-  let p = h[0],
-    m = h[1],
-    g = { P: new Float64Array(m.length * 3), W: new Float64Array(m.length) };
-  (m.forEach(([v, y], M) => {
-    ((g.P[M * 3] = v), (g.P[M * 3 + 1] = y));
-  }),
-    Xft(g));
-  let b = null,
-    x = 0;
-  for (let v = 0; v + 1 < p.length; v++) {
-    let [y, M] = p[v],
-      [S, w] = p[v + 1],
-      z = Math.hypot(S - y, w - M);
-    for (let _ = (42 - x) % 42; _ < z; _ += 42) {
-      let R = y + ((S - y) * _) / z,
-        T = M + ((w - M) * _) / z,
-        E = vs(g, R, T, {});
-      if (E.d < 2.5 || E.d > 9) {
-        b = null;
-        continue;
       }
-      let A = Ot(g, E.s, {}),
-        C = (R + A.x) / 2,
-        P = (T + A.z) / 2,
-        I = (A.x - R) / E.d,
-        L = (A.z - T) / E.d,
-        F = E.d / 2,
-        N = n.probe(C, P);
-      if (N.road && !N.road.J && !N.road.E.median) {
-        b = null;
-        continue;
-      }
-      let B = n.driveHeight(C, P),
-        H = B + 6.1,
-        O = i.get(
-          "railsR" +
-            Math.floor((C + 3e3) / 400) +
-            "_" +
-            Math.floor((P + 3e3) / 400),
-          "solid",
-        );
-      (e.push(
-        { kind: "farm", x: C, y: B, z: P, rot: Math.atan2(-L, I), sx: F + 0.4 },
-        { kind: "fpole", x: C, y: B, z: P, rot: 0 },
-      ),
-        t.push({ t: "circ", x: C, z: P, r: 0.25, y0: B - 1.5, y1: B + 7 }));
-      let D = [
-        [R, H, T],
-        [A.x, H, A.z],
-      ];
-      if (b) for (let U = 0; U < 2; U++) ss(O, b[U], D[U], 0.025, 0.025, l);
-      b = D;
-    }
-    x = (x + z) % 42;
+    if (m)
+      t: for (let g of [1, -1])
+        for (let b of [38, 46, 30, 54, 62]) {
+          let v = m.x + m.dx * b * g,
+            x = m.z + m.dz * b * g,
+            y = [];
+          for (let D of n) {
+            let U = null;
+            for (let G = 0; G + 1 < D.length; G++) {
+              let [W, V] = D[G],
+                [$, J] = D[G + 1],
+                X = ($ - W) ** 2 + (J - V) ** 2 || 1,
+                tt = Math.max(
+                  0,
+                  Math.min(1, ((v - W) * ($ - W) + (x - V) * (J - V)) / X),
+                ),
+                Z = W + ($ - W) * tt,
+                q = V + (J - V) * tt,
+                j = Math.hypot(Z - v, q - x);
+              (!U || j < U.d) &&
+                (U = {
+                  d: j,
+                  x: Z,
+                  z: q,
+                  dx: ($ - W) / Math.sqrt(X),
+                  dz: (J - V) / Math.sqrt(X),
+                });
+            }
+            U && U.d < 14 && y.push(U);
+          }
+          y.sort((D, U) => D.d - U.d);
+          let M = y[0],
+            S = (D) => D !== M && Math.abs(D.dx * M.dx + D.dz * M.dz) > 0.9,
+            w = y.find((D) => S(D) && Math.hypot(D.x - M.x, D.z - M.z) > 5.5),
+            _ = w
+              ? null
+              : y.find((D) => S(D) && Math.hypot(D.x - M.x, D.z - M.z) > 2.6);
+          if (!M || (!w && !_)) continue;
+          let z = w || _,
+            A = Math.hypot(z.x - M.x, z.z - M.z),
+            T = (M.x + z.x) / 2,
+            E = (M.z + z.z) / 2,
+            R = M.dx,
+            P = M.dz,
+            C = -P,
+            I = R,
+            L = 30,
+            F = w
+              ? [[0, (A - 3) / 2]]
+              : [
+                  [-(A / 2 + 3.1), 1.6],
+                  [A / 2 + 3.1, 1.6],
+                ],
+            O = !0;
+          for (let [D, U] of F)
+            for (let G = -L; G <= L && O; G += 4)
+              for (let W of [D - U, D, D + U])
+                if (f(T + R * G + C * W, E + P * G + I * W)) {
+                  O = !1;
+                  break;
+                }
+          if (!O) continue;
+          let B = i.driveHeight(T, E),
+            H = B + 0.9,
+            N = o.get(
+              "railsR" +
+                Math.floor((T + 3e3) / 400) +
+                "_" +
+                Math.floor((E + 3e3) / 400),
+              "solid",
+            );
+          for (let [D, U] of F) {
+            let G = (q, j) => [
+                T + R * q + C * (j + D),
+                E + P * q + I * (j + D),
+              ],
+              W = [G(-L, -U), G(L, -U), G(L, U), G(-L, U)],
+              V = (w ? [-1, 1] : [D > 0 ? -1 : 1]).map((q) => [
+                q * (U - 0.35) - 0.15,
+                q * (U - 0.35) + 0.15,
+              ]),
+              $ = [-U, ...V.flat(), U].sort((q, j) => q - j);
+            for (let q = 0; q + 1 < $.length; q++) {
+              let j = $[q],
+                K = $[q + 1],
+                nt = (j + K) / 2;
+              $i(
+                N,
+                [G(-L, j), G(L, j), G(L, K), G(-L, K)].map(([Q, et]) => [
+                  Q,
+                  H,
+                  et,
+                ]),
+                V.some(([Q, et]) => nt > Q && nt < et) ? c : l,
+              );
+            }
+            let [J, X] = G(0, 0);
+            for (let q = 0; q < 4; q++) {
+              let [j, K] = W[q],
+                [nt, Q] = W[(q + 1) % 4];
+              Ms(N, [j, B, K], [nt, B, Q], [nt, H, Q], [j, H, K], l, [
+                j + nt - J,
+                H,
+                K + Q - X,
+              ]);
+            }
+            for (let q = -L + 8; q <= L - 8; q += 6) {
+              let [j, K] = G(q, 0);
+              os(N, j, K, 0.07, H, H + 3, 6, a, 0.07);
+            }
+            for (let q of w ? [-1, 1] : [0]) {
+              let [j, K] = G(-L + 7, q * 0.9),
+                [nt, Q] = G(L - 7, q * 0.9);
+              rs(N, [j, H + 3.05, K], [nt, H + 3.05, Q], w ? 1.8 : 3, 0.04, h);
+            }
+            let [tt, Z] = G(0, 0);
+            t.push({
+              t: "obb",
+              x: tt,
+              z: Z,
+              hx: U + 0.1,
+              hz: L,
+              c: P,
+              s: R,
+              y0: B - 1,
+              y1: H + 3,
+              island: !0,
+            });
+          }
+          break t;
+        }
   }
-  $ft({ B: i, colliders: t, inst: e }, s, f);
 }
-var Vft = [
-  ["The Embarcadero", "Folsom Street"],
-  ["King Street", "2nd Street"],
-  ["King Street", "4th Street"],
-  ["3rd Street", "Mission Rock Street"],
-  ["The Embarcadero", "Brannan Street"],
-  ["3rd Street", "16th Street"],
-];
+function g1t(o) {
+  let t = o.P,
+    e = t.length / 3,
+    s = new Float64Array(e),
+    n = new Float64Array((e - 1) * 2),
+    i = new Float64Array(e * 2);
+  for (let a = 1; a < e; a++) {
+    let r = t[a * 3] - t[a * 3 - 3],
+      l = t[a * 3 + 1] - t[a * 3 - 2],
+      c = Math.hypot(r, l) || 1e-9;
+    ((s[a] = s[a - 1] + c),
+      (n[(a - 1) * 2] = r / c),
+      (n[(a - 1) * 2 + 1] = l / c));
+  }
+  for (let a = 0; a < e; a++) {
+    let r = Math.min(e - 2, a);
+    ((i[a * 2] = -n[r * 2 + 1]), (i[a * 2 + 1] = n[r * 2]));
+  }
+  Object.assign(o, { S: s, D: n, M: i, n: e, L: s[e - 1] });
+}

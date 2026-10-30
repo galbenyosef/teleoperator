@@ -1,101 +1,125 @@
 // workers__img 01 — status
-// Lines 1-133 of readable/workers__img.pretty.js (statement-aligned).
-async function m(
+// Lines 1-157 of readable/workers__img.pretty.js (statement-aligned).
+async function w(
   t,
   {
     priority: a,
-    read: o = (e) => e.arrayBuffer(),
+    read: n = (e) => e.arrayBuffer(),
     retries: r = 2,
-    timeoutMs: n = 3e4,
-    delay: i = (e) => new Promise((s) => setTimeout(s, e)),
+    timeoutMs: i = 3e4,
+    delay: l = (e) => new Promise((s) => setTimeout(s, e)),
   } = {},
 ) {
   let e,
     s = 0;
   for (let c = 0; c <= r; c++) {
-    let w = new AbortController(),
-      p,
-      f = 0;
+    let y = new AbortController(),
+      m,
+      f = 0,
+      d,
+      p = () => {
+        (clearTimeout(m),
+          (m = setTimeout(() => {
+            (y.abort(), d(new Error("Download timed out")));
+          }, i)));
+      };
     try {
       return await Promise.race([
         (async () => {
-          let u = !c && globalThis.SF_PRE?.get(t);
-          u && globalThis.SF_PRE.delete(t);
-          let h = await (u ||
+          let h = !c && globalThis.SF_PRE?.get(t);
+          h && globalThis.SF_PRE.delete(t);
+          let o = await (h ||
             fetch(t, {
               priority: a,
-              signal: w.signal,
+              signal: y.signal,
               ...(c ? { cache: "reload" } : {}),
             }));
-          if (((f = h.status), !h.ok)) throw new Error(`HTTP ${f}`);
-          return await o(h);
+          if (((f = o.status), !o.ok)) throw new Error(`HTTP ${f}`);
+          return (
+            p(),
+            o.body &&
+              typeof TransformStream == "function" &&
+              (o = new Response(
+                o.body.pipeThrough(
+                  new TransformStream({
+                    transform(g, b) {
+                      (p(), b.enqueue(g));
+                    },
+                  }),
+                ),
+                {
+                  status: o.status,
+                  statusText: o.statusText,
+                  headers: o.headers,
+                },
+              )),
+            await n(o)
+          );
         })(),
-        new Promise((u, h) => {
-          p = setTimeout(() => {
-            (w.abort(), h(new Error("Download timed out")));
-          }, n);
+        new Promise((h, o) => {
+          ((d = o), p());
         }),
       ]);
-    } catch (u) {
+    } catch (h) {
       if (
-        ((e = u),
+        ((e = h),
         (s = f),
         c === r || (f >= 400 && ![408, 429].includes(f) && f < 500))
       )
         break;
     } finally {
-      clearTimeout(p);
+      clearTimeout(m);
     }
-    await i(300 * (c + 1));
+    await l(300 * (c + 1));
   }
-  let l = new Error(`Could not download ${t}: ${e?.message || e}`, {
+  let u = new Error(`Could not download ${t}: ${e?.message || e}`, {
     cause: e,
   });
-  throw ((l.name = "AssetLoadError"), (l.status = s), l);
+  throw ((u.name = "AssetLoadError"), (u.status = s), u);
 }
-async function g(t) {
+async function T(t) {
   try {
     let a = new Uint8Array(await t.slice(0, 32).arrayBuffer()),
-      o = String.fromCharCode(...a.subarray(12, 16));
+      n = String.fromCharCode(...a.subarray(12, 16));
     if (
       String.fromCharCode(...a.subarray(0, 4)) !== "RIFF" ||
       String.fromCharCode(...a.subarray(8, 12)) !== "WEBP"
     )
       return !1;
-    if (o === "VP8 ") return !0;
-    if (o === "VP8L") return !((a[24] >> 4) & 1);
-    if (o === "VP8X") return !(a[20] & 16);
+    if (n === "VP8 ") return !0;
+    if (n === "VP8L") return !((a[24] >> 4) & 1);
+    if (n === "VP8X") return !(a[20] & 16);
   } catch {}
   return !1;
 }
-var y = async (t, a, o = !1) => {
+var S = async (t, a, n = !1) => {
   let r = t.width,
-    n = t.height;
-  if (!a || Math.max(r, n) <= a) return t;
-  for (; Math.max(r, n) > a;)
-    ((r = Math.max(1, r >> 1)), (n = Math.max(1, n >> 1)));
+    i = t.height;
+  if (!a || Math.max(r, i) <= a) return t;
+  for (; Math.max(r, i) > a;)
+    ((r = Math.max(1, r >> 1)), (i = Math.max(1, i >> 1)));
   try {
-    let i = await createImageBitmap(t, {
+    let l = await createImageBitmap(t, {
       resizeWidth: r,
-      resizeHeight: n,
+      resizeHeight: i,
       resizeQuality: "high",
-      premultiplyAlpha: o ? "default" : "none",
+      premultiplyAlpha: n ? "default" : "none",
       colorSpaceConversion: "none",
     });
-    if (i.width === r) return (t.close(), i);
-    i.close();
+    if (l.width === r) return (t.close(), l);
+    l.close();
   } catch {}
   return t;
 };
 self.onmessage = async ({
-  data: { id: t, url: a, priority: o, bytes: r, gz: n, max: i },
+  data: { id: t, url: a, priority: n, bytes: r, gz: i, max: l },
 }) => {
   if (r) {
     try {
-      let e = await m(a, {
-        priority: o,
+      let e = await w(a, {
+        priority: n,
         read: (s) =>
-          (n
+          (i
             ? new Response(s.body.pipeThrough(new DecompressionStream("gzip")))
             : s
           ).arrayBuffer(),
@@ -112,17 +136,17 @@ self.onmessage = async ({
     return;
   }
   try {
-    let e = await m(a, { priority: o, read: (c) => c.blob() }),
-      s = await g(e),
-      l = await y(
+    let e = await w(a, { priority: n, read: (c) => c.blob() }),
+      s = await T(e),
+      u = await S(
         await createImageBitmap(e, {
           premultiplyAlpha: s ? "default" : "none",
           colorSpaceConversion: "none",
         }),
-        i,
+        l,
         s,
       );
-    self.postMessage({ id: t, img: l, opaque: s }, [l]);
+    self.postMessage({ id: t, img: u, opaque: s }, [u]);
   } catch (e) {
     self.postMessage({
       id: t,

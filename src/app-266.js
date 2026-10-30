@@ -1,249 +1,350 @@
-// app 266 — position
-// Lines 133322-133568 of readable/app.pretty.js (statement-aligned).
-var abt = 1.05,
-  km = 0.42,
-  rbt = 0.5,
-  FL = (i) => (i <= 0 ? 0 : i >= 1 ? 1 : i * i * (3 - 2 * i));
-function mY(i, t) {
-  let e = i.geometry,
-    s = e.attributes.position;
-  if (!s) return null;
-  let n = e.index ? e.index.array : null,
-    o = (n ? n.length : s.count) / 3,
-    a = (x, v) => (n ? n[x * 3 + v] : x * 3 + v),
-    r = [],
-    l = [[], []];
-  for (let x = 0; x < o; x++) {
-    let v = 0,
-      y = 0,
-      M = 0;
-    for (let w = 0; w < 3; w++) {
-      let z = a(x, w);
-      ((v += s.getX(z)), (y += s.getY(z)), (M += s.getZ(z)));
-    }
-    ((v /= 3),
-      (y /= 3),
-      (M /= 3),
-      M > t.z0 &&
-      M < t.z1 &&
-      y > t.y0 &&
-      y < t.y1 &&
-      Math.abs(v) > t.xIn - (y - t.y0) * (t.hinge.lean || 0)
-        ? l[v > 0 ? 1 : 0].push(x)
-        : r.push(x));
-  }
-  if (l[0].length < 50 || l[1].length < 50) return null;
-  let c = new De();
-  for (let x in e.attributes) c.setAttribute(x, e.attributes[x]);
-  (c.setIndex(r.flatMap((x) => [a(x, 0), a(x, 1), a(x, 2)])),
-    c.computeBoundingSphere(),
-    c.computeBoundingBox());
-  let h = (x, v, y) => {
-      let M = new De();
-      for (let S in e.attributes) {
-        let w = e.attributes[S],
-          z = w.itemSize,
-          _ = new w.array.constructor(x.length * 3 * z);
-        (x.forEach((R, T) => {
-          for (let E = 0; E < 3; E++) {
-            let A = a(R, E);
-            for (let C = 0; C < z; C++)
-              _[(T * 3 + E) * z + C] = w.array[A * z + C];
-          }
-        }),
-          M.setAttribute(S, new Te(_, z, w.normalized)));
-      }
-      return (M.translate(-v, -t.y0, -y), M.computeBoundingSphere(), M);
+// app 266 — add
+// Lines 133841-134188 of readable/app.pretty.js (statement-aligned).
+function C3t(o, t, e, s) {
+  let n = (S) => {
+      let w = new Ys({
+        name: S,
+        map: s,
+        color: new It(0, 0, 0),
+        transparent: !0,
+        depthWrite: !1,
+        blending: $o,
+        fog: !1,
+        toneMapped: !0,
+      });
+      return ((w.userData.mbNoReflect = !0), w);
     },
-    f = i.parent,
-    u = Array.isArray(i.material) ? i.material[0] : i.material,
-    d = u.clone();
-  ((d.side = Ss), (d.userData = { ...u.userData }), (i.geometry = c));
-  let p = [-1, 1].map((x, v) => {
-      let y = x * t.hinge.x,
-        M = t.hinge.z,
-        S = new ke();
-      ((S.name = "DoorHinge" + (x < 0 ? "L" : "R")),
-        S.position.set(
-          y + i.position.x,
-          t.y0 + i.position.y,
-          M + i.position.z,
-        ));
-      let w = new ke();
-      ((w.rotation.z = x * Math.atan(t.hinge.lean || 0)), S.add(w));
-      let z = new ke();
-      w.add(z);
-      let _ = new _e(h(l[v], y, M), u);
+    i = {
+      Body: e,
+      Head: n("WaymoHead"),
+      Tail: n("WaymoTail"),
+      Blue: new me({
+        name: "WaymoBlue",
+        color: new It(0.05, 0.3, 1),
+        emissive: new It(0.1, 0.45, 1),
+        emissiveIntensity: 1.6,
+        roughness: 0.3,
+      }),
+      Tyre: new me({
+        name: "WaymoTyre",
+        color: new It(0.028, 0.028, 0.03),
+        roughness: 0.88,
+        metalness: 0,
+      }),
+      Rim: new mn({
+        name: "WaymoRim",
+        color: new It(0.035, 0.036, 0.04),
+        roughness: 0.34,
+        metalness: 0.55,
+        clearcoat: 0.7,
+        clearcoatRoughness: 0.08,
+      }),
+      Disc: new me({
+        name: "WaymoDisc",
+        color: new It(0.42, 0.42, 0.44),
+        roughness: 0.42,
+        metalness: 1,
+      }),
+      Caliper: new me({
+        name: "WaymoCaliper",
+        color: new It(0.05, 0.05, 0.055),
+        roughness: 0.5,
+        metalness: 0.2,
+      }),
+    },
+    a = new le();
+  a.name = "WaymoModel";
+  let r = new le();
+  ((r.name = "WaymoBodyGroup"), a.add(r));
+  let l = {};
+  o.scene.traverse((S) => {
+    S.isMesh && (S.geometry.computeBoundingSphere(), (l[S.name] = S.geometry));
+  });
+  let c = (S, w) => {
+    let _ = new ye(w, i[S]);
+    _.name = "Waymo" + S;
+    let z = S === "Head" || S === "Tail";
+    return (
+      (_.castShadow = !z),
+      (_.receiveShadow = !z),
+      z && (_.renderOrder = 2),
+      _
+    );
+  };
+  for (let S of ["Body", "Head", "Tail", "Blue"]) l[S] && r.add(c(S, l[S]));
+  let h = null;
+  {
+    let S = r.children.find((w) => w.name === "WaymoBody");
+    if (S)
+      try {
+        h = xZ(S, {
+          z0: 0.05,
+          z1: 0.95,
+          y0: 0.36,
+          y1: 1.42,
+          xIn: 0.8,
+          hinge: { z: 0.05, x: 0.95, lean: 0.21 },
+          cabin: [-0.86, 0.45, -0.95, 0.86, 1.42, 1, 0.74],
+        });
+      } catch (w) {
+        console.warn("waymo doors", w);
+      }
+  }
+  R0(r, oM("player_waymo", vo.tele));
+  let f = t.wheels.map((S, w) => {
+      let _ = new le();
+      (_.position.set(...S), (_.name = "WheelSteer" + w));
+      let z = new le();
+      ((z.name = "WheelSpin" + w), _.add(z));
+      let A = new le();
+      ((A.rotation.y = S[0] < 0 ? Math.PI : 0), z.add(A));
+      for (let T of ["Tyre", "Rim", "Disc"]) l[T] && A.add(c(T, l[T]));
+      if (l.Caliper) {
+        let T = c("Caliper", l.Caliper);
+        ((T.rotation.y = S[0] < 0 ? Math.PI : 0),
+          (T.rotation.x = S[2] < 0 ? -0.5 : 0.5),
+          _.add(T));
+      }
+      return (a.add(_), { c: S, steer: _, spin: z });
+    }),
+    u = new le();
+  ((u.name = "Car"), (u.rotation.order = "YXZ"), u.add(a));
+  let d = {
+      tail: r.children.filter((S) => S.name === "WaymoTail"),
+      head: r.children.filter((S) => S.name === "WaymoHead"),
+      signal: [],
+    },
+    [p, , m] = t.min,
+    [g, , b] = t.max,
+    v = {
+      w: 1.9,
+      l: b - m - 0.08,
+      cz: (m + b) / 2,
+      wheels: t.wheels.map((S) => [S[0], S[2]]),
+      pivotY: 0.55,
+      cgZ: 0,
+      steerK: 0.8,
+      tail: [
+        [-0.66, 1.08, 2.18],
+        [0.66, 1.08, 2.18],
+      ],
+    },
+    x = (S) => {
+      (i.Tail.color.setScalar(2.4 * (S.tail || 0)),
+        i.Head.color.setScalar(0.5 + 1.8 * (S.head || 0)));
+    },
+    y = Ir({
+      mat: e,
+      kind: "waymo",
+      factory: new It(1, 1, 1),
+      shown: new It(0.86, 0.87, 0.88),
+      hook: (S) => wZ(S),
+      coatOn: "material",
+      rims: [i.Rim],
+    });
+  return {
+    root: u,
+    model: a,
+    body: r,
+    wheels: f,
+    lamps: d,
+    dims: v,
+    materials: i,
+    waymo: !0,
+    setLamps: x,
+    paintKit: y,
+    onNight: (S) => y.setNight(1 - 0.15 * S),
+    doors: h,
+  };
+}
+var zZ =
+    "let rim = vec3f(0.58, 0.59, 0.6) * (0.55 + 0.45 * clamp(lum / 0.45, 0.0, 1.0));",
+  _Z = "gHC = vec2f(pm * 0.85, 0.045);",
+  EZ = "rough = pm * mix(0.45, 0.36, flake) +",
+  L3t = Dx.replace(zZ, "let rim = vec3f(0.022, 0.023, 0.025);")
+    .replace(_Z, "gHC = vec2f(pm * 0.3, 0.05);")
+    .replace(EZ, "rough = pm * 0.24 +");
+for (let o of [zZ, _Z, EZ])
+  Dx.includes(o) ||
+    console.warn("police paint: the hook changed, not found:", o);
+var Io = {
+    sedan: { L: 4.85, W: 2.211, H: 1.565, bw: 1.86 },
+    hatch: { L: 4.299, W: 2.019, H: 1.507, bw: 1.76 },
+    suv: { L: 4.796, W: 2.217, H: 1.807, bw: 1.9 },
+    pickup: { L: 5.299, W: 2.409, H: 1.838, bw: 2.05 },
+    van: { L: 5.092, W: 2.398, H: 2.453, bw: 2.05 },
+    taxi: { L: 4.597, W: 2.109, H: 1.617, bw: 1.82 },
+    bus: { L: 11.997, W: 3.868, H: 5.64, bw: 2.6 },
+    cablecar: { L: 8.397, W: 2.889, H: 4.093, bw: 2.5 },
+    ...Ux,
+  },
+  I3t = Object.keys(Io).filter((o) => !Ux[o]);
+Io.waymo = { L: 4.57, W: 2.2, H: 2.14, bw: 1.9 };
+var mM = 0.12;
+Io.police = { L: 4.796 + 2 * mM, W: 2.217, H: 1.95, bw: 1.9 };
+var F3t = { sedan: 1, hatch: 1, suv: 1, pickup: 1, van: 1, taxi: 1 },
+  ro = {
+    sedan: [
+      [0.357, 1.477, 0.359, 0.672, 0.972],
+      [0.361, 1.479, 0.361, 0.666, 0.966],
+      [0.363, -1.343, 0.353, 0.672, 0.972],
+      [0.362, -1.341, 0.353, 0.666, 0.966],
+    ],
+    hatch: [
+      [0.359, 1.233, 0.365, 0.576, 0.876],
+      [0.362, 1.234, 0.362, 0.572, 0.872],
+      [0.356, -1.366, 0.353, 0.576, 0.876],
+      [0.356, -1.37, 0.353, 0.573, 0.873],
+    ],
+    suv: [
+      [0.393, 1.388, 0.406, 0.677, 0.977],
+      [0.4, 1.384, 0.406, 0.669, 0.969],
+      [0.397, -1.369, 0.403, 0.678, 0.978],
+      [0.394, -1.369, 0.397, 0.672, 0.972],
+    ],
+    pickup: [
+      [0.41, 1.726, 0.407, 0.692, 0.992],
+      [0.41, 1.726, 0.407, 0.694, 0.994],
+      [0.404, -1.61, 0.401, 0.685, 0.985],
+      [0.402, -1.61, 0.401, 0.688, 0.988],
+    ],
+    van: [
+      [0.369, 1.571, 0.374, 0.68, 0.98],
+      [0.369, 1.569, 0.374, 0.678, 0.978],
+      [0.362, -1.608, 0.353, 0.682, 0.982],
+      [0.366, -1.61, 0.353, 0.679, 0.979],
+    ],
+    taxi: [
+      [0.352, 1.312, 0.358, 0.629, 0.929],
+      [0.349, 1.312, 0.356, 0.626, 0.926],
+      [0.338, -1.293, 0.329, 0.627, 0.927],
+      [0.34, -1.291, 0.33, 0.624, 0.924],
+    ],
+    bus: [
+      [0.6, 3.203, 0.588, 0.865, 1.165],
+      [0.603, 3.199, 0.595, 0.867, 1.167],
+      [0.622, -3.183, 0.624, 0.872, 1.172],
+      [0.619, -3.187, 0.627, 0.872, 1.172],
+    ],
+    waymo: [
+      [0.352, 1.495, 0.352, 0.69, 0.95],
+      [0.352, 1.495, 0.352, 0.69, 0.95],
+      [0.352, -1.495, 0.352, 0.69, 0.95],
+      [0.352, -1.495, 0.352, 0.69, 0.95],
+    ],
+  };
+ro.police = ro.suv.map((o) => [
+  o[0],
+  o[1] + Math.sign(o[1]) * mM,
+  ...o.slice(2),
+]);
+var TZ = {
+  cablecar: 0.35,
+  boxtruck: 0.45,
+  stepvan: 0.42,
+  garbage: 0.52,
+  semi: 0.52,
+  moto: 0.31,
+};
+for (let [o, t] of Object.entries(ro)) {
+  let e = t.filter(Boolean);
+  e.length && (TZ[o] = e.reduce((s, n) => s + n[0], 0) / e.length);
+}
+var f_ = (o) => TZ[o] || 0.36,
+  O3t = (o, t, e, s, n = 0) =>
+    o.some((i, a) => {
+      if (!i) return !1;
+      let r = t * (a % 2 ? -1 : 1);
       return (
-        (_.name = i.name + "Door" + (x < 0 ? "L" : "R")),
-        (_.castShadow = i.castShadow),
-        (_.receiveShadow = i.receiveShadow),
-        (_.rotation.z = -w.rotation.z),
-        z.add(_),
-        f.add(S),
-        { s: x, pivot: S, swing: z, a: 0, t: -1, hold: 0 }
+        r > i[3] - 0.05 - n &&
+        r < i[4] + 0.03 + n &&
+        Math.hypot(e - i[0], s - i[1]) < i[2] + 0.02 + n
       );
     }),
-    m = null;
-  if (t.cabin) {
-    let [x, v, y, M, S, w, z = 1] = t.cabin,
-      _ = new qs(M - x, S - v, w - y),
-      R = _.attributes.position;
-    for (let T = 0; T < R.count; T++) R.getY(T) > 0 && R.setX(T, R.getX(T) * z);
-    (_.computeVertexNormals(),
-      (m = new _e(_, new Ee({ color: 723982, roughness: 0.9, side: ia }))),
-      m.position.set(
-        (x + M) / 2 + i.position.x,
-        (v + S) / 2 + i.position.y,
-        (y + w) / 2 + i.position.z,
-      ),
-      (m.name = "CabinInside"),
-      (m.visible = !1),
-      (m.castShadow = !1),
-      f.add(m));
-  }
-  let g = () => {
-      ((d.userData.mbAlbedo !== u.userData.mbAlbedo ||
-        d.userData.mbExtraMap !== u.userData.mbExtraMap) &&
-        (d.userData = { ...u.userData }),
-        d.color.equals(u.color) || d.color.copy(u.color));
-      for (let x of [
-        "map",
-        "clearcoat",
-        "clearcoatRoughness",
-        "roughness",
-        "metalness",
-      ])
-        d[x] !== u[x] && (d[x] = u[x]);
-      b._ver !== u.version && ((b._ver = u.version), (d.needsUpdate = !0));
-    },
-    b = {
-      sides: p,
-      open: [0, 0],
-      pulse(x, v = 1) {
-        let y = p[x < 0 ? 0 : 1];
-        ((y.t < 0 || y.t > km) &&
-          (y.t = Math.max(0, Math.min(y.t < 0 ? 0 : km, FL(y.a) * km))),
-          (y.hold = v),
-          (y.on = !0));
-      },
-      update(x) {
-        let v = !1;
-        g();
-        for (let y of p)
-          if (!(!y.on && y.a <= 0)) {
-            if (((y.t += x), y.t < km)) y.a = FL(y.t / km);
-            else if (y.t < km + y.hold) y.a = 1;
-            else {
-              let M = (y.t - km - y.hold) / rbt;
-              ((y.a = 1 - FL(M)),
-                M >= 1 && ((y.a = 0), (y.on = !1), (y.t = -1)));
-            }
-            ((y.swing.rotation.y = y.s * abt * y.a),
-              (b.open[y.s < 0 ? 0 : 1] = y.a),
-              y.a > 0.01 && (v = !0));
-          }
-        m && (m.visible = v);
-        for (let y of p) {
-          let M = y.swing.children[0],
-            S = y.a > 0.01 ? d : u;
-          M.material !== S && (M.material = S);
-        }
-      },
+  xF = (o, t, e) => {
+    let s = new Uint32Array(o.array.buffer, o.array.byteOffset, o.array.length);
+    s[t * 3] = (s[t * 3] & -8) | e;
+  };
+function B3t(o, t) {
+  let e = o.attributes.position,
+    s = e.count,
+    n = (i, a, r) => {
+      let l = e.getX(i) * r;
+      return (
+        l > a[3] - 0.05 &&
+        l < a[4] + 0.03 &&
+        Math.hypot(e.getY(i) - a[0], e.getZ(i) - a[1]) < a[2] + 0.02
+      );
     };
-  return b;
-}
-var lx = "assets/waymo/",
-  gY = new Map();
-function h_(i, t) {
-  let e = gY.get(i);
-  return (
-    e ||
-      gY.set(
-        i,
-        (e = Fr(lx + i, (s) => {
-          ((s.colorSpace = t ? is : On), (s.flipY = !1), (s.anisotropy = 8));
-        })),
-      ),
-    e
-  );
-}
-async function bY(i, t, e = h_) {
-  let s = await new Vr().parseAsync(
-      i.buffer ? i.buffer.slice(i.byteOffset, i.byteOffset + i.byteLength) : i,
-      "./",
-    ),
-    n = e("waymo_albedo.webp", !0),
-    o = e("waymo_orm.webp", !1),
-    a = e("waymo_emit.webp", !0),
-    r = new An({
-      name: "WaymoBody",
-      map: n,
-      roughnessMap: o,
-      metalnessMap: o,
-      clearcoatMap: o,
-      roughness: 1,
-      metalness: 1,
-      clearcoat: 1,
-      clearcoatRoughness: 0.035,
-      envMapIntensity: 1,
-    });
-  return (
-    (r.userData.mbExtraMap = o),
-    (r.userData.mbAlbedo = xY(null)),
-    lbt(s, t, r, a)
-  );
-}
-function xY(i) {
-  return (
-    xm +
-    (i ? a_({ g: 1, b: 1, ...i }) : "") +
-    `
-// (polish) the sensor bar across the bonnet's back between the fender pods - all the hood camera sees of the car (the
-// body's frame: y ~1.1, z -1.15 .. -1.6, the pods at x +-0.83): its near mirror-smooth coat (the ORM map's full coat at 0.035) caught an oncoming car's
-// lamps as a pin-point glint, a fraction of a pixel that flashed with the TAA's jitter. A satin coat there (rougher,
-// thinner) and the lamps' least roughness on it (gHPL.y): a soft sheen, not a spark. coat: the ORM map's coat (o.r)
-fn wmBar(wp: vec3f, coat: f32) {
-  let m3 = mat3x3f(O.model[0].xyz, O.model[1].xyz, O.model[2].xyz); let lp = transpose(cofactor(m3)) * (wp - O.model[3].xyz) / dot(m3[0], cross(m3[1], m3[2]));
-  let bar = smoothstep(0.98, 1.03, lp.y) * (1.0 - smoothstep(1.22, 1.27, lp.y)) * smoothstep(-1.72, -1.66, lp.z) * (1.0 - smoothstep(-1.12, -1.06, lp.z)) * (1.0 - smoothstep(0.98, 1.02, abs(lp.x)));
-  if (bar > 0.001) { gHC = vec2f(max(coat, 1e-3) * mix(1.0, 0.45, bar), mix(0.04, 0.34, bar)); gHPL = vec2f(1.0, 0.4 * bar); }
-}
-fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {${
-      i
-        ? `
-  let fwP = length(fwidth((F.nf * vec4f(wp, 1.0)).xyz * ${(i.flakeScale || 1400).toFixed(1)}));`
-        : ""
+  for (let i = 0; i + 2 < s; i += 3) {
+    let a = 0;
+    for (let r = 0; r < 4 && !a; r++) {
+      let l = r % 2 ? -1 : 1;
+      n(i, t[r], l) && n(i + 1, t[r], l) && n(i + 2, t[r], l) && (a = r + 1);
     }
-  let t = textureSample(matMap, matSamp, uv); let o = textureSample(matExtra, matSamp, uv);
-  // (the glass: coated (o.r 0.56 the tinted panes, 0.94 the black glass), smooth (roughness <= 0.13) and dark; the paint:
-  // the full coat at roughness 0.25)
-  let dk = 1.0 - smoothstep(0.03, 0.06, dot(t.rgb, vec3f(0.2126, 0.7152, 0.0722)));
-  let gl = smoothstep(0.45, 0.52, o.r) * (1.0 - smoothstep(0.14, 0.18, o.g)) * dk;
-  let pt = smoothstep(0.8, 0.9, o.r) * smoothstep(0.15, 0.2, o.g) * (1.0 - smoothstep(0.4, 0.5, o.g));
-  let rv = reflect(-normalize(F.camPos.xyz - wp), gNw); let crn = crNight();
-  let cty = crCity(wp, rv, crn); let pR = pt * crn * 0.35;
-  gHR = vec4f(cty.rgb * cty.a * mix(0.25, 1.0, gl), max(0.85 * gl, pR) * cty.a); gHRe = crE; gHCR = max(0.85 * gl, pR) * cty.a;
-  // (the lights in the glass a little stronger than its 4 % Fresnel: the lamps' and the shops' glints read on the dark panes)
-  let ndv = abs(dot(gNw, normalize(F.camPos.xyz - wp)));
-  gHE = crE * cty.a * gl * (0.05 + 0.3 * pow(1.0 - ndv, 4.0));
-  wmBar(wp, o.r);${
-    i
-      ? `
-  let lum = dot(t.rgb, vec3f(0.2126, 0.7152, 0.0722)); let sat = max(t.r, max(t.g, t.b)) - min(t.r, min(t.g, t.b));
-  var pm = pt * smoothstep(0.5, 0.66, lum) * (1.0 - smoothstep(0.07, 0.14, sat)) * (1.0 - gl);
-  // (gen68) its hardware keeps its own white and black whatever the paint: everything over the roof (the lidar dome, its
-  // ring and the roof rack), the mirror-mounted sensor pods and the bumpers' corner pods (the body mesh's frame: the roof
-  // at y <= 1.55, the doors' side at |x| <= 0.95 - the pods stand out past 0.98)
-  let m3 = mat3x3f(O.model[0].xyz, O.model[1].xyz, O.model[2].xyz); let lp = transpose(cofactor(m3)) * (wp - O.model[3].xyz) / dot(m3[0], cross(m3[1], m3[2]));
-  let out = smoothstep(0.972, 0.992, abs(lp.x));
-  pm = pm * (1.0 - smoothstep(1.562, 1.6, lp.y)) * (1.0 - out * smoothstep(0.93, 0.97, lp.y)) * (1.0 - out * smoothstep(1.85, 1.95, abs(lp.z)));
-  var pc = vec4f(0.0); var pk = vec4f(o.g, o.b, 0.0, 1.0); var pn = vec4f(0.0);
-  if (pm > 0.002) { pc = carPaintW(wp, vec4f(bc.rgb * clamp(lum / 0.82, 0.6, 1.1), 1.0), fwP); pk = gHK; pn = gHN; }
-  gHK = vec4f(mix(o.g, pk.x, pm), mix(o.b, pk.y, pm), 0.0, 1.0); gHN = vec4f(pn.xyz * pm, pn.w); gHF0 = mix(1.0, gHF0, pm);
-  return vec4f(mix(t.rgb * (1.0 - 0.15 * F.skyG.y * 0.0), pc.rgb, pm), t.a);`
-      : `
-  return vec4f(bc.rgb * t.rgb, bc.a * t.a);`
+    for (let r = 0; r < 3; r++) xF(e, i + r, a);
   }
-}`
-  );
+  return o;
 }
+var uF = (o) => {
+    let t = o.map((e) => e || [0, 0, 0, 0, 0]);
+    return Float32Array.from([
+      t[0][0],
+      t[0][1],
+      t[1][0],
+      t[1][1],
+      t[2][0],
+      t[2][1],
+      t[3][0],
+      t[3][1],
+      (t[0][3] + t[0][4]) / 2,
+      -(t[1][3] + t[1][4]) / 2,
+      (t[2][3] + t[2][4]) / 2,
+      -(t[3][3] + t[3][4]) / 2,
+      1,
+      0,
+      0,
+      0,
+    ]);
+  },
+  d2 = {};
+function RZ(o) {
+  for (let [t, e] of Object.entries(o.attributes))
+    if (e.isInterleavedBufferAttribute) {
+      let s = e.count,
+        n = e.itemSize,
+        i = new Float32Array(s * n),
+        a = [e.getX, e.getY, e.getZ, e.getW];
+      for (let r = 0; r < s; r++)
+        for (let l = 0; l < n; l++) i[r * n + l] = a[l].call(e, r);
+      o.setAttribute(t, new Te(i, n, e.normalized));
+    }
+  return o;
+}
+function mF(o, t) {
+  let e = o.attributes.position.array,
+    s = new Uint32Array(e.buffer, e.byteOffset, e.length),
+    n = [0, 0, 0, 0],
+    i = 0;
+  for (let a = 0; a < e.length; a += 3) {
+    let r = s[a] & 7;
+    if (!r) continue;
+    let l = t?.[r - 1];
+    if (r > 4 || !l) {
+      i++;
+      continue;
+    }
+    n[r - 1]++;
+    let c = e[a] * ((r - 1) % 2 ? -1 : 1);
+    (c < l[3] - 0.06 ||
+      c > l[4] + 0.05 ||
+      Math.hypot(e[a + 1] - l[0], e[a + 2] - l[1]) > l[2] + 0.03) &&
+      i++;
+  }
+  return { per: n, bad: i };
+}
+var uM = (o) => {
+  let t = o.attributes.position.array,
+    e = new Uint32Array(t.buffer, t.byteOffset, t.length);
+  for (let s = 0; s < t.length; s += 3) e[s] &= -8;
+};

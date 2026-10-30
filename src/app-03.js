@@ -1,55 +1,55 @@
 // app 03 — math
-// Lines 406-776 of readable/app.pretty.js (statement-aligned).
-var hc,
-  Ws,
-  ls,
-  Qe,
-  BB,
-  Qst,
-  ae,
-  fe,
-  mn,
-  ws,
-  t4t,
-  Ve,
-  m4,
-  WB,
-  Ke,
-  tnt,
-  Rl,
-  Oi,
-  Rf,
-  d4,
-  c4,
-  h4,
-  to,
-  AT,
-  GB,
-  qB,
+// Lines 439-809 of readable/app.pretty.js (statement-aligned).
+var Hc,
+  js,
+  ps,
+  ns,
+  DH,
+  vat,
+  he,
+  pe,
+  xn,
+  ks,
+  $kt,
   Ye,
-  ad,
-  p4,
-  RT,
-  PT,
-  jB,
-  Je,
-  ent,
-  snt,
-  Qi,
-  j0,
-  Jp,
-  f4,
-  nnt,
-  int,
-  zi,
-  Tv,
-  Zp,
-  BT,
-  En = Vi(() => {
-    hc = null;
-    ((Ws = (i, t = 0, e = 0) => {
+  M3,
+  jH,
+  Ze,
+  yat,
+  Yl,
+  Yi,
+  hu,
+  g8,
+  u8,
+  d8,
+  po,
+  sR,
+  qH,
+  $H,
+  Qe,
+  Hd,
+  b8,
+  nR,
+  iR,
+  XH,
+  ts,
+  wat,
+  Mat,
+  uo,
+  gl,
+  F1,
+  p8,
+  Sat,
+  kat,
+  Bi,
+  k3,
+  O1,
+  hR,
+  Pn = Ki(() => {
+    Hc = null;
+    ((js = (o, t = 0, e = 0) => {
       let s =
-        Math.imul(i | 0, 374761393) ^
+        Math.imul(o | 0, 374761393) ^
         Math.imul(t | 0, 668265263) ^
         Math.imul(e | 0, 2246822519);
       return (
@@ -57,7 +57,7 @@ var hc,
         ((s ^ (s >>> 16)) >>> 0) / 4294967296
       );
     }),
-      (ls = [
+      (ps = [
         { name: "VAN NESS AVE", hw: 13, sw: 4.5, lanes: 3, median: 1.6 },
         { name: "POLK ST", hw: 6.5 },
         { name: "LARKIN ST", hw: 6 },
@@ -83,7 +83,7 @@ var hc,
           water: !0,
         },
       ]),
-      (Qe = [
+      (ns = [
         {
           name: "THE EMBARCADERO",
           hw: 13,
@@ -115,61 +115,61 @@ var hc,
         { name: "GEARY ST", hw: 7.5, lanes: 2 },
         { name: "MARKET ST", hw: 14, sw: 6, lanes: 2, median: 1.6 },
       ]));
-    for (let i of [...ls, ...Qe])
-      ((i.sw ??= 3.2), (i.lanes ??= 1), (i.median ??= 0));
-    ((BB = 105),
-      (Qst = 84),
-      (ae = ls.map((i, t) =>
-        t < ls.length - 1 ? t * BB : (ls.length - 2) * BB + 118,
+    for (let o of [...ps, ...ns])
+      ((o.sw ??= 3.2), (o.lanes ??= 1), (o.median ??= 0));
+    ((DH = 105),
+      (vat = 84),
+      (he = ps.map((o, t) =>
+        t < ps.length - 1 ? t * DH : (ps.length - 2) * DH + 118,
       )),
-      (fe = Qe.map((i, t) => (t === 0 ? -112 : (t - 1) * Qst))),
-      (mn = ae.length),
-      (ws = fe.length),
-      (t4t = { x0: ae[0], x1: ae[mn - 1], z0: fe[0], z1: fe[ws - 1] }),
-      (Ve = {
-        x: ae[mn - 1] + ls[mn - 1].hw + ls[mn - 1].sw + 14,
-        z: fe[0] - Qe[0].hw - Qe[0].sw - 14,
+      (pe = ns.map((o, t) => (t === 0 ? -112 : (t - 1) * vat))),
+      (xn = he.length),
+      (ks = pe.length),
+      ($kt = { x0: he[0], x1: he[xn - 1], z0: pe[0], z1: pe[ks - 1] }),
+      (Ye = {
+        x: he[xn - 1] + ps[xn - 1].hw + ps[xn - 1].sw + 14,
+        z: pe[0] - ns[0].hw - ns[0].sw - 14,
       }),
-      (m4 = 0),
-      (WB = -9),
-      (Ke = 0.16),
-      (tnt = [
+      (M3 = 0),
+      (jH = -9),
+      (Ze = 0.16),
+      (yat = [
         { x: 330, z: 430, a: 84, sx: 240, sz: 250 },
         { x: 610, z: 1240, a: 96, sx: 270, sz: 230 },
         { x: 1190, z: 405, a: 76, sx: 150, sz: 150 },
         { x: -260, z: 980, a: 70, sx: 330, sz: 360 },
         { x: 150, z: 1500, a: 26, sx: 220, sz: 260 },
       ]));
-    Rl = [];
-    for (let i = 0; i < mn; i++) {
-      Rl.push([]);
-      for (let t = 0; t < ws; t++)
-        Rl[i].push(Math.round(LT(ae[i], fe[t]) * 2) / 2);
+    Yl = [];
+    for (let o = 0; o < xn; o++) {
+      Yl.push([]);
+      for (let t = 0; t < ks; t++)
+        Yl[o].push(Math.round(aR(he[o], pe[t]) * 2) / 2);
     }
-    Rl[mn - 1].fill(3);
-    for (let i = 0; i < mn; i++) Rl[i][0] = 3;
-    Rl[4][4] = Rl[3][4] - 26;
-    Oi = { i: 3, j: 4, lift: 0.19, ramp: 3 };
-    Object.assign(Oi, {
-      x0: ae[3] + ls[3].hw,
-      x1: ae[4] - ls[4].hw,
-      z: fe[4],
-      hz: Qe[4].hw + Qe[4].sw,
+    Yl[xn - 1].fill(3);
+    for (let o = 0; o < xn; o++) Yl[o][0] = 3;
+    Yl[4][4] = Yl[3][4] - 26;
+    Yi = { i: 3, j: 4, lift: 0.19, ramp: 3 };
+    Object.assign(Yi, {
+      x0: he[3] + ps[3].hw,
+      x1: he[4] - ps[4].hw,
+      z: pe[4],
+      hz: ns[4].hw + ns[4].sw,
     });
-    ((Rf = 0.14), (d4 = 1 / (2 * Rf * (1 - Rf))));
-    ((c4 = ls.map((i) => i.hw + 1)), (h4 = Qe.map((i) => i.hw + 1)));
-    to = {
-      west: (i) => (i + 122.4245) * 88e3,
-      north: (i) => (37.8048 - i) * 111e3,
-      east: (i) => 1693 + (i + 122.3937) * 88e3,
-      south: (i) => 1764 + (37.7955 - i) * 111e3,
+    ((hu = 0.14), (g8 = 1 / (2 * hu * (1 - hu))));
+    ((u8 = ps.map((o) => o.hw + 1)), (d8 = ns.map((o) => o.hw + 1)));
+    po = {
+      west: (o) => (o + 122.4245) * 88e3,
+      north: (o) => (37.8048 - o) * 111e3,
+      east: (o) => 1693 + (o + 122.3937) * 88e3,
+      south: (o) => 1764 + (37.7955 - o) * 111e3,
     };
-    ((AT = [-0.07, -0.9975]),
-      (GB = [to.west(-122.476), to.north(37.8075)]),
-      (qB = (i) => [GB[0] + AT[0] * i, GB[1] + AT[1] * i]),
-      (Ye = {
-        dir: AT,
-        at: qB,
+    ((sR = [-0.07, -0.9975]),
+      (qH = [po.west(-122.476), po.north(37.8075)]),
+      ($H = (o) => [qH[0] + sR[0] * o, qH[1] + sR[1] * o]),
+      (Qe = {
+        dir: sR,
+        at: $H,
         sAnchS: 20,
         sTowerS: 363,
         sTowerN: 1643,
@@ -177,23 +177,23 @@ var hc,
         deck: 66,
         towerTop: 227,
       }),
-      (ad = [1965, 1908]),
-      (p4 = [to.east(-122.3645), to.south(37.8105)]),
-      (RT = Math.hypot(p4[0] - ad[0], p4[1] - ad[1])),
-      (PT = [(p4[0] - ad[0]) / RT, (p4[1] - ad[1]) / RT]),
-      (jB = (i) => [ad[0] + PT[0] * i, ad[1] + PT[1] * i]),
-      (Je = { dir: PT, at: jB, len: RT, anch: 118, deck: 58, towerTop: 160 }));
-    Je.towers = [Je.anch + 353, Je.anch + 1057, Je.anch + 1763, Je.anch + 2467];
-    Je.center = Je.anch + 1410;
-    Je.anchE = Je.anch + 2820;
-    ((ent = () => {
-      let i = ae[0] - 124,
-        t = fe[4],
-        e = Yt(i, t),
-        s = (n) => qB(n);
+      (Hd = [1965, 1908]),
+      (b8 = [po.east(-122.3645), po.south(37.8105)]),
+      (nR = Math.hypot(b8[0] - Hd[0], b8[1] - Hd[1])),
+      (iR = [(b8[0] - Hd[0]) / nR, (b8[1] - Hd[1]) / nR]),
+      (XH = (o) => [Hd[0] + iR[0] * o, Hd[1] + iR[1] * o]),
+      (ts = { dir: iR, at: XH, len: nR, anch: 118, deck: 58, towerTop: 160 }));
+    ts.towers = [ts.anch + 353, ts.anch + 1057, ts.anch + 1763, ts.anch + 2467];
+    ts.center = ts.anch + 1410;
+    ts.anchE = ts.anch + 2820;
+    ((wat = () => {
+      let o = he[0] - 124,
+        t = pe[4],
+        e = $t(o, t),
+        s = (n) => $H(n);
       return [
-        [i, e, t],
-        [i - 90, e - 1, t],
+        [o, e, t],
+        [o - 90, e - 1, t],
         [-420, Math.max(9, e * 0.6), t],
         [-900, 8, t],
         [-1500, 6.5, t],
@@ -205,44 +205,44 @@ var hc,
         [s(-380)[0], 60, s(-380)[1]],
         [s(-150)[0], 61, s(-150)[1]],
         [s(0)[0], 62, s(0)[1]],
-        [s(Ye.sTowerS)[0], 64, s(Ye.sTowerS)[1]],
+        [s(Qe.sTowerS)[0], 64, s(Qe.sTowerS)[1]],
         [
-          s((Ye.sTowerS + Ye.sTowerN) / 2)[0],
+          s((Qe.sTowerS + Qe.sTowerN) / 2)[0],
           67,
-          s((Ye.sTowerS + Ye.sTowerN) / 2)[1],
+          s((Qe.sTowerS + Qe.sTowerN) / 2)[1],
         ],
-        [s(Ye.sTowerN)[0], 64, s(Ye.sTowerN)[1]],
-        [s(Ye.sAnchN)[0], 62, s(Ye.sAnchN)[1]],
-        [s(Ye.sAnchN + 190)[0], 61, s(Ye.sAnchN + 190)[1]],
+        [s(Qe.sTowerN)[0], 64, s(Qe.sTowerN)[1]],
+        [s(Qe.sAnchN)[0], 62, s(Qe.sAnchN)[1]],
+        [s(Qe.sAnchN + 190)[0], 61, s(Qe.sAnchN + 190)[1]],
       ];
     }),
-      (snt = () => {
-        let i = ae[mn - 1],
-          t = fe[ws - 1] + Qe[ws - 1].hw,
-          e = (s) => jB(s);
+      (Mat = () => {
+        let o = he[xn - 1],
+          t = pe[ks - 1] + ns[ks - 1].hw,
+          e = (s) => XH(s);
         return [
-          [i, 3, t + 100],
-          [i + 6, 3.2, t + 148],
-          [i + 45, 4, t + 202],
-          [i + 125, 8, t + 232],
-          [i + 212, 14, t + 207],
-          [ad[0], 23, ad[1]],
-          [e(Je.anch)[0], 31, e(Je.anch)[1]],
-          [e(Je.towers[0])[0], 50, e(Je.towers[0])[1]],
-          [e(Je.center)[0], 58, e(Je.center)[1]],
-          [e(Je.towers[3])[0], 57, e(Je.towers[3])[1]],
-          [e(Je.anchE)[0], 55, e(Je.anchE)[1]],
-          [e(Je.anchE + 90)[0], 55, e(Je.anchE + 90)[1]],
+          [o, 3, t + 100],
+          [o + 6, 3.2, t + 148],
+          [o + 45, 4, t + 202],
+          [o + 125, 8, t + 232],
+          [o + 212, 14, t + 207],
+          [Hd[0], 23, Hd[1]],
+          [e(ts.anch)[0], 31, e(ts.anch)[1]],
+          [e(ts.towers[0])[0], 50, e(ts.towers[0])[1]],
+          [e(ts.center)[0], 58, e(ts.center)[1]],
+          [e(ts.towers[3])[0], 57, e(ts.towers[3])[1]],
+          [e(ts.anchE)[0], 55, e(ts.anchE)[1]],
+          [e(ts.anchE + 90)[0], 55, e(ts.anchE + 90)[1]],
         ];
       }),
-      (Qi = [
+      (uo = [
         {
           id: "101",
           name: "US-101 \xB7 GOLDEN GATE BRIDGE",
           hw: 11.5,
           lanes: 3,
           median: 1.2,
-          pts: UB(ent(), 8),
+          pts: WH(wat(), 8),
           plaza: 38,
         },
         {
@@ -251,12 +251,12 @@ var hc,
           hw: 12,
           lanes: 3,
           median: 1.2,
-          pts: UB(snt(), 8),
+          pts: WH(Mat(), 8),
           plaza: 40,
         },
       ]));
     {
-      for (let e of Qi) {
+      for (let e of uo) {
         e.s = [0];
         for (let s = 1; s < e.pts.length; s++)
           e.s.push(
@@ -268,13 +268,13 @@ var hc,
           );
         ((e.len = e.s[e.s.length - 1]), (e.end = e.pts[e.pts.length - 1]));
       }
-      ((Qi.grid = new Map()), (Qi.HC = 48));
+      ((uo.grid = new Map()), (uo.HC = 48));
       let t = (e, s, n) => {
-        let o = e * 100003 + s,
-          a = Qi.grid.get(o);
-        (a || Qi.grid.set(o, (a = [])), a.push(n));
+        let i = e * 100003 + s,
+          a = uo.grid.get(i);
+        (a || uo.grid.set(i, (a = [])), a.push(n));
       };
-      Qi.forEach((e, s) => {
+      uo.forEach((e, s) => {
         let n = e.hw + 2;
         for (let r = 0; r + 1 < e.pts.length; r++) {
           let l = e.pts[r],
@@ -291,23 +291,23 @@ var hc,
             )
               t(h, f, [s, r]);
         }
-        let o = e.end,
+        let i = e.end,
           a = e.plaza + 2;
         for (
-          let r = Math.floor((o[0] - a) / 48);
-          r <= Math.floor((o[0] + a) / 48);
+          let r = Math.floor((i[0] - a) / 48);
+          r <= Math.floor((i[0] + a) / 48);
           r++
         )
           for (
-            let l = Math.floor((o[2] - a) / 48);
-            l <= Math.floor((o[2] + a) / 48);
+            let l = Math.floor((i[2] - a) / 48);
+            l <= Math.floor((i[2] + a) / 48);
             l++
           )
             t(r, l, [s, -1]);
       });
     }
-    ((j0 = [
-      [-140, Ve.z],
+    ((gl = [
+      [-140, Ye.z],
       [-800, -265],
       [-2600, -330],
       [-4250, -420],
@@ -318,7 +318,7 @@ var hc,
       [-5900, -150],
       [-7700, 280],
     ]),
-      (Jp = [
+      (F1 = [
         [-1e4, -1900],
         [-7700, -2060],
         [-6e3, -2200],
@@ -330,16 +330,16 @@ var hc,
         [-2300, -5e3],
         [-1200, -6400],
       ]));
-    ((f4 = (i, t, e) => {
+    ((p8 = (o, t, e) => {
       let s = 0;
-      for (let [n, o, a, r, l] of e) {
-        let c = (i - n) / r,
-          h = (t - o) / l;
+      for (let [n, i, a, r, l] of e) {
+        let c = (o - n) / r,
+          h = (t - i) / l;
         s += a * Math.exp(-0.5 * (c * c + h * h));
       }
       return s;
     }),
-      (nnt = [
+      (Sat = [
         [-3400, 780, 80, 650, 360],
         [-5100, 420, 62, 480, 330],
         [-4575, -440, 32, 150, 120],
@@ -347,14 +347,14 @@ var hc,
         [-2300, 900, 30, 500, 350],
         [-3900, 120, 22, 400, 160],
       ]),
-      (int = [
+      (kat = [
         [-6e3, -3050, 240, 800, 600],
         [-3900, -3900, 180, 650, 650],
         [-7500, -2650, 170, 900, 480],
         [-2700, -4900, 140, 700, 700],
         [-4750, -2640, 45, 200, 170],
       ]));
-    zi = {
+    Bi = {
       VICTORIAN: 0,
       APARTMENTS: 1,
       NORTHBEACH: 2,
@@ -364,10 +364,10 @@ var hc,
       CHINATOWN: 6,
       PARK: 7,
     };
-    Tv = {
+    k3 = {
       park: [[6, 15, "Huntington Park"]],
       washington: [[9, 6, "Washington Square"]],
     };
-    Zp = null;
-    BT = () => Zp;
+    O1 = null;
+    hR = () => O1;
   });

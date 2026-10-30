@@ -1,195 +1,316 @@
-// app 402 — push
-// Lines 195981-196173 of readable/app.pretty.js (statement-aligned).
-function sst(i) {
-  let t = i.D.bld,
-    e = t.styles.indexOf("pier");
-  ((i.bbb = new Float32Array(t.n * 4)),
-    (i.BB = new Map()),
-    (i.pier = new Uint8Array(t.n)));
-  for (let s = 0; s < t.n; s++) {
-    let n = 1e9,
-      o = 1e9,
-      a = -1e9,
-      r = -1e9;
-    for (let l = t.rStart[t.bRing[s]]; l < t.rStart[t.bRing[s] + 1]; l++) {
-      let c = t.pts[l * 2],
-        h = t.pts[l * 2 + 1];
-      (c < n && (n = c), c > a && (a = c), h < o && (o = h), h > r && (r = h));
-    }
-    ((i.bbb[s * 4] = n),
-      (i.bbb[s * 4 + 1] = o),
-      (i.bbb[s * 4 + 2] = a),
-      (i.bbb[s * 4 + 3] = r),
-      (i.pier[s] = t.bB[s * 5] === e ? 1 : 0),
-      EN(i.BB, (n + a) / 2, (o + r) / 2, (n + a) / 2, (o + r) / 2, s));
-  }
-  ((i.bSeen = new Uint32Array(t.n)), (i.bPad = 160));
-}
-function BMt(i) {
-  let t = performance.now(),
-    e = i.D;
-  i.farLand = (e.far || []).map((r) => {
-    let l = r.meta;
-    return TN(
-      l.nx,
-      l.nz,
-      (c, h) => (r.h[h * l.nx + c] * l.hScale > 0.4 ? 1 : 0),
-      l.x0,
-      l.z0,
-      l.cell,
-      6,
-    ).path;
-  });
-  let s = { x: [], z: [], tx: [], tz: [], half: [], name: [], rank: [], w: [] },
-    n = (r, l, c, h) => {
-      let f = i.nameId.get(r);
-      f === void 0 &&
-        ((f = i.names.length), i.names.push(r), i.nameId.set(r, f));
-      let u = wN(c, 10);
-      for (let d = 2; d < u.n - 2; d += 4) {
-        let p = u.tx[d],
-          m = u.tz[d],
-          g = d,
-          b = d;
-        for (
-          ;
-          g > 0 && d - g < 40 && u.tx[g - 1] * p + u.tz[g - 1] * m > 0.985;
-        )
-          g--;
-        for (
-          ;
-          b < u.n - 1 &&
-          b - d < 40 &&
-          u.tx[b + 1] * p + u.tz[b + 1] * m > 0.985;
-        )
-          b++;
-        let x = Math.min(d - g, b - d) * 10;
-        x < 20 ||
-          (s.x.push(u.x[d]),
-          s.z.push(u.z[d]),
-          s.tx.push(p),
-          s.tz.push(m),
-          s.half.push(x),
-          s.name.push(f),
-          s.rank.push(l),
-          s.w.push(h));
-      }
+// app 402 — label
+// Lines 198219-198532 of readable/app.pretty.js (statement-aligned).
+var Li = {
+    race: {
+      label: "Street Race",
+      short: "Race",
+      col: "#ff3048",
+      family: "risky",
+      ask: "Beat the rivals to the finish",
     },
-    o = (r) => i.rank[r.id];
-  for (let r of Jet(
-    e,
-    (l) =>
-      l.name && o(l) <= 6 && l.cls !== "busway" && !/^Route \d/.test(l.name)
-        ? l.name
-        : "",
-    o,
-  )) {
-    let l = r.edges.reduce((c, h) => c + i.hw[h.id], 0) / r.edges.length;
-    n(EMt(r.key), r.rank, r.pts, l);
-  }
-  for (let r of PMt) n(r.name, 0.5, [r.B.at(r.s0), r.B.at(r.s1)], r.B.hw);
-  let a = s.x.length;
-  ((i.A = {
-    n: a,
-    x: Float32Array.from(s.x),
-    z: Float32Array.from(s.z),
-    tx: Float32Array.from(s.tx),
-    tz: Float32Array.from(s.tz),
-    half: Float32Array.from(s.half),
-    name: Int32Array.from(s.name),
-    rank: Float32Array.from(s.rank),
-    w: Float32Array.from(s.w),
-  }),
-    (i.AB = new Map()));
-  for (let r = 0; r < a; r++)
-    EN(i.AB, i.A.x[r], i.A.z[r], i.A.x[r], i.A.z[r], r);
-  ((i.aSeen = new Uint32Array(a)),
-    (i.nameCol = i.names.map((r) =>
-      r === "Golden Gate Bridge" ? "#ffc0a6" : null,
-    )),
-    (i.shields = []));
-  for (let r of Jet(
-    e,
-    (l) => (o(l) <= 1 && Ket[l.name] ? Ket[l.name] : ""),
-    o,
-  )) {
-    let l = wN(r.pts, 20);
-    if (!(l.n < 8))
-      for (let c = 6; c < l.n - 3; c += 16)
-        i.shields.push({ id: r.key, p: [l.x[c], l.z[c]] });
-  }
-  for (let r of i.beyond || _N) {
-    let l = wN(r.pts, 20);
-    for (let c = 12; c < l.n; c += 40)
-      i.shields.push({ id: r.id, p: [l.x[c], l.z[c]] });
-  }
-  i.msLabels = performance.now() - t;
+    police: {
+      label: "Police Escape",
+      short: "Police",
+      col: "#2f7bff",
+      family: "risky",
+      ask: "Lose the police before the clock runs out",
+    },
+    taxi: {
+      label: "Taxi Rush",
+      short: "Taxi",
+      col: "#ffd21f",
+      ink: "#1a1a1a",
+      family: "steady",
+      ask: "Chain the fares - every drop-off adds time",
+    },
+    food: {
+      label: "Food Delivery",
+      short: "Food",
+      col: "#ff5fb0",
+      family: "steady",
+      ask: "Deliver it hot - and do not spill it",
+    },
+    courier: {
+      label: "Courier",
+      short: "Courier",
+      col: "#c08a55",
+      family: "steady",
+      ask: "Every parcel, every address, in time",
+    },
+    vip: {
+      label: "VIP Escort",
+      short: "VIP",
+      col: "#14d3c4",
+      ink: "#062a28",
+      family: "steady",
+      ask: "A smooth ride - no hits, no hard moves",
+    },
+    trial: {
+      label: "Time Trial",
+      short: "Trial",
+      col: "#2bd46a",
+      ink: "#06210f",
+      family: "skill",
+      ask: "Every checkpoint, against the clock",
+    },
+    drift: {
+      label: "Drift Zone",
+      short: "Drift",
+      col: "#c45bff",
+      family: "skill",
+      ask: "Drift points from gate to gate",
+    },
+    speed: {
+      label: "Speed Trap",
+      short: "Speed",
+      col: "#ff8a1f",
+      family: "skill",
+      ask: "Through the gate as fast as you dare",
+    },
+    jump: {
+      label: "Danger Sign",
+      short: "Jump",
+      col: "#7fd0ff",
+      ink: "#08202e",
+      family: "skill",
+      ask: "Over the crest - the longest flight",
+    },
+    nearmiss: {
+      label: "Near-miss Run",
+      short: "Near miss",
+      col: "#b6f03a",
+      ink: "#1b2606",
+      family: "skill",
+      ask: "Thread the traffic: near misses on the clock",
+    },
+    photo: {
+      label: "Photo Spot",
+      short: "Photo",
+      col: "#f2ede2",
+      ink: "#20242a",
+      family: "skill",
+      ask: "Frame the landmark in photo mode (F)",
+    },
+    collect: {
+      label: "Collectible",
+      short: "Boards",
+      col: "#ffb000",
+      ink: "#2a1c00",
+      family: "skill",
+      ask: "Smash the board",
+    },
+  },
+  ZT = [
+    "race",
+    "police",
+    "taxi",
+    "food",
+    "courier",
+    "vip",
+    "trial",
+    "drift",
+    "speed",
+    "jump",
+    "nearmiss",
+    "photo",
+    "collect",
+  ],
+  lN = ["", "Easy", "Medium", "Hard"],
+  cN = (o) => Li[o]?.ink || "#fff",
+  Rit = {
+    police: [
+      { d: "M6 17v-4a6 6 0 0 1 12 0v4" },
+      { d: "M4 17h16v3H4z" },
+      { d: "M12 2.6v2.2M4.4 6.4l1.6 1.5M19.6 6.4L18 7.9" },
+    ],
+    food: [
+      { d: "M5 8.5h14l-1.3 11.5H6.3z" },
+      { d: "M9 8.5V7a3 3 0 0 1 6 0v1.5" },
+      { d: "M9.5 13.5h5", o: 0.6 },
+    ],
+    courier: [
+      { d: "M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z" },
+      { d: "M3.5 7.5L12 12l8.5-4.5M12 12v9" },
+      { d: "M7.8 5.3l8.4 4.5", o: 0.6 },
+    ],
+    vip: [
+      { d: "M4 19h16" },
+      { d: "M4.6 15.8L3.6 7.2l5 3.8L12 4.6l3.4 6.4 5-3.8-1 8.6z" },
+    ],
+    trial: [
+      { d: "M12 21.2a7.6 7.6 0 1 0 0-15.2a7.6 7.6 0 1 0 0 15.2z" },
+      { d: "M9.8 2.6h4.4M12 6V2.6M12 13.6l3.2-3.2M18.4 6.6l1.4-1.4" },
+    ],
+    nearmiss: [
+      { d: "M8 20.5V5M8 4.5l-3.2 3.2M8 4.5l3.2 3.2" },
+      { d: "M16 3.5V19M16 19.5l-3.2-3.2M16 19.5l3.2-3.2" },
+    ],
+    photo: [
+      { d: "M3.8 8.2h3.4l1.9-2.6h5.8l1.9 2.6h3.4v11H3.8z" },
+      { d: "M12 16.6a3.3 3.3 0 1 0 0-6.6a3.3 3.3 0 1 0 0 6.6z" },
+    ],
+  },
+  G2 = (o, t = null) =>
+    o === "speed"
+      ? t === "zone"
+        ? "zone"
+        : "trap"
+      : o === "drift" || o === "jump"
+        ? o
+        : o === "collect"
+          ? t === "travel"
+            ? "travel"
+            : "xp"
+          : "ch_" + o,
+  ySt = {
+    race: "race",
+    taxi: "taxi",
+    speed: "trap",
+    drift: "drift",
+    jump: "jump",
+    collect: "xp",
+  };
+function wSt(o) {
+  if (o?.ICONS)
+    for (let [t, e] of Object.entries(Li)) {
+      let s = "ch_" + t;
+      (Rit[t] && (o.ICONS[s] = Rit[t]),
+        o.ICONS[s] || (o.ICONS[s] = o.ICONS[ySt[t]] || o.ICONS.info),
+        (o.ACCENT[s] = e.col),
+        o.LABEL && (o.LABEL[s] = e.label));
+    }
 }
-function nst(i, t) {
-  if (!t) return;
-  let e = i.green ? i.green.slice() : [],
-    s = ga(t);
-  for (let n = 0; n + 1 < s.gPoly.length; n++) {
-    let o = new Path2D(),
-      a = 1e9,
-      r = 1e9,
-      l = -1e9,
-      c = -1e9;
-    for (let d = s.gPoly[n]; d < s.gPoly[n + 1]; d++) {
-      for (let p = s.gRing[d]; p < s.gRing[d + 1]; p++) {
-        let m = s.gPts[p * 2],
-          g = s.gPts[p * 2 + 1];
-        (p === s.gRing[d] ? o.moveTo(m, g) : o.lineTo(m, g),
-          (a = Math.min(a, m)),
-          (l = Math.max(l, m)),
-          (r = Math.min(r, g)),
-          (c = Math.max(c, g)));
+var JT = null,
+  MSt = (o) => {
+    ((JT = o), wSt(o));
+  };
+function hN(o, t, e, s = "#fff", n = null) {
+  if (JT) {
+    JT.paintIcon(
+      o,
+      t.startsWith("ch_") || (JT.ICONS[t] && !Li[t]) ? t : G2(t, n),
+      0,
+      0,
+      e * 1.55,
+      s,
+      2.2,
+    );
+    return;
+  }
+  (o.save(),
+    (o.fillStyle = s),
+    o.beginPath(),
+    o.arc(0, 0, e * 0.35, 0, 7),
+    o.fill(),
+    o.restore());
+}
+var QT = (o, t, e = 0, s = !1) =>
+  `ch:${o}:${t || o}:${s ? "f" : ""}${e ? "d" + e : ""}`;
+function Ait(o, t, e) {
+  let [, s, n, i = ""] = t.split(":"),
+    a = +(i.match(/d(\d)/)?.[1] || 0),
+    r = i.includes("f");
+  if ((hN(o, s, e * (a ? 0.82 : 0.95), cN(s), n), a)) {
+    (o.save(), (o.strokeStyle = "rgba(0,0,0,.55)"), (o.lineWidth = e * 0.06));
+    for (let l = 0; l < 3; l++) {
+      let c = (l - 1) * e * 0.52,
+        h = e * 1.02;
+      (o.beginPath(),
+        o.arc(c, h, e * 0.2, 0, 7),
+        (o.fillStyle = l < a ? "#ffd23f" : "rgba(30,30,30,.85)"),
+        o.fill(),
+        o.stroke());
+    }
+    o.restore();
+  }
+  r &&
+    (o.save(),
+    (o.strokeStyle = "#ffd23f"),
+    (o.lineWidth = e * 0.16),
+    o.beginPath(),
+    o.arc(0, 0, e * 1.18, 0, 7),
+    o.stroke(),
+    o.restore());
+}
+MSt(fO);
+await _0();
+Fit();
+await No();
+var Qv = bi.content?.spawn ? [bi.content.spawn.x, bi.content.spawn.z] : Pit,
+  fN = 230,
+  Oit = 650,
+  SSt = {
+    race: 8,
+    police: 8,
+    taxi: 10,
+    food: 12,
+    courier: 8,
+    vip: 7,
+    trial: 9,
+    drift: 6,
+    speed: 9,
+    jump: 6,
+    nearmiss: 8,
+    photo: 10,
+  },
+  kSt = Ia("restaurants", Cit),
+  zSt = Ia("photo", Lit),
+  V2 = (o) => Iit[o] || "the city",
+  jl = (o) =>
+    String(o || "")
+      .replace(/ Street$/, " St")
+      .replace(/ Avenue$/, " Ave")
+      .replace(/ Boulevard$/, " Blvd")
+      .replace(/ Drive$/, " Dr")
+      .replace(/ Road$/, " Rd") || "a side street",
+  _St = (o) => {
+    let t = (Math.abs(o | 0) % 2147483646) + 1;
+    return () => (t = (t * 16807) % 2147483647) / 2147483647;
+  },
+  T4 = (o, t) => {
+    let e = Math.hypot(o, t) || 1;
+    return [o / e, t / e];
+  },
+  t9 = new Set(["primary", "secondary", "tertiary", "trunk"]),
+  ESt = (o) =>
+    o &&
+    o.car &&
+    !o.inner &&
+    !o.hwy &&
+    !o.layered &&
+    !o.tunnel &&
+    o.cls !== "service" &&
+    o.ja >= 0 &&
+    o.jb >= 0 &&
+    o.ja !== o.jb &&
+    o.s1 - o.s0 > 50;
+function Zv(o, t, e = 0, s = null) {
+  let n = Math.hypot(o - Qv[0], t - Qv[1]),
+    i = n < 2100 ? 1 : n < 4200 ? 2 : 3;
+  return (
+    (s?.region === "marin" || s?.dist === "sausalito") && (i = 3),
+    e > 95 && i < 3 && i++,
+    i
+  );
+}
+function TSt(o, t, e) {
+  let s = e.adj,
+    n = o.juns.map(() => []);
+  s.forEach((h, f) => {
+    for (let u of h) n[u.to].push(f);
+  });
+  let i = t.roadAt(Qv[0], Qv[1], 60),
+    a = i ? [i.E.ja, i.E.jb].filter((h) => h >= 0) : [],
+    r = (h) => {
+      let f = new Set(a),
+        u = [...a];
+      for (; u.length;) {
+        let d = u.pop();
+        for (let p of h(d)) f.has(p) || (f.add(p), u.push(p));
       }
-      o.closePath();
-    }
-    let h = s.gC[n],
-      f = h & 15,
-      u = !!(h & 16);
-    e.push({
-      path: o,
-      bb: [a, r, l, c],
-      col:
-        f === 4
-          ? zs.lagoon
-          : f === 3
-            ? zs.sand
-            : f === 2
-              ? zs.wood
-              : u
-                ? zs.park
-                : zs.lawn,
-      o: f === 4 ? 4 : f === 3 ? 3 : f === 2 ? 2 : u ? 0 : 1,
-    });
-  }
-  (e.sort((n, o) => n.o - o.o), (i.green = e));
+      return f;
+    },
+    l = r((h) => s[h].map((f) => f.to)),
+    c = r((h) => n[h]);
+  return new Set([...l].filter((h) => c.has(h)));
 }
-async function OMt(i, t = "assets/real/") {
-  let [e, s] = await Promise.all([
-    io(t + "green.bin").catch(() => null),
-    io(t + "rails.bin").catch(() => null),
-  ]);
-  if ((nst(i, e), s)) {
-    let n = ga(s);
-    i.rails = [];
-    for (let o = 0; o + 1 < n.rStart.length; o++) {
-      let a = n.rPts.subarray(n.rStart[o] * 2, n.rStart[o + 1] * 2),
-        r = 1e9,
-        l = 1e9,
-        c = -1e9,
-        h = -1e9;
-      for (let f = 0; f < a.length; f += 2)
-        ((r = Math.min(r, a[f])),
-          (c = Math.max(c, a[f])),
-          (l = Math.min(l, a[f + 1])),
-          (h = Math.max(h, a[f + 1])));
-      i.rails.push({ t: n.rT[o], pts: a, bb: [r, l, c, h] });
-    }
-  }
-}
-var QE = 1;
-var PM = 600;

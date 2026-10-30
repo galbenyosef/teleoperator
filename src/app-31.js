@@ -1,6 +1,6 @@
 // app 31 — bag
-// Lines 47600-47948 of readable/app.pretty.js (statement-aligned).
-var fU = `
+// Lines 47807-48155 of readable/app.pretty.js (statement-aligned).
+var pV = `
 struct AOU {
   p: vec4f,        // world radius (m), intensity (exponent), full W, full H
   q: vec4f,        // frame index, max radius (px), falloff start (fraction of radius), thickness heuristic
@@ -130,7 +130,7 @@ fn depthAt(q: vec2i) -> f32 { return textureLoad(tDepth, clamp(q, vec2i(0), vec2
   textureStore(oAO, c, s / max(ws, 1e-4));
 }
 `;
-var kn = {
+var Rn = {
     walk: 0,
     leap: 1,
     phone: 2,
@@ -147,7 +147,7 @@ var kn = {
     think: 13,
     knock: 14,
   },
-  Ad = {
+  lp = {
     hair: [0, 7],
     hat: [3, 7],
     glasses: [6, 1],
@@ -156,7 +156,7 @@ var kn = {
     top: [10, 3],
     bottom: [12, 3],
   },
-  Zf = {
+  Lu = {
     hair: 1,
     hat: 2,
     glasses: 3,
@@ -167,7 +167,7 @@ var kn = {
     prop: 8,
     stars: 9,
   },
-  uU = `
+  mV = `
 fn voxOk(c: u32, opts: u32, pose: f32) -> bool {
   if (c == 0u) { return true; }
   let g = c >> 4u; let v = c & 15u;
@@ -254,7 +254,7 @@ fn sfVox(p0: vec3f, j: vec4u, jw: vec4f, i0: vec4f, i1: vec4f, i2: vec4f) -> SfW
   o.p = p + vec3f(0.0, a.bob - a.body.z, 0.0); o.r = R; return o;
 }
 `;
-var dU = `
+var gV = `
 struct HumA { thL: f32, thR: f32, knL: f32, knR: f32, armL: vec3f, armR: vec3f, elL: f32, elR: f32, head: vec3f, body: vec3f, tw: f32, bob: f32 };
 fn humMix(a: HumA, b: HumA, w: f32) -> HumA {
   var o: HumA; o.thL = mix(a.thL, b.thL, w); o.thR = mix(a.thR, b.thR, w); o.knL = mix(a.knL, b.knL, w); o.knR = mix(a.knR, b.knR, w);

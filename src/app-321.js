@@ -1,211 +1,347 @@
 // app 321 — math
-// Lines 157808-158016 of readable/app.pretty.js (statement-aligned).
-function WZ(i) {
-  for (let n of i) {
-    let o = n.attrs.position.array,
-      a = o.length / 3;
-    for (let r = 0; r < a; r++) {
-      let l = o[r * 3],
-        c = o[r * 3 + 1],
-        h = o[r * 3 + 2],
-        f = 1;
-      for (let [u, , d] of qw)
-        if (Math.abs(l) > 0.5 && Math.sign(l) === Math.sign(u)) {
-          let p = Math.hypot(c - 0.358, h - d);
-          f = Math.min(f, Math.min(1, Math.max(0, (p - 0.37) / 0.05)));
-        }
-      o[r * 3 + 1] = c - 0.035 * f * f * (3 - 2 * f);
-    }
-  }
-  let e = i.filter((n) => d3t.test(n.name));
-  if (e.length) {
-    let o = e.map((r) => {
-        let l = r.attrs.normal.array,
-          c = new Float32Array(l.length);
-        for (let h = 0; h < l.length; h += 3) {
-          let f = Math.hypot(l[h], l[h + 1], l[h + 2]) || 1;
-          ((c[h] = l[h] / f),
-            (c[h + 1] = l[h + 1] / f),
-            (c[h + 2] = l[h + 2] / f));
-        }
-        return c;
-      }),
-      a = o.map((r) => r.slice());
-    for (let r of UZ(
-      e.map((l) => l.attrs.position.array),
-      1e4,
-    ))
-      if (!(r.length <= 2))
-        for (let l = 0; l < r.length; l += 2) {
-          let c = o[r[l]],
-            h = r[l + 1],
-            f = c[h * 3],
-            u = c[h * 3 + 1],
-            d = c[h * 3 + 2],
-            p = 0,
-            m = 0,
-            g = 0;
-          for (let v = 0; v < r.length; v += 2) {
-            let y = o[r[v]],
-              M = r[v + 1],
-              S = y[M * 3],
-              w = y[M * 3 + 1],
-              z = y[M * 3 + 2];
-            S * f + w * u + z * d >= 0.64 && ((p += S), (m += w), (g += z));
-          }
-          let b = Math.hypot(p, m, g) || 1,
-            x = a[r[l]];
-          ((x[h * 3] = p / b), (x[h * 3 + 1] = m / b), (x[h * 3 + 2] = g / b));
-        }
-    e.forEach((r, l) => {
-      let c = a[l];
-      for (let h = 0; h < c.length; h += 3) {
-        let f = Math.hypot(c[h], c[h + 1], c[h + 2]) || 1;
-        ((c[h] /= f), (c[h + 1] /= f), (c[h + 2] /= f));
-      }
-      r.attrs.normal = { array: c, itemSize: 3 };
-    });
-  }
-  for (let n of i) {
-    if (!p3t.test(n.name) || !n.index) continue;
-    let o = 4,
-      a = 0.82,
-      r = 0.6,
-      l = n.attrs.position.array,
-      c = n.attrs.normal.array,
-      h = l.length / 3,
-      f = n.index,
-      u = new Int32Array(h);
-    for (let S of UZ([l], 1e5)) {
-      let w = S[1];
-      for (let z = 1; z < S.length; z += 2) u[S[z]] = w;
-    }
-    let d = new Float64Array(f.length * 2),
-      p = 0,
-      m = (S, w) => {
-        ((S = u[S]), (w = u[w]), S !== w && (d[p++] = S * 4294967296 + w));
-      };
-    for (let S = 0; S < f.length; S += 3) {
-      let w = f[S],
-        z = f[S + 1],
-        _ = f[S + 2];
-      (m(w, z), m(z, w), m(z, _), m(_, z), m(_, w), m(w, _));
-    }
-    let g = d.subarray(0, p).sort(),
-      b = new Int32Array(h + 1),
-      x = new Int32Array(p),
-      v = 0,
-      y = -1;
-    for (let S = 0; S < p; S++) {
-      if (g[S] === y) continue;
-      y = g[S];
-      let w = Math.floor(g[S] / 4294967296);
-      ((x[v++] = g[S] - w * 4294967296), b[w + 1]++);
-    }
-    for (let S = 0; S < h; S++) b[S + 1] += b[S];
-    let M = new Float32Array(c);
-    for (let S = 0; S < o; S++) {
-      let w = M.slice();
-      for (let z = 0; z < h; z++) {
-        let _ = u[z],
-          R = b[_],
-          T = b[_ + 1];
-        if (R === T) continue;
-        let E = M[z * 3],
-          A = M[z * 3 + 1],
-          C = M[z * 3 + 2],
-          P = 0,
-          I = 0,
-          L = 0,
-          F = 0;
-        for (let D = R; D < T; D++) {
-          let U = x[D],
-            G = M[U * 3],
-            q = M[U * 3 + 1],
-            W = M[U * 3 + 2];
-          E * G + A * q + C * W < a || ((P += G), (I += q), (L += W), F++);
-        }
-        if (!F) continue;
-        let N = E + r * (P / F - E),
-          B = A + r * (I / F - A),
-          H = C + r * (L / F - C),
-          O = Math.hypot(N, B, H) || 1;
-        ((w[z * 3] = N / O), (w[z * 3 + 1] = B / O), (w[z * 3 + 2] = H / O));
-      }
-      M = w;
-    }
-    n.attrs.normal = { array: M, itemSize: 3 };
-  }
-  let s = /^(CarTires|CarChrome|CarMetal|CarDetails|CarYellow|CarCarbon)$/;
-  return i.map((n) => {
-    if (!s.test(n.name)) {
-      let p = n.index ? n.index.length / 3 : n.attrs.position.array.length / 9;
-      n = { ...n, _body: p };
-    }
-    let o = n.index,
-      a = n.attrs.position.array,
-      r = a.length / 3,
-      l = o ? o.length / 3 : r / 3,
-      c = (p, m) => (o ? o[p * 3 + m] : p * 3 + m),
-      h = new Int8Array(l).fill(-1);
-    for (let p = 0; p < l; p++) {
-      let m = 0,
-        g = 0,
-        b = 0;
-      for (let x = 0; x < 3; x++) {
-        let v = c(p, x);
-        ((m += a[v * 3]), (g += a[v * 3 + 1]), (b += a[v * 3 + 2]));
-      }
-      if (
-        ((m /= 3),
-        (g /= 3),
-        (b /= 3),
-        !(n._body || Math.abs(m) < 0.55 || Math.abs(m) > 1.02))
-      )
-        for (let x = 0; x < 4; x++) {
-          let [v, y, M] = qw[x];
-          if (Math.sign(m) === Math.sign(v) && Math.hypot(g - y, b - M) < 0.4) {
-            h[p] = x;
-            break;
-          }
-        }
-    }
-    let f = [[], [], [], [], []];
-    for (let p = 0; p < l; p++) f[h[p] < 0 ? 4 : h[p]].push(p);
-    let u = Object.entries(n.attrs);
-    return {
-      parts: f.map((p, m) => {
-        if (!p.length) return null;
-        let g = new Map(),
-          b = new Uint32Array(p.length * 3),
-          x = [];
-        p.forEach((M, S) => {
-          for (let w = 0; w < 3; w++) {
-            let z = c(M, w),
-              _ = g.get(z);
-            (_ === void 0 && ((_ = x.length), g.set(z, _), x.push(z)),
-              (b[S * 3 + w] = _));
-          }
-        });
-        let v = {},
-          y = {};
-        for (let [M, { array: S, itemSize: w }] of u) {
-          let z = new Float32Array(x.length * w);
-          for (let _ = 0; _ < x.length; _++)
-            for (let R = 0; R < w; R++) z[_ * w + R] = S[x[_] * w + R];
-          if (M === "position" && m < 4) {
-            let [_, R, T] = qw[m];
-            for (let E = 0; E < z.length; E += 3)
-              ((z[E] -= _), (z[E + 1] -= R), (z[E + 2] -= T));
-          }
-          ((v[M] = z), (y[M] = w));
-        }
-        return { attrs: v, sizes: y, index: b };
-      }),
-    };
-  });
+// Lines 153159-153503 of readable/app.pretty.js (statement-aligned).
+var Ao = 9.81,
+  _c = {
+    mass: 1480,
+    izz: 2150,
+    box: { hx: 0.97, hz: 2.29, off: 0.35 },
+    a: 1.52,
+    b: 1.13,
+    track: 1.7,
+    hcg: 0.46,
+    wheelR: 0.345,
+    wheelI: 1.2,
+    rearI: 1.8,
+    idle: 1e3,
+    redline: 9e3,
+    limiter: 9200,
+    gears: [3.08, 2.19, 1.63, 1.29, 1.03, 0.84, 0.69],
+    reverse: 2.9,
+    final: 4.44,
+    driveEff: 0.87,
+    upshift: 8500,
+    upshift1: 7200,
+    shiftUp: 0.15,
+    shiftDown: 0.12,
+    engineI: 0.22,
+    cutFloor: 0.08,
+    kickMax: 0.3,
+    kickTau: 0.1,
+    rpmFall: 26e3,
+    rpmRise: 3e4,
+    launchRpm: 5500,
+    launchSlip: 0.08,
+    biteTime: 0.35,
+    muDrive: 0.9,
+    engBrake: [25, 60],
+    cdA: 0.72,
+    crr: 0.012,
+    downforce: 0.4,
+    brakeF: 2700,
+    brakeR: 1450,
+    handbrake: 2600,
+    espBrake: 2400,
+    mu: 1.42,
+    muRearDrift: 0.6,
+    rearGrip: 1.1,
+    latMu: 1.06,
+    latMuR: 1.09,
+    steerMax: 0.62,
+    steerMaxHigh: 0.085,
+    steerRate: 14,
+    steerReturn: 16,
+    holdTurn: 18,
+    nitroForce: 7600,
+    nitroMax: 1,
+    nitroUse: 0.22,
+    nitroFill: 0.05,
+    rideHz: 2,
+    rideZeta: 0.7,
+    gVert: 2.4,
+    gAir: 3.4,
+    gStick: 6,
+    stickKmh: [105, 175],
+    droop: 0.12,
+    bump: 0.07,
+    bumpMax: 0.16,
+    arb: 1.1,
+    damperV: 0.9,
+    ipitch: 2100,
+    iroll: 620,
+    lean: 0.9,
+    leanPitch: 1.5,
+  },
+  $wt = 31e4,
+  Xwt = 800,
+  md = {
+    ..._c,
+    box: { hx: 1, hz: 2.3, off: 0.08 },
+    mass: 2300,
+    izz: 4200,
+    a: 1.495,
+    b: 1.495,
+    track: 1.64,
+    hcg: 0.52,
+    wheelR: 0.352,
+    wheelI: 1.6,
+    rearI: 1.9,
+    ev: !0,
+    awd: !0,
+    frontShare: 0.45,
+    idle: 0,
+    redline: 13650,
+    limiter: 13700,
+    gears: [1],
+    reverse: 1,
+    final: 9.04,
+    driveEff: 0.92,
+    torque: (o) => {
+      let t = Math.max(o, 1) / yv;
+      return Math.min(Xwt, $wt / t) * aE((13640 - o) / 120, 0, 1);
+    },
+    engineI: 0.05,
+    kickMax: 0,
+    launchRpm: 0,
+    launchSlip: 0.05,
+    biteTime: 0.06,
+    muDrive: 0.92,
+    regen: 620,
+    comfortBrake: 5,
+    cdA: 0.85,
+    crr: 0.012,
+    downforce: 0.05,
+    brakeF: 3600,
+    brakeR: 2600,
+    handbrake: 2600,
+    espBrake: 3e3,
+    mu: 1.32,
+    rearGrip: 1.08,
+    steerMax: 0.6,
+    steerMaxHigh: 0.09,
+    nitroForce: 0,
+    nitroMax: 0,
+    rideHz: 1.6,
+    rideZeta: 0.72,
+    arb: 1.3,
+    bump: 0.08,
+    ipitch: 3800,
+    iroll: 1100,
+    lean: 0.75,
+    leanPitch: 1.2,
+  },
+  Kwt = 25e4,
+  Ywt = 480,
+  oE = {
+    ...md,
+    box: { hx: 0.88, hz: 2.22, off: -0.02 },
+    mass: 1520,
+    izz: 1750,
+    a: 1.34,
+    b: 1.34,
+    track: 1.48,
+    hcg: 0.47,
+    wheelR: 0.4,
+    wheelI: 1.4,
+    rearI: 1.7,
+    awd: !1,
+    frontShare: 0,
+    redline: 13400,
+    limiter: 13450,
+    final: 10.4,
+    torque: (o) => {
+      let t = Math.max(o, 1) / yv;
+      return Math.min(Ywt, Kwt / t) * aE((13390 - o) / 120, 0, 1);
+    },
+    muDrive: 0.95,
+    regen: 480,
+    cdA: 0.58,
+    crr: 0.011,
+    downforce: 0.06,
+    brakeF: 2900,
+    brakeR: 1900,
+    espBrake: 2600,
+    mu: 1.36,
+    rearGrip: 1.06,
+    latMuR: 1.12,
+    steerMax: 0.72,
+    steerMaxHigh: 0.1,
+    steerRate: 16,
+    steerReturn: 18,
+    rideHz: 1.9,
+    rideZeta: 0.7,
+    arb: 1.2,
+    bump: 0.07,
+    ipitch: 2300,
+    iroll: 700,
+    lean: 0.8,
+    leanPitch: 1.3,
+  },
+  Jwt = 79e4,
+  Zwt = 1750,
+  vv = {
+    ...md,
+    mass: 3100,
+    izz: 8e3,
+    a: 1.8175,
+    b: 1.8175,
+    track: 1.72,
+    hcg: 0.62,
+    wheelR: 0.44,
+    wheelI: 2.6,
+    rearI: 2.9,
+    awd: !0,
+    frontShare: 0.34,
+    redline: 13650,
+    limiter: 13700,
+    final: 10.8,
+    torque: (o) => {
+      let t = Math.max(o, 1) / yv;
+      return Math.min(Zwt, Jwt / t) * aE((13640 - o) / 120, 0, 1);
+    },
+    muDrive: 0.95,
+    regen: 1040,
+    zoneBrake: 0.2,
+    box: { hx: 1, hz: 2.82, off: -0.05 },
+    cdA: 0.95,
+    crr: 0.013,
+    downforce: 0.04,
+    brakeF: 4700,
+    brakeR: 3300,
+    handbrake: 3600,
+    espBrake: 4200,
+    mu: 1.24,
+    rearGrip: 1.08,
+    steerMax: 0.62,
+    steerMaxHigh: 0.085,
+    rideHz: 1.35,
+    rideZeta: 0.82,
+    arb: 1.6,
+    bump: 0.09,
+    ipitch: 7600,
+    iroll: 1600,
+    lean: 0.6,
+    leanPitch: 0.9,
+  },
+  Ztt = 11e5,
+  Qwt = 3e3,
+  eet = {
+    ...md,
+    mass: 1900,
+    izz: 2500,
+    a: 1.3,
+    b: 1.35,
+    track: 1.68,
+    hcg: 0.42,
+    wheelR: 0.31,
+    wheelI: 1.2,
+    rearI: 1.6,
+    awd: !0,
+    frontShare: 0.36,
+    redline: 13650,
+    limiter: 13700,
+    final: 4,
+    torque: (o) => {
+      let t = Math.max(o, 1) / yv;
+      return Math.min(Qwt, Ztt / t) * aE((13640 - o) / 120, 0, 1);
+    },
+    muDrive: 0.95,
+    regen: 760,
+    box: { hx: 0.99, hz: 2.2, off: 0.05 },
+    cdA: 0.5,
+    crr: 0.011,
+    downforce: 0.05,
+    brakeF: 3800,
+    brakeR: 2600,
+    handbrake: 2600,
+    espBrake: 3200,
+    mu: 1.4,
+    rearGrip: 1.08,
+    latMuR: 1.1,
+    steerMax: 0.62,
+    steerMaxHigh: 0.08,
+    rideHz: 2,
+    rideZeta: 0.72,
+    arb: 1.4,
+    ipitch: 2400,
+    iroll: 700,
+    lean: 0.55,
+    leanPitch: 1,
+    nitroForce: 16e3,
+    nitroMax: 1,
+    nitroUse: 0.2,
+    nitroFill: 0.07,
+    thrusters: !0,
+    keyRamp: 1.4,
+    keyRamp0: 0.3,
+    fanKg: 2200,
+    flyG: 1.15,
+    liftA: !0,
+    liftUse: 0.06,
+    flyThrust: 16e3,
+    flyAlt: 40,
+    roofs: !0,
+    climbs: !0,
+    climbP: Ztt,
+  },
+  set = { ..._c, comfortBrake: 5 },
+  tMt = 14e4;
+function eMt(o) {
+  let t = o / 1e3,
+    e =
+      t < 1.5
+        ? 520
+        : t < 3.2
+          ? 520 + 600 * net((t - 1.5) / 1.7)
+          : t < 6.2
+            ? 1120
+            : 1120 - 70 * (t - 6.2) * (t - 6.2),
+    s = Math.max(o, 400) / yv,
+    n = Math.min(330, tMt / s);
+  return e + n;
 }
-ml();
-var qZ = qw,
-  XZ = 0.36,
-  m3t = /^(CarTires|CarChrome|CarMetal|CarDetails)$/;
+var net = (o) => ((o = o < 0 ? 0 : o > 1 ? 1 : o), o * o * (3 - 2 * o)),
+  iet = {
+    ..._c,
+    box: { hx: 0.97, hz: 2.35, off: 0.055 },
+    mass: 1810,
+    izz: 2550,
+    a: 1.63,
+    b: 1.09,
+    track: 1.63,
+    hcg: 0.43,
+    wheelR: 0.345,
+    wheelI: 1.3,
+    rearI: 2,
+    awd: !0,
+    frontShare: 0.28,
+    idle: 900,
+    redline: 8e3,
+    limiter: 8200,
+    upshift: 7600,
+    upshift1: 6600,
+    launchRpm: 4200,
+    launchSlip: 0.09,
+    gears: [2.91, 1.76, 1.22, 0.95, 0.75, 0.62, 0.53, 0.46],
+    reverse: 2.9,
+    final: 5.17,
+    driveEff: 0.88,
+    torque: eMt,
+    engineI: 0.2,
+    muDrive: 0.8,
+    cdA: 1.62,
+    crr: 0.012,
+    downforce: 0.9,
+    brakeF: 3300,
+    brakeR: 1900,
+    handbrake: 2800,
+    espBrake: 2600,
+    mu: 1.45,
+    rearGrip: 1.1,
+    latMuR: 1.12,
+    nitroForce: 7e3,
+    rideHz: 2.1,
+    ipitch: 2300,
+    iroll: 700,
+    comfortBrake: 5,
+  },
+  sMt = 12e4;

@@ -1,283 +1,214 @@
-// app 293 — fillstyle
-// Lines 142884-143164 of readable/app.pretty.js (statement-aligned).
-function CJ(i, t) {
-  let e = new ke();
-  e.name = "Structures";
-  let s = new Ce(),
+// app 293 — math
+// Lines 143442-143653 of readable/app.pretty.js (statement-aligned).
+function BQ(o) {
+  if (typeof document > "u") return null;
+  let t = {},
+    e = [],
+    s = [],
     n = [],
-    o = i.edges.filter(
-      (r) =>
-        r.name === "3rd Street" &&
-        r.layer === 1 &&
-        r.P[0] > 200 &&
-        r.P[0] < 360 &&
-        r.P[1] > 2020 &&
-        r.P[1] < 2160,
-    );
-  if (o.length) {
-    let r = [],
-      l = 0;
-    for (let w of o) {
-      for (let z = 0; z < w.n; z++)
-        r.push([w.P[z * 3], w.P[z * 3 + 1], w.P[z * 3 + 2]]);
-      l = Math.max(l, ...w.W);
-    }
-    r.sort((w, z) => w[1] - z[1]);
-    let c = r[0],
-      h = r[r.length - 1],
-      f = Math.hypot(h[0] - c[0], h[1] - c[1]),
-      u = [(h[0] - c[0]) / f, (h[1] - c[1]) / f],
-      d = [-u[1], u[0]],
-      p = 0;
-    for (let w of r)
-      p = Math.max(p, Math.abs((w[0] - c[0]) * d[0] + (w[1] - c[1]) * d[1]));
-    let m = p + l + 0.9,
-      g = (w) => c[2] + (h[2] - c[2]) * Math.min(1, Math.max(0, w / f)),
-      b = (w, z, _) => [
-        c[0] + u[0] * w + d[0] * z,
-        _,
-        c[1] + u[1] * w + d[1] * z,
-      ],
-      x = -4,
-      v = f + 4,
-      y = 5.5,
-      M = Math.max(4, Math.round((v - x) / 5.5)),
-      S = (v - x) / M;
-    for (let w of [-1, 1]) {
-      let z = m * w;
-      (Zl(s, b(x, z, g(x) + 0.2), b(v, z, g(v) + 0.2), 0.25, Ql, 0.4),
-        Zl(s, b(x + S, z, g(x) + y), b(v, z, g(v) + y), 0.25, Ql, 0.35),
-        Zl(s, b(x, z, g(x) + 0.2), b(x + S, z, g(x) + y), 0.22, Ql));
-      for (let T = 1; T <= M; T++) {
-        let E = x + S * T,
-          A = g(E);
-        (Zl(s, b(E, z, A + 0.2), b(E, z, A + y), 0.15, Ql),
-          T < M &&
-            Zl(
-              s,
-              b(E, z, A + y),
-              b(E + S * (T < M / 2 ? -1 : 1) * -1, z, g(E) + 0.2),
-              0.1,
-              Ql,
-            ));
+    i = [],
+    a = (u, d, p, m, g, b, v) => {
+      let x = new Is(u, d, p);
+      (x.translate(m, g, b), x.applyMatrix4(v));
+      for (let y of ["uv"]) x.deleteAttribute(y);
+      return x;
+    },
+    r = (u, d, p = !1, m = !1) => {
+      e.push([u.x, u.z, u.dx, u.dz]);
+      let g = new fe()
+          .makeBasis(
+            new dt(-u.nx, 0, -u.nz),
+            new dt(0, 1, 0),
+            new dt(u.dx, 0, u.dz),
+          )
+          .setPosition(u.x, u.y, u.z),
+        b = m ? u.w + 0.2 : u.w + 1,
+        v = m ? 0.85 : 0,
+        x = 7;
+      if (p) {
+        let _ = [new dt(-b, 0, 0), new dt(-b, x + 0.4 - 2.2, 0)];
+        for (let T = 1; T < 8; T++) {
+          let E = Math.PI - ((T / 8) * Math.PI) / 2;
+          _.push(
+            new dt(
+              -b + 2.2 + Math.cos(E) * 2.2,
+              x + 0.4 - 2.2 + Math.sin(E) * 2.2,
+              0,
+            ),
+          );
+        }
+        _.push(new dt(-b + 2.2, x + 0.4, 0), new dt(b - 2.2, x + 0.4, 0));
+        for (let T = 1; T < 8; T++) {
+          let E = Math.PI / 2 - ((T / 8) * Math.PI) / 2;
+          _.push(
+            new dt(
+              b - 2.2 + Math.cos(E) * 2.2,
+              x + 0.4 - 2.2 + Math.sin(E) * 2.2,
+              0,
+            ),
+          );
+        }
+        _.push(new dt(b, x + 0.4 - 2.2, 0), new dt(b, 0, 0));
+        let z = new hm();
+        for (let T = 0; T + 1 < _.length; T++) z.add(new cm(_[T], _[T + 1]));
+        let A = new dm(z, 96, 0.32, 8, !1);
+        (A.deleteAttribute("uv"),
+          A.applyMatrix4(g),
+          i.push(A),
+          i.push(a(b * 2 - 2.2, 0.2, 0.2, 0, x - 0.9, -0.3, g)));
+      } else {
+        for (let w of [-b, b])
+          s.push(
+            a(0.36, x + 0.4 - v, 0.36, w, v + (x + 0.4 - v) / 2, 0, g),
+            a(m ? 0.5 : 0.9, 0.08, m ? 0.5 : 0.9, w, v + 0.04, 0, g),
+          );
+        s.push(
+          a(b * 2 + 0.5, 0.18, 0.18, 0, x, -0.35, g),
+          a(b * 2 + 0.5, 0.18, 0.18, 0, x, 0.35, g),
+          a(b * 2 + 0.5, 0.16, 0.16, 0, x - 0.9, -0.35, g),
+          a(b * 2 + 0.5, 0.16, 0.16, 0, x - 0.9, 0.35, g),
+        );
+        for (let w = -b; w <= b + 0.01; w += 1.2)
+          s.push(
+            a(0.09, 0.9, 0.09, w, x - 0.45, -0.35, g),
+            a(0.09, 0.9, 0.09, w, x - 0.45, 0.35, g),
+          );
       }
-      n.push({
-        t: "obb",
-        x: c[0] + (u[0] * f) / 2 + d[0] * z,
-        z: c[1] + (u[1] * f) / 2 + d[1] * z,
-        hx: 0.4,
-        hz: (v - x) / 2,
-        c: u[1],
-        s: u[0],
-        wall: !0,
-        y0: c[2] - 2,
-        y1: c[2] + 6,
+      let y = d.length,
+        M = Math.min((u.w * 2 * 0.9) / y, 5.2),
+        S = M * 0.5;
+      d.forEach((w, _) => {
+        let z =
+            u.w *
+            (y === 1 ? 0 : (1 - (2 * _) / (y - 1)) * (y === 2 ? 0.5 : 0.66)),
+          A = (w % 2) * 0.5,
+          T = 1 - (Math.floor(w / 2) + 1) / k_,
+          E = new Yn(M, S);
+        (E.rotateY(Math.PI), E.translate(z, x - 0.95 - S / 2, -0.68));
+        let R = 6 / 1024,
+          P = 6 / (256 * k_),
+          C = E.attributes.uv;
+        for (let I = 0; I < C.count; I++)
+          C.setXY(
+            I,
+            A + R + C.getX(I) * (0.5 - 2 * R),
+            T + P + C.getY(I) * (1 / k_ - 2 * P),
+          );
+        (E.applyMatrix4(g),
+          n.push(E),
+          s.push(
+            a(M - 0.1, S - 0.1, 0.08, z, x - 0.95 - S / 2, -0.45, g),
+            a(0.08, 0.95, 0.08, z - M * 0.3, x - 0.5, -0.45, g),
+            a(0.08, 0.95, 0.08, z + M * 0.3, x - 0.5, -0.45, g),
+          ));
       });
-      let _ = f + 3,
-        R = g(f) + 21;
-      (Zl(s, b(_, z, g(f) - 1), b(_, z, R), 0.45, Ql, 0.6),
-        Zl(s, b(x + S * 2, z, g(x) + y), b(_, z, R), 0.35, Ql, 0.5));
-      for (let T = 1; T < 5; T++) {
-        let E = T / 5,
-          A = x + S * 2 + (_ - x - S * 2) * E,
-          C = g(x) + y + (R - g(x) - y) * E;
-        (Zl(s, b(A, z, C), b(A, z, g(A) + y), 0.12, Ql),
-          Zl(s, b(A, z, C), b(A - (_ - x - S * 2) / 5, z, g(A) + y), 0.09, Ql));
-      }
-      Zl(s, b(_ - 6, z, R - 0.5), b(_ + 4, z, R - 0.5), 0.3, Ql, 0.5);
-    }
-    for (let w = 1; w < M; w += 2) {
-      let z = x + S * w;
-      Zl(s, b(z, -m, g(z) + y), b(z, m, g(z) + y), 0.12, Ql);
-    }
-    {
-      let w = f + 3,
-        z = g(f) + 21;
-      Zl(s, b(w, -m, z), b(w, m, z), 0.4, Ql, 0.6);
-      let _ = b(w + 1, 0, 0);
-      _x(s, [_[0], _[2]], u, d, 4.5, m - 1.2, z - 9, z - 1, Ext);
-    }
+    };
+  for (let u of s5t) {
+    let d = null,
+      p = 1e9,
+      m = {};
+    for (let g of o.edges)
+      if (!(g.name !== u.name || !g.oneway || g.inner))
+        for (let b = g.s0 + 5; b < g.s1 - 5; b += 2) {
+          if ((Ot(g, b, m), m.dx * u.dir[0] + m.dz * u.dir[1] < 0.5)) continue;
+          let v = Math.hypot(m.x - u.at[0], m.z - u.at[1]);
+          v < p && ((p = v), (d = { ...m, elev: g.elev }));
+        }
+    d && p < 40 && r(d, u.cells, !!u.arch, !!d.elev);
   }
-  let a = i.edges.find(
-    (r) => r.name === "Howard Street" && vs(r, -741, 1295, {}).d < 20,
-  );
-  if (a) {
-    let r = vs(a, -741, 1295, {}),
-      l = Ot(a, Math.max(a.s0 ?? 0, Math.min(a.s1 ?? a.L, r.s)), {}),
-      c = [l.dx, l.dz],
-      h = [-l.dz, l.dx],
-      f = l.y + 7.2,
-      u = 26,
-      d = 3.4,
-      p = 4.6,
-      m = [l.x, l.z];
-    (_x(s, m, h, c, u, d, f - 0.9, f, gI),
-      _x(s, m, h, c, u, d, f + p, f + p + 0.5, gI));
-    for (let g of [-1, 1]) {
-      let b = [m[0] + c[0] * d * g, m[1] + c[1] * d * g];
-      (_x(s, b, h, c, u, 0.05, f, f + p, Txt),
-        _x(
-          s,
-          [b[0] + c[0] * 0.08 * g, b[1] + c[1] * 0.08 * g],
-          h,
-          c,
-          u,
-          0.04,
-          f + p - 0.55,
-          f + p - 0.3,
-          Axt,
-        ));
-      for (let x = -u; x <= u; x += 2.4) {
-        let v = [
-          b[0] + h[0] * x + c[0] * 0.07 * g,
-          b[1] + h[1] * x + c[1] * 0.07 * g,
-        ];
-        _x(s, v, h, c, 0.07, 0.07, f, f + p, gI);
+  for (let u of o.edges)
+    if (!(
+      u.cls !== "motorway" ||
+      !u.oneway ||
+      u.inner ||
+      u.region ||
+      n5t.has(u.name) ||
+      u.s1 - u.s0 < 60
+    ))
+      for (let d = u.s0 + 25; d < u.s1 - 25; d += 30) {
+        if (
+          (Ot(u, d, t),
+          t.w < 4.5 ||
+            e.some(
+              (b) =>
+                Math.hypot(b[0] - t.x, b[1] - t.z) < 380 &&
+                b[2] * t.dx + b[3] * t.dz > 0.5,
+            ) ||
+            e.some((b) => Math.hypot(b[0] - t.x, b[1] - t.z) < 25) ||
+            o.edges.some(
+              (b) => b !== u && b.elev && b.layer > u.layer && o5t(b, t.x, t.z),
+            ))
+        )
+          continue;
+        let p = (Math.sin(t.x * 12.9898 + t.z * 78.233) * 43758.5453) % 1,
+          [m, g] = i5t(u.name, t.dx, t.dz, Math.abs(p));
+        r(t, [m, g], !1, u.elev);
       }
-    }
+  if (!e.length) return null;
+  let l = new le();
+  l.name = "Gantries";
+  let c = new me({ color: 9343894, roughness: 0.5, metalness: 0.55 }),
+    h = new me({ color: 16777215, map: e5t(), roughness: 0.45, metalness: 0 }),
+    f = new me({ color: 9053206, roughness: 0.45, metalness: 0.3 });
+  for (let [u, d, p] of [
+    [s, c, "gantry_steel"],
+    [n, h, "gantry_signs"],
+    [i, f, "gantry_red"],
+  ]) {
+    if (!u.length) continue;
+    let m = wi(u.map((b) => (b.index ? b.toNonIndexed() : b)));
+    m.computeBoundingSphere();
+    let g = new ye(m, d);
+    ((g.name = p),
+      (g.castShadow = !0),
+      (g.receiveShadow = !0),
+      (g.matrixAutoUpdate = !1),
+      g.updateMatrix(),
+      l.add(g));
   }
-  if (!s.empty) {
-    let r = new _e(
-      s.geometry(),
-      new Ee({
-        color: 16777215,
-        roughness: 0.55,
-        metalness: 0.1,
-        vertexColors: !0,
-        side: Ss,
-      }),
+  return ((l.userData.count = e.length), (l.userData.placed = e), l);
+}
+function o5t(o, t, e) {
+  let s = o.P,
+    n = s.length / 3;
+  for (let i = 0; i + 1 < n; i++) {
+    let a = s[i * 3],
+      r = s[i * 3 + 1],
+      l = s[i * 3 + 3],
+      c = s[i * 3 + 4],
+      h = l - a,
+      f = c - r,
+      u = h * h + f * f || 1,
+      d = Math.max(0, Math.min(1, ((t - a) * h + (e - r) * f) / u));
+    if (Math.hypot(t - a - h * d, e - r - f * d) < (o.W[i] || 6) + 6) return !0;
+  }
+  return !1;
+}
+es();
+var $F = 12;
+var NQ = [0, 1, 2, 3, 6, 7],
+  a5t = 4,
+  r5t = 5,
+  z_ = [0, 2, 3, 7, 8, 10, 11, 15],
+  l5t = [8, 9, 14, 12, 3, 6, 13, 1],
+  HQ = [10, 11, 0, 15, 7, 2, 3, 6],
+  DQ = [12, 13, 6, 9],
+  UQ = [14, 12, 9],
+  c5t = {
+    "Clarion Alley": l5t,
+    "Balmy Street": HQ,
+    "Balmy Alley": HQ,
+    "Lilac Street": z_,
+    "Cypress Street": z_,
+  },
+  h5t =
+    /^(Route 80|Central Freeway|John F Foran Freeway|Southern Embarcadero Freeway|Dwight D\. Eisenhower Highway|Octavia Boulevard)$/,
+  GQ = (o, t = 0) => {
+    let e = Math.imul(o | 0, 374761393) ^ Math.imul(t | 0, 668265263);
+    return (
+      (e = Math.imul(e ^ (e >>> 13), 1274126177)),
+      ((e ^ (e >>> 16)) >>> 0) / 4294967296
     );
-    ((r.name = "structures"),
-      (r.castShadow = !0),
-      (r.receiveShadow = !0),
-      (r.matrixAutoUpdate = !1),
-      e.add(r));
-  }
-  return { group: e, colliders: n };
-}
-as();
-var LJ = [
-    ["80", "EAST", "Bay Bridge", "Oakland"],
-    ["101", "NORTH", "Golden Gate", "Bridge"],
-    ["101", "SOUTH", "San Jose", "SFO Airport"],
-    ["", "EXIT", "Downtown", "Civic Center"],
-    ["280", "SOUTH", "Daly City", ""],
-    ["1", "SOUTH", "19th Ave", "Park Presidio"],
-    ["101", "SOUTH", "Lombard St", "Van Ness Ave"],
-    ["", "EXIT 2B", "4th St", "Embarcadero"],
-    ["101", "NORTH", "Golden Gate Br", "Van Ness Ave"],
-    ["", "EXIT", "Octavia Blvd", "Market St"],
-    ["", "EXIT 433C", "Ninth St", "Civic Center"],
-    ["", "EXIT 433B", "Bay Bridge", "Oakland"],
-  ],
-  k_ = LJ.length / 2;
-function Rxt() {
-  let i = document.createElement("canvas");
-  ((i.width = 1024), (i.height = 256 * k_));
-  let t = i.getContext("2d");
-  LJ.forEach(([s, n, o, a], r) => {
-    let l = (r % 2) * 512,
-      c = Math.floor(r / 2) * 256;
-    ((t.fillStyle = "#09482a"),
-      t.fillRect(l, c, 512, 256),
-      (t.strokeStyle = "#e8ece6"),
-      (t.lineWidth = 7),
-      t.strokeRect(l + 12, c + 12, 488, 232),
-      (t.fillStyle = "#eef2ec"),
-      (t.textBaseline = "middle"));
-    let h = l + 34;
-    if (s) {
-      let f = l + 34,
-        u = c + 40,
-        d = 96,
-        p = 104;
-      (s === "80" || s === "280"
-        ? ((t.fillStyle = "#eef2ec"),
-          t.fillRect(f - 3, u - 3, d + 6, p + 6),
-          (t.fillStyle = "#1d3f8f"),
-          t.fillRect(f, u + 26, d, p - 26),
-          (t.fillStyle = "#b8262b"),
-          t.fillRect(f, u, d, 24),
-          (t.fillStyle = "#eef2ec"))
-        : ((t.fillStyle = "#eef2ec"),
-          t.fillRect(f, u, d, p),
-          (t.fillStyle = "#111")),
-        (t.font = `bold ${s.length > 2 ? 40 : 50}px Arial, sans-serif`),
-        (t.textAlign = "center"),
-        t.fillText(s, f + d / 2, u + p / 2 + 12),
-        (t.fillStyle = "#eef2ec"),
-        (t.font = "bold 30px Arial, sans-serif"),
-        t.fillText(n, f + d / 2, u + p + 38),
-        (h = l + 158));
-    } else
-      ((t.fillStyle = "#f2c230"),
-        t.fillRect(l + 330, c + 22, 160, 44),
-        (t.fillStyle = "#111"),
-        (t.font = "bold 30px Arial, sans-serif"),
-        (t.textAlign = "center"),
-        t.fillText(n, l + 410, c + 45),
-        (t.fillStyle = "#eef2ec"));
-    t.textAlign = "left";
-    {
-      let f = 48;
-      for (
-        t.font = `bold ${f}px Arial, sans-serif`;
-        f > 30 &&
-        Math.max(t.measureText(o).width, t.measureText(a).width) > l + 492 - h;
-      )
-        t.font = `bold ${(f -= 2)}px Arial, sans-serif`;
-    }
-    (t.fillText(o, h, c + (a ? 100 : 128)),
-      a && t.fillText(a, h, c + 164),
-      t.beginPath(),
-      t.moveTo(l + 440, c + 230),
-      t.lineTo(l + 440, c + 196),
-      t.moveTo(l + 428, c + 206),
-      t.lineTo(l + 440, c + 190),
-      t.lineTo(l + 452, c + 206),
-      (t.strokeStyle = "#eef2ec"),
-      (t.lineWidth = 6),
-      t.stroke());
-  });
-  let e = new Sn(i);
-  return ((e.colorSpace = is), (e.anisotropy = 8), (e.generateMipmaps = !0), e);
-}
-var Pxt = [
-    {
-      name: "James Lick Freeway",
-      at: [-1046, 3545],
-      dir: [0.17, -0.98],
-      cells: [1, 10, 0],
-    },
-    {
-      name: "Presidio Parkway",
-      at: [-6846, -894],
-      dir: [0.75, 0.66],
-      cells: [6, 5],
-      arch: !0,
-    },
-  ],
-  Cxt = new Set([
-    "Golden Gate Bridge",
-    "Yerba Buena Tunnel",
-    "San Francisco\u2013Oakland Bay Bridge",
-  ]);
-function Lxt(i, t, e, s) {
-  return /Presidio|Veterans|Doyle/.test(i || "")
-    ? e < -0.3 || t < -0.3
-      ? [1, 5]
-      : [6, 3]
-    : /Central|Octavia/.test(i || "")
-      ? t < 0 || e < -0.5
-        ? [8, 9]
-        : [0, 2]
-      : /James Lick/.test(i || "")
-        ? e < 0
-          ? s < 0.5
-            ? [1, 11]
-            : [1, 10]
-          : [2, 4]
-        : t > 0
-          ? [0, s < 0.5 ? 7 : 3]
-          : [2, 3];
-}
+  },
+  _M = 14.6,
+  XF = _M / 3;

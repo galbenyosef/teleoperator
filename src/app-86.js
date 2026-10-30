@@ -1,231 +1,235 @@
 // app 86 — math
-// Lines 72751-72979 of readable/app.pretty.js (statement-aligned).
-var QG = 420,
-  Uht = 4500;
-function tW(i, t) {
-  let e = PR(i, t);
-  if (!e || i._p39pad) return e;
-  ((i._p39pad = !0),
-    (i.pads ||= []).push({
-      bb: e.bb,
-      poly: e.flat,
-      y: e.yAt,
-      cap: e.cap,
-      name: "Pier 39",
-    }));
-  let s = i.terrain,
-    [n, o, a, r] = e.bb;
-  for (
-    let l = Math.max(0, Math.floor((o - 4 - s.z0) / s.step));
-    l <= Math.min(s.nz - 1, Math.ceil((r + 4 - s.z0) / s.step));
-    l++
-  )
-    for (
-      let c = Math.max(0, Math.floor((n - 4 - s.x0) / s.step));
-      c <= Math.min(s.nx - 1, Math.ceil((a + 4 - s.x0) / s.step));
-      c++
-    ) {
-      let h = s.x0 + c * s.step,
-        f = s.z0 + l * s.step;
-      if (!e.inDeck(h, f) && Y1(e.flat, h, f) > 2) continue;
-      let u = l * s.nx + c,
-        d = e.yAt(h, f) - 0.45;
-      s.h[u] > d && (s.h[u] = d);
-    }
-  if (e.wall && i.seawallCode?.[e.wall.li] && i.quayStep) {
-    let { li: l, a: c, b: h } = e.wall,
-      f = i.seawall[l],
-      u = i.seawallCode[l],
-      d = Math.min(c, h),
-      p = Math.max(c, h),
-      m = 0,
-      g = 0,
-      b = 0;
-    for (let x = 0; x < p; x++)
-      (x === d && (g = m),
-        (m += Math.hypot(
-          f[x * 2 + 2] - f[x * 2],
-          f[x * 2 + 3] - f[x * 2 + 1],
-        )));
-    b = m;
-    for (
-      let x = Math.ceil((g - 1) / i.quayStep);
-      x * i.quayStep <= b + 1 && x < u.length;
-      x++
-    )
-      x >= 0 && u[x] !== 252 && (u[x] = 253);
-  }
-  return e;
-}
-var P0 = {
-  plan: null,
-  near: null,
-  far: null,
-  rot: [],
-  crowd: null,
-  mats: [],
-  started: !1,
-  built: !1,
-  nightV: [0, 0],
-  lions: null,
-  stats: {},
-  capAt(i, t) {
-    let e = this.plan;
-    return e &&
-      i >= e.bb[0] &&
-      i <= e.bb[2] &&
-      t >= e.bb[1] &&
-      t <= e.bb[3] &&
-      e.inDeck(i, t)
-      ? e.cap
-      : 0;
+// Lines 73214-73446 of readable/app.pretty.js (statement-aligned).
+var Mk = { 288387751: "1", 288387752: "2", 288387753: "3" },
+  Sk = {
+    288387755: "A",
+    288387757: "B",
+    398609305: "C",
+    398613751: "D",
+    398613752: "E",
   },
-  dist(i, t) {
-    let e = this.plan;
-    return e ? (e.inDeck(i, t) ? 0 : Y1(e.flat, i, t)) : 1e9;
+  MP = [288387754, 288387758, 858625782, 641730766, 1297982561, 856437188],
+  nq = 398613753,
+  cpt = [-3152, -1374],
+  hpt = [-3400, -1159],
+  _k = [
+    [-3400, -1159],
+    [-3404, -1120],
+    [-3404, -1085],
+    [-3377, -1085],
+    [-3345, -1092],
+    [-3338, -1118],
+    [-3322, -1148],
+    [-3300, -1166],
+    [-3285, -1180],
+    [-3262, -1194],
+    [-3242, -1206],
+    [-3228, -1222],
+    [-3217, -1240],
+    [-3207, -1262],
+    [-3201, -1290],
+    [-3200, -1312],
+    [-3196, -1332],
+    [-3186, -1346],
+    [-3160, -1356],
+    [-3152, -1374],
+  ],
+  SP = _k.slice(4),
+  Vb = [
+    [-3404, -1085],
+    [-3377, -1085],
+  ],
+  Hu = [
+    -3383, -1053, -3356, -887, -3348, -878, -3228, -896, -3231, -907, -3218,
+    -923, -3224, -949, -3256, -946, -3274, -949, -3291, -956, -3303, -969,
+    -3289, -988, -3274, -976, -3256, -972, -3231, -973, -3200, -983, -3189,
+    -999, -3188, -1022, -3149, -1028, -3136, -1041, -3131, -1053, -3107, -1051,
+    -3101, -1061, -3085, -1075, -3088, -1087, -3094, -1086, -3099, -1112, -3094,
+    -1121, -3099, -1129, -3110, -1129, -3117, -1147, -3120, -1171, -3158, -1171,
+    -3166, -1194, -3182, -1214, -3202, -1189, -3203, -1176, -3212, -1168, -3212,
+    -1127, -3218, -1115, -3228, -1105, -3278, -1086, -3301, -1071, -3306, -1055,
+    -3306, -1041, -3315, -1044, -3330, -1036, -3346, -1035, -3361, -1041, -3377,
+    -1056,
+  ],
+  xp = [-3135, -1400, -2840, -930],
+  fpt = new Set([564206112]),
+  upt = [
+    [
+      [-3354, -1140],
+      [-3364, -1203],
+    ],
+    [
+      [-3336, -1151],
+      [-3346, -1208],
+    ],
+    [
+      [-3319, -1161],
+      [-3327, -1211],
+    ],
+    [
+      [-3304, -1172],
+      [-3322, -1290],
+    ],
+    [
+      [-3290, -1182],
+      [-3306, -1290],
+    ],
+    [[-3224, -1300], [-3216, -1255], [1]],
+    [
+      [-3272, -1196],
+      [-3275, -1218],
+    ],
+  ],
+  kk = [
+    [
+      [-3391, -1086],
+      [-3372, -1110],
+      [-3354, -1136],
+    ],
+    [
+      [-3354, -1136],
+      [-3339, -1147],
+      [-3304, -1169],
+      [-3271, -1192],
+      [-3245, -1208],
+      [-3226, -1227],
+      [-3217, -1252],
+      [-3208, -1291],
+      [-3202, -1315],
+      [-3195, -1336],
+    ],
+    [
+      [-3195, -1318],
+      [-3239, -1310],
+      [-3296, -1301],
+      [-3337, -1294],
+      [-3388, -1287],
+    ],
+    [
+      [-3379, -1203],
+      [-3364, -1205],
+    ],
+    [
+      [-3364, -1290],
+      [-3350, -1207],
+    ],
+    [
+      [-3267, -1306],
+      [-3255, -1223],
+    ],
+  ],
+  dpt = 22 / 3.6,
+  ppt = [
+    [
+      [-3228.7, -1211.1],
+      [-3210.4, -1195.2],
+    ],
+    [
+      [-3163.9, -1193.6],
+      [-3146.8, -1220],
+    ],
+  ],
+  E0 = (o, t = 0) => {
+    let e = Math.sin(o * 12.9898 + t * 78.233) * 43758.5453;
+    return e - Math.floor(e);
   },
-  setNight(i, t) {
-    this.nightV = [i, t];
-    for (let e of this.mats) e.color.setRGB(e.userData.dayGlow ?? 0, t, i);
-    this.crowd?.setNight(i);
-  },
-  start({
-    D: i,
-    L: t,
-    scene: e,
-    mobile: s = !1,
-    pedTex: n = null,
-    mb: o = null,
-  }) {
-    if (this.started || ((this.plan = PR(i, t)), !this.plan)) return;
-    ((this.started = !0),
-      (this.scene = e),
-      (this.mobile = s),
-      (this.pedTex = n),
-      (this.mb = o));
-    let a = performance.now(),
-      r = PG(this.plan, { mobile: s });
-    this.stats.buildMs = Math.round(performance.now() - a);
-    let l = this.materials(r.A),
-      c = new ke();
-    c.name = "Pier39Near";
-    let h = new ke();
-    h.name = "Pier39Far";
-    let f = r.BN.meshes(l, c),
-      u = r.BF.meshes(l, h, { p39f: { shadow: !1 } });
-    this.rot = ["wf_p39rot", "wf_p39hup", "wf_p39hdn"].map(
-      (p) => f.find((m) => m.name.startsWith(p)) || null,
-    );
-    for (let p of this.rot) p && (p.castShadow = !1);
-    ((this.rotC = r.rot),
-      (c.visible = !1),
-      (h.visible = !1),
-      e.add(c, h),
-      (this.near = c),
-      (this.far = h),
-      (this.lions = r.lions),
-      (this.crowd = ZG(this.plan, { max: s ? 32 : 70, map: n })),
-      e.add(this.crowd.group),
-      this.crowd.setNight(this.nightV[0]));
-    let d = 0;
-    for (let p of [...f, ...u])
-      d +=
-        (p.geometry.index
-          ? p.geometry.index.count
-          : p.geometry.attributes.position.count) / 3;
-    ((this.stats.tris = Math.round(d)),
-      (this.stats.meshes = f.length + u.length),
-      (this.stats.lions = r.nLions),
-      (this.stats.ms = Math.round(performance.now() - a)),
-      (this.stats.atlasRows = r.A.y + r.A.row),
-      (this.stats.show = this.crowd.show.length),
-      this.stats.atlasRows > r.A.H &&
-        console.warn(
-          "pier 39: the lettering atlas overflows",
-          this.stats.atlasRows,
-          ">",
-          r.A.H,
-        ),
-      typeof window < "u" && window.__sf && (window.__sf.pier39 = this),
-      (this.built = !0),
-      s &&
-        o?.dropCpu &&
-        setTimeout(() => {
-          (o.dropCpu(c), o.dropCpu(h));
-        }, 2500),
-      console.log(
-        `pier 39: ${this.stats.tris} triangles in ${this.stats.meshes} meshes, ${r.nLions} sea lions, ${this.crowd.people.length} visitors, ${this.stats.ms} ms`,
-      ));
-  },
-  materials(i) {
-    let t = (o, a = {}) => {
-        let r = new Ee({
-          color: 16777215,
-          roughness: 0.8,
-          metalness: 0,
-          vertexColors: !0,
-          ...a,
-        });
-        return ((r.userData.mbAlbedo = o), (r.userData.dayGlow = 0), r);
-      },
-      e = { atlas: t(kG), solid: t(Hg), text: t(Dg, { alphaTest: 0.5 }) },
-      s = new go(),
-      n = (o, a, r) =>
-        s.load(
-          o,
-          (l) => {
-            ((l.flipY = !1),
-              (l.colorSpace = a ? is : On),
-              (l.anisotropy = 8),
-              (l.wrapS = l.wrapT = ti),
-              (l.needsUpdate = !0),
-              r(l));
-          },
-          void 0,
-          () => console.warn("pier 39: missing", o),
-        );
+  nw = (o) => {
+    let t = [];
+    for (let e = 0; e < o.length; e += 2) t.push([o[e], o[e + 1]]);
     return (
-      n("assets/tex/lm/pier39/facades.webp", !0, (o) => {
-        ((e.atlas.map = o), (e.atlas.needsUpdate = !0));
-      }),
-      n("assets/tex/lm/pier39/facades_mask.webp", !1, (o) => {
-        ((e.atlas.userData.mbExtraMap = o), (e.atlas.needsUpdate = !0));
-      }),
-      n("assets/tex/lm/waterfront/tiles.webp", !0, (o) => {
-        ((e.solid.map = o), (e.solid.needsUpdate = !0));
-      }),
-      (e.text.map = i.texture()),
-      (this.mats = Object.values(e)),
-      this.setNight(...this.nightV),
-      e
+      t.length > 1 &&
+        Math.hypot(t[0][0] - t[t.length - 1][0], t[0][1] - t[t.length - 1][1]) <
+          0.01 &&
+        t.pop(),
+      t
     );
-  },
-  update(i, t, e) {
-    if (!this.built) return;
-    let s = e.position.x,
-      n = e.position.z,
-      o = this.dist(s, n),
-      a = this.near.visible ? o < QG + 30 : o < QG;
-    if (
-      ((this.near.visible = a),
-      (this.far.visible = !a && o < Uht),
-      a && this.rotC)
-    ) {
-      let r = (performance.now() / 1e3) * CG,
-        { x: l, z: c } = this.rotC;
-      this.rot.forEach((h, f) => {
-        h &&
-          (LG(
-            r,
-            l,
-            c,
-            f === 0 ? 0 : (f === 1 ? 1 : -1) * 0.16 * Math.sin(r * 3),
-            h.matrix.elements,
-          ),
-          (h.matrixWorldNeedsUpdate = !0));
-      });
-    }
-    this.crowd?.update(i, t, e);
-  },
+  };
+function df(o, t, e) {
+  let s = e[0] - t[0],
+    n = e[1] - t[1],
+    i = Math.hypot(s, n) || 1,
+    a = -n / i,
+    r = s / i,
+    l = (t[0] + e[0]) / 2,
+    c = (t[1] + e[1]) / 2;
+  return rn(o, l + a * 0.15, c + r * 0.15) ? [-a, -r] : [a, r];
+}
+function Hm(o, t, e) {
+  let s = 1e9;
+  for (let n = 0, i = o.length - 2; n < o.length; i = n, n += 2) {
+    let a = o[i],
+      r = o[i + 1],
+      l = o[n],
+      c = o[n + 1],
+      h = l - a,
+      f = c - r,
+      u = h * h + f * f || 1e-9,
+      d = Math.max(0, Math.min(1, ((t - a) * h + (e - r) * f) / u));
+    s = Math.min(s, Math.hypot(t - a - h * d, e - r - f * d));
+  }
+  return s;
+}
+var zk = (o, t, e) => {
+  let s = 1e9;
+  for (let n = 0; n + 1 < o.length; n++) {
+    let [i, a] = o[n],
+      [r, l] = o[n + 1],
+      c = r - i,
+      h = l - a,
+      f = c * c + h * h || 1e-9,
+      u = Math.max(0, Math.min(1, ((t - i) * c + (e - a) * h) / f));
+    s = Math.min(s, Math.hypot(t - i - c * u, e - a - h * u));
+  }
+  return s;
 };
-as();
+function ew(o) {
+  let t = null;
+  for (let s = 0; s < o.length; s++) {
+    let n = o[s],
+      i = o[(s + 1) % o.length],
+      a = Math.hypot(i[0] - n[0], i[1] - n[1]);
+    if (a < 0.5) continue;
+    let r = (i[0] - n[0]) / a,
+      l = (i[1] - n[1]) / a,
+      c = 1e9,
+      h = -1e9,
+      f = 1e9,
+      u = -1e9;
+    for (let p of o) {
+      let m = p[0] * r + p[1] * l,
+        g = -p[0] * l + p[1] * r;
+      ((c = Math.min(c, m)),
+        (h = Math.max(h, m)),
+        (f = Math.min(f, g)),
+        (u = Math.max(u, g)));
+    }
+    let d = (h - c) * (u - f);
+    if (!t || d < t.A) {
+      let p = (c + h) / 2,
+        m = (f + u) / 2;
+      t = {
+        A: d,
+        c: [p * r - m * l, p * l + m * r],
+        u: [r, l],
+        hu: (h - c) / 2,
+        hv: (u - f) / 2,
+      };
+    }
+  }
+  let e = t.hu >= t.hv;
+  return {
+    c: t.c,
+    d: e ? t.u : [-t.u[1], t.u[0]],
+    hl: e ? t.hu : t.hv,
+    hw: e ? t.hv : t.hu,
+  };
+}
+var iq = (o, t, e) => {
+  let s = -1,
+    n = 1e9;
+  for (let i = 0; i < o.length; i += 2) {
+    let a = Math.hypot(o[i] - t, o[i + 1] - e);
+    a < n && ((n = a), (s = i / 2));
+  }
+  return [s, n];
+};

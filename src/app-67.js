@@ -1,294 +1,246 @@
 // app 67 — math
-// Lines 67255-67546 of readable/app.pretty.js (statement-aligned).
-function uht(i, t, e, s, n, o, a, r, l) {
-  let c = a * 0.17,
-    h = -o,
-    f = n,
-    u = r() < 0.8 ? ue.hull : At([0.1, 0.18, 0.35], Tt.paint),
-    d = (g, b, x) => [e + n * g + h * b, x, s + o * g + f * b],
-    p = [
-      [-0.5, 0.75],
-      [-0.25, 1],
-      [0.15, 1],
-      [0.38, 0.75],
-      [0.5, 0.05],
-    ];
-  for (let g of t ? [i, t] : [i])
-    for (let b = 0; b + 1 < p.length; b++) {
-      let [x, v] = p[b],
-        [y, M] = p[b + 1];
-      for (let S of [-1, 1])
-        xs(
-          g,
-          d(x * a, S * v * c, 1.1),
-          d(y * a, S * M * c, 1.1),
-          d(y * a, S * M * c * 0.6, -0.2),
-          d(x * a, S * v * c * 0.6, -0.2),
-          u,
-          d(((x + y) * a) / 2, S * 20, 0.5),
-        );
-      xs(
-        g,
-        d(x * a, -v * c, 1.1),
-        d(y * a, -M * c, 1.1),
-        d(y * a, M * c, 1.1),
-        d(x * a, v * c, 1.1),
-        ue.cream,
-        d(0, 0, 30),
+// Lines 67778-68021 of readable/app.pretty.js (statement-aligned).
+var OW = 1.43,
+  Hdt = { short: 0, long: 1, coat: 2 },
+  hP = class {
+    constructor(t = 0, e = 0, s = 0) {
+      ((this.p = []),
+        (this.n = []),
+        (this.uv = []),
+        (this.ix = []),
+        (this.kTop = t),
+        (this.kBot = e),
+        (this.fem = s));
+    }
+    get v() {
+      return this.p.length / 3;
+    }
+    vert(t, e, s, n, i, a, r, l) {
+      this.p.push(t, e, s);
+      let c = Math.hypot(n, i, a) || 1;
+      this.n.push(n / c, i / c, a / c);
+      let h = Math.round(t / 8),
+        f =
+          l === ti.top || l === ti.trim || l === ti.shirt
+            ? this.kTop
+            : l === ti.bottom || l === ti.legs
+              ? this.kBot
+              : l === ti.face || l === ti.skin
+                ? this.fem
+                : 0;
+      return (
+        this.uv.push(
+          l + 16 * h + 128 * f + Math.min(0.998, Math.max(0, r)),
+          e / 2,
+        ),
+        this.v - 1
       );
     }
-  (xs(
-    i,
-    d(-0.5 * a, -0.75 * c, 1.1),
-    d(-0.5 * a, 0.75 * c, 1.1),
-    d(-0.5 * a, 0.45 * c, -0.2),
-    d(-0.5 * a, -0.45 * c, -0.2),
-    u,
-    d(-a, 0, 0.5),
-  ),
-    Us(
-      i,
-      e - n * a * 0.05,
-      s - o * a * 0.05,
-      n,
-      o,
-      a * 0.16,
-      c * 0.6,
-      1.1,
-      1.65,
-      ue.white,
-    ));
-  let m = a * (l ? 1.5 : 1.3);
-  (es(i, e + n * a * 0.08, s + o * a * 0.08, 0.07, 1.1, m, 5, ue.mast),
-    ss(i, d(a * 0.08, 0, 2), d(-a * 0.38, 0, 2.1), 0.08, 0.1, ue.mast),
-    ss(
-      i,
-      d(a * 0.08, 0, 2.15),
-      d(-a * 0.3, 0, 2.15),
-      0.3,
-      0.25,
-      At([0.05, 0.15, 0.4], Tt.paint),
-    ),
-    t && es(t, e + n * a * 0.08, s + o * a * 0.08, 0.07, 1.1, m, 3, ue.mast));
-}
-function dht(i, t, e, s, n) {
-  let o = n * 0.28,
-    a = (r, l, c, h, f) => {
-      (i.beginPath(),
-        i.moveTo(r + f, l),
-        i.arcTo(c, l, c, h, f),
-        i.arcTo(c, h, r, h, f),
-        i.arcTo(r, h, r, l, f),
-        i.arcTo(r, l, c, l, f),
-        i.closePath());
-    };
-  ((i.fillStyle = "#f4f2ea"),
-    a(t + 4, e + 4, t + s - 4, e + n - 4, o),
-    i.fill(),
-    (i.fillStyle = "#1d5fae"),
-    a(t + 16, e + 16, t + s - 16, e + n - 16, o * 0.8),
-    i.fill(),
-    (i.strokeStyle = "#f4f2ea"),
-    (i.lineWidth = 6),
-    a(t + 30, e + 30, t + s - 30, e + n - 30, o * 0.65),
-    i.stroke(),
-    (i.fillStyle = "#f7f5ee"),
-    (i.font = `${Math.round(n * 0.62)}px Georgia, "Times New Roman", serif`),
-    (i.textAlign = "center"),
-    (i.textBaseline = "middle"),
-    i.fillText("PIER 39", t + s / 2, e + n * 0.55));
-}
-function pht(i, t, e, s, n) {
-  ((i.fillStyle = "#f2f0e8"),
-    i.fillRect(t, e, s, n),
-    (i.strokeStyle = "#c9c4b5"),
-    (i.lineWidth = 8),
-    i.strokeRect(t + 4, e + 4, s - 8, n - 8),
-    (i.fillStyle = "#22339a"),
-    (i.font = `bold ${Math.round(n * 0.72)}px Georgia, "Times New Roman", serif`),
-    (i.textAlign = "center"),
-    (i.textBaseline = "middle"),
-    i.fillText("PIER 39", t + s / 2, e + n * 0.54));
-}
-function AG(i, t, e, s, n, o) {
-  for (let r = 0; r < 12; r++) {
-    let l = (r / 12) * Math.PI * 2,
-      c = ((r + 1) / 12) * Math.PI * 2,
-      h = r % 2 ? ue.white : ue.cblue,
-      f = (d, p, m) => [t + Math.cos(p) * d, m, e + Math.sin(p) * d];
-    (xs(
-      i,
-      f(s, l, n),
-      f(s, c, n),
-      f(s * 0.45, c, n + o * 0.55),
-      f(s * 0.45, l, n + o * 0.55),
-      h,
-      [t + Math.cos((l + c) / 2) * 20, n + 20, e + Math.sin((l + c) / 2) * 20],
-    ),
-      xs(
-        i,
-        f(s * 0.45, l, n + o * 0.55),
-        f(s * 0.45, c, n + o * 0.55),
-        f(0.02, c, n + o),
-        f(0.02, l, n + o),
-        h,
-        [
-          t + Math.cos((l + c) / 2) * 20,
-          n + 20,
-          e + Math.sin((l + c) / 2) * 20,
-        ],
-      ));
-    let u = [];
-    for (let d = 0; d <= 4; d++) {
-      let p = l + ((c - l) * d) / 4;
-      u.push(f(s + 0.02, p, n - 0.22 - 0.16 * Math.sin((Math.PI * d) / 4)));
+    loft(t, e, s, n, { capBottom: i = !0, capTop: a = !0, faceW: r = 0 } = {}) {
+      let l = s * 8,
+        c = t.length,
+        h = typeof n == "function" ? n : () => n,
+        f = new Map(),
+        u = (p, m, g, b = 0) => {
+          let v = ((p * (e + 1) + m) * 32 + g) * 2 + b,
+            x = f.get(v);
+          if (x !== void 0) return x;
+          let [y, M, S, w, _] = t[p],
+            z = t[Math.max(0, p - 1)],
+            A = t[Math.min(c - 1, p + 1)],
+            T = (A[3] - z[3]) / (A[0] - z[0] || 1),
+            E = (A[4] - z[4]) / (A[0] - z[0] || 1),
+            R = (m / e) * Math.PI * 2,
+            P = Math.cos(R),
+            C = Math.sin(R),
+            I = M + w * C,
+            L = S + _ * P,
+            F = C / Math.max(w, 0.001),
+            O = P / Math.max(_, 0.001),
+            B = Math.hypot(F, O),
+            H = -(T * Math.abs(C) + E * Math.abs(P)),
+            N = (m / e + 0.5) % 1;
+          return (
+            b && (N = 0.998),
+            g === ti.face && r && (N = 0.5 + (I - M) / r),
+            (x = this.vert(I + l, y, L, F / B, H, O / B, N, g)),
+            f.set(v, x),
+            x
+          );
+        };
+      for (let p = 0; p + 1 < c; p++)
+        for (let m = 0; m < e; m++) {
+          let g = (t[p][0] + t[p + 1][0]) / 2,
+            b = ((m + 0.5) / e) * Math.PI * 2,
+            v = t[p],
+            x = h(g, b, v[3] * Math.sin(b), v[4] * Math.cos(b)),
+            y = m + 1 === e / 2 ? 1 : 0,
+            M = u(p, m, x),
+            S = u(p, m + 1, x, y),
+            w = u(p + 1, m, x),
+            _ = u(p + 1, m + 1, x, y);
+          this.ix.push(M, S, w, S, _, w);
+        }
+      let d = (p, m) => {
+        let [g, b, v] = t[p],
+          x = h(g, 0, 0, 0),
+          y = this.vert(b + l, g, v, 0, m ? 1 : -1, 0, 0.5, x);
+        for (let M = 0; M < e; M++) {
+          let S = u(p, M, x),
+            w = u(p, M + 1, x);
+          m ? this.ix.push(S, w, y) : this.ix.push(w, S, y);
+        }
+      };
+      (i && d(0, !1), a && d(c - 1, !0));
     }
-    for (let d = 0; d < 4; d++) {
-      let p = u[d],
-        m = u[d + 1];
-      xs(
-        i,
-        [p[0], n, p[2]],
-        [m[0], n, m[2]],
-        m,
-        p,
-        r % 2 ? ue.white : ue.cblue,
-        [t + Math.cos((l + c) / 2) * 20, n, e + Math.sin((l + c) / 2) * 20],
-      );
-    }
-  }
-  (Gs(
-    i,
-    t,
-    e,
-    [
-      [s + 0.04, n - 0.06],
-      [s + 0.04, n + 0.04],
-    ],
-    12,
-    ue.red,
-  ),
-    Gs(
-      i,
+    ellipsoid(
       t,
       e,
-      [
-        [0.02, n + o - 0.05],
-        [0.12, n + o + 0.08],
-        [0.02, n + o + 0.25],
-      ],
-      8,
-      ue.red,
-    ),
-    es(i, t, e, 0.02, n + o + 0.2, n + o + 0.7, 4, ue.gold));
-}
-function mht(i, t, e, s, n) {
-  let o = t + s / 2,
-    a = e + n / 2,
-    r = s * 0.46;
-  ((i.fillStyle = "#c9a23a"),
-    i.beginPath(),
-    i.arc(o, a, r, 0, 6.3),
-    i.fill(),
-    (i.fillStyle = "#f6f2e4"),
-    i.beginPath(),
-    i.arc(o, a, r * 0.84, 0, 6.3),
-    i.fill(),
-    (i.strokeStyle = "#222"),
-    (i.lineWidth = 4));
-  for (let l = 0; l < 12; l++) {
-    let c = (l / 12) * 6.283;
-    (i.beginPath(),
-      i.moveTo(o + Math.cos(c) * r * 0.7, a + Math.sin(c) * r * 0.7),
-      i.lineTo(o + Math.cos(c) * r * 0.8, a + Math.sin(c) * r * 0.8),
-      i.stroke());
-  }
-  ((i.lineWidth = 6),
-    i.beginPath(),
-    i.moveTo(o, a),
-    i.lineTo(o + r * 0.35, a - r * 0.2),
-    i.stroke(),
-    (i.lineWidth = 4),
-    i.beginPath(),
-    i.moveTo(o, a),
-    i.lineTo(o - r * 0.1, a - r * 0.62),
-    i.stroke());
-}
-function ght(i, t, e, s, n) {
-  ((i.fillStyle = "#f4f4f0"),
-    i.fillRect(t, e, s, n),
-    (i.fillStyle = "#1d3f8f"),
-    i.fillRect(t + 10, e + 10, s - 20, n - 20),
-    (i.strokeStyle = "#f4f4f0"),
-    (i.lineWidth = 5),
-    i.strokeRect(t + 22, e + 22, s - 44, n - 44),
-    (i.fillStyle = "#ffffff"),
-    (i.textAlign = "center"),
-    (i.textBaseline = "middle"),
-    (i.font = `bold ${Math.round(n * 0.42)}px Georgia, "Times New Roman", serif`),
-    i.fillText("SPRING WATER", t + s / 2, e + n * 0.43),
-    (i.font = `${Math.round(n * 0.17)}px Georgia, serif`),
-    i.fillText("NATURAL  \xB7  ICE COLD", t + s / 2, e + n * 0.76));
-}
-function bht(i, t, e, s, n) {
-  for (let o = 0; o < 13; o++)
-    ((i.fillStyle = o % 2 ? "#f5f5f5" : "#b22234"),
-      i.fillRect(t, e + (o * n) / 13, s, n / 13 + 1));
-  ((i.fillStyle = "#3c3b6e"),
-    i.fillRect(t, e, s * 0.4, (n * 7) / 13),
-    (i.fillStyle = "#fff"));
-  for (let o = 0; o < 5; o++)
-    for (let a = 0; a < 6; a++)
-      (i.beginPath(),
-        i.arc(
-          t + (s * 0.4 * (a + 0.5)) / 6,
-          e + (((n * 7) / 13) * (o + 0.5)) / 5,
-          3,
-          0,
-          6.3,
+      s,
+      n,
+      i,
+      a,
+      r,
+      l,
+      c,
+      h,
+      { lat0: f = 0, lat1: u = Math.PI, latAt: d = null, jit: p = 0 } = {},
+    ) {
+      let m = c * 8,
+        g = typeof h == "function" ? h : () => h,
+        b = new Map(),
+        v = (y, M) => {
+          let S = (M / r) * Math.PI * 2,
+            w = d ? d(S) : u,
+            _ = f + (w - f) * (y / l),
+            z = Math.sin(_) * Math.sin(S),
+            A = Math.cos(_),
+            T = Math.sin(_) * Math.cos(S),
+            E = p
+              ? 1 +
+                p *
+                  (0.5 +
+                    0.5 * Math.sin(S * 7 + 1.3) * Math.sin(S * 3.1 + y * 0.9)) *
+                  Math.min(1, _ * 2)
+              : 1;
+          return [
+            t + n * z * E,
+            e + i * A * E,
+            s + a * T * E,
+            z / n,
+            A / i,
+            T / a,
+          ];
+        },
+        x = (y, M, S, w = 0) => {
+          let _ = ((y * (r + 1) + M) * 32 + S) * 2 + w,
+            z = b.get(_);
+          if (z !== void 0) return z;
+          let [A, T, E, R, P, C] = v(y, M);
+          return (
+            (z = this.vert(
+              A + m,
+              T,
+              E,
+              R,
+              P,
+              C,
+              w ? 0.998 : (M / r + 0.5) % 1,
+              S,
+            )),
+            b.set(_, z),
+            z
+          );
+        };
+      for (let y = 0; y < l; y++)
+        for (let M = 0; M < r; M++) {
+          let S = v(y, M),
+            w = v(y + 1, M + 1),
+            _ = g(
+              (S[0] + w[0]) / 2 - t,
+              (S[1] + w[1]) / 2 - e,
+              (S[2] + w[2]) / 2 - s,
+            ),
+            z = M + 1 === r / 2 ? 1 : 0,
+            A = x(y, M, _),
+            T = x(y, M + 1, _, z),
+            E = x(y + 1, M, _),
+            R = x(y + 1, M + 1, _, z);
+          this.ix.push(A, E, T, T, E, R);
+        }
+    }
+    box(t, e, s, n, i, a, r, l) {
+      let c = r * 8,
+        h = [
+          [-1, -1, -1],
+          [1, -1, -1],
+          [1, 1, -1],
+          [-1, 1, -1],
+          [-1, -1, 1],
+          [1, -1, 1],
+          [1, 1, 1],
+          [-1, 1, 1],
+        ],
+        f = [
+          [0, 3, 2, 1, [0, 0, -1]],
+          [4, 5, 6, 7, [0, 0, 1]],
+          [0, 4, 7, 3, [-1, 0, 0]],
+          [1, 2, 6, 5, [1, 0, 0]],
+          [3, 7, 6, 2, [0, 1, 0]],
+          [0, 1, 5, 4, [0, -1, 0]],
+        ];
+      for (let [u, d, p, m, g] of f) {
+        let b = [u, d, p, m].map((v) => {
+          let [x, y, M] = h[v];
+          return this.vert(
+            t + c + x * n,
+            e + y * i,
+            s + M * a,
+            g[0] + x * 0.35,
+            g[1] + y * 0.35,
+            g[2] + M * 0.35,
+            0.5 + 0.25 * x,
+            l,
+          );
+        });
+        this.ix.push(b[0], b[1], b[2], b[0], b[2], b[3]);
+      }
+    }
+    geometry() {
+      let t = new Le();
+      return (
+        t.setAttribute("position", new Re(this.p, 3)),
+        t.setAttribute("normal", new Re(this.n, 3)),
+        t.setAttribute("uv", new Re(this.uv, 2)),
+        t.setIndex(
+          this.p.length / 3 > 65535 ? new j0(this.ix, 1) : new Yr(this.ix, 1),
         ),
-        i.fill());
-}
-function LG(i, t, e, s = 0, n = new Array(16)) {
-  let o = Math.cos(i),
-    a = Math.sin(i);
-  return (
-    (n[0] = o),
-    (n[1] = 0),
-    (n[2] = -a),
-    (n[3] = 0),
-    (n[4] = 0),
-    (n[5] = 1),
-    (n[6] = 0),
-    (n[7] = 0),
-    (n[8] = a),
-    (n[9] = 0),
-    (n[10] = o),
-    (n[11] = 0),
-    (n[12] = t - o * t - a * e),
-    (n[13] = s),
-    (n[14] = e + a * t - o * e),
-    (n[15] = 1),
-    n
-  );
-}
-Ug();
-as();
-as();
-var Xn = {
-  skin: 0,
-  top: 1,
-  bottom: 2,
-  shoes: 3,
-  hair: 4,
-  bag: 5,
-  legs: 6,
-  eyes: 7,
-  shirt: 8,
-  belt: 9,
-  lips: 10,
-  sole: 11,
-  white: 12,
-  trim: 13,
-  face: 14,
-};
+        (t.boundingSphere = new _n(new dt(0, 0.9, 0), 1.2)),
+        t
+      );
+    }
+  },
+  n0 = [
+    {
+      f: 0,
+      w: 1,
+      top: "long",
+      bottom: "pants",
+      jeans: 1,
+      hair: "short",
+      bag: null,
+    },
+    { f: 1, w: 0.95, top: "coat", bottom: "skirt", hair: "long", bag: "hand" },
+    { f: 0, w: 1.08, top: "short", bottom: "shorts", hair: "cap", bag: "back" },
+    { f: 1, w: 0.92, top: "short", bottom: "pants", hair: "bun", bag: null },
+    { f: 0, w: 0.98, top: "coat", bottom: "pants", hair: "short", bag: "hand" },
+    {
+      f: 1,
+      w: 1,
+      top: "long",
+      bottom: "pants",
+      jeans: 1,
+      hair: "long",
+      bag: "back",
+    },
+  ];

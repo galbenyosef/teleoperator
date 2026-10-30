@@ -1,321 +1,220 @@
 // app 242 — math
-// Lines 123880-124198 of readable/app.pretty.js (statement-aligned).
-function AC(i = 61, t = 0) {
-  let e = [],
-    s = dm.mound,
-    n = s % 4,
-    o = s >> 2,
-    a = 0.7,
-    r = 1,
-    l = 2,
-    c = 0.32,
-    h = t
-      ? [
-          [0.8, -0.25],
-          [0.86, 0],
-          [1, 0.3],
-          [1.04, 0.58],
-          [0.92, 0.84],
-          [0.62, 0.97],
-          [0.26, 1],
-          [0, 1],
-        ]
-      : [
-          [0.9, -0.25],
-          [0.94, 0],
-          [0.99, 0.45],
-          [1, 0.8],
-          [0.93, 0.95],
-          [0.66, 1],
-          [0.25, 1],
-          [0, 1],
-        ],
-    f = $c(i + 7),
-    u = l - c,
-    d = t ? 0.06 : 0.022,
-    p = t ? 0.05 : 0.018,
-    m = [
-      [1, d * (0.6 + 0.4 * f())],
-      [2, d * (0.5 * f() - 0.25)],
-    ],
-    g = [
-      [1, p * (f() - 0.5) * 2],
-      [2, p * (0.5 * f() - 0.25)],
-    ],
-    b = (_, R) =>
-      _.reduce(
-        (T, [E, A]) => T + A * Math.cos((2 * Math.PI * E * (R + l / 2)) / u),
-        0,
-      ),
-    x = (_) => 1 + (t ? 0.04 : 0) + b(m, _),
-    v = (_) => 1 + b(g, _),
-    y = (_) => {
-      let R = _ - (l / 2 - c);
-      return R <= 0 ? 1 : Math.sqrt(Math.max(0, 1 - (R / c) ** 2));
-    },
-    M = h.length - 1,
-    S = (_, R) => {
-      let T = _ < 0.5 ? -1 : 1,
-        E = (_ < 0.5 ? _ : 1 - _) * 2 * M,
-        A = Math.min(M - 1, Math.floor(E)),
-        C = E - A,
-        P = h[A][0] + (h[A + 1][0] - h[A][0]) * C,
-        I = h[A][1] + (h[A + 1][1] - h[A][1]) * C,
-        L = y(R),
-        F = Math.max(0.5, L);
-      return Vs(
-        ((T * P * a) / 2) * v(R) * F,
-        I * r * x(R) * (0.72 + 0.28 * F) * (I > 0, 1),
-        R,
-      );
-    },
-    w = (_, R) => {
-      let T = S(Math.min(1, _ + 0.01), R).sub(S(Math.max(0, _ - 0.01), R)),
-        A = S(_, Math.min(l / 2, R + 0.01))
-          .sub(S(_, Math.max(-l / 2, R - 0.01)))
-          .cross(T)
-          .normalize(),
-        C = S(_, R);
-      return (A.x * C.x + A.y * (C.y - r * 0.3) < 0 && A.negate(), A);
-    },
-    z = (_, R) =>
-      _.clone()
-        .multiplyScalar(0.6)
-        .add(
-          Vs(R.x / a, (R.y - r * 0.4) / r, (R.z / l) * 0.6).multiplyScalar(0.8),
-        )
-        .normalize();
-  for (let _ of [0, 1, 2]) {
-    let R = $c(i),
-      T = new la(),
-      E = new la();
-    {
-      let N = [16, 8, 6][_],
-        B = [8, 4, 2][_],
-        H = [];
-      for (let O = 0; O <= B; O++) {
-        let D = -l / 2 + (l * O) / B,
+// Lines 124458-124675 of readable/app.pretty.js (statement-aligned).
+function pJ(o, t) {
+  let {
+      ground: e,
+      d: s,
+      clear: n,
+      front: i,
+      CURB: a,
+      xa: r,
+      xb: l,
+      rin: c,
+    } = t,
+    h = o.F,
+    f = [];
+  for (let [u, d] of [
+    ["north", -1],
+    ["south", 1],
+  ]) {
+    let _ = function (R, P) {
+        let C = b[R],
+          I = b[P] + $z * 0.5,
+          L = v[R],
+          F = v[P],
+          O = (j, K, nt) => {
+            let Q = e(j + nt * 0.8, K);
+            return Q + (Math.abs(Q - e(j, K)) < 1.5 ? a : 0.06);
+          },
+          B = new Float32Array(P - R + 1);
+        for (let j = P; j >= R; j--)
+          B[j - R] = Math.max(M[j], j < P ? B[j - R + 1] : -1e9);
+        let H = Math.max(O(C, L, -1), B[0]),
+          N = Math.min(H, O(I, F, 1)),
+          D = H - N,
           U = [];
-        for (let G = 0; G <= N; G++) {
-          let q = G / N,
-            W = S(q, D),
-            V = 0.26 + 0.2 * Math.min(1, W.y / r);
-          U.push(
-            T.v(
-              W,
-              z(w(q, D), W),
-              (0.15 + 0.7 * (O / B)) / 4,
-              (3 + 0.2 + 0.6 * q) / 4,
-              [V, V * 1.04, V * 0.9, 0],
-            ),
-          );
-        }
-        H.push(U);
-      }
-      for (let O = 0; O < B; O++)
-        for (let D = 0; D < N; D++)
-          T.q(H[O][D], H[O][D + 1], H[O + 1][D + 1], H[O + 1][D]);
-      for (let [O, D] of [
-        [0, -1],
-        [B, 1],
-      ]) {
-        let U = (D * l) / 2,
-          G = Vs(0, r * 0.28, U),
-          q = T.v(
-            G,
-            Vs(0, 0.3, D).normalize(),
-            0.5 / 4,
-            3.5 / 4,
-            [0.3, 0.31, 0.27, 0],
-          );
-        for (let W = 0; W < N; W++)
-          D < 0 ? T.t(q, H[O][W + 1], H[O][W]) : T.t(q, H[O][W], H[O][W + 1]);
-      }
-    }
-    let A = (n + 0.2) / 4,
-      C = (n + 0.8) / 4,
-      P = (o + 0.08) / 4,
-      I = (o + 0.62) / 4,
-      L = 3,
-      F = (N, B, H, O) => {
-        let D = [],
-          U = H / L,
-          G = R() < 0.5,
-          q = 0.04 + R() * 0.04;
-        for (let W = 0; W <= O; W++)
-          for (let V = 0; V <= O; V++) {
-            let Y = Math.min(1, Math.max(0, N + (V / O - 0.5) * U)),
-              $ = Math.min(
-                l / 2 + 0.05,
-                Math.max(-l / 2 - 0.05, B + (W / O - 0.5) * H),
-              ),
-              st = S(Y, $),
-              Q = w(Y, $),
-              j = Math.max(Math.abs(V / O - 0.5), Math.abs(W / O - 0.5)) * 2,
-              X = st.addScaledVector(Q, q + 0.03 * j),
-              K = 0.5 * (0.6 + 0.4 * Math.min(1, Math.max(0, X.y) / r));
-            D.push(
-              E.v(
-                X,
-                z(Q, X),
-                (G ? 1 - W / O : W / O) * (C - A) + A,
-                P + (I - P) * (V / O),
-                [K, K, 1, 0.5 + 0.4 * (1 - j)],
-              ),
-            );
-          }
-        for (let W = 0; W < O; W++)
-          for (let V = 0; V < O; V++) {
-            let Y = W * (O + 1) + V;
-            E.q(D[Y], D[Y + 1], D[Y + O + 2], D[Y + O + 1]);
-          }
-      };
-    {
-      let N = [0.5, 1, 1.15][_],
-        B = N * 0.75,
-        H = _ < 2 ? 2 : 1;
-      for (let O = -l / 2 + B * 0.4; O < l / 2; O += B)
-        for (let D = 0.04 + (B / L) * 0.5; D < 0.97; D += B / L)
-          F(
-            D + (R() - 0.5) * 0.02,
-            O + (R() - 0.5) * B * 0.3,
-            N * (0.9 + R() * 0.2),
-            H,
-          );
-    }
-    e.push([
-      { mat: "shrubcore", geo: T.geo() },
-      { mat: "shrubleaf", geo: E.geo() },
-    ]);
-  }
-  return e;
-}
-function oK(i = 63) {
-  let t = new la(),
-    e = [0.5, 0.48, 0.45, 1];
-  return (
-    ((o, a, r, l, c, h) => {
-      let f = [
-        [o, a, r],
-        [l, a, r],
-        [l, c, r],
-        [o, c, r],
-        [o, a, h],
-        [l, a, h],
-        [l, c, h],
-        [o, c, h],
-      ].map((u) => Vs(...u));
-      for (let [u, d, p, m, g] of [
-        [0, 1, 2, 3, Vs(0, 0, -1)],
-        [5, 4, 7, 6, Vs(0, 0, 1)],
-        [4, 0, 3, 7, Vs(-1, 0, 0)],
-        [1, 5, 6, 2, Vs(1, 0, 0)],
-        [3, 2, 6, 7, Vs(0, 1, 0)],
-      ]) {
-        let b = [u, d, p, m].map((x) => t.v(f[x], g, 0.5, 0.5, e));
-        t.q(b[0], b[1], b[2], b[3]);
-      }
-    })(-0.25, 0, -0.65, 0.25, 0.5, 0.65),
-    pm("mound", i)
-      .map((o) =>
-        o.map(({ mat: a, geo: r }) => {
-          let l = r.clone();
+        if (D < 0.08)
           return (
-            l.scale(0.42, 0.5, 0.9),
-            l.translate(0, 0.45, 0),
-            { mat: a, geo: l }
+            U.push({ u0: C, u1: I, y: H }),
+            { k0: R, k1: P, u0: C, u1: I, treads: U, flights: 0 }
           );
-        }),
-      )
-      .map((o, a) => [{ mat: "paint", geo: t.geo() }, ...o])
-  );
-}
-function aK(i = 65) {
-  let t = [],
-    e = dm.mat,
-    s = e % 4,
-    n = e >> 2,
-    o = (s + 0.02) / 4,
-    a = (s + 0.98) / 4,
-    r = (n + 0.02) / 4,
-    l = (n + 0.98) / 4;
-  for (let c of [0, 1, 2]) {
-    let h = $c(i),
-      f = new la(),
-      u = [7, 4, 2][c];
-    for (let d = 0; d < u; d++) {
-      let p = (d / Math.max(1, u - 1) - 0.5) * 0.7,
-        m = 0.55 + 0.3 * h(),
-        g = -0.02,
-        b = 0.55 + 0.45 * h() * (1 - Math.abs(p)),
-        x = 0.02 + 0.03 * h(),
-        v = [];
-      for (let [y, M] of [
-        [g, l],
-        [b, r],
-      ])
-        for (let S of [-0.5, 0.5])
-          v.push(
-            f.v(
-              Vs(x + (y > 0.3 ? 0.04 : 0), y, p + S * m),
-              Vs(0.85, 0.2, S * 0.4).normalize(),
-              S < 0 ? o : a,
-              M,
-              [0.8, 0.8, 1, 0.5],
-            ),
-          );
-      f.q(v[0], v[1], v[3], v[2]);
+        let G = Math.max(1, Math.round(D / (ovt * hJ))),
+          W = D / G,
+          V = Math.max(2, Math.round(W / hJ)),
+          $ = W / V,
+          J = V * ivt,
+          X = [],
+          tt = C;
+        for (let j = 1; j <= G; j++) {
+          let K = H - j * W,
+            nt = I;
+          for (let Q = R; Q <= P; Q++)
+            if (B[Q - R] <= K + 0.001) {
+              nt = b[Q];
+              break;
+            }
+          ((nt = Math.max(nt, tt + 0.3 + J)), X.push(nt), (tt = nt));
+        }
+        for (let j = G - 1; j >= 0; j--) {
+          let K = j === G - 1 ? I - 0.3 : X[j + 1] - J - 0.3;
+          X[j] > K && (X[j] = K);
+        }
+        let Z = C,
+          q = H;
+        for (let j = 0; j < G; j++) {
+          let K = Math.max(Z, X[j] - J),
+            nt = (X[j] - K) / V;
+          K > Z + 0.01 && U.push({ u0: Z, u1: K, y: q, land: !0 });
+          for (let Q = 1; Q <= V; Q++)
+            U.push({ u0: K + (Q - 1) * nt, u1: K + Q * nt, y: q - Q * $ });
+          ((q -= W), (Z = X[j]));
+        }
+        return (
+          I > Z + 0.01 && U.push({ u0: Z, u1: I, y: q, land: !0 }),
+          { k0: R, k1: P, u0: C, u1: I, treads: U, flights: G, riser: $ }
+        );
+      },
+      p = [];
+    for (let R of svt[u])
+      for (let P = 0; P < R.length; P += 2)
+        p.push(h.inv(...ji(R[P], R[P + 1])));
+    p.sort((R, P) => R[0] - P[0]);
+    let m = (R) => {
+        if (R <= p[0][0]) return p[0][1];
+        for (let P = 1; P < p.length; P++)
+          if (R <= p[P][0]) {
+            let C = (R - p[P - 1][0]) / Math.max(1e-6, p[P][0] - p[P - 1][0]);
+            return p[P - 1][1] + (p[P][1] - p[P - 1][1]) * C;
+          }
+        return p[p.length - 1][1];
+      },
+      g = Math.floor((l - r) / $z) + 1,
+      b = new Float32Array(g),
+      v = new Float32Array(g),
+      x = new Float32Array(g),
+      y = new Uint8Array(g),
+      M = new Float32Array(g),
+      S = (R) => {
+        let P = b[R],
+          C = v[R],
+          I = nvt,
+          L = i(P, d);
+        {
+          let B = c - s(P, C - d * I);
+          if (B > 0) {
+            C += d * B;
+            for (let H = 0; H < 30 && s(P, C - d * I) < c; H++) C += d * 0.08;
+          }
+        }
+        let F = C - d * I,
+          O = L - 0.25 - Math.abs(F);
+        (O < 2 * I && ((I = Math.max(0.55, O / 2)), (C = F + d * I)),
+          (v[R] = C),
+          (x[R] = I));
+      };
+    for (let R = 0; R < g; R++) ((b[R] = r + R * $z), (v[R] = m(b[R])), S(R));
+    for (let R = 0; R < 3; R++) {
+      let P = Float32Array.from(v);
+      for (let C = 0; C < g; C++) {
+        let I = 0,
+          L = 0;
+        for (let F = Math.max(0, C - 4); F <= Math.min(g - 1, C + 4); F++)
+          ((I += P[F]), L++);
+        v[C] = I / L;
+      }
+      for (let C = 0; C < g; C++) S(C);
     }
-    t.push([{ mat: "shrubleaf", geo: f.geo() }]);
+    for (let R = 0; R < g; R++) {
+      let P = b[R],
+        C = v[R],
+        I = x[R];
+      ((y[R] =
+        n(P, C) > 0.2 && n(P, C - d * I) > 0 && n(P, C + d * I) > 0 ? 1 : 0),
+        (M[R] = Math.max(e(P, C), e(P, C - d * I), e(P, C + d * I)) + 0.06));
+    }
+    let w = [];
+    for (let R = 0; R < g;) {
+      if (!y[R]) {
+        R++;
+        continue;
+      }
+      let P = R;
+      for (; P + 1 < g && y[P + 1];) P++;
+      (P - R >= 4 && w.push(_(R, P)), (R = P + 1));
+    }
+    let z = (R) => {
+        let P = Math.max(0, Math.min(g - 1.001, (R - r) / $z)),
+          C = Math.floor(P),
+          I = P - C;
+        return [v[C] + (v[C + 1] - v[C]) * I, x[C] + (x[C + 1] - x[C]) * I];
+      },
+      A = (R) => {
+        for (let P of w)
+          if (R >= P.u0 && R <= P.u1) {
+            for (let C of P.treads) if (R <= C.u1) return C.y;
+          }
+        return null;
+      },
+      T = new Float32Array(Math.ceil((l - r) / 0.05) + 2);
+    for (let R = 0; R < T.length; R++) {
+      let P = A(r + R * 0.05);
+      T[R] = P === null ? NaN : P;
+    }
+    let E = (R) => {
+      let P = Math.round((R - r) / 0.05);
+      if (P < 0 || P >= T.length) return null;
+      let C = T[P];
+      return C === C ? C : null;
+    };
+    for (let R of w)
+      for (let P of R.treads) {
+        let [C, I] = z((P.u0 + P.u1) / 2);
+        P.g = Math.min(
+          e(P.u0, C - I),
+          e(P.u0, C + I),
+          e(P.u1, C - I),
+          e(P.u1, C + I),
+        );
+      }
+    f.push({
+      name: u,
+      sd: d,
+      n: g,
+      U: b,
+      Wc: v,
+      HW: x,
+      on: y,
+      runs: w,
+      at: z,
+      yAt: E,
+    });
   }
+  return { sides: f, F: o.F };
+}
+function mJ(o) {
+  let t = [];
+  for (let e of o.sides)
+    for (let s of e.runs)
+      for (let n = s.u0; n < s.u1 - 0.05; n += 2) {
+        let i = Math.min(s.u1, n + 2),
+          [a, r] = e.at(n),
+          [l, c] = e.at(i),
+          h = Math.hypot(i - n, l - a),
+          f = (i - n) / h,
+          u = (l - a) / h,
+          d = e.yAt((n + i) / 2) ?? 0;
+        t.push({
+          t: "obb",
+          x: (n + i) / 2,
+          z: (a + l) / 2,
+          hx: Math.min(r, c),
+          hz: h / 2,
+          c: u,
+          s: f,
+          y0: d - 3,
+          y1: d + 2.5,
+          walk: !0,
+        });
+      }
   return t;
 }
-var C2t = {
-    north: [
-      [-122.419528, 37.802104, -122.41906, 37.802166],
-      [
-        -122.418924, 37.802166, -122.418908, 37.802174, -122.418874, 37.802172,
-        -122.418841, 37.802175, -122.418805, 37.802187, -122.418777, 37.802193,
-        -122.4187, 37.802203, -122.418667, 37.802208,
-      ],
-      [
-        -122.418667, 37.802208, -122.418643, 37.802206, -122.41861, 37.802206,
-        -122.418577, 37.802211, -122.418561, 37.802214, -122.41839, 37.802247,
-        -122.418283, 37.802251, -122.418093, 37.802273,
-      ],
-    ],
-    south: [
-      [-122.41949, 37.801941, -122.419325, 37.801966],
-      [
-        -122.41924, 37.801976, -122.419184, 37.801983, -122.419066, 37.802004,
-        -122.419036, 37.802006, -122.419012, 37.802007, -122.418985, 37.802011,
-        -122.418972, 37.802012, -122.41896, 37.802014,
-      ],
-      [
-        -122.41896, 37.802014, -122.418876, 37.80202, -122.418807, 37.802031,
-        -122.418764, 37.802041, -122.418725, 37.802048, -122.418672, 37.802055,
-        -122.418565, 37.80206, -122.418467, 37.802071, -122.418379, 37.802089,
-        -122.418347, 37.802094, -122.41832, 37.802096, -122.418296, 37.802095,
-        -122.418271, 37.802092, -122.418244, 37.802092, -122.418115, 37.802109,
-        -122.418057, 37.802129,
-      ],
-    ],
-  },
-  RC = [
-    -122.418858, 37.802196, -122.418866, 37.802146, -122.418497, 37.8022,
-    -122.418601, 37.802185, -122.418797, 37.8022, -122.418747, 37.802207,
-    -122.418628, 37.802226, -122.418769, 37.802057, -122.418806, 37.802163,
-    -122.418985, 37.802, -122.418909, 37.802026, -122.419089, 37.801974,
-    -122.419128, 37.802139, -122.419181, 37.802132, -122.419233, 37.802125,
-    -122.418933, 37.802129, -122.418201, 37.802319, -122.418139, 37.802246,
-    -122.418183, 37.802242, -122.418234, 37.802236,
-  ],
-  $k = 0.5,
-  L2t = 0.8,
-  rK = 0.155,
-  I2t = 0.32,
-  F2t = 6,
-  xr = (i, t, e = 0) => {
-    let s = Math.sin(i * 12.9898 + t * 78.233 + e * 37.719) * 43758.5453;
-    return s - Math.floor(s);
-  };

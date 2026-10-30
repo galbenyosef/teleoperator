@@ -1,335 +1,314 @@
-// app 260 — math
-// Lines 131390-131722 of readable/app.pretty.js (statement-aligned).
-var zu = xt,
-  xL = class {
-    constructor(t) {
-      ((this.p = []),
-        (this.n = []),
-        (this.uv = []),
-        (this.c = []),
-        (this.ix = []),
-        (this.lod = t),
-        (this.M = null),
-        (this.wh = []));
-    }
-    _v(t) {
-      return this.M ? new zu(...t).applyMatrix4(this.M).toArray() : t;
-    }
-    quad(t, e, s, n, o, a = !1, r = null) {
-      let l = r || rw(o),
-        c = this.p.length / 3,
-        h = [t, e, s, n].map((S) => this._v(S)),
-        f = h[2][0] - h[0][0],
-        u = h[2][1] - h[0][1],
-        d = h[2][2] - h[0][2],
-        p = h[3][0] - h[1][0],
-        m = h[3][1] - h[1][1],
-        g = h[3][2] - h[1][2],
-        b = u * g - d * m,
-        x = d * p - f * g,
-        v = f * m - u * p,
-        y = Math.hypot(b, x, v) || 1;
-      ((b /= y), (x /= y), (v /= y));
-      let M = [
-        [l[0], l[1]],
-        [l[2], l[1]],
-        [l[2], l[3]],
-        [l[0], l[3]],
-      ];
-      for (let S = 0; S < 4; S++)
-        (this.p.push(...h[S]),
-          this.n.push(b, x, v),
-          this.uv.push(...M[S]),
-          this.c.push(1, 1, 1, a ? 0.25 : 1));
-      this.ix.push(c, c + 1, c + 2, c, c + 2, c + 3);
-    }
-    poly(t, e, s, n, o, a = !1) {
-      let r = rw(e),
-        l = "xyz".indexOf(s),
-        c = "xyz".indexOf(n),
-        h = t.map((x) => this._v(x)),
-        f = 1e9,
-        u = -1e9,
-        d = 1e9,
-        p = -1e9;
-      for (let x of t)
-        ((f = Math.min(f, x[l])),
-          (u = Math.max(u, x[l])),
-          (d = Math.min(d, x[c])),
-          (p = Math.max(p, x[c])));
-      let m = mo.triangulateShape(
-          t.map((x) => new Re(x[l], x[c])),
-          [],
-        ),
-        g = this.M ? new zu(...o).transformDirection(this.M).toArray() : o,
-        b = this.p.length / 3;
-      for (let x = 0; x < t.length; x++) {
-        let v = t[x],
-          y = (v[l] - f) / Math.max(1e-6, u - f);
-        a && (y = 1 - y);
-        let M = (v[c] - d) / Math.max(1e-6, p - d);
-        (this.p.push(...h[x]),
-          this.n.push(...g),
-          this.uv.push(r[0] + (r[2] - r[0]) * y, r[1] + (r[3] - r[1]) * M),
-          this.c.push(1, 1, 1, 1));
-      }
-      for (let [x, v, y] of m) this.ix.push(b + x, b + v, b + y);
-    }
-    box(t, e, s, n, o, a, r, l = 0) {
-      let c =
-          typeof r == "string"
-            ? { px: r, nx: r, py: r, ny: r, pz: r, nz: r }
-            : r,
-        h = Math.min(l, (e - t) / 3, (a - o) / 3, (n - s) / 3),
-        f = t + h,
-        u = e - h,
-        d = o + h,
-        p = a - h,
-        m = n - h;
-      if (
-        (c.pz &&
-          this.quad([f, s, a], [u, s, a], [u, m, a], [f, m, a], c.pz, c.pzLamp),
-        c.nz && this.quad([u, s, o], [f, s, o], [f, m, o], [u, m, o], c.nz),
-        c.px && this.quad([e, s, p], [e, s, d], [e, m, d], [e, m, p], c.px),
-        c.nx && this.quad([t, s, d], [t, s, p], [t, m, p], [t, m, d], c.nx),
-        c.py && this.quad([f, n, p], [u, n, p], [u, n, d], [f, n, d], c.py),
-        c.ny && this.quad([f, s, d], [u, s, d], [u, s, p], [f, s, p], c.ny),
-        h > 0)
-      ) {
-        let g = c.px || c.pz || "black",
-          b = c.py || g;
-        (this.quad([u, s, a], [e, s, p], [e, m, p], [u, m, a], g),
-          this.quad([e, s, d], [u, s, o], [u, m, o], [e, m, d], g),
-          this.quad([f, s, o], [t, s, d], [t, m, d], [f, m, o], g),
-          this.quad([t, s, p], [f, s, a], [f, m, a], [t, m, p], g),
-          this.quad([f, m, a], [u, m, a], [u, n, p], [f, n, p], b),
-          this.quad([u, m, o], [f, m, o], [f, n, d], [u, n, d], b),
-          this.quad([e, m, p], [e, m, d], [u, n, d], [u, n, p], b),
-          this.quad([t, m, d], [t, m, p], [f, n, p], [f, n, d], b),
-          this.quad([u, m, a], [e, m, p], [u, n, p], [u, n, p], b),
-          this.quad([e, m, d], [u, m, o], [u, n, d], [u, n, d], b),
-          this.quad([f, m, o], [t, m, d], [f, n, d], [f, n, d], b),
-          this.quad([t, m, p], [f, m, a], [f, n, p], [f, n, p], b));
-      }
-    }
-    tube(t, e, s, n, o = 6, a = s, r = n) {
-      let l = new zu(...t),
-        c = new zu(...e),
-        h = c.clone().sub(l).normalize(),
-        f = Math.abs(h.y) < 0.9 ? new zu(0, 1, 0) : new zu(1, 0, 0),
-        u = new zu().crossVectors(h, f).normalize(),
-        d = new zu().crossVectors(h, u),
-        p = (b, x) =>
-          Array.from({ length: o }, (v, y) => {
-            let M = (y / o) * Math.PI * 2;
-            return b
-              .clone()
-              .addScaledVector(u, Math.cos(M) * x)
-              .addScaledVector(d, Math.sin(M) * x)
-              .toArray();
-          }),
-        m = p(l, s),
-        g = p(c, a);
-      for (let b = 0; b < o; b++) {
-        let x = (b + 1) % o;
-        this.quad(m[x], m[b], g[b], g[x], n);
-      }
-      r &&
-        (this.poly(g, r, ...KK(h), h.toArray()),
-        this.poly(
-          m.slice().reverse(),
-          r,
-          ...KK(h),
-          h.clone().negate().toArray(),
-        ));
-    }
-    blob(t, e, s, n = 8, o = 5) {
-      let a = (r, l) => {
-        let c = (l / o) * Math.PI,
-          h = (r / n) * Math.PI * 2;
-        return [
-          t[0] + e[0] * Math.sin(c) * Math.sin(h),
-          t[1] + e[1] * Math.cos(c),
-          t[2] + e[2] * Math.sin(c) * Math.cos(h),
-        ];
-      };
-      for (let r = 0; r < o; r++)
-        for (let l = 0; l < n; l++) {
-          let c = a(l, r + 1),
-            h = a(l + 1, r + 1),
-            f = a(l + 1, r),
-            u = a(l, r),
-            d = [
-              (c[0] + f[0]) / 2 - t[0],
-              (c[1] + f[1]) / 2 - t[1],
-              (c[2] + f[2]) / 2 - t[2],
-            ];
-          this.quad(c, h, f, u, s(d));
+// app 260 — box
+// Lines 131982-132293 of readable/app.pretty.js (statement-aligned).
+function KI(o, t) {
+  let e = t.round ?? 0.13,
+    s = [-t.hw, -t.hw + e, ...(t.posts ? [-0.045, 0.045] : []), t.hw - e, t.hw],
+    n = s.length - 1,
+    i = (v) => {
+      let x = t.zf - v * 0.9,
+        y = t.roof - v * 0.45,
+        M = [],
+        S = [],
+        w = (_, z, A) => {
+          (M.push([_, z]), S.push(A));
+        };
+      if ((w(t.zb, t.yb, "under"), t.arch)) {
+        let [_, z] = t.arch,
+          A = z + 0.1,
+          T = Math.asin(Math.max(-1, Math.min(1, (t.yb - z) / A))),
+          E = o.lod ? 4 : 7;
+        for (let R = 0; R <= E; R++) {
+          let P = Math.PI - T - ((Math.PI - 2 * T) * R) / E;
+          w(_ + Math.cos(P) * A, z + Math.sin(P) * A, R < E ? "well" : "under");
         }
-    }
-    loftX(t, e, s, n, o) {
-      let a = e[0].length;
-      for (let r = 0; r + 1 < t.length; r++)
-        for (let l = 0; l < a; l++) {
-          let c = (l + 1) % a,
-            h = n(s[l], r, t.length - 1);
-          if (!h) continue;
-          let f = e[r][l],
-            u = e[r + 1][l],
-            d = e[r + 1][c],
-            p = e[r][c];
-          this.quad(
-            [t[r], f[1], f[0]],
-            [t[r + 1], u[1], u[0]],
-            [t[r + 1], d[1], d[0]],
-            [t[r], p[1], p[0]],
-            h,
-          );
-        }
-      if (o)
-        for (let [r, l] of [
-          [0, -1],
-          [t.length - 1, 1],
-        ])
-          this.poly(
-            e[r].map(([c, h]) => [t[r], h, c]),
-            o,
-            "z",
-            "y",
-            [l, 0, 0],
-            !0,
-          );
-    }
-    arch(t, e, s, n, o, a, r, l, c = 7) {
-      let h = (f, u) => [f, s + Math.sin(u) * o, n + Math.cos(u) * o];
-      for (let f = 0; f < c; f++) {
-        let u = a + ((r - a) * f) / c,
-          d = a + ((r - a) * (f + 1)) / c;
-        (this.quad(h(t, u), h(e, u), h(e, d), h(t, d), l),
-          this.quad(h(e, u), h(t, u), h(t, d), h(e, d), "black"));
-      }
-    }
-    wheel(t, e, s, n, o, a = "wheel", r = !1) {
-      this.wh.push([this.p.length / 3, s, n]);
-      let l = this.lod ? 8 : 16,
-        c = rw("tread"),
-        h = rw(a),
-        f = Math.abs(e) > Math.abs(t) ? e : t,
-        u = f === e ? t : e,
-        d = Math.sign(f - u) || 1,
-        p = f - d * 0.025,
-        m = (h[0] + h[2]) / 2,
-        g = (h[1] + h[3]) / 2,
-        b = (h[2] - h[0]) / 2,
-        x = (h[3] - h[1]) / 2;
-      for (let v = 0; v < l; v++) {
-        let y = (v / l) * Math.PI * 2,
-          M = ((v + 1) / l) * Math.PI * 2,
-          S = s + Math.cos(y) * o,
-          w = n + Math.sin(y) * o,
-          z = s + Math.cos(M) * o,
-          _ = n + Math.sin(M) * o,
-          R = c[0] + ((c[2] - c[0]) * v) / l,
-          T = c[0] + ((c[2] - c[0]) * (v + 1)) / l;
-        d > 0
-          ? this.quad([u, S, w], [u, z, _], [f, z, _], [f, S, w], "tread", !1, [
-              R,
-              c[1],
-              T,
-              c[3],
-            ])
-          : this.quad([f, S, w], [f, z, _], [u, z, _], [u, S, w], "tread", !1, [
-              R,
-              c[1],
-              T,
-              c[3],
-            ]);
-        let E = [m + Math.sin(y) * b * d, g + Math.cos(y) * x],
-          A = [m + Math.sin(M) * b * d, g + Math.cos(M) * x];
-        if (r) continue;
-        let C = !this.lod,
-          P = C ? p : f;
-        (this.tri3([P, s, n], [P, S, w], [P, z, _], [m, g], E, A, [d, 0, 0]),
-          C &&
-            (this.tri3([f, S, w], [p, S, w], [p, z, _], E, E, A, [d, 0, 0]),
-            this.tri3([f, S, w], [p, z, _], [f, z, _], E, A, A, [d, 0, 0])));
-      }
-      this.wh[this.wh.length - 1].push(this.p.length / 3);
-    }
-    tri3(t, e, s, n, o, a, r) {
-      let l = this.p.length / 3,
-        c = [t, e, s].map((u) => this._v(u)),
-        h = [n, o, a],
-        f = this.M ? new zu(...r).transformDirection(this.M).toArray() : r;
-      for (let u = 0; u < 3; u++)
-        (this.p.push(...c[u]),
-          this.n.push(...f),
-          this.uv.push(...h[u]),
-          this.c.push(1, 1, 1, 1));
-      this.ix.push(l, l + 1, l + 2);
-    }
-    axle(t, e, s, n, o = !1, a = "wheel") {
-      for (let r of [1, -1]) {
-        let l = s + (o ? n * 0.55 : 0);
-        (this.wheel(r * (l - n / 2), r * (l + n / 2), e, t, e, a),
-          o &&
-            this.wheel(
-              r * (l - n * 1.6),
-              r * (l - n * 0.6),
-              e,
-              t,
-              e,
-              "wheel",
-              !0,
-            ));
-      }
-      this.lod ||
-        this.tube([-(s - 0.1), e, t], [s - 0.1, e, t], 0.09, "chassis", 6);
-    }
-    flap(t, e, s, n = 0.18, o = 0.8) {
-      for (let a of [1, -1])
-        this.quad(
-          a > 0 ? [s, n, t] : [-e, n, t],
-          a > 0 ? [e, n, t] : [-s, n, t],
-          a > 0 ? [e, o, t] : [-s, o, t],
-          a > 0 ? [s, o, t] : [-e, o, t],
-          "black",
-        );
-    }
-    frame(t, e, s, n, o = 0.5) {
-      this.box(-o, o, s, n, t, e, "chassis");
-    }
-    axles() {
-      return [
-        ...new Map(this.wh.map(([, t, e]) => [e.toFixed(3), [t, e]])).values(),
-      ]
-        .sort((t, e) => e[1] - t[1])
-        .slice(0, 7);
-    }
-    geometry() {
-      let t = new De(),
-        e = new Float32Array(this.p),
-        s = new Uint32Array(e.buffer),
-        n = this.axles();
-      for (let o = 0; o < s.length; o += 3) s[o] &= -8;
-      for (let [o, , a, r] of this.wh) {
-        let l = n.findIndex((c) => Math.abs(c[1] - a) < 0.001) + 1;
-        for (let c = o; c < r; c++) s[c * 3] = (s[c * 3] & -8) | l;
       }
       return (
-        t.setAttribute("position", new Te(e, 3)),
-        t.setAttribute("normal", new ze(this.n, 3)),
-        t.setAttribute("uv", new ze(this.uv, 2)),
-        t.setAttribute("color", new ze(this.c, 4)),
-        t.setIndex(this.ix),
-        t.computeBoundingSphere(),
-        t
+        w(x, t.yb, "front"),
+        w(x, t.yb + t.gH, "paint"),
+        w(x - 0.03, t.wBot, "wind"),
+        w(x - t.rake, t.wTop, "paint"),
+        w(x - t.rake - 0.14, y, "paint"),
+        w(t.zb, y, "back"),
+        { P: M, T: S }
+      );
+    },
+    a = i(0),
+    r = i(e),
+    l = s.map((v, x) => (x === 0 || x === n ? r.P : a.P)),
+    c = (v) => t.posts && v === 2;
+  o.loftX(
+    s,
+    l,
+    a.T,
+    (v, x) =>
+      v === "wind"
+        ? x === 0 || x === n - 1 || c(x)
+          ? t.paint
+          : "wind"
+        : v === "well" || v === "under"
+          ? "black"
+          : v === "back"
+            ? t.back || "black"
+            : t.paint,
+    t.door,
+  );
+  let h = t.zf,
+    f = t.roof,
+    u = h - 0.2,
+    d = t.winBack ?? t.zb + 0.35,
+    p = t.sideBot ?? t.wBot + 0.05,
+    m = t.wTop - 0.06,
+    g = ((t.rake - 0.03) * (m - p)) / (t.wTop - t.wBot);
+  for (let v of [1, -1]) {
+    let x = v * (t.hw + 0.004);
+    v > 0
+      ? o.quad([x, p, u], [x, p, d], [x, m, d], [x, m, u - g], "glass")
+      : o.quad([x, p, d], [x, p, u], [x, m, u - g], [x, m, d], "glass");
+  }
+  let b = t.hw - e - 0.04;
+  if (
+    (t.grille !== !1 &&
+      o.quad(
+        [-b + 0.46, t.yb + 0.1, h + 0.006],
+        [b - 0.46, t.yb + 0.1, h + 0.006],
+        [b - 0.46, t.yb + t.gH - 0.06, h + 0.006],
+        [-b + 0.46, t.yb + t.gH - 0.06, h + 0.006],
+        t.grille || "grille",
+      ),
+    t.lamps !== !1)
+  )
+    for (let v of [1, -1]) {
+      let x = v * (b - 0.4),
+        y = v * b,
+        M = t.yb + (t.lampY ?? t.gH - 0.34),
+        S = M + 0.26;
+      if (
+        (o.quad(
+          [Math.min(x, y), M, h + 0.008],
+          [Math.max(x, y), M, h + 0.008],
+          [Math.max(x, y), S, h + 0.008],
+          [Math.min(x, y), S, h + 0.008],
+          "head",
+          !0,
+        ),
+        !o.lod)
+      ) {
+        let w = v * (t.hw - 0.03);
+        o.box(
+          w - 0.03,
+          w + 0.03,
+          M + 0.02,
+          S - 0.02,
+          h - e * 0.9 - 0.02,
+          h - e * 0.9 + 0.08,
+          "amber",
+        );
+      }
+    }
+  if (!o.lod) {
+    if (
+      (o.box(
+        -t.hw + 0.12,
+        t.hw - 0.12,
+        f - 0.1,
+        f - 0.05,
+        h - t.rake - 0.2,
+        h - t.rake + 0.12,
+        "black",
+      ),
+      t.markers !== !1)
+    )
+      for (let v = -2; v <= 2; v++)
+        o.box(
+          v * 0.25 - 0.05,
+          v * 0.25 + 0.05,
+          f,
+          f + 0.05,
+          h - t.rake - 0.2,
+          h - t.rake - 0.1,
+          "amber",
+        );
+    for (let v of [1, -1]) {
+      let x = v * t.hw,
+        y = v * (t.hw + 0.3),
+        M = h - 0.12;
+      (o.tube(
+        [x, t.wTop - 0.25, h - 0.4],
+        [y, t.wTop - 0.28, M],
+        0.018,
+        "chrome",
+        4,
+      ),
+        o.tube(
+          [x, t.wBot + 0.02, h - 0.35],
+          [y, t.wTop - 0.95, M],
+          0.018,
+          "chrome",
+          4,
+        ),
+        o.box(
+          y - 0.07,
+          y + 0.07,
+          t.wTop - 1,
+          t.wTop - 0.26,
+          M - 0.04,
+          M + 0.04,
+          {
+            px: "black",
+            nx: "black",
+            py: "black",
+            ny: "black",
+            pz: "black",
+            nz: "glass",
+          },
+        ));
+    }
+    for (let v of [1, -1]) {
+      let x = v > 0 ? t.hw - 0.2 : -t.hw - 0.02,
+        y = v > 0 ? t.hw + 0.02 : -t.hw + 0.2;
+      o.box(
+        x,
+        y,
+        t.stepY ?? t.yb - 0.32,
+        (t.stepY ?? t.yb - 0.32) + 0.06,
+        t.stepZ[0],
+        t.stepZ[1],
+        "black",
       );
     }
-  };
-function KK(i) {
-  let t = Math.abs(i.x),
-    e = Math.abs(i.y),
-    s = Math.abs(i.z);
-  return t >= e && t >= s ? ["z", "y"] : e >= s ? ["x", "z"] : ["x", "y"];
+  }
+}
+function n3t(o) {
+  let t = o.lod;
+  (KI(o, {
+    zb: 2.85,
+    zf: 4.82,
+    hw: 1,
+    yb: 0.78,
+    roof: 2.62,
+    wBot: 1.52,
+    wTop: 2.42,
+    rake: 0.2,
+    gH: 0.62,
+    arch: [3.85, 0.45],
+    paint: "white",
+    door: "doorC",
+    stepZ: [3, 3.45],
+    stepY: 0.52,
+    winBack: 3.05,
+  }),
+    o.box(
+      -1.08,
+      1.08,
+      0.45,
+      0.8,
+      4.66,
+      5,
+      {
+        px: "black",
+        nx: "black",
+        py: "black",
+        pz: "grey",
+        ny: "black",
+        nz: "black",
+      },
+      0.06,
+    ));
+  let e = 1.22,
+    s = -5,
+    n = 2.72;
+  if (
+    (o.quad([e, 1.05, n], [e, 1.05, s], [e, 3.9, s], [e, 3.9, n], "boxSide"),
+    o.quad([-e, 1.05, s], [-e, 1.05, n], [-e, 3.9, n], [-e, 3.9, s], "boxSide"),
+    o.box(-e, e, 1.05, 3.9, s, n, {
+      px: null,
+      nx: null,
+      py: "white",
+      pz: "boxFront",
+      nz: "rollDoor",
+      ny: "chassis",
+    }),
+    !t)
+  ) {
+    for (let i of [1, -1])
+      o.box(i * e - 0.03, i * e + 0.03, 3.82, 3.9, s, n, "chrome");
+    o.box(-e - 0.02, e + 0.02, 3.86, 3.92, s - 0.02, s + 0.06, "chrome");
+    for (let i of [1, -1])
+      for (let [a, r] of [
+        [s - 0.05, s + 0.1],
+        [n - 0.1, n + 0.04],
+      ])
+        o.box(i * e - 0.07, i * e + 0.07, 1, 3.92, a, r, "chrome", 0.02);
+    o.box(-e + 0.07, e - 0.07, 3.62, 3.84, s - 0.07, s + 0.02, "chrome");
+    for (let i of [1, -1])
+      for (let a of [1.55, 2.35])
+        o.box(i * e - 0.005, i * e + 0.035, a, a + 0.07, s + 0.12, n - 0.12, {
+          px: "grey",
+          nx: "grey",
+          py: "grey",
+          ny: "black",
+          pz: "grey",
+          nz: "grey",
+        });
+  }
+  if (
+    (o.box(-e - 0.02, e + 0.02, 0.92, 1.08, s - 0.06, n, {
+      px: "grey",
+      nx: "grey",
+      py: "black",
+      ny: "black",
+      pz: "black",
+      nz: "grey",
+    }),
+    o.frame(-4.8, 3.9, 0.55, 0.92, 0.46),
+    o.box(-1, 1, 0.5, 0.62, -5.12, -4.95, "black"),
+    !t)
+  ) {
+    (o.tube([0.55, 0.72, 0.4], [0.55, 0.72, 1.7], 0.24, "chrome", 10),
+      o.box(-1.08, -0.55, 0.52, 0.95, 0.6, 1.5, "black", 0.03));
+    for (let i of [-1.6, -0.2])
+      o.box(-1.2, 1.2, 0.6, 0.85, i, i + 0.1, "black");
+  }
+  for (let i of [1, -1])
+    (o.box(i * 0.98 - 0.15, i * 0.98 + 0.15, 1.12, 1.34, -5.02, -4.99, {
+      nz: "tail",
+      px: null,
+      nx: null,
+      py: null,
+      ny: null,
+      pz: null,
+    }),
+      o.box(i * 0.6 - 0.1, i * 0.6 + 0.1, 1.12, 1.34, -5.02, -4.99, {
+        nz: "amber",
+        px: null,
+        nx: null,
+        py: null,
+        ny: null,
+        pz: null,
+      }));
+  (o.axle(3.85, 0.45, 0.98, 0.26),
+    o.axle(-2.4, 0.45, 0.92, 0.26, !0),
+    o.arch(
+      0.62,
+      1.24,
+      0.45,
+      -2.4,
+      0.55,
+      0.05,
+      Math.PI - 0.05,
+      "black",
+      t ? 3 : 6,
+    ),
+    o.arch(
+      -1.24,
+      -0.62,
+      0.45,
+      -2.4,
+      0.55,
+      0.05,
+      Math.PI - 0.05,
+      "black",
+      t ? 3 : 6,
+    ),
+    o.flap(-3.05, 0.6, 1.2));
 }

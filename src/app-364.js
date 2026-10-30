@@ -1,302 +1,352 @@
 // app 364 — math
-// Lines 182095-182394 of readable/app.pretty.js (statement-aligned).
-var tE = class {
-  constructor(
-    t,
-    { store: e = null, list: s = nv, key: n = "sf-drive.stunts" } = {},
-  ) {
-    ((this.v = t),
-      (this.list = s),
-      (this.store = e),
-      (this.key = n),
-      (this.events = []),
-      (this.best = {}));
-    try {
-      this.best = JSON.parse(e?.getItem(n) || "{}") || {};
-    } catch {
-      this.best = {};
-    }
-    ((this.live = null),
-      (this.near = null),
-      (this._nearT = 0),
-      (this.px = null),
-      (this.pz = null));
-  }
-  snap(t, e = null, s = null) {
-    let n = {};
-    for (let o of this.list)
-      if (o.edge && s && e) {
-        let a = null;
-        for (let r of s)
-          r.name === o.edge.name &&
-            !!r.tunnel == !!o.edge.tunnel &&
-            r.car !== !1 &&
-            (!a || r.s1 - r.s0 > a.s1 - a.s0) &&
-            (a = r);
-        if (!a) continue;
-        for (let r of [a.s0 + 4, a.s1 - 4]) {
-          e(a, r, n);
-          let c =
-              Math.hypot(n.x - o.gates[0].x, n.z - o.gates[0].z) <
-              Math.hypot(n.x - o.gates[1].x, n.z - o.gates[1].z)
-                ? o.gates[0]
-                : o.gates[1],
-            h = n.dx * c.dir[0] + n.dz * c.dir[1] < 0 ? -1 : 1;
-          ((c.x = n.x),
-            (c.z = n.z),
-            (c.y = n.y),
-            (c.dir = KF(h * n.dx, h * n.dz)),
-            (c.road = a.name),
-            (c.fixed = !0));
-        }
-      }
-    for (let o of this.list)
-      for (let a of o.gates) {
-        if (a.fixed) continue;
-        let r = t(a.x, a.z, 30);
-        if (
-          !r ||
-          !Number.isFinite(r.dx) ||
-          Math.abs(r.dx * a.dir[0] + r.dz * a.dir[1]) < 0.8
-        )
-          continue;
-        let l = r.dx * a.dir[0] + r.dz * a.dir[1] < 0 ? -1 : 1;
-        ((a.dir = KF(l * r.dx, l * r.dz)),
-          (a.y = r.y),
-          (a.road = r.E?.name || ""),
-          e &&
-            r.E &&
-            Number.isFinite(r.s) &&
-            (e(r.E, r.s, n),
-            Number.isFinite(n.x) &&
-              Math.hypot(n.x - a.x, n.z - a.z) < 30 &&
-              ((a.x = n.x), (a.z = n.z))));
-      }
-    return this;
-  }
-  save() {
-    try {
-      this.store?.setItem(this.key, JSON.stringify(this.best));
-    } catch {}
-  }
-  starsTotal() {
-    let t = 0;
-    for (let e of this.list) t += this.best[e.id] ? rc(e, this.best[e.id]) : 0;
+// Lines 176300-176649 of readable/app.pretty.js (statement-aligned).
+h2();
+var Hv = "profile",
+  snt = "teleop2.profile",
+  O2 = "teleop2.guest",
+  l4 = "teleop2.pending.",
+  yB = "teleop2.cache.",
+  lnt = 2,
+  z8t = 3e4,
+  Ua = {
+    MAXV: 1e9,
+    CAP: 15e3,
+    RATE: 30,
+    KMH: 450,
+    DRIFT: 60,
+    BOUNTY: 5e6,
+    XPCAP: 25e3,
+    XPRATE: 120,
+  },
+  Uv = [
+    "taxi.total",
+    "taxi.rides",
+    "race.money",
+    "race.played",
+    "race.wins",
+    "race.podiums",
+    "police.bounty",
+    "police.escapes",
+    "police.busts",
+    "km",
+    "earned",
+    "xp",
+    "ch.cash",
+    "ch.runs",
+  ],
+  cnt = ["kmh", "drift", "bounty"],
+  nnt = [
+    "sf-drive.settings",
+    "sf-drive.traffic",
+    "sf-drive.parked",
+    "sf-drive.police",
+    "sf-drive.units",
+    "sf-drive.city",
+  ],
+  eT = () => ({
+    schemaVersion: lnt,
+    gid: null,
+    pos: null,
+    car: null,
+    taxi: { total: 0, rides: 0, stars: [] },
+    race: { money: 0, played: 0, wins: 0, podiums: 0, best: {} },
+    police: { bounty: 0, escapes: 0, busts: 0 },
+    km: 0,
+    earned: 0,
+    xp: 0,
+    ch: { cash: 0, runs: 0, best: {} },
+    roads: null,
+    boards: [],
+    best: { kmh: 0, drift: 0, bounty: 0 },
+    settings: {},
+    custom: {},
+    ride: null,
+    cars: [],
+    mine: null,
+    builds: [],
+    spend: { pictures: 0, cars: 0 },
+    claimed: null,
+    imported: {},
+    updated: 0,
+    cash: { base: 0, baseT: 0, moves: 0, log: [] },
+  }),
+  _8t = { solo: [300, 150, 75], net: [500, 250, 100] },
+  Sd = (o, t) => {
+    let [e, s] = t.split(".");
+    return s ? o[e]?.[s] : o[e];
+  },
+  sT = (o, t, e) => {
+    let [s, n] = t.split(".");
+    n ? (o[s][n] = e) : (o[s] = e);
+  },
+  Zo = (o, t = Ua.MAXV) => (
+    (o = +o),
+    Number.isFinite(o) ? Math.min(t, Math.max(0, o)) : 0
+  ),
+  Go = (o) => Math.round(o * 100) / 100,
+  Dv = (o) => (o && typeof o == "object" && !Array.isArray(o) ? o : {}),
+  MB = (o) => {
+    let t = {};
+    for (let e of Uv) t[e] = Zo(o?.[e]);
     return t;
+  },
+  E8t = (o) => {
+    let t = {};
+    for (let e of Uv) t[e] = Zo(Sd(o, e));
+    return t;
+  },
+  SB = (o, t) => {
+    if (!o && !t) return null;
+    let e = {};
+    for (let s of Uv) e[s] = Math.max(Zo(o?.[s]), Zo(t?.[s]));
+    return e;
+  },
+  int = () =>
+    (
+      globalThis.crypto?.randomUUID?.() ||
+      "g" + Math.random().toString(36).slice(2) + Date.now().toString(36)
+    ).slice(0, 40),
+  B2 = (o) => {
+    try {
+      return JSON.parse(localStorage.getItem(o) || "null");
+    } catch {
+      return null;
+    }
+  },
+  Md = (o, t) => {
+    try {
+      return (localStorage.setItem(o, JSON.stringify(t)), !0);
+    } catch {
+      return !1;
+    }
+  },
+  T8t = /^#[0-9a-f]{6}$/,
+  wB = (o) => (typeof o == "string" && T8t.test(o) ? o : null);
+function hnt(o) {
+  let t = {};
+  for (let [e, s] of Object.entries(Dv(o)).slice(0, 64)) {
+    if (!/^[a-z0-9_-]{1,32}$/.test(e) || !s || typeof s != "object") continue;
+    let n = Dv(s.paint),
+      i = {
+        c: wB(n.c),
+        f: typeof n.f == "string" && /^[a-z]{1,12}$/.test(n.f) ? n.f : null,
+        cal: wB(n.cal),
+        rim: wB(n.rim),
+      },
+      a = c2(n.w);
+    (a && !(a.u || "").startsWith("data:") && (i.w = a),
+      (t[e] = {
+        paint: i.c || i.f || i.cal || i.rim || i.w ? i : null,
+        t: Zo(s.t, 1e15),
+      }));
+    let r = pnt(s.tune);
+    r && (t[e].tune = r);
   }
-  cancel(t = "cancel") {
-    this.live &&
-      (this.events.push({ type: "fail", s: this.live.s, why: t }),
-      (this.live = null));
+  return t;
+}
+function h4(o) {
+  let t = [];
+  for (let e of (Array.isArray(o) ? o : []).slice(0, 24)) {
+    if (
+      !e ||
+      typeof e != "object" ||
+      typeof e.id != "string" ||
+      !/^b[0-9a-z]{1,16}$/.test(e.id) ||
+      typeof e.base != "string" ||
+      !/^[a-z0-9_-]{1,32}$/.test(e.base)
+    )
+      continue;
+    let s = hnt({ x: { paint: e.paint, tune: e.tune } }).x || {},
+      n = e.base === "custom" ? Ul(e.ride) : null;
+    (e.base === "custom" && !n) ||
+      t.push({
+        id: e.id,
+        name:
+          (typeof e.name == "string" &&
+            e.name.replace(/[\u0000-\u001f<>]/g, "").slice(0, 28)) ||
+          "My build",
+        base: e.base,
+        ride: n,
+        paint: s.paint || null,
+        tune: s.tune || null,
+        t: Zo(e.t, 1e15),
+        driven: !!e.driven,
+      });
   }
-  _result(t, e) {
-    let s = this.best[t.id] || 0,
-      n = e > s;
-    n && ((this.best[t.id] = Math.round(e * 10) / 10), this.save());
-    let o = {
-      type: "result",
-      s: t,
-      val: e,
-      stars: rc(t, e),
-      best: Math.max(s, e),
-      old: s,
-      newBest: n,
-      starsUp: rc(t, e) > rc(t, s),
+  return t;
+}
+var ont = ["making", "closed", "ready", "driven"],
+  fnt = (o, t) => {
+    let e = new Map();
+    for (let s of Av([...(o || []), ...(t || [])])) {
+      let n = e.get(s.id);
+      (!n || ont.indexOf(s.status) > ont.indexOf(n.status)) && e.set(s.id, s);
+    }
+    return [...e.values()].sort((s, n) => s.t0 - n.t0).slice(-6);
+  },
+  unt = (o, t) => ({
+    pictures: Math.max(o?.pictures || 0, t?.pictures || 0),
+    cars: Math.max(o?.cars || 0, t?.cars || 0),
+  }),
+  dnt = (o, t) => {
+    let e = new Map();
+    for (let s of [...(o || []), ...(t || [])]) {
+      let n = e.get(s.id);
+      (!n || (s.t || 0) > (n.t || 0)) && e.set(s.id, s);
+    }
+    return [...e.values()].sort((s, n) => (s.t || 0) - (n.t || 0)).slice(-24);
+  };
+function pnt(o) {
+  if (!o || typeof o != "object" || Array.isArray(o)) return null;
+  let t = {};
+  for (let e of ["p", "own", "w", "t"]) {
+    let s = o[e];
+    if (!s || typeof s != "object" || Array.isArray(s)) continue;
+    let n = {};
+    for (let [i, a] of Object.entries(s).slice(0, 24))
+      /^[a-z]{1,8}$/.test(i) &&
+        Number.isFinite(+a) &&
+        Math.abs(+a) < 1e5 &&
+        (n[i] = +a);
+    Object.keys(n).length && (t[e] = n);
+  }
+  return Object.keys(t).length ? t : null;
+}
+var mnt = (o, t, e = !1) => {
+    for (let [s, n] of Object.entries(t?.custom || {}))
+      (!o.custom[s] || (!e && (n.t || 0) > (o.custom[s].t || 0))) &&
+        (o.custom[s] = n);
+  },
+  R8t = (o) => {
+    try {
+      localStorage.removeItem(o);
+    } catch {}
+  },
+  A8t = /^[A-Za-z0-9+/]*={0,2}$/,
+  ant = (o) => {
+    try {
+      let t = atob(o),
+        e = new Uint8Array(t.length);
+      for (let s = 0; s < t.length; s++) e[s] = t.charCodeAt(s);
+      return e;
+    } catch {
+      return null;
+    }
+  },
+  P8t = (o) => {
+    let t = "";
+    for (let e = 0; e < o.length; e++) t += String.fromCharCode(o[e]);
+    return btoa(t);
+  };
+function gnt(o) {
+  return o &&
+    typeof o == "object" &&
+    Number.isInteger(o.n) &&
+    o.n > 0 &&
+    o.n < 1e6 &&
+    typeof o.b == "string" &&
+    o.b.length <= Math.ceil(o.n / 8 / 3) * 4 + 8 &&
+    A8t.test(o.b)
+    ? { n: o.n, b: o.b }
+    : null;
+}
+function kB(o, t) {
+  if (!o) return t ? { ...t } : null;
+  if (!t || t.n !== o.n) return o;
+  let e = ant(o.b),
+    s = ant(t.b);
+  if (!e || !s) return o;
+  let n = new Uint8Array(Math.max(e.length, s.length));
+  for (let i = 0; i < n.length; i++) n[i] = (e[i] || 0) | (s[i] || 0);
+  return { n: o.n, b: P8t(n) };
+}
+var bnt = (o) =>
+    (Array.isArray(o) ? o : [])
+      .filter((t) => typeof t == "string" && /^[a-z0-9_-]{1,24}$/.test(t))
+      .slice(0, 128),
+  zB = (o, t) => [...new Set([...(o || []), ...(t || [])])].slice(0, 128),
+  C8t = /^[a-z0-9_-]{1,32}$/;
+function xnt(o) {
+  let t = {};
+  for (let [e, s] of Object.entries(Dv(o)).slice(0, 400)) {
+    if (!C8t.test(e) || !s || typeof s != "object") continue;
+    let n = (i, a, r) =>
+      Number.isFinite(+i) ? Math.min(r, Math.max(a, +i)) : 0;
+    t[e] = {
+      s: Math.round(n(s.s, 0, 3)),
+      v: n(s.v, -1e9, 1e9),
+      q: n(s.q, -1e12, 1e12),
+      n: Math.floor(n(s.n, 0, 1e6)),
+      d: Math.floor(n(s.d, 0, 1e6)),
+      k: Math.floor(n(s.k, 0, 1e4)),
     };
-    return (this.events.push(o), o);
   }
-  update(t, e = !0) {
-    let s = this.v,
-      n = s.pos.x,
-      o = s.pos.z,
-      a = this.px,
-      r = this.pz;
-    if (((this.px = n), (this.pz = o), !e)) {
-      this.cancel("paused");
-      return;
-    }
-    if (a === null || Math.hypot(n - a, o - r) > 15) {
-      this.cancel("jump");
-      return;
-    }
-    let l = this.live;
-    if (l) {
-      if (((l.t += t), l.kind === "zone" || l.kind === "drift")) {
-        ((l.dist += s.speed * t),
-          l.kind === "zone"
-            ? (l.val = l.t > 0.3 ? (l.dist / l.t) * 3.6 : s.kmh)
-            : (l.val += Hyt(s) * t));
-        let c = l.s.gates[l.to],
-          h = l.s.gates[1 - l.to];
-        if (XF(c, l.s.hw, a, r, n, o)) {
-          ((this.live = null), this._result(l.s, l.val));
-          return;
-        }
-        XF(h, l.s.hw, a, r, n, o) && l.t > 1
-          ? ((this.live = null),
-            this.events.push({ type: "fail", s: l.s, why: "back" }))
-          : l.t > (l.s.maxT || 60) &&
-            ((this.live = null),
-            this.events.push({ type: "fail", s: l.s, why: "time" }));
-        return;
-      }
-      if (l.kind === "jump") {
-        (!l.take &&
-          s.airTime > 0.08 &&
-          ((l.take = {
-            x: n - s.vel.x * s.airTime,
-            z: o - s.vel.z * s.airTime,
-          }),
-          (l.air = 0)),
-          l.take &&
-            ((l.hop = Math.hypot(n - l.take.x, o - l.take.z)),
-            (l.val = Math.max(l.best || 0, l.hop)),
-            (l.air += t)),
-          l.take && s.airTime === 0 && l.air > 0.12
-            ? ((l.best = Math.max(l.best || 0, l.hop)),
-              (l.take = null),
-              (l.landT = l.t))
-            : l.take && s.airTime === 0 && (l.take = null),
-          ((!l.take &&
-            ((l.t > 3 && l.landT === void 0) ||
-              (l.landT !== void 0 && l.t - l.landT > 1.2))) ||
-            l.t > 10) &&
-            ((this.live = null),
-            (l.best || 0) >= 3
-              ? this._result(l.s, l.best)
-              : this.events.push({ type: "fail", s: l.s, why: "noair" })));
-        return;
-      }
-    }
-    if ((this._nearT -= t) <= 0) {
-      ((this._nearT = 0.25), (this.near = null));
-      let c = s.speed || 1;
-      for (let f of this.list) {
-        let u = f.gates[0],
-          d = u.x - n,
-          p = u.z - o,
-          m = Math.hypot(d, p);
-        m < Byt &&
-          (d * s.vel.x + p * s.vel.z) / (m * c) > 0.5 &&
-          (!this.near || m < this.near.d) &&
-          (this.near = { s: f, d: m });
-      }
-      let h = this.near?.s;
-      h &&
-        !this.best[h.id] &&
-        !this._seen?.has(h.id) &&
-        ((this._seen ||= new Set()).add(h.id),
-        this.events.push({ type: "discover", s: h }));
-    }
-    for (let c of this.list)
-      if (!(
-        Math.abs(n - c.gates[0].x) > 3e3 || Math.abs(o - c.gates[0].z) > 3e3
-      ))
-        for (let h = 0; h < c.gates.length; h++) {
-          let f = XF(c.gates[h], c.hw, a, r, n, o);
-          if (f) {
-            if (c.kind === "trap") {
-              this._result(c, s.kmh);
-              return;
-            }
-            if (c.kind === "jump") {
-              f > 0 &&
-                ((this.live = { s: c, kind: "jump", val: 0, t: 0, take: null }),
-                this.events.push({ type: "start", s: c }));
-              return;
-            }
-            ((this.live = {
-              s: c,
-              kind: c.kind,
-              val: c.kind === "zone" ? s.kmh : 0,
-              t: 0,
-              dist: 0,
-              to: 1 - h,
-            }),
-              this.events.push({ type: "start", s: c }));
-            return;
-          }
-        }
-  }
-  markers() {
-    return this.list.map((t) => ({
-      x: t.gates[0].x,
-      z: t.gates[0].z,
-      kind: t.kind,
-      col: Ml[t.kind].col,
-      name: t.name,
-      stars: this.best[t.id] ? rc(t, this.best[t.id]) : 0,
-    }));
-  }
-};
-as();
-as();
-var Utt = 650,
-  Gtt = 34,
-  Uyt = 24,
-  mM = null;
-function Gyt() {
-  if (mM) return mM;
-  let i = 32,
-    t = 256,
-    e = document.createElement("canvas");
-  ((e.width = i), (e.height = t));
-  let s = e.getContext("2d"),
-    n = s.createImageData(i, t);
-  for (let o = 0; o < t; o++) {
-    let a = 1 - o / (t - 1),
-      r = Math.pow(1 - a, 1.3) * (a < 0.02 ? a / 0.02 : 1);
-    for (let l = 0; l < i; l++) {
-      let c = Math.abs(l + 0.5 - i / 2) / (i / 2),
-        h = Math.exp(-c * c * 10),
-        f = Math.exp(-c * c * 2.5) * 0.3,
-        u = Math.min(1, (h + f) * (0.45 + 0.55 * (1 - a))) * r,
-        d = (o * i + l) * 4,
-        p = Math.round(255 * Math.min(1, 0.55 + h * 0.45));
-      ((n.data[d] = n.data[d + 1] = n.data[d + 2] = p),
-        (n.data[d + 3] = Math.round(255 * u)));
-    }
-  }
-  return (s.putImageData(n, 0, 0), (mM = new Sn(e)), (mM.colorSpace = is), mM);
+  return t;
 }
-function Wtt(i, t, e = 0, s = -1) {
-  let o = s > 0 ? 160 : 128,
-    a = document.createElement("canvas");
-  ((a.width = 128), (a.height = o));
-  let r = a.getContext("2d");
-  if (
-    (r.beginPath(),
-    r.arc(128 / 2, 128 / 2, 50, 0, 7),
-    (r.fillStyle = "rgba(9,11,15,.82)"),
-    r.fill(),
-    (r.lineWidth = 7),
-    (r.strokeStyle = t),
-    r.stroke(),
-    r.beginPath(),
-    r.arc(128 / 2, 128 / 2, 55, 0, 7),
-    (r.lineWidth = 2),
-    (r.strokeStyle = "rgba(255,255,255,.55)"),
-    r.stroke(),
-    Rm(r, i, 128 / 2, 128 / 2, 58, "#fff", 2.1),
-    s > 0)
-  )
-    for (let l = 0; l < s; l++) {
-      let c = 64 + (l - (s - 1) / 2) * 24,
-        h = 144;
-      ((r.fillStyle = l < e ? "#ffd23f" : "rgba(255,255,255,.35)"),
-        Wyt(r, c, h, 9),
-        (r.lineWidth = 1.5),
-        (r.strokeStyle = "rgba(0,0,0,.45)"),
-        r.stroke());
+function vnt(o, t) {
+  let e = ((o.ch ||= { cash: 0, runs: 0, best: {} }).best ||= {});
+  for (let [s, n] of Object.entries(t?.ch?.best || {})) {
+    let i = e[s];
+    if (!i) {
+      e[s] = { ...n };
+      continue;
     }
-  return a;
-}
-function Wyt(i, t, e, s) {
-  i.beginPath();
-  for (let n = 0; n < 10; n++) {
-    let o = -Math.PI / 2 + (n * Math.PI) / 5,
-      a = n % 2 ? s * 0.45 : s;
-    i.lineTo(t + Math.cos(o) * a, e + Math.sin(o) * a);
+    let a = n.s > i.s || (n.s === i.s && n.q > i.q),
+      r = { ...(a ? n : i), n: Math.max(i.n || 0, n.n || 0) };
+    ((n.d || 0) > (i.d || 0)
+      ? ((r.d = n.d), (r.k = n.k))
+      : n.d === i.d
+        ? ((r.d = i.d), (r.k = Math.max(i.k || 0, n.k || 0)))
+        : ((r.d = i.d), (r.k = i.k)),
+      (e[s] = r));
   }
-  (i.closePath(), i.fill());
+}
+var ynt = 300,
+  L8t = /^[\w.:-]{1,64}$/;
+function I8t(o, t = null) {
+  if (!o || typeof o != "object") {
+    let n = t
+      ? Zo(Sd(t, "taxi.total")) +
+        Zo(Sd(t, "race.money")) +
+        Zo(Sd(t, "police.bounty"))
+      : 0;
+    return { base: Go(n), baseT: 0, moves: 0, log: [] };
+  }
+  let e = [],
+    s = new Set();
+  for (let n of (Array.isArray(o.log) ? o.log : []).slice(-ynt * 2)) {
+    if (!n || typeof n != "object" || !L8t.test(n.id || "") || s.has(n.id))
+      continue;
+    let i = +n.a,
+      a = +n.t;
+    if (!Number.isFinite(i) || Math.abs(i) > Ua.MAXV || !Number.isFinite(a))
+      continue;
+    s.add(n.id);
+    let r = {
+      id: n.id,
+      t: a,
+      a: Go(i),
+      why:
+        typeof n.why == "string"
+          ? n.why.replace(/[\u0000-\u001f<>]/g, "").slice(0, 60)
+          : "",
+      k: typeof n.k == "string" ? n.k.slice(0, 12) : "",
+    };
+    (n.pend &&
+      ((r.pend = 1),
+      typeof n.held == "string" && (r.held = n.held.slice(0, 80))),
+      Number.isFinite(+n.rel) && (r.rel = +n.rel),
+      e.push(r));
+  }
+  return (
+    e.sort((n, i) => n.t - i.t || (n.id < i.id ? -1 : 1)),
+    c4({
+      base: Number.isFinite(+o.base)
+        ? Go(Math.max(-Ua.MAXV, Math.min(Ua.MAXV, +o.base)))
+        : 0,
+      baseT: Zo(o.baseT, 1e15),
+      moves: Math.floor(Zo(o.moves, 1e6)),
+      log: e,
+    })
+  );
 }

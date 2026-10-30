@@ -1,21 +1,21 @@
 // app 15 — solid
-// Lines 40648-41238 of readable/app.pretty.js (statement-aligned).
-function iS({ B: i, A: t, colliders: e }) {
-  let s = i.R("ferry"),
-    { x0: n, x1: o, z0: a, z1: r, zc: l } = Ki,
+// Lines 40732-41322 of readable/app.pretty.js (statement-aligned).
+function ak({ B: o, A: t, colliders: e }) {
+  let s = o.R("ferry"),
+    { x0: n, x1: i, z0: a, z1: r, zc: l } = io,
     c = 2.9,
     h = 21,
     f = [0.64, 0.6, 0.52],
-    u = At(f, Tt.stone),
-    d = T0(u),
-    p = At([0.5, 0.47, 0.41], Tt.stone),
-    m = At([0.2, 0.24, 0.22], Tt.copper),
-    g = At([0.1, 0.12, 0.13], Tt.glass),
-    b = At([0.03, 0.03, 0.03], Tt.paint),
-    x = T0(Ha("ferry_arcade")),
-    v = Ha("ferry_rear"),
-    y = o + 26;
-  (Ms(
+    u = Rt(f, Tt.stone),
+    d = J0(u),
+    p = Rt([0.5, 0.47, 0.41], Tt.stone),
+    m = Rt([0.2, 0.24, 0.22], Tt.copper),
+    g = Rt([0.1, 0.12, 0.13], Tt.glass),
+    b = Rt([0.03, 0.03, 0.03], Tt.paint),
+    v = J0(Ja("ferry_arcade")),
+    x = Ja("ferry_rear"),
+    y = i + 26;
+  (zs(
     s.solid,
     n - 0.2,
     1.2,
@@ -23,10 +23,10 @@ function iS({ B: i, A: t, colliders: e }) {
     y,
     3,
     r + 8,
-    At([0.42, 0.41, 0.38], Tt.conc),
+    Rt([0.42, 0.41, 0.38], Tt.conc),
     { bottom: !0 },
   ),
-    uG(
+    pW(
       s.solid,
       n + 2,
       a - 6,
@@ -34,101 +34,101 @@ function iS({ B: i, A: t, colliders: e }) {
       r + 6,
       6,
       1.2,
-      At([0.3, 0.28, 0.25], Tt.pile),
+      Rt([0.3, 0.28, 0.25], Tt.pile),
       { r: 0.35, edgeOnly: !0 },
     ));
   let M = 16,
     S = 20,
     w = a + M,
-    z = l - S / 2,
-    _ = l + S / 2,
-    R = r - M;
-  (s.atlas.wall(n, w, n, z, c, c, h, h, x, 0, c),
-    s.atlas.wall(n, _, n, R, c, c, h, h, x, 0, c));
-  let T = (Q, j, X, K) => {
+    _ = l - S / 2,
+    z = l + S / 2,
+    A = r - M;
+  (s.atlas.wall(n, w, n, _, c, c, h, h, v, 0, c),
+    s.atlas.wall(n, z, n, A, c, c, h, h, v, 0, c));
+  let T = (Z, q, j, K) => {
     let nt = n - 1.2;
-    (s.atlas.wall(nt, Q, nt, j, c, c, X, X, x, K, c),
-      s.atlas.wall(n, Q, nt, Q, c, c, X, X, x, 0, c),
-      s.atlas.wall(nt, j, n, j, c, c, X, X, x, 0, c),
-      s.atlas.wall(o, Q, n, Q, c, c, X, X, v, 0, c),
-      s.atlas.wall(n, j, o, j, c, c, X, X, v, 0, c),
-      s.atlas.wall(o, j, o, Q, c, c, X, X, v, 0, c),
-      Ms(s.solid, nt - 0.8, X - 0.9, Q - 0.8, o + 0.8, X, j + 0.8, d, {
+    (s.atlas.wall(nt, Z, nt, q, c, c, j, j, v, K, c),
+      s.atlas.wall(n, Z, nt, Z, c, c, j, j, v, 0, c),
+      s.atlas.wall(nt, q, n, q, c, c, j, j, v, 0, c),
+      s.atlas.wall(i, Z, n, Z, c, c, j, j, x, 0, c),
+      s.atlas.wall(n, q, i, q, c, c, j, j, x, 0, c),
+      s.atlas.wall(i, q, i, Z, c, c, j, j, x, 0, c),
+      zs(s.solid, nt - 0.8, j - 0.9, Z - 0.8, i + 0.8, j, q + 0.8, d, {
         bottom: !0,
       }),
-      Ms(s.solid, nt - 0.3, X, Q - 0.3, nt + 1.6, X + 1.6, j + 0.3, d),
-      Ms(s.solid, nt + 1.6, X, Q - 0.3, o + 0.3, X + 1, Q + 0.5, u),
-      Ms(s.solid, nt + 1.6, X, j - 0.5, o + 0.3, X + 1, j + 0.3, u),
-      Ms(s.solid, o - 0.5, X, Q + 0.5, o + 0.3, X + 1, j - 0.5, u));
-    let Z = (Q + j) / 2,
-      et = (j - Q) / 2 + 0.3,
-      tt = X + 1.6,
-      it = X + 1.6 + Math.min(3.2, (j - Q) * 0.17);
-    (xs(
+      zs(s.solid, nt - 0.3, j, Z - 0.3, nt + 1.6, j + 1.6, q + 0.3, d),
+      zs(s.solid, nt + 1.6, j, Z - 0.3, i + 0.3, j + 1, Z + 0.5, u),
+      zs(s.solid, nt + 1.6, j, q - 0.5, i + 0.3, j + 1, q + 0.3, u),
+      zs(s.solid, i - 0.5, j, Z + 0.5, i + 0.3, j + 1, q - 0.5, u));
+    let Q = (Z + q) / 2,
+      et = (q - Z) / 2 + 0.3,
+      st = j + 1.6,
+      ot = j + 1.6 + Math.min(3.2, (q - Z) * 0.17);
+    (Ms(
       s.solid,
-      [nt - 0.3, tt, Z - et],
-      [nt - 0.3, tt, Z + et],
-      [nt - 0.3, it, Z],
-      [nt - 0.3, it, Z],
+      [nt - 0.3, st, Q - et],
+      [nt - 0.3, st, Q + et],
+      [nt - 0.3, ot, Q],
+      [nt - 0.3, ot, Q],
       d,
-      [nt - 10, X, Z],
+      [nt - 10, j, Q],
     ),
-      xs(
+      Ms(
         s.solid,
-        [nt + 1.6, tt, Z - et],
-        [nt + 1.6, tt, Z + et],
-        [nt + 1.6, it, Z],
-        [nt + 1.6, it, Z],
+        [nt + 1.6, st, Q - et],
+        [nt + 1.6, st, Q + et],
+        [nt + 1.6, ot, Q],
+        [nt + 1.6, ot, Q],
         u,
-        [nt + 10, X, Z],
+        [nt + 10, j, Q],
       ),
-      xs(
+      Ms(
         s.solid,
-        [nt - 0.5, tt, Z - et - 0.2],
-        [nt + 1.6, tt, Z - et - 0.2],
-        [nt + 1.6, it + 0.15, Z],
-        [nt - 0.5, it + 0.15, Z],
+        [nt - 0.5, st, Q - et - 0.2],
+        [nt + 1.6, st, Q - et - 0.2],
+        [nt + 1.6, ot + 0.15, Q],
+        [nt - 0.5, ot + 0.15, Q],
         d,
-        [nt, X + 10, Z - 20],
+        [nt, j + 10, Q - 20],
       ),
-      xs(
+      Ms(
         s.solid,
-        [nt - 0.5, tt, Z + et + 0.2],
-        [nt + 1.6, tt, Z + et + 0.2],
-        [nt + 1.6, it + 0.15, Z],
-        [nt - 0.5, it + 0.15, Z],
+        [nt - 0.5, st, Q + et + 0.2],
+        [nt + 1.6, st, Q + et + 0.2],
+        [nt + 1.6, ot + 0.15, Q],
+        [nt - 0.5, ot + 0.15, Q],
         d,
-        [nt, X + 10, Z + 20],
+        [nt, j + 10, Q + 20],
       ),
-      Ms(s.solid, nt - 0.5, c, Q - 0.5, nt + 0.2, c + 1.1, j + 0.5, p));
+      zs(s.solid, nt - 0.5, c, Z - 0.5, nt + 0.2, c + 1.1, q + 0.5, p));
   };
-  (T(a, w, h + 2.5, 0), T(R, r, h + 2.5, 8), T(z, _, h + 2, 2));
-  for (let [Q, j] of [
-    [w, z],
-    [_, R],
+  (T(a, w, h + 2.5, 0), T(A, r, h + 2.5, 8), T(_, z, h + 2, 2));
+  for (let [Z, q] of [
+    [w, _],
+    [z, A],
   ]) {
-    (Ms(s.solid, n - 0.9, h - 0.8, Q, n + 0.4, h, j, d, { bottom: !0 }),
-      Ms(s.solid, n - 0.25, h, Q, n + 0.6, h + 1.3, j, d, {
+    (zs(s.solid, n - 0.9, h - 0.8, Z, n + 0.4, h, q, d, { bottom: !0 }),
+      zs(s.solid, n - 0.25, h, Z, n + 0.6, h + 1.3, q, d, {
         sides: [1, 1, 1, 0],
       }),
-      Ms(s.solid, n - 0.35, c, Q, n + 0.1, c + 0.9, j, p),
-      s.solid.wall(n - 0.25, Q, n - 0.25, j, h, h, h + 0.25, h + 0.25, d),
+      zs(s.solid, n - 0.35, c, Z, n + 0.1, c + 0.9, q, p),
+      s.solid.wall(n - 0.25, Z, n - 0.25, q, h, h, h + 0.25, h + 0.25, d),
       s.solid.wall(
         n - 0.25,
-        Q,
+        Z,
         n - 0.25,
-        j,
+        q,
         h + 1,
         h + 1,
         h + 1.3,
         h + 1.3,
         d,
       ));
-    let X = Q;
-    for (let K = Q + 1.2; K < j - 0.8; K += 1.6)
+    let j = Z;
+    for (let K = Z + 1.2; K < q - 0.8; K += 1.6)
       (s.solid.wall(
         n - 0.25,
-        X,
+        j,
         n - 0.25,
         K,
         h + 0.25,
@@ -148,435 +148,435 @@ function iS({ B: i, A: t, colliders: e }) {
           h + 1,
           p,
         ),
-        (X = K + 0.8));
-    s.solid.wall(n - 0.25, X, n - 0.25, j, h + 0.25, h + 0.25, h + 1, h + 1, d);
+        (j = K + 0.8));
+    s.solid.wall(n - 0.25, j, n - 0.25, q, h + 0.25, h + 0.25, h + 1, h + 1, d);
   }
-  (s.atlas.wall(o, R, o, _, c, c, h, h, v, 0, c),
-    s.atlas.wall(o, z, o, w, c, c, h, h, v, 0, c),
-    Ms(s.solid, o - 0.3, h - 0.7, w, o + 0.7, h, R, u, {
+  (s.atlas.wall(i, A, i, z, c, c, h, h, x, 0, c),
+    s.atlas.wall(i, _, i, w, c, c, h, h, x, 0, c),
+    zs(s.solid, i - 0.3, h - 0.7, w, i + 0.7, h, A, u, {
       top: !1,
       bottom: !0,
       sides: [0, 1, 0, 0],
     }),
-    Ms(
+    zs(
       s.solid,
       n + 0.3,
       h,
       a + 0.3,
-      o - 0.2,
+      i - 0.2,
       h + 0.4,
       r - 0.3,
-      At([0.3, 0.3, 0.29], Tt.tar),
+      Rt([0.3, 0.3, 0.29], Tt.tar),
       { sides: [0, 0, 0, 0] },
     ));
   let E = n + 9,
-    A = o - 7,
-    C = h + 0.4;
-  (X5(s.solid, E, a + 18, A, r - 18, C + 2.2, 4.2, m, !1, u, 0.6),
-    Ms(s.solid, E, C, a + 18, A, C + 2.2, r - 18, v, {
+    R = i - 7,
+    P = h + 0.4;
+  (V5(s.solid, E, a + 18, R, r - 18, P + 2.2, 4.2, m, !1, u, 0.6),
+    zs(s.solid, E, P, a + 18, R, P + 2.2, r - 18, x, {
       top: !1,
       sides: [1, 0, 1, 0],
     }),
-    s.atlas.wall(E, a + 18, E, r - 18, C, C, C + 2.2, C + 2.2, v, 0, C - 14.5),
-    s.atlas.wall(A, r - 18, A, a + 18, C, C, C + 2.2, C + 2.2, v, 0, C - 14.5));
-  for (let Q of [-1, 1]) {
-    let j = (E + A) / 2,
-      X = j + Q * (A - E) * 0.22,
-      K = j + Q * (A - E) * 0.05,
-      nt = C + 2.2 + 4.2 * (1 - 0.44) + 0.05,
-      Z = C + 2.2 + 4.2 * (1 - 0.1) + 0.05;
-    xs(
+    s.atlas.wall(E, a + 18, E, r - 18, P, P, P + 2.2, P + 2.2, x, 0, P - 14.5),
+    s.atlas.wall(R, r - 18, R, a + 18, P, P, P + 2.2, P + 2.2, x, 0, P - 14.5));
+  for (let Z of [-1, 1]) {
+    let q = (E + R) / 2,
+      j = q + Z * (R - E) * 0.22,
+      K = q + Z * (R - E) * 0.05,
+      nt = P + 2.2 + 4.2 * (1 - 0.44) + 0.05,
+      Q = P + 2.2 + 4.2 * (1 - 0.1) + 0.05;
+    Ms(
       s.solid,
-      [X, nt, a + 22],
-      [X, nt, r - 22],
-      [K, Z, r - 22],
-      [K, Z, a + 22],
+      [j, nt, a + 22],
+      [j, nt, r - 22],
+      [K, Q, r - 22],
+      [K, Q, a + 22],
       g,
-      [j + Q * 30, C + 60, l],
+      [q + Z * 30, P + 60, l],
     );
   }
-  let P = n + 7.8,
+  let C = n + 7.8,
     I = l,
     L = 6.5,
     F = h + 1.5,
-    N = 52,
-    B = T0(Ha("ferry_shaft"));
+    O = 52,
+    B = J0(Ja("ferry_shaft"));
   {
-    let Q = P - L,
-      j = P + L,
-      X = I - L,
+    let Z = C - L,
+      q = C + L,
+      j = I - L,
       K = I + L;
-    (s.atlas.wall(j, X, Q, X, F - 3, F - 3, N, N, B, 0, F - 3),
-      s.atlas.wall(j, K, j, X, F - 3, F - 3, N, N, B, 0, F - 3),
-      s.atlas.wall(Q, K, j, K, F - 3, F - 3, N, N, B, 0, F - 3),
-      s.atlas.wall(Q, X, Q, K, F - 3, F - 3, N, N, B, 0, F - 3));
-    for (let [nt, Z] of [
-      [Q, X],
-      [j, X],
-      [j, K],
-      [Q, K],
+    (s.atlas.wall(q, j, Z, j, F - 3, F - 3, O, O, B, 0, F - 3),
+      s.atlas.wall(q, K, q, j, F - 3, F - 3, O, O, B, 0, F - 3),
+      s.atlas.wall(Z, K, q, K, F - 3, F - 3, O, O, B, 0, F - 3),
+      s.atlas.wall(Z, j, Z, K, F - 3, F - 3, O, O, B, 0, F - 3));
+    for (let [nt, Q] of [
+      [Z, j],
+      [q, j],
+      [q, K],
+      [Z, K],
     ])
-      Ms(s.solid, nt - 0.75, F - 3, Z - 0.75, nt + 0.75, N, Z + 0.75, d, {
+      zs(s.solid, nt - 0.75, F - 3, Q - 0.75, nt + 0.75, O, Q + 0.75, d, {
         top: !1,
       });
-    Ms(s.solid, Q - 0.9, F - 3, X - 0.9, j + 0.9, F - 1.8, K + 0.9, d);
+    zs(s.solid, Z - 0.9, F - 3, j - 0.9, q + 0.9, F - 1.8, K + 0.9, d);
   }
-  let H = N,
-    O = 59,
+  let H = O,
+    N = 59,
     D = 55.6;
-  (Ms(
+  (zs(
     s.solid,
-    P - L - 0.5,
+    C - L - 0.5,
     H - 0.8,
     I - L - 0.5,
-    P + L + 0.5,
+    C + L + 0.5,
     H,
     I + L + 0.5,
     d,
     { bottom: !0 },
   ),
-    Ms(s.solid, P - L - 0.1, H, I - L - 0.1, P + L + 0.1, O, I + L + 0.1, d, {
+    zs(s.solid, C - L - 0.1, H, I - L - 0.1, C + L + 0.1, N, I + L + 0.1, d, {
       top: !1,
     }));
-  for (let [Q, j] of [
+  for (let [Z, q] of [
     [-1, -1],
     [1, -1],
     [1, 1],
     [-1, 1],
   ])
-    Ms(
+    zs(
       s.solid,
-      P + Q * (L + 0.1) - 0.8,
+      C + Z * (L + 0.1) - 0.8,
       H + 0.8,
-      I + j * (L + 0.1) - 0.8,
-      P + Q * (L + 0.1) + 0.8,
-      O,
-      I + j * (L + 0.1) + 0.8,
+      I + q * (L + 0.1) - 0.8,
+      C + Z * (L + 0.1) + 0.8,
+      N,
+      I + q * (L + 0.1) + 0.8,
       d,
       { top: !1 },
     );
-  (Ms(
+  (zs(
     s.solid,
-    P - L - 0.9,
-    O,
+    C - L - 0.9,
+    N,
     I - L - 0.9,
-    P + L + 0.9,
-    O + 0.9,
+    C + L + 0.9,
+    N + 0.9,
     I + L + 0.9,
     d,
     { bottom: !0 },
   ),
-    Fct(s.solid, P, I, L + 0.6, O + 0.9, 1.25, d, p));
-  let U = t.add("clock", 512, 512, oS);
-  for (let [Q, j] of [
+    sdt(s.solid, C, I, L + 0.6, N + 0.9, 1.25, d, p));
+  let U = t.add("clock", 512, 512, rk);
+  for (let [Z, q] of [
     [-1, 0],
     [1, 0],
     [0, -1],
     [0, 1],
   ]) {
-    let X = P + Q * (L + 0.12),
-      K = I + j * (L + 0.12);
-    si(s.text, t, U, X, D, K, Q, j, 6.6, 6.6, Da(!0, [1, 0.97, 0.9]));
+    let j = C + Z * (L + 0.12),
+      K = I + q * (L + 0.12);
+    ri(s.text, t, U, j, D, K, Z, q, 6.6, 6.6, Za(!0, [1, 0.97, 0.9]));
     let nt = [];
-    for (let Z = 0; Z <= 32; Z++) {
-      let et = (Z / 32) * Math.PI * 2,
-        tt = 3.45;
+    for (let Q = 0; Q <= 32; Q++) {
+      let et = (Q / 32) * Math.PI * 2,
+        st = 3.45;
       nt.push([
-        X + j * Math.cos(et) * tt + Q * 0.1,
-        D + Math.sin(et) * tt,
-        K - Q * Math.cos(et) * tt + j * 0.1,
+        j + q * Math.cos(et) * st + Z * 0.1,
+        D + Math.sin(et) * st,
+        K - Z * Math.cos(et) * st + q * 0.1,
       ]);
     }
-    Wi(s.solid, nt, 0.28, 6, d);
+    Qi(s.solid, nt, 0.28, 6, d);
   }
-  let G = O + 0.9,
-    q = 67.5,
-    W = 5.2;
-  fR(s.solid, P, I, W, G, q, 2, d, {
+  let G = N + 0.9,
+    W = 67.5,
+    V = 5.2;
+  U7(s.solid, C, I, V, G, W, 2, d, {
     pier: 1.5,
     depth: 1,
-    back: At([0.035, 0.032, 0.03], Tt.paint),
+    back: Rt([0.035, 0.032, 0.03], Tt.paint),
   });
-  for (let [Q, j] of [
+  for (let [Z, q] of [
     [-1, -1],
     [1, -1],
     [1, 1],
     [-1, 1],
   ])
-    Gs(
+    Ws(
       s.solid,
-      P + Q * (L + 0.3),
-      I + j * (L + 0.3),
+      C + Z * (L + 0.3),
+      I + q * (L + 0.3),
       [
-        [0.55, O + 0.9],
-        [0.55, O + 1.6],
-        [0.8, O + 2.2],
-        [0.45, O + 3],
-        [0.1, O + 3.8],
-        [0.02, O + 4],
+        [0.55, N + 0.9],
+        [0.55, N + 1.6],
+        [0.8, N + 2.2],
+        [0.45, N + 3],
+        [0.1, N + 3.8],
+        [0.02, N + 4],
       ],
       8,
       d,
     );
-  Ms(
+  zs(
     s.solid,
-    P - W - 0.5,
-    q,
-    I - W - 0.5,
-    P + W + 0.5,
-    q + 1.3,
-    I + W + 0.5,
+    C - V - 0.5,
+    W,
+    I - V - 0.5,
+    C + V + 0.5,
+    W + 1.3,
+    I + V + 0.5,
     d,
     { bottom: !0 },
   );
-  let V = q + 1.3,
-    Y = V + 3.4,
-    $ = 3.9;
-  (fR(s.solid, P, I, $, V, Y, 1, d, {
+  let $ = W + 1.3,
+    J = $ + 3.4,
+    X = 3.9;
+  (U7(s.solid, C, I, X, $, J, 1, d, {
     pier: 1.3,
     depth: 0.6,
-    back: At([0.035, 0.032, 0.03], Tt.paint),
+    back: Rt([0.035, 0.032, 0.03], Tt.paint),
   }),
-    Ms(
+    zs(
       s.solid,
-      P - $ - 0.4,
-      Y,
-      I - $ - 0.4,
-      P + $ + 0.4,
-      Y + 0.7,
-      I + $ + 0.4,
+      C - X - 0.4,
+      J,
+      I - X - 0.4,
+      C + X + 0.4,
+      J + 0.7,
+      I + X + 0.4,
       d,
       { bottom: !0 },
     ));
-  let st = Y + 0.7;
-  (Gs(
+  let tt = J + 0.7;
+  (Ws(
     s.solid,
-    P,
+    C,
     I,
     [
-      [3.3, st],
-      [3.3, st + 1.2],
-      [3.5, st + 1.2],
-      [3.5, st + 1.5],
+      [3.3, tt],
+      [3.3, tt + 1.2],
+      [3.5, tt + 1.2],
+      [3.5, tt + 1.5],
     ],
     8,
     d,
     { rot: Math.PI / 8 },
   ),
-    Gs(
+    Ws(
       s.solid,
-      P,
+      C,
       I,
       [
-        [3.3, st + 1.5],
-        [3.25, st + 2.2],
-        [3, st + 3],
-        [2.5, st + 3.7],
-        [1.8, st + 4.2],
-        [0.9, st + 4.55],
-        [0.5, st + 4.65],
+        [3.3, tt + 1.5],
+        [3.25, tt + 2.2],
+        [3, tt + 3],
+        [2.5, tt + 3.7],
+        [1.8, tt + 4.2],
+        [0.9, tt + 4.55],
+        [0.5, tt + 4.65],
       ],
       8,
-      T0(At([0.6, 0.58, 0.52], Tt.stone)),
+      J0(Rt([0.6, 0.58, 0.52], Tt.stone)),
       { rot: Math.PI / 8 },
     ),
-    es(s.solid, P, I, 0.6, st + 4.6, st + 5.8, 8, d),
-    Gs(
+    os(s.solid, C, I, 0.6, tt + 4.6, tt + 5.8, 8, d),
+    Ws(
       s.solid,
-      P,
+      C,
       I,
       [
-        [0.8, st + 5.8],
-        [0.5, st + 6.3],
-        [0.08, st + 6.7],
+        [0.8, tt + 5.8],
+        [0.5, tt + 6.3],
+        [0.08, tt + 6.7],
       ],
       8,
       d,
     ),
-    es(
+    os(
       s.solid,
-      P,
+      C,
       I,
       0.07,
-      st + 6.6,
-      st + 11,
+      tt + 6.6,
+      tt + 11,
       5,
-      At([0.3, 0.3, 0.3], Tt.metal),
+      Rt([0.3, 0.3, 0.3], Tt.metal),
     ));
   {
-    let Q = t.add("usflag", 380, 200, Bct),
-      j = st + 10.9,
-      X = 3.6,
+    let Z = t.add("usflag", 380, 200, idt),
+      q = tt + 10.9,
+      j = 3.6,
       K = 1.9,
-      nt = P + 0.08,
-      [Z, et, tt, it] = t.uv(Q),
+      nt = C + 0.08,
+      [Q, et, st, ot] = t.uv(Z),
       rt = (lt) => Math.sin(lt * 1.9) * 0.18;
     for (let lt = 0; lt < 3; lt++) {
-      let ct = nt + (X * lt) / 3,
-        dt = nt + (X * (lt + 1)) / 3,
-        ut = Z + ((tt - Z) * lt) / 3,
-        ot = Z + ((tt - Z) * (lt + 1)) / 3,
+      let ht = nt + (j * lt) / 3,
+        pt = nt + (j * (lt + 1)) / 3,
+        ut = Q + ((st - Q) * lt) / 3,
+        it = Q + ((st - Q) * (lt + 1)) / 3,
         at = I + rt(lt),
         yt = I + rt(lt + 1);
       (s.text.quad(
-        [ct, j - K, at],
-        [dt, j - K, yt],
-        [dt, j, yt],
-        [ct, j, at],
-        [ut, it],
-        [ot, it],
-        [ot, et],
+        [ht, q - K, at],
+        [pt, q - K, yt],
+        [pt, q, yt],
+        [ht, q, at],
+        [ut, ot],
+        [it, ot],
+        [it, et],
         [ut, et],
-        Da(!1),
+        Za(!1),
         [0, 0, 1],
       ),
         s.text.quad(
-          [dt, j - K, yt],
-          [ct, j - K, at],
-          [ct, j, at],
-          [dt, j, yt],
-          [ot, it],
-          [ut, it],
+          [pt, q - K, yt],
+          [ht, q - K, at],
+          [ht, q, at],
+          [pt, q, yt],
+          [it, ot],
+          [ut, ot],
           [ut, et],
-          [ot, et],
-          Da(!1),
+          [it, et],
+          Za(!1),
           [0, 0, -1],
         ));
     }
   }
   {
-    let Q = n - 1.75,
-      j = _ - z,
-      X = 4.2,
-      K = (j - 3 * X) / 4,
+    let Z = n - 1.75,
+      q = z - _,
+      j = 4.2,
+      K = (q - 3 * j) / 4,
       nt = [],
-      Z = 0;
+      Q = 0;
     for (let et = 0; et < 3; et++)
-      (nt.push({ a: Z, b: Z + K }),
-        (Z += K),
-        nt.push({ a: Z, b: Z + X, ys: c + 6.4, depth: 1 }),
-        (Z += X));
-    (nt.push({ a: Z, b: j }),
-      hR(s.solid, [Q, z], [0, 1], c, c + 10.6, nt, d, {
-        back: At([0.07, 0.08, 0.08], Tt.glass),
+      (nt.push({ a: Q, b: Q + K }),
+        (Q += K),
+        nt.push({ a: Q, b: Q + j, ys: c + 6.4, depth: 1 }),
+        (Q += j));
+    (nt.push({ a: Q, b: q }),
+      D7(s.solid, [Z, _], [0, 1], c, c + 10.6, nt, d, {
+        back: Rt([0.07, 0.08, 0.08], Tt.glass),
       }),
-      Ms(s.solid, Q - 0.3, c + 10.6, z - 0.3, n - 1.2, c + 11.4, _ + 0.3, d, {
+      zs(s.solid, Z - 0.3, c + 10.6, _ - 0.3, n - 1.2, c + 11.4, z + 0.3, d, {
         bottom: !0,
       }));
-    for (let et of [z, _])
-      Ms(s.solid, Q - 0.2, c, et - 0.4, n - 1.2, c + 10.6, et + 0.4, d, {
+    for (let et of [_, z])
+      zs(s.solid, Z - 0.2, c, et - 0.4, n - 1.2, c + 10.6, et + 0.4, d, {
         top: !1,
       });
-    Ms(s.solid, Q, c, z, n - 1.2, c + 10.6, z + 0.01, d, {
+    zs(s.solid, Z, c, _, n - 1.2, c + 10.6, _ + 0.01, d, {
       top: !1,
       sides: [0, 0, 0, 0],
     });
   }
   {
-    let Q = (E + A) / 2 + 0.6,
-      j = C + 2.2 + 4.2 + 0.3,
-      X = 4.8,
-      K = At([0.1, 0.11, 0.11], Tt.metal),
-      nt = oo([0.08, 0.08, 0.09]),
-      Z = 'bold 120px Georgia, "Times New Roman", serif';
-    for (let [et, tt] of [
+    let Z = (E + R) / 2 + 0.6,
+      q = P + 2.2 + 4.2 + 0.3,
+      j = 4.8,
+      K = Rt([0.1, 0.11, 0.11], Tt.metal),
+      nt = xo([0.08, 0.08, 0.09]),
+      Q = 'bold 120px Georgia, "Times New Roman", serif';
+    for (let [et, st] of [
       ["PORT OF", 1],
       ["SAN FRANCISCO", -1],
     ]) {
-      let it = t.word(et, { font: Z, h: 130, spacing: 12 }),
-        rt = (X * it.w) / it.h,
-        lt = l + tt * (L + 5 + rt / 2);
-      si(s.text, t, it, Q + 0.12, j + X / 2 + 0.3, lt, 1, 0, rt, X, nt);
-      for (let ct = lt - rt / 2; ct <= lt + rt / 2 + 0.1; ct += 3)
-        (ss(s.solid, [Q, j - 1.5, ct], [Q, j + X + 0.4, ct], 0.14, 0.14, K),
-          ss(
+      let ot = t.word(et, { font: Q, h: 130, spacing: 12 }),
+        rt = (j * ot.w) / ot.h,
+        lt = l + st * (L + 5 + rt / 2);
+      ri(s.text, t, ot, Z + 0.12, q + j / 2 + 0.3, lt, 1, 0, rt, j, nt);
+      for (let ht = lt - rt / 2; ht <= lt + rt / 2 + 0.1; ht += 3)
+        (rs(s.solid, [Z, q - 1.5, ht], [Z, q + j + 0.4, ht], 0.14, 0.14, K),
+          rs(
             s.solid,
-            [Q - 2.2, j - 2.4, ct],
-            [Q, j + X * 0.6, ct],
+            [Z - 2.2, q - 2.4, ht],
+            [Z, q + j * 0.6, ht],
             0.1,
             0.1,
             K,
           ));
-      (ss(
+      (rs(
         s.solid,
-        [Q, j + 0.3, lt - rt / 2],
-        [Q, j + 0.3, lt + rt / 2],
+        [Z, q + 0.3, lt - rt / 2],
+        [Z, q + 0.3, lt + rt / 2],
         0.1,
         0.1,
         K,
       ),
-        ss(
+        rs(
           s.solid,
-          [Q, j + X + 0.3, lt - rt / 2],
-          [Q, j + X + 0.3, lt + rt / 2],
+          [Z, q + j + 0.3, lt - rt / 2],
+          [Z, q + j + 0.3, lt + rt / 2],
           0.1,
           0.1,
           K,
         ));
     }
   }
-  for (let [Q, j] of [
+  for (let [Z, q] of [
     [a + 20, !1],
     [r - 26, !0],
   ]) {
-    let X = y,
+    let j = y,
       K = y + 34,
       nt = 11;
-    (Ms(
+    (zs(
       s.solid,
-      X,
+      j,
       -0.4,
-      Q - nt / 2,
+      Z - nt / 2,
       K,
       1.2,
-      Q + nt / 2,
-      At([0.32, 0.33, 0.33], Tt.conc),
+      Z + nt / 2,
+      Rt([0.32, 0.33, 0.33], Tt.conc),
       { bottom: !1 },
     ),
-      ss(
+      rs(
         s.solid,
-        [X - 16, 3.1, Q],
-        [X + 8, 1.5, Q],
+        [j - 16, 3.1, Z],
+        [j + 8, 1.5, Z],
         4.2,
         0.5,
-        At([0.36, 0.38, 0.4], Tt.metal),
+        Rt([0.36, 0.38, 0.4], Tt.metal),
       ));
-    for (let Z of [-1, 1])
-      ss(
+    for (let Q of [-1, 1])
+      rs(
         s.solid,
-        [X - 16, 4.2, Q + Z * 2.1],
-        [X + 8, 2.6, Q + Z * 2.1],
+        [j - 16, 4.2, Z + Q * 2.1],
+        [j + 8, 2.6, Z + Q * 2.1],
         0.08,
         0.08,
-        At([0.2, 0.22, 0.24], Tt.metal),
+        Rt([0.2, 0.22, 0.24], Tt.metal),
       );
-    for (let Z of [-1, 1])
-      Ms(
+    for (let Q of [-1, 1])
+      zs(
         s.solid,
-        X - 1.5,
+        j - 1.5,
         1.2,
-        Q + Z * 4.2 - 0.5,
-        X - 0.5,
+        Z + Q * 4.2 - 0.5,
+        j - 0.5,
         12,
-        Q + Z * 4.2 + 0.5,
-        At([0.18, 0.32, 0.45], Tt.metal),
+        Z + Q * 4.2 + 0.5,
+        Rt([0.18, 0.32, 0.45], Tt.metal),
       );
-    (Ms(
+    (zs(
       s.solid,
-      X - 1.7,
+      j - 1.7,
       11,
-      Q - 5,
-      X - 0.3,
+      Z - 5,
+      j - 0.3,
       12.2,
-      Q + 5,
-      At([0.18, 0.32, 0.45], Tt.metal),
+      Z + 5,
+      Rt([0.18, 0.32, 0.45], Tt.metal),
     ),
-      Ict(s.solid, o + 2.5, X - 1.5, Q, 13.5),
-      j && Nct(s.solid, K + 22, Q - 16, 0));
+      edt(s.solid, i + 2.5, j - 1.5, Z, 13.5),
+      q && ndt(s.solid, K + 22, Z - 16, 0));
   }
-  for (let [Q, j] of [
+  for (let [Z, q] of [
     [
-      [o + 1, a - 7.5],
+      [i + 1, a - 7.5],
       [y - 0.5, a - 7.5],
     ],
     [
@@ -588,6 +588,6 @@ function iS({ B: i, A: t, colliders: e }) {
       [n + 1, r + 7.5],
     ],
   ])
-    Nr(s.solid, Q, j, 3, At([0.12, 0.14, 0.13], Tt.metal));
-  e.push({ t: "box", x0: Ve.x - 1.5, z0: a, x1: o, z1: r });
+    s0(s.solid, Z, q, 3, Rt([0.12, 0.14, 0.13], Tt.metal));
+  e.push({ t: "box", x0: Ye.x - 1.5, z0: a, x1: i, z1: r });
 }

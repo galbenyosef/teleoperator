@@ -1,416 +1,182 @@
-// app 74 — angry
-// Lines 69132-69545 of readable/app.pretty.js (statement-aligned).
-var ni = {
-    smile: 0,
-    grin: 1,
-    wow: 2,
-    cool: 3,
-    laugh: 4,
-    hearts: 5,
-    surprised: 6,
-    think: 7,
-    scared: 8,
-    wink: 9,
-    neutral: 10,
-    star: 11,
-    silly: 12,
-    talk: 13,
-    dizzy: 14,
-    angry: 15,
-  },
-  Mo = (i, t, e, s, n, o, a, r, l, c, h, f, u = "") => ({
-    c: [i, t, e, s, n, o, a, r, l, c, h, f],
-    f: u,
+// app 74 — foreach
+// Lines 69777-69956 of readable/app.pretty.js (statement-aligned).
+function GW() {
+  if (dP) return dP;
+  let o = 16,
+    t = 40,
+    e = new Uint8Array(o * t * 4).fill(255),
+    s = (a, r, l) => {
+      let c = (r * o + a) * 4,
+        h = parseInt(l.slice(1), 16);
+      ((e[c] = h >> 16),
+        (e[c + 1] = (h >> 8) & 255),
+        (e[c + 2] = h & 255),
+        (e[c + 3] = 255));
+    },
+    n = (a) => a;
+  (pP.forEach((a, r) => {
+    (a.c.forEach((l, c) => s(c, r, n(l))),
+      s(12, r, a.f.includes("s") ? "#ffffff" : "#000000"));
   }),
-  OR = [
-    Mo(
-      "#e8453c",
-      "#ffffff",
-      "#2b3a55",
-      "#2e3b4e",
-      "#f4f4f4",
-      "#e8453c",
-      "#e8453c",
-      "#ffffff",
-      "#2b3a55",
-      "#f2c14e",
-      "#2b2b30",
-      "#3a2a1e",
-    ),
-    Mo(
-      "#f4f1e8",
-      "#2f5d8c",
-      "#3d6ea5",
-      "#3b5b8a",
-      "#8b5a3c",
-      "#f0e6d2",
-      "#3b5b8a",
-      "#f4f1e8",
-      "#8b5a3c",
-      "#5a3a26",
-      "#333338",
-      "#5a3a26",
-    ),
-    Mo(
-      "#2bb3a3",
-      "#1f7f75",
-      "#264653",
-      "#3a3f47",
-      "#f2f2f2",
-      "#2bb3a3",
-      "#264653",
-      "#2bb3a3",
-      "#f4a261",
-      "#264653",
-      "#2a2a30",
-      "#222222",
-    ),
-    Mo(
-      "#f2b134",
-      "#ffffff",
-      "#6b4e3d",
-      "#4a5a3a",
-      "#2e2e2e",
-      "#d9d2c0",
-      "#6b4e3d",
-      "#f2b134",
-      "#6b4e3d",
-      "#3a2a1e",
-      "#2e2e2e",
-      "#3a2a1e",
-    ),
-    Mo(
-      "#f7a1c4",
-      "#ffffff",
-      "#c9b6e4",
-      "#8ec5e8",
-      "#ffffff",
-      "#f7a1c4",
-      "#f7a1c4",
-      "#ffffff",
-      "#c9b6e4",
-      "#ffffff",
-      "#f7d6e6",
-      "#ffffff",
-    ),
-    Mo(
-      "#ffffff",
-      "#1f3a68",
-      "#1f3a68",
-      "#d9c9a6",
-      "#1f3a68",
-      "#ffffff",
-      "#1f3a68",
-      "#ffffff",
-      "#c8553d",
-      "#1f3a68",
-      "#1f3a68",
-      "#6b4423",
-      "s",
-    ),
-    Mo(
-      "#3e7c4f",
-      "#e8d9b5",
-      "#6b4423",
-      "#3b3b40",
-      "#6b4423",
-      "#2e2e2e",
-      "#3e7c4f",
-      "#e8d9b5",
-      "#6b4423",
-      "#3e2a18",
-      "#2e2e2e",
-      "#3e2a18",
-    ),
-    Mo(
-      "#ff7a2f",
-      "#2e2e2e",
-      "#2e2e33",
-      "#2e2e33",
-      "#ff7a2f",
-      "#ffffff",
-      "#2e2e33",
-      "#ff7a2f",
-      "#2e2e33",
-      "#ff7a2f",
-      "#2e2e33",
-      "#111111",
-    ),
-    Mo(
-      "#2a2a2e",
-      "#8e8e93",
-      "#1c1c1e",
-      "#2a2a2e",
-      "#ffffff",
-      "#2a2a2e",
-      "#1c1c1e",
-      "#8e8e93",
-      "#1c1c1e",
-      "#8e8e93",
-      "#1c1c1e",
-      "#8e8e93",
-    ),
-    Mo(
-      "#4fc3f7",
-      "#ffffff",
-      "#ffd54f",
-      "#f5e6c8",
-      "#ffffff",
-      "#4fc3f7",
-      "#ffe9a8",
-      "#e57373",
-      "#ff8a65",
-      "#ffffff",
-      "#f5e6c8",
-      "#a1887f",
-    ),
-    Mo(
-      "#8e6ccf",
-      "#f3e9ff",
-      "#4b3b78",
-      "#2e2e3a",
-      "#f3e9ff",
-      "#8e6ccf",
-      "#4b3b78",
-      "#8e6ccf",
-      "#4b3b78",
-      "#f3e9ff",
-      "#2e2e3a",
-      "#2e2e3a",
-    ),
-    Mo(
-      "#ff8a65",
-      "#fff3e0",
-      "#455a64",
-      "#607d8b",
-      "#fff3e0",
-      "#455a64",
-      "#455a64",
-      "#ff8a65",
-      "#455a64",
-      "#ff8a65",
-      "#37474f",
-      "#37474f",
-    ),
-    Mo(
-      "#b5d33d",
-      "#3b3b3b",
-      "#3b3b3b",
-      "#3b3b3b",
-      "#b5d33d",
-      "#ffffff",
-      "#3b3b3b",
-      "#b5d33d",
-      "#3b3b3b",
-      "#b5d33d",
-      "#3b3b3b",
-      "#222222",
-    ),
-    Mo(
-      "#ffffff",
-      "#d64545",
-      "#d64545",
-      "#2f4858",
-      "#d64545",
-      "#ffffff",
-      "#d64545",
-      "#ffffff",
-      "#2f4858",
-      "#d64545",
-      "#2f4858",
-      "#2f4858",
-      "s",
-    ),
-    Mo(
-      "#f7f7f2",
-      "#2e4a7d",
-      "#3c4654",
-      "#3c4654",
-      "#2b1e16",
-      "#111111",
-      "#3c4654",
-      "#2e4a7d",
-      "#2b1e16",
-      "#111111",
-      "#3c4654",
-      "#2b1e16",
-    ),
-    Mo(
-      "#ffd23f",
-      "#ffffff",
-      "#ffd23f",
-      "#2f4858",
-      "#2f4858",
-      "#ffd23f",
-      "#ffd23f",
-      "#2f4858",
-      "#2f4858",
-      "#ffd23f",
-      "#2f4858",
-      "#2f4858",
-    ),
-    Mo(
-      "#9ad0ec",
-      "#ffffff",
-      "#ffffff",
-      "#f4d35e",
-      "#ffffff",
-      "#9ad0ec",
-      "#ffffff",
-      "#9ad0ec",
-      "#f4d35e",
-      "#ffffff",
-      "#9ad0ec",
-      "#ffffff",
-    ),
-    Mo(
-      "#8c2f39",
-      "#f2e8cf",
-      "#3d2c2e",
-      "#6c757d",
-      "#3d2c2e",
-      "#f2e8cf",
-      "#8c2f39",
-      "#f2e8cf",
-      "#3d2c2e",
-      "#8c2f39",
-      "#3d2c2e",
-      "#3d2c2e",
-    ),
-    Mo(
-      "#a8e6cf",
-      "#ffffff",
-      "#dcedc1",
-      "#ffaaa5",
-      "#ffffff",
-      "#a8e6cf",
-      "#ffd3b6",
-      "#ffaaa5",
-      "#ffaaa5",
-      "#ffffff",
-      "#dcedc1",
-      "#ffffff",
-    ),
-    Mo(
-      "#9e9e9e",
-      "#616161",
-      "#424242",
-      "#263238",
-      "#e53935",
-      "#ffffff",
-      "#424242",
-      "#e53935",
-      "#263238",
-      "#e53935",
-      "#263238",
-      "#212121",
-    ),
-    Mo(
-      "#f28c28",
-      "#fff4e0",
-      "#5b3a29",
-      "#f28c28",
-      "#5b3a29",
-      "#fff4e0",
-      "#fff4e0",
-      "#f28c28",
-      "#5b3a29",
-      "#fff4e0",
-      "#f9d8b0",
-      "#5b3a29",
-    ),
-    Mo(
-      "#3f7cac",
-      "#ffffff",
-      "#ffffff",
-      "#3f7cac",
-      "#ffffff",
-      "#3f7cac",
-      "#ffffff",
-      "#3f7cac",
-      "#ffffff",
-      "#3f7cac",
-      "#ffffff",
-      "#ffffff",
-    ),
-    Mo(
-      "#d63384",
-      "#ffe3f1",
-      "#3b1f4a",
-      "#3b1f4a",
-      "#ffe3f1",
-      "#d63384",
-      "#d63384",
-      "#ffe3f1",
-      "#3b1f4a",
-      "#d63384",
-      "#3b1f4a",
-      "#3b1f4a",
-    ),
-    Mo(
-      "#6b8e23",
-      "#c2b280",
-      "#556b2f",
-      "#c2b280",
-      "#4e3b2a",
-      "#2e2e2e",
-      "#556b2f",
-      "#c2b280",
-      "#556b2f",
-      "#4e3b2a",
-      "#4e3b2a",
-      "#4e3b2a",
-    ),
-    Mo(
-      "#1e88e5",
-      "#ffffff",
-      "#0d47a1",
-      "#eceff1",
-      "#0d47a1",
-      "#ffffff",
-      "#1e88e5",
-      "#ffffff",
-      "#0d47a1",
-      "#1e88e5",
-      "#0d47a1",
-      "#0d47a1",
-      "s",
-    ),
-    Mo(
-      "#ffe066",
-      "#e76f51",
-      "#e76f51",
-      "#264653",
-      "#e76f51",
-      "#ffffff",
-      "#e76f51",
-      "#ffe066",
-      "#264653",
-      "#e76f51",
-      "#264653",
-      "#264653",
-    ),
-  ],
-  _ht = [
-    "#ffc83d",
-    "#f6d3b3",
-    "#e5b48a",
-    "#c68c5c",
-    "#9a6440",
-    "#5f3e2a",
-    "#7ec8f2",
-    "#8edb7a",
-    "#ff9fcf",
-    "#b79cff",
-  ],
-  zht = [
-    "#2b1d14",
-    "#5a3825",
-    "#8b5a2b",
-    "#e0b04a",
-    "#c1440e",
-    "#e6e6e6",
-    "#3a3a3e",
-    "#f48fb1",
-  ],
-  BR = null;
+    jdt.forEach((a, r) => s(r, 32, n(a))),
+    $dt.forEach((a, r) => s(r, 33, n(a))));
+  let i = new no(e, o, t, go);
+  return (
+    (i.colorSpace = Je),
+    (i.magFilter = i.minFilter = mo),
+    (i.generateMipmaps = !1),
+    (i.wrapS = i.wrapT = so),
+    (i.flipY = !1),
+    (i.needsUpdate = !0),
+    (i.name = "voxPalette"),
+    (dP = i),
+    i
+  );
+}
+var J5 = 24,
+  VW = `
+fn vxPal(c: f32, r: f32) -> vec3f { return textureSampleLevel(matMap, matSamp, vec2f((c + 0.5) / 16.0, (r + 0.5) / 40.0), 0.0).rgb; }
+fn vxE(p: vec2f, c: vec2f, r: vec2f) -> f32 { return length((p - c) / r) - 1.0; }
+fn vxHeart(p0: vec2f) -> f32 {
+  let p = vec2f(abs(p0.x), p0.y);
+  if (p.y + p.x > 1.0) { return length(p - vec2f(0.25, 0.75)) - 0.35355; }
+  return sqrt(min(dot(p - vec2f(0.0, 1.0), p - vec2f(0.0, 1.0)), dot(p - 0.5 * max(p.x + p.y, 0.0), p - 0.5 * max(p.x + p.y, 0.0)))) * sign(p.x - p.y);
+}
+fn vxStar(p0: vec2f, r: f32, rf: f32) -> f32 {
+  let k1 = vec2f(0.809017, -0.587785); let k2 = vec2f(-k1.x, k1.y);
+  var p = vec2f(abs(p0.x), p0.y);
+  p -= 2.0 * max(dot(k1, p), 0.0) * k1; p -= 2.0 * max(dot(k2, p), 0.0) * k2;
+  p.x = abs(p.x); p.y -= r;
+  let ba = rf * vec2f(-k1.y, k1.x) - vec2f(0.0, 1.0); let h = clamp(dot(p, ba) / dot(ba, ba), 0.0, r);
+  return length(p - ba * h) * sign(p.y * ba.x - p.x * ba.y);
+}
+// the emoji: q the face's pixel centre (0..1 across, 0 the chin), e the expression; over the head's colour
+fn vxFace(q: vec2f, e: i32, t: f32, sd: f32, skin: vec3f) -> vec3f {
+  let DK = vec3f(0.11, 0.045, 0.012); let WH = vec3f(0.92, 0.92, 0.9); let MO = vec3f(0.2, 0.025, 0.012); let TG = vec3f(0.9, 0.25, 0.3);
+  var c = skin;
+  let L = vec2f(0.31, 0.57); let R = vec2f(0.69, 0.57);
+  let blink = fract(t * 0.23 + sd * 7.3) < 0.035;
+  // cheeks
+  if (e == 0 || e == 1 || e == 4 || e == 5 || e == 9 || e == 11 || e == 12) {
+    if (min(vxE(q, vec2f(0.19, 0.4), vec2f(0.09, 0.055)), vxE(q, vec2f(0.81, 0.4), vec2f(0.09, 0.055))) < 0.0) { c = mix(c, vec3f(1.0, 0.32, 0.3), 0.4); }
+  }
+  if (e == 8) { c = mix(c, vec3f(0.3, 0.5, 1.0), 0.75 * smoothstep(0.6, 0.98, q.y)); }   // (scared: the forehead gone blue)
+  // eyes
+  let oval = e == 0 || e == 1 || e == 7 || e == 9 || e == 10 || e == 12 || e == 13;
+  if (oval) {
+    for (var k = 0; k < 2; k++) {
+      let ce = select(L, R, k == 1);
+      if (e == 9 && k == 0) { if (abs(vxE(q, ce + vec2f(0.0, -0.04), vec2f(0.08, 0.075))) < 0.3 && q.y > ce.y - 0.03) { c = DK; } continue; }   // (the wink)
+      if (blink) { if (abs(q.y - ce.y) < 0.022 && abs(q.x - ce.x) < 0.065) { c = DK; } continue; }
+      if (vxE(q, ce, vec2f(0.06, 0.095)) < 0.0) { c = DK; if (vxE(q, ce + vec2f(-0.018, 0.04), vec2f(0.024, 0.03)) < 0.0) { c = WH; } }
+    }
+    if (e == 7 && abs(q.y - (0.73 + 0.25 * (q.x - 0.2))) < 0.022 && abs(q.x - 0.31) < 0.09) { c = DK; }   // (thinking: a brow up)
+  } else if (e == 2 || e == 8) {   // wide white eyes (mind-blown: big pupils; scared: pinpricks)
+    for (var k = 0; k < 2; k++) {
+      let ce = select(L, R, k == 1);
+      if (vxE(q, ce, vec2f(0.125, 0.135)) < 0.0) { c = WH; if (vxE(q, ce + vec2f(0.0, -0.01), select(vec2f(0.06, 0.07), vec2f(0.035, 0.04), e == 8)) < 0.0) { c = DK; } }
+    }
+    if (e == 8) { for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1); let sg = select(1.0, -1.0, k == 1);
+      if (abs(q.y - (ce.y + 0.16 + 0.35 * sg * (q.x - ce.x))) < 0.022 && abs(q.x - ce.x) < 0.09) { c = DK; } } }
+  } else if (e == 3) {   // cool: the shades are the geometry's (kit.js); a frame painted under them for the far ones
+    if (abs(q.y - 0.6) < 0.07 && abs(q.x - 0.5) < 0.38) { c = DK; }
+  } else if (e == 4) {   // laughing: eyes shut tight, tears
+    for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1);
+      if (abs(vxE(q, ce + vec2f(0.0, -0.035), vec2f(0.08, 0.075))) < 0.3 && q.y > ce.y - 0.03) { c = DK; } }
+    if (min(vxE(q, vec2f(0.12, 0.47), vec2f(0.05, 0.08)), vxE(q, vec2f(0.88, 0.47), vec2f(0.05, 0.08))) < 0.0) { c = vec3f(0.25, 0.55, 1.0); }
+  } else if (e == 5) {   // heart eyes
+    for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1); if (vxHeart((q - ce) / 0.14 + vec2f(0.0, 0.55)) < 0.0) { c = vec3f(0.85, 0.04, 0.08); } }
+  } else if (e == 6) {   // surprised: round eyes, brows up
+    for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1);
+      if (vxE(q, ce + vec2f(0.0, 0.01), vec2f(0.06, 0.07)) < 0.0) { c = DK; }
+      if (abs(vxE(q, ce + vec2f(0.0, 0.08), vec2f(0.1, 0.07))) < 0.28 && q.y > ce.y + 0.13) { c = DK; } }
+  } else if (e == 14) {   // (chars63) dizzy: spiral eyes
+    for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1); let d = q - ce; let r = length(d) / 0.11; let a = atan2(d.y, d.x) / 6.2832 + select(0.0, 0.5, k == 1);
+      if (r < 1.0 && abs(fract(r * 2.2 - a + t * 1.5) - 0.5) < 0.2) { c = DK; } }
+  } else if (e == 15) {   // (chars63) angry: eyes under brows pulled down to the middle
+    c = mix(c, vec3f(1.0, 0.35, 0.25), 0.35 * smoothstep(0.55, 1.0, q.y));
+    for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1); let sg = select(1.0, -1.0, k == 1);
+      if (vxE(q, ce + vec2f(0.0, -0.01), vec2f(0.055, 0.06)) < 0.0) { c = DK; }
+      if (abs(q.y - (ce.y + 0.12 + 0.45 * sg * (q.x - ce.x))) < 0.025 && abs(q.x - ce.x) < 0.1) { c = DK; } }
+  } else if (e == 11) {   // star-struck
+    for (var k = 0; k < 2; k++) { let ce = select(L, R, k == 1); if (vxStar(q - ce, 0.13, 0.45) < 0.0) { c = vec3f(1.0, 0.62, 0.06); } }
+  }
+  // mouths
+  let m = vec2f(0.5, 0.4);
+  if (e == 1 || e == 4 || e == 5 || e == 11) {   // a grin, open
+    let r = select(vec2f(0.24, 0.2), vec2f(0.27, 0.23), e == 4);
+    if (vxE(q, m, r) < 0.0 && q.y < 0.385) { c = MO; if (q.y > 0.32) { c = WH; } else if (vxE(q, vec2f(0.5, m.y - r.y), vec2f(0.11, 0.07)) < 0.0) { c = TG; } }
+  } else if (e == 0 || e == 9 || e == 12) {   // a smile
+    if (abs(vxE(q, m, vec2f(0.21, 0.19))) < 0.14 && q.y < 0.37) { c = DK; }
+    if (e == 12 && vxE(q, vec2f(0.57, 0.24), vec2f(0.075, 0.09)) < 0.0 && q.y < 0.3) { c = TG; }
+    if (e == 9 && vxE(q, vec2f(0.5, 0.235), vec2f(0.07, 0.06)) < 0.0 && q.y < 0.25) { c = TG; }
+  } else if (e == 2 || e == 6) {   // an 'O'
+    if (vxE(q, vec2f(0.5, 0.25), select(vec2f(0.085, 0.105), vec2f(0.06, 0.075), e == 6)) < 0.0) { c = MO; }
+  } else if (e == 3) {   // a smirk
+    if (abs(vxE(q, vec2f(0.55, 0.42), vec2f(0.17, 0.15))) < 0.16 && q.y < 0.36 && q.x > 0.4) { c = DK; }
+  } else if (e == 14) {   // a wobbly line
+    if (abs(q.y - (0.28 + 0.025 * sin(q.x * 40.0 + t * 6.0))) < 0.022 && abs(q.x - 0.5) < 0.13) { c = DK; }
+  } else if (e == 15) {   // a frown
+    if (abs(vxE(q, vec2f(0.5, 0.2), vec2f(0.16, 0.1))) < 0.18 && q.y > 0.24) { c = DK; }
+  } else if (e == 13) {   // talking: open and shut
+    let o = max(0.0, sin(t * 11.0 + sd * 9.0)) * max(0.0, sin(t * 2.3 + sd * 3.0) + 0.3);
+    if (vxE(q, vec2f(0.5, 0.28), vec2f(0.09, 0.02 + 0.06 * o)) < 0.0) { c = MO; }
+  } else if (e == 7 || e == 10) {   // flat
+    if (abs(q.y - 0.29) < 0.022 && abs(q.x - select(0.5, 0.56, e == 7)) < select(0.12, 0.09, e == 7)) { c = DK; }
+  } else if (e == 8) {   // a grimace, teeth clenched
+    if (abs(q.x - 0.5) < 0.2 && abs(q.y - 0.27) < 0.075) { c = WH; if (abs(q.x - 0.5) > 0.18 || abs(q.y - 0.27) > 0.055 || abs(fract((q.x - 0.5) / 0.08 + 0.5) - 0.5) < 0.12 || abs(q.y - 0.27) < 0.012) { c = DK; } }
+  }
+  return c;
+}
+fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
+  let fdx = dpdx(uv); let fdy = dpdy(uv);   // (peds68: the face's footprint a pixel - taken here, where the flow is uniform)
+  let zone = floor(uv.x); let u = uv.x - zone; let v = uv.y;
+  let ex = floor(col.r + 0.5); let hcI = floor(ex / 16.0); let e = i32(ex - hcI * 16.0);
+  let og = floor(col.g + 0.5); let toneI = floor(og / 32.0); let look = og - toneI * 32.0; let sd = col.b;
+  let tone = vxPal(toneI, 32.0);
+  let t = F.sunC.w;
+  var c = vec3f(0.5); var rough = 0.8; var metal = 0.0;
+  if (zone < 1.5) {   // the head: the emoji's yellow (or a tone), warmer to the chin, lighter over the crown
+    c = tone * mix(vec3f(1.0, 0.72, 0.52), vec3f(1.08, 1.05, 1.0), smoothstep(0.0, 1.0, v)); rough = 0.58;
+    // (peds68) the face's pixels: one look a screen pixel when they are bigger than it; four, averaged, when a screen pixel
+    // spans one or more (a face across the street): no crawling, sparkling eyes and mouth as the person walks or turns
+    if (zone > 0.5) {
+      let fp = max(length(fdx), length(fdy)) * ${J5}.0;
+      if (fp < 0.7) { let q = (floor(vec2f(u, v) * ${J5}.0) + 0.5) / ${J5}.0; c = vxFace(q, e, t, sd, c); }
+      else { var acc = vec3f(0.0); let fs = min(fp, 6.0) / max(fp, 1e-4);
+        for (var k = 0; k < 4; k++) { let o = (vec2f(f32(k & 1), f32(k >> 1u)) - 0.5) * 0.75 * fs; let uk = vec2f(u, v) + fdx * o.x + fdy * o.y;
+          acc += vxFace((floor(uk * ${J5}.0) + 0.5) / ${J5}.0, e, t, sd, c); }
+        c = acc * 0.25; }
+    }
+  }
+  else if (zone < 3.5) { c = tone * 0.92; rough = 0.5; }   // hands, bare legs
+  else if (zone < 4.5) {   // the top (striped: the trim's colour every other two voxels)
+    c = vxPal(0.0, look); rough = 0.8;
+    if (vxPal(12.0, look).r > 0.5 && fract(v / 0.24) > 0.5) { c = vxPal(1.0, look); }
+  }
+  else if (zone < 5.5) { c = vxPal(1.0, look); }
+  else if (zone < 6.5) { c = vxPal(2.0, look); rough = 0.7; }
+  else if (zone < 7.5) { c = vxPal(3.0, look); rough = 0.85; }
+  else if (zone < 8.5) { c = vxPal(4.0, look); rough = 0.55; }
+  else if (zone < 9.5) { c = vxPal(5.0, look); rough = 0.6; }
+  else if (zone < 10.5) { c = vxPal(hcI, 33.0) * (0.8 + 0.25 * smoothstep(1.2, 1.9, v)); rough = 0.6; }   // hair: lighter over the crown
+  else if (zone < 11.5) { c = vxPal(6.0, look); rough = 0.75; }
+  else if (zone < 12.5) { c = vxPal(7.0, look); rough = 0.75; }
+  else if (zone < 13.5) { c = vxPal(8.0, look); rough = 0.7; }
+  else if (zone < 14.5) { c = vxPal(9.0, look); rough = 0.7; }
+  else if (zone < 15.5) { c = vec3f(0.02, 0.02, 0.025); rough = 0.35; }   // the shades' frame
+  else if (zone < 16.5) { c = vec3f(0.78, 0.88, 1.0); rough = 0.9; gHE = vec3f(0.06, 0.07, 0.09) * F.sunDir.w * 0.0 + c * 0.02; }   // the mind-blown cloud
+  else if (zone < 17.5) { c = vec3f(0.03, 0.03, 0.035); rough = 0.3; }   // a phone
+  else if (zone < 18.5) { c = vxPal(10.0, look); rough = 0.7; }
+  else if (zone < 19.5) { c = vxPal(11.0, look); rough = 0.5; }
+  else if (zone < 20.5) { c = vec3f(0.015, 0.02, 0.03); rough = 0.12; metal = 0.0; }   // the lenses
+  else if (zone > 21.5) { c = vec3f(1.0, 0.8, 0.15); rough = 0.4; gHE = c * 0.6; }   // (chars63) the dizzy stars
+  else { c = vec3f(0.75, 0.68, 0.45); rough = 0.3; metal = 1.0; }   // a buckle
+  // a soft rim from the sky (toys in the street, not cut-outs: the silhouette catches the environment's light)
+  let vd = normalize(F.camPos.xyz - wp); let rim = pow(1.0 - clamp(dot(gNw, vd), 0.0, 1.0), 3.0);
+  gHE += c * rim * envDiffuse(gNw) * 0.5;
+  gHK = vec4f(rough, metal, 0.0, 1.0);
+  return vec4f(c, 1.0);
+}
+`;
+es();

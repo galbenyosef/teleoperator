@@ -1,18 +1,18 @@
 {
-  "generated": "2026-10-12",
+  "generated": "2026-10-30",
   "origin": "https://teleoperator.mindblown.ai",
   "files": {
     "__mb/app/icon-180.png": {
-      "bytes": 58926,
-      "sha256": "b827115bf1b822574fa81cee7f5fdce6db902f935e06302f579846a0f4fcca75"
+      "bytes": 64510,
+      "sha256": "7ce875427c1ba418adac4b795b830701ac0ae33223555a7f35e415ef0af176fd"
     },
     "__mb/app/icon-192.png": {
-      "bytes": 65239,
-      "sha256": "22cff027c09786f2d4044d1c4d4a10f7b66ce2222ddb5b2b21eac7c68750674b"
+      "bytes": 72217,
+      "sha256": "9eee2992ce0bb6d290951750d496144ab7067c807094559b28f403fcd4046ad8"
     },
     "__mb/app/icon-512.png": {
-      "bytes": 318439,
-      "sha256": "5a4a2bd5b302f0fe887e12221ac303061b9b5ca25d6626c507c4addce5e8b17b"
+      "bytes": 371382,
+      "sha256": "aaf380b9609932f683b9e95127137e8aa958b5a977b4061df0691cf72d5abc05"
     },
     "__mb/app/manifest.webmanifest": {
       "bytes": 366,
@@ -23,8 +23,8 @@
       "sha256": "7561bca8121fe65c15b45d277f0b3883b2fdbb5d253f94642ff59fe1aca523d3"
     },
     "app.js": {
-      "bytes": 4016285,
-      "sha256": "206fc025a2da63861d46ecbff3646028d8c7f9334cc4991c292ffe9f3b7a36e3"
+      "bytes": 4169358,
+      "sha256": "48723c2105dcbbfc20895afa08c58e36ffe684934afe1e5e36132e53d9bf2f06"
     },
     "apple-touch-icon.png": {
       "bytes": 87858,
@@ -75,8 +75,8 @@
       "sha256": "e3f543bd1352a26ba1496413162ee7d8a48dbc9e977f76ed32c6adc1fd3aec0e"
     },
     "assets/audio/audio.json": {
-      "bytes": 24384,
-      "sha256": "fcb287d7365bf2347385d4eb7c5d20e2145f1580681739d1d61e3e35e0e14402"
+      "bytes": 26249,
+      "sha256": "f747bc9cf909d3021c3049ed3f6cc9f6eebe73fa1379a4a16603e900efcb04af"
     },
     "assets/audio/backfire.mp3": {
       "bytes": 6731,
@@ -474,6 +474,82 @@
       "bytes": 311005,
       "sha256": "1f5e321f348d352449aa4cf1cd1aab6de66c53c982c2b5d287ac43598cf5b3bc"
     },
+    "assets/audio/rd_avas.mp3": {
+      "bytes": 148001,
+      "sha256": "739ed2cbefaea9abc417fc09327d8ebb7bcaa726dbdfce27a881530255d6cb0a"
+    },
+    "assets/audio/rd_bump.mp3": {
+      "bytes": 6731,
+      "sha256": "2830fb2e004b4abd39da27dd83e5a191521fa03724055c3dacf4adce5452e744"
+    },
+    "assets/audio/rd_bump_1.mp3": {
+      "bytes": 5895,
+      "sha256": "e5c956ecf710b0c614b75ad3ca2a12be4eff5e8a6c1df0f21d3828d3d460a911"
+    },
+    "assets/audio/rd_bump_2.mp3": {
+      "bytes": 6731,
+      "sha256": "97b69d622b358f9c7b4264254203db5cf9e3a802ba0021b990543941f21548dd"
+    },
+    "assets/audio/rd_fan.mp3": {
+      "bytes": 145493,
+      "sha256": "61811801dfe103dfd341d482d83ada6bf9eca6d104afff42896d4477b01b6e74"
+    },
+    "assets/audio/rd_land.mp3": {
+      "bytes": 17180,
+      "sha256": "a04e30acc0a0559385f676b9fd7428d42f7a276d701ccf0d4641644bb2e772ce"
+    },
+    "assets/audio/rd_land_1.mp3": {
+      "bytes": 11746,
+      "sha256": "582fb9e19fa025ee381f00c60b99f318b019366eea37089ce95dae8b5a32d77a"
+    },
+    "assets/audio/rd_mot_hi.mp3": {
+      "bytes": 151345,
+      "sha256": "d1c2440211719ce18d6af24fc9d597145350c6c76696126b1b69dea4ac07df5c"
+    },
+    "assets/audio/rd_mot_lo.mp3": {
+      "bytes": 153435,
+      "sha256": "e089babf15a56018f534e30ecaa66e68660f483b8005722d1125c69d47fdd661"
+    },
+    "assets/audio/rd_mot_mid.mp3": {
+      "bytes": 149255,
+      "sha256": "0bc25f26e3dde30fb4bc58905e2345dcdb0ec23b8f7ebfd375c50dccd3fe1f3d"
+    },
+    "assets/audio/rd_regen.mp3": {
+      "bytes": 40586,
+      "sha256": "91a84ac4a14575f936ede09452ddc4c1544f064ca0a001d633265eaefc754151"
+    },
+    "assets/audio/rd_regen_1.mp3": {
+      "bytes": 39332,
+      "sha256": "60248506807f8bca947c8cafc23949a5f332ea474116b47325e90bfc071f9657"
+    },
+    "assets/audio/rd_thrust.mp3": {
+      "bytes": 85308,
+      "sha256": "cdb546bc3ff21a0c944b15db69808ec1792b6649c04c2187862561481f031095"
+    },
+    "assets/audio/rd_thrust_start.mp3": {
+      "bytes": 5895,
+      "sha256": "cd4bdb11a0f4c49e83d74b4d30f209ffa128c815905a7ad6d3e0221d239bc034"
+    },
+    "assets/audio/rd_thrust_start_1.mp3": {
+      "bytes": 20106,
+      "sha256": "2dca3449669b6c7a3c69acbfb199367d585f480e727bd903bb226355848e3fc7"
+    },
+    "assets/audio/rd_tyre_hi.mp3": {
+      "bytes": 148001,
+      "sha256": "668b4092791143e734e3ae6ba34c009c9d3c5706b82ddf73f4ffc42137567477"
+    },
+    "assets/audio/rd_tyre_lo.mp3": {
+      "bytes": 150927,
+      "sha256": "6756a8754c9c3ab3e4e0d0a102cc63bdaa986ed8d94951c3463ccf2660b0f6e4"
+    },
+    "assets/audio/rd_tyre_mid.mp3": {
+      "bytes": 151345,
+      "sha256": "9c1160d11ac067cc217fd8c316f2adc72b9b266417c8b196054697b448039d36"
+    },
+    "assets/audio/rd_wind.mp3": {
+      "bytes": 184364,
+      "sha256": "e24b8a4918c949b98340cb98610ca9f8f6b4eab55fb691c02962dba6a2487d18"
+    },
     "assets/audio/sml_coast.mp3": {
       "bytes": 10703,
       "sha256": "9fcdc65c9ad660e3c290b2844a40a7a4e673db4fda51c187c668e30609454577"
@@ -778,6 +854,10 @@
       "bytes": 219908,
       "sha256": "13a2664e67ee5fdddef99083378dab0026abae2099217533f234007c820a9ac4"
     },
+    "assets/missions/turntable.webp": {
+      "bytes": 245806,
+      "sha256": "38db268a21db0c76c3352c318d2951bdc3895f6f7449c5147ef06f5c73e9f9b2"
+    },
     "assets/osm/downtown.json": {
       "bytes": 2271144,
       "sha256": "951eddc44821c2254fdc201b3f771d95673cf1f29cee6bc7742c9b5eff004b43"
@@ -787,24 +867,24 @@
       "sha256": "8128923caf5291cd1ef707c773e7cce951c9738b892af1f5de5a8960db1212e7"
     },
     "assets/real/btags.bin.gz": {
-      "bytes": 26086,
-      "sha256": "b013089f03f80e0ae351f87318b44dbcf8d27977287f50a438bd60d5c5528a68"
+      "bytes": 25188,
+      "sha256": "f1be775494e47f37992b90f0b826af60af1af20fd00c8fddd4cf94f341b26aed"
     },
     "assets/real/buildings.bin.gz": {
-      "bytes": 2400489,
-      "sha256": "c382efe6c136ea93d7f82f6f70d46faba420fe64ad7726d98f6f894268afb9b7"
+      "bytes": 2421611,
+      "sha256": "2e37ae3197d54ed6cef59172efa3b6f2f5f26463171aef93cee7db592e105639"
     },
     "assets/real/coast.bin.gz": {
-      "bytes": 38016,
-      "sha256": "750329e2a3b245a1414aa649633fa22fc9c8f55e8ba59705a82e6a2846c366dc"
+      "bytes": 38001,
+      "sha256": "0f326520a43ed3e88c99a7257e6da36c1b38f26dec97359d60728bf94a0a0875"
     },
     "assets/real/green.bin.gz": {
-      "bytes": 206142,
-      "sha256": "f363fcfdb80be71cde448b83b3d731e947edafc6e6fdeeccb55d8bd018d4a592"
+      "bytes": 204784,
+      "sha256": "6988d4caf25eecfefe836db7300d890631f4dc6946b2fe58db11c322679bd9dd"
     },
     "assets/real/ground.bin.gz": {
-      "bytes": 273512,
-      "sha256": "d769e9ea167b133b322e6e23df57ae8a2d93f8821dedd03c6ce3e62e616c3118"
+      "bytes": 274283,
+      "sha256": "9f64648b9a3be3df1f387d1e077910e8d71cf7b2dfe3ed30ca60ae4f82d29003"
     },
     "assets/real/marin/buildings.bin.gz": {
       "bytes": 187629,
@@ -830,17 +910,21 @@
       "bytes": 931627,
       "sha256": "68f8ff887ea4470a3754ccc3f280bc9a6547dd8de5935325063ed0b4089a4c47"
     },
+    "assets/real/place.json": {
+      "bytes": 13826,
+      "sha256": "374aaa7bcad0df288618713013d5421eb3681927e22aaed2b9c10b4c05ed1601"
+    },
     "assets/real/props.bin.gz": {
-      "bytes": 2875337,
-      "sha256": "331f2745170988fa98c3894f261c1bbba7b32a39c3f5404787853da122d2c688"
+      "bytes": 2789357,
+      "sha256": "efe623afa934c9fbe50be2815cdf81b4760698913a037aa5e6714be133cfe264"
     },
     "assets/real/rails.bin.gz": {
-      "bytes": 23832,
-      "sha256": "428c0e7723d9b4c32865644c7c346802a662edb64bccd37c40fa65d1db05fdf9"
+      "bytes": 23942,
+      "sha256": "4a762b86281d25b4d1c8eedd24a52b5c2098aa9fdcccff839b9bb68137401110"
     },
     "assets/real/roads.bin.gz": {
-      "bytes": 5613318,
-      "sha256": "c26d7f39f559fe55faeddce348d0efbd8f12bf6ca5de3f6354748e52453a16ab"
+      "bytes": 5676281,
+      "sha256": "d8d1487a7d9bb5bceb3010f590429bd68af7e894720b09e89f85d8c990af18e3"
     },
     "assets/real/sky.bin.gz": {
       "bytes": 5041237,
@@ -851,20 +935,28 @@
       "sha256": "470e2e5cb7301d4ba9bde82548f16b4959387470e1cc356ed4f03acfbe5d1fa5"
     },
     "assets/real/terrain.bin.gz": {
-      "bytes": 2661587,
-      "sha256": "f971cbf6ec999f66d88ef774cf402b253141010af0d1c7011962b01e3cc384d7"
+      "bytes": 2678578,
+      "sha256": "a404cb65649c98826d29d0a60671c22cc62476ebd12b5e76ccc2b3da22875f62"
     },
     "assets/real/west/buildings.bin.gz": {
-      "bytes": 180261,
-      "sha256": "793e05212c8204da31864bf765b6937cc0d57957fffc5ecc77c9d8dd7effeec5"
+      "bytes": 180128,
+      "sha256": "36e427ae071aad1d7c61057f73677c1acf3d38f5a32fd85cf95142c90da2a3e3"
     },
     "assets/real/west/props.bin.gz": {
-      "bytes": 174485,
-      "sha256": "b5160eb0f7a1580e3280548a62ef793bccaaa3da7277d1a1f5aa467c7fc1be9e"
+      "bytes": 158189,
+      "sha256": "aec891301d751f9b3c1f6b6ef87c443400cc5cde9e18ab222003ea7822dc2759"
     },
     "assets/real/west/terrain.bin.gz": {
-      "bytes": 745214,
-      "sha256": "5b0e81922702bb2d89abc03a4854ab9f4d6156493033851645604310cfc7b5ee"
+      "bytes": 745342,
+      "sha256": "0fc2fa4886389a37f8f85515ca4a5401f1c1b5ae38995c53c5a8668e5511a7bc"
+    },
+    "assets/real/yards.bin.gz": {
+      "bytes": 1319021,
+      "sha256": "c56a075f611be08ad20dde71c449f69c5e63cb376c3cf980aa650dff6237f116"
+    },
+    "assets/roadster/turntable.webp": {
+      "bytes": 219252,
+      "sha256": "4acb40ef7a75d41d8f4c927eb6a38ee068ef861abf15a3049bc78d47fe2fe11a"
     },
     "assets/teleop_title.webp": {
       "bytes": 359752,
@@ -1546,10 +1638,6 @@
       "bytes": 834099,
       "sha256": "402bed202e214e450af17c6cae7f6cae9c80a21e9dd034cc7417a85d410580fb"
     },
-    "assets/veg/yards.bin.gz": {
-      "bytes": 1319021,
-      "sha256": "c56a075f611be08ad20dde71c449f69c5e63cb376c3cf980aa650dff6237f116"
-    },
     "assets/waymo/turntable.webp": {
       "bytes": 245356,
       "sha256": "13e68cdc14b6c2cf363e31328eff8958faf2176ce41fbe421994a87fe66552b5"
@@ -1579,8 +1667,8 @@
       "sha256": "0465ac43669a4982d556304348305c22f1a160b64d0db3905c9a405fcd6055d5"
     },
     "boot.js": {
-      "bytes": 13946,
-      "sha256": "1c0018145ef7c3f34fcae0ddaebacbbea687f16424a87aeb74bea96cefa2e27a"
+      "bytes": 15510,
+      "sha256": "a77478a574f09dea4a5939e5d005ad3d729cb8df511fd849581401aab6295202"
     },
     "fonts/Archivo-300-800.woff2": {
       "bytes": 90104,
@@ -1591,36 +1679,38 @@
       "sha256": "83c005d49d8a6a50474c73a5a36ac0468076e9c4a29da7bdb14995d80560a5be"
     },
     "icon.webp": {
-      "bytes": 15232,
-      "sha256": "21f807a86079f535b45a54bc3251898ac7cd15c5a3505140d3314c401058507f"
+      "bytes": 18234,
+      "sha256": "e8a87ce682fbb3bb0a001fb3ec78c25537cbf36bb0ab9651f945d07af3db6686"
     },
     "index.html": {
-      "bytes": 39043,
-      "sha256": "3592499c5024cdf3bd259aa50f204c1a3ddb46fb9b435a083f6e531adff9fc3a"
+      "bytes": 39317,
+      "sha256": "a410e1b0f5890f039aff4e42cd757f28e69599021d8561c2acabac14c2b5db07"
     },
     "robots.txt": {
       "bytes": 1248,
       "sha256": "8fa3036c68bfcbd32365f6225d24333264093b7cd38d306e106b4dbdc934fd5b"
     },
     "shell-index.html": {
-      "bytes": 51907,
-      "sha256": "3c78e548a6b7314c4bc45618b0f538bcb1cb10b4994678e14714a333a69b9afe"
+      "bytes": 36845,
+      "sha256": "13fca28ea8edf8dd2e62714b894531667addd1230b4df08adda2900812f021a1",
+      "dynamic": true
     },
     "shell.html": {
-      "bytes": 51867,
-      "sha256": "32776fcb96ab11ed728531eb4bbd8be7ae381a69d1bb97248c1ae0a5ab66f2a1"
+      "bytes": 36805,
+      "sha256": "b43c586fd27e1163f79c131d4b32678cafbea0f8e2dc8f7bc72f3391a516f239",
+      "dynamic": true
     },
     "slots.json": {
       "bytes": 69,
       "sha256": "503818cc8dd7e67b87e58a52bbed2c51898adc893d265d59b7b143ddd27cd765"
     },
     "style.css": {
-      "bytes": 146404,
-      "sha256": "7da44ee30d1921d0a7d2199d0b6bd8c267053f0879894f2c03ad54bf8125376d"
+      "bytes": 147928,
+      "sha256": "55b33a8f605469967261bebd502a8760af4aacf60e9deef89f576c63ec573b32"
     },
     "thumb.webp": {
-      "bytes": 121910,
-      "sha256": "fd5978a1fde18773b8c92c8f5f0ef0786f050471de5d71c8c9462d5fa98ae1b6"
+      "bytes": 91390,
+      "sha256": "93c54ba9421f0c75c7f9e3e1f63a9c786b490aaa2e7d1be7476b182184d45d19"
     },
     "tune.json": {
       "bytes": 257,
@@ -1631,8 +1721,8 @@
       "sha256": "90191e9d13119b9bf51e2febe4a18858255af2a63f3357b4080263877f6f840a"
     },
     "workers/img.js": {
-      "bytes": 2152,
-      "sha256": "5f0646cefeeac0911a5227f50e2451971b41dc268a2dd9935a206f0a5c4da93d"
+      "bytes": 2388,
+      "sha256": "9110171a2d6e10ee96f7b0c704341ff26185506421ebaa3d4733b42215465be5"
     },
     "workers/lod.js": {
       "bytes": 42504,

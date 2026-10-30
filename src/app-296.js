@@ -1,344 +1,199 @@
 // app 296 — math
-// Lines 143813-144154 of readable/app.pretty.js (statement-aligned).
-function Uxt(i, t, e, s) {
-  let n = i.P,
-    o = n.length / 3;
-  for (let a = 0; a + 1 < o; a++) {
-    let r = n[a * 3],
-      l = n[a * 3 + 1],
-      c = n[a * 3 + 3],
-      h = n[a * 3 + 4],
-      f = c - r,
-      u = h - l,
-      d = f * f + u * u || 1,
-      p = Math.max(0, Math.min(1, ((t - r) * f + (e - l) * u) / d));
-    if (Math.hypot(t - r - f * p, e - l - u * p) < (i.W[a] || 6) + s) return !0;
-  }
-  return !1;
-}
-var Gxt = `
-fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
-  let c = textureSample(matMap, matSamp, uv).rgb;
-  let k = col.a;   // 1 at the top edge, 0 at the bottom (vertex colour)
-  gHE = c * bc.b * (0.28 + 0.5 * k * k) * vec3f(1.0, 0.95, 0.85);
-  gHK = vec4f(0.55, 0.0, 0.0, 1.0);
-  return vec4f(c, 1.0);
-}
-`,
-  Wxt = `
-fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
-  gHE = vec3f(1.0, 0.9, 0.75) * bc.b * 6.0;
-  gHK = vec4f(0.4, 0.3, 0.0, 1.0);
-  return vec4f(0.35, 0.35, 0.33, 1.0);
-}
-`;
-function DJ(i, t, e = null) {
-  if (typeof document > "u") return null;
-  let s = performance.now(),
-    n = Dxt(i, t),
-    o = performance.now() - s,
-    a = new Map(),
-    r = (A, C) => {
-      let P = `${Math.floor(A / 512)},${Math.floor(C / 512)}`,
-        I = a.get(P);
-      return (
-        I ||
-          a.set(
-            P,
-            (I = {
-              x: (Math.floor(A / 512) + 0.5) * 512,
-              z: (Math.floor(C / 512) + 0.5) * 512,
-              steel: [],
-              face: [],
-              lamp: [],
-              mural: [],
-            }),
-          ),
-        I
-      );
-    },
-    l = (A) => {
-      A = A.index ? A.toNonIndexed() : A;
-      for (let C of Object.keys(A.attributes))
-        ["position", "normal", "uv"].includes(C) || A.deleteAttribute(C);
-      return A;
-    },
-    c = (A, C, P, I, L, F, N) => {
-      let B = new qs(A, C, P);
-      return (B.translate(I, L, F), B.applyMatrix4(N), l(B));
-    },
-    h = (A, C, P, I, L, F, N) => {
-      let B = new ks(A, C, P, 10, 1, !0);
-      return (B.translate(I, L + P / 2, F), B.applyMatrix4(N), l(B));
-    },
-    f = (A, C, P, I) => {
-      let L = (A % C) / C,
-        F = 1 - Math.floor(A / C) * I;
-      return [L + 0.002, L + 1 / C - 0.002, F - I + 0.002, F - 0.002];
-    },
-    u = (A, C, P, I, L, F) => {
-      let N = new $n(A, C);
-      N.translate(0, P + C / 2, I);
-      let B = N.attributes.uv,
-        H = new Float32Array(B.count * 4);
-      for (let O = 0; O < B.count; O++) {
-        let D = B.getX(O),
-          U = B.getY(O);
-        (B.setXY(O, L[0] + (L[1] - L[0]) * D, L[2] + (L[3] - L[2]) * U),
-          (H[O * 4] = H[O * 4 + 1] = H[O * 4 + 2] = 1),
-          (H[O * 4 + 3] = U));
-      }
-      return (
-        N.setAttribute("color", new Te(H, 4)),
-        N.applyMatrix4(F),
-        N.index ? N.toNonIndexed() : N
-      );
-    },
-    d = (A, C, P, I, L) =>
-      new ye()
-        .makeBasis(new xt(L, 0, -I), new xt(0, 1, 0), new xt(I, 0, L))
-        .setPosition(A, C, P),
-    p = 341 / 2048,
-    m = (A, C, P, I, L, F = -1) => {
-      (A.steel.push(c(P + 0.3, I + 0.3, 0.25, 0, I / 2, -0.2, C)),
-        A.face.push(u(P, I, 0, 0.06, f(L, 2, 6, p), C)));
-      for (let N = -P / 2 + 1; N <= P / 2 - 0.9; N += (P - 2) / 3)
-        (A.steel.push(
-          c(0.08, 0.08, 1.3, N, I + 0.35, 0.55, C),
-          c(0.08, 0.5, 0.08, N, I + 0.1, -0.1, C),
-        ),
-          A.lamp.push(c(0.35, 0.12, 0.25, N, I + 0.28, 1.2, C)));
-      if (F >= 0) {
-        let N = C.clone()
-          .multiply(new ye().makeRotationY(Math.PI))
-          .multiply(new ye().makeTranslation(0, 0, 0.4));
-        A.face.push(u(P, I, 0, 0.06, f(F, 2, 6, p), N));
-        for (let B = -P / 2 + 1; B <= P / 2 - 0.9; B += (P - 2) / 3)
-          (A.steel.push(c(0.08, 0.08, 1.3, B, I + 0.35, 0.55, N)),
-            A.lamp.push(c(0.35, 0.12, 0.25, B, I + 0.28, 1.2, N)));
-      }
-      A.steel.push(
-        c(P + 0.6, 0.06, 1, 0, -0.35, 0.45, C),
-        c(P + 0.6, 0.05, 0.05, 0, 0.55, 0.92, C),
-      );
-      for (let N = -P / 2; N <= P / 2 + 0.01; N += P / 6)
-        A.steel.push(c(0.05, 0.9, 0.05, N, 0.1, 0.92, C));
-    };
-  for (let A of n.roof) {
-    let C = r(A.x, A.z),
-      P = d(A.x, A.y, A.z, A.nx, A.nz),
-      I = A.y - A.base + 0.1;
-    m(C, P, A.w, A.h, A.ad);
-    for (let L of [-0.42, -0.14, 0.14, 0.42]) {
-      C.steel.push(c(0.22, I, 0.22, L * A.w, -I / 2, -0.25, P));
-      let F = c(0.14, Math.hypot(I, 2.2), 0.14, 0, 0, 0, new ye());
-      (F.applyMatrix4(new ye().makeRotationX(-Math.atan2(2.2, I))),
-        F.applyMatrix4(new ye().makeTranslation(L * A.w, -I / 2, -1.35)),
-        F.applyMatrix4(P),
-        C.steel.push(F));
-    }
-    C.steel.push(c(A.w, 0.18, 0.18, 0, -I * 0.5, -0.25, P));
-  }
-  for (let A of n.pole) {
-    let C = r(A.x, A.z),
-      P = d(A.x, A.y, A.z, A.nx, A.nz),
-      I = A.y - A.ground + 0.5;
-    (m(C, P, A.w, A.h, A.ad, A.back),
-      C.steel.push(
-        h(0.55, 0.75, I, 0, -I, -0.2, P),
-        h(0.9, 0.9, 0.5, 0, -I, -0.2, P),
-        c(A.w * 0.6, 0.35, 0.35, 0, -0.3, -0.2, P),
-      ),
-      e?.push({
-        t: "circ",
-        x: A.x - A.nx * 0.2,
-        z: A.z - A.nz * 0.2,
-        r: 0.8,
-        y0: A.ground - 0.5,
-        y1: A.y + 0.5,
-      }));
-  }
-  let g = 0.125;
-  for (let A of n.mural) {
-    let C = r(A.ax, A.az),
-      [P, I, L, F] = f(A.cell, 2, 8, g),
-      N = P + (I - P) * (A.uw ?? 1),
-      B = new De(),
-      H = [
-        A.ax,
-        A.y0,
-        A.az,
-        A.bx,
-        A.y0,
-        A.bz,
-        A.bx,
-        A.y1,
-        A.bz,
-        A.ax,
-        A.y0,
-        A.az,
-        A.bx,
-        A.y1,
-        A.bz,
-        A.ax,
-        A.y1,
-        A.az,
-      ];
-    (B.setAttribute("position", new Te(new Float32Array(H), 3)),
-      B.setAttribute(
-        "normal",
-        new Te(
-          new Float32Array([0, 1, 2, 3, 4, 5].flatMap(() => [A.nx, 0, A.nz])),
-          3,
-        ),
-      ),
-      B.setAttribute(
-        "uv",
-        new Te(new Float32Array([P, L, N, L, N, F, P, L, N, F, P, F]), 2),
-      ),
-      C.mural.push(B));
-  }
-  let b = () => {
-      let A = document.createElement("canvas");
-      A.width = A.height = 4;
-      let C = A.getContext("2d");
-      ((C.fillStyle = "#6f6c66"), C.fillRect(0, 0, 4, 4));
-      let P = new ei(A);
-      return ((P.needsUpdate = !0), (P.colorSpace = is), (P.anisotropy = 8), P);
-    },
-    x = b(),
-    v = b(),
-    y = new Ee({ color: 7172468, roughness: 0.55, metalness: 0.5 }),
-    M = new Ee({
-      color: 16777215,
-      map: x,
-      roughness: 0.55,
-      metalness: 0,
-      vertexColors: !0,
-      polygonOffset: !0,
-      polygonOffsetFactor: -1,
-      polygonOffsetUnits: -4,
+// Lines 144435-144631 of readable/app.pretty.js (statement-aligned).
+function $Q({
+  D: o,
+  L: t,
+  mats: e = {},
+  tex: s = null,
+  headless: n = typeof document > "u",
+  strict: i = !1,
+}) {
+  KF(o, t);
+  let a = new le();
+  a.name = "Landmarks";
+  let r = new Map(),
+    c = jQ(o, t, {
+      group: a,
+      mats: e,
+      tex: s,
+      headless: n,
+      C: (u, d) => {
+        let p = ju(u, d),
+          m = r.get(p);
+        return (
+          m || r.set(p, (m = {})),
+          new Proxy(m, {
+            get: (g, b) =>
+              typeof b == "string" ? (g[b] ||= new Be()) : void 0,
+          })
+        );
+      },
     });
-  ((M.userData.mbAlbedo = Gxt), (M.userData.dayGlow = 0));
-  let S = new Ee({ color: 16777215, roughness: 0.4 });
-  ((S.userData.mbAlbedo = Wxt), (S.userData.dayGlow = 0));
-  let w = new Ee({
-    color: 16777215,
-    map: v,
-    roughness: 0.92,
-    metalness: 0,
-    polygonOffset: !0,
-    polygonOffsetFactor: -1,
-    polygonOffsetUnits: -2,
-    depthWrite: !1,
-  });
-  for (let A of [y, M, S, w]) A.userData.mbSkyVis = 2;
-  let z = new ke();
-  z.name = "Billboards";
-  for (let A of a.values()) {
-    let C = new ke();
-    ((C.name = "bb_cell"), (C.userData.c = A));
-    for (let [P, I, L, F, N] of [
-      [A.steel, y, "bb_steel", !1, !0],
-      [A.face, M, "bb_face", !0, !0],
-      [A.lamp, S, "bb_lamp", !1, !1],
-      [A.mural, w, "bb_mural", !0, !1],
-    ]) {
-      if (!P.length) continue;
-      let B = wi(P);
-      if (!B) continue;
-      B.computeBoundingSphere();
-      let H = new _e(B, I);
-      ((H.name = L),
-        (H.castShadow = N),
-        (H.receiveShadow = !0),
-        (H.matrixAutoUpdate = !1),
-        H.updateMatrix(),
-        C.add(H));
+  if (!qQ())
+    for (let u of WQ) {
+      let d = performance.now();
+      try {
+        u.buildReal?.(c);
+      } catch (p) {
+        if (i) throw p;
+        console.error("landmarks:", u.NAME, p);
+      }
+      c.ms = { ...(c.ms || {}), [u.NAME]: Math.round(performance.now() - d) };
     }
-    z.add(C);
-  }
-  let _ = !1;
-  async function R(A = "assets/tex/", C = null) {
-    let P = async (I, L) => {
-      ((L.image = await new Il().loadAsync(A + I)),
-        (L.needsUpdate = !0),
-        C?.(L));
-    };
-    try {
-      (await Promise.all([P("billboards.webp", x), P("murals.webp", v)]),
-        (_ = !0));
-    } catch (I) {
-      console.warn("billboards: no art", I);
-    }
-  }
-  let T = 1800;
-  function E(A, C) {
-    for (let P of z.children) {
-      let I = P.userData.c;
-      P.visible =
-        Math.hypot(
-          Math.max(0, Math.abs(I.x - A) - 256),
-          Math.max(0, Math.abs(I.z - C) - 256),
-        ) < T;
+  if (!n)
+    for (let [u, d] of r)
+      for (let [p, m] of Object.entries(d)) {
+        if (m.empty || !e[p]) continue;
+        let g = new ye(m.geometry(!0), e[p]);
+        ((g.name = `lmc_${u}_${p}`),
+          (g.matrixAutoUpdate = !1),
+          g.updateMatrix(),
+          (g.castShadow = !0),
+          (g.receiveShadow = !0),
+          a.add(g));
+      }
+  r.clear();
+  let h = 0;
+  function f(u, d, p = 0.016) {
+    for (let m of c.onUpdate) m(u, d, p);
+    if (!((h -= p) > 0)) {
+      h = 0.3;
+      for (let m of c.sites)
+        m.cull && (m.group.visible = Math.hypot(m.x - u, m.z - d) < m.cull);
     }
   }
   return (
-    (z.userData.stats = {
-      roof: n.roof.length,
-      pole: n.pole.length,
-      mural: n.mural.length,
-      planMs: Math.round(o),
-      ms: Math.round(performance.now() - s),
+    (c.ms = {
+      ...(c.ms || {}),
+      vegOffRoads: UF(t, c.inst, c.colliders) + lv(o, c.inst, c.colliders),
     }),
     {
-      group: z,
-      night: [M, S],
-      load: R,
-      update: E,
-      plan: n,
-      get ready() {
-        return _;
-      },
+      group: a,
+      colliders: c.colliders,
+      inst: c.inst,
+      night: c.night,
+      update: f,
+      ms: c.ms,
+      sites: c.sites,
     }
   );
 }
-as();
-Oa();
-var UJ = [vy, Ky, nw],
-  GJ = () => typeof location < "u" && /[?&]nolm\b/.test(location.search);
-function WJ(i, t, e = {}) {
-  let s = {
-    D: i,
-    L: t,
-    ground: TS(t),
-    frame: ES,
-    claim: (n) => uy(i, n),
-    rectPoly: RS,
-    streetNear: (...n) => JR(i, ...n),
-    streetLine: (...n) => ZR(i, ...n),
-    group: null,
-    colliders: [],
-    inst: [],
-    night: [],
-    mats: {},
-    tex: null,
-    headless: typeof document > "u",
-    sites: [],
-    onUpdate: [],
-    ...e,
-  };
-  return ((s.site = (n, o) => AS(s, n, o)), s);
+var m5t = typeof location < "u" && /[?&]oldlow\b/.test(location.search || ""),
+  g5t =
+    +(
+      typeof location < "u" && new URLSearchParams(location.search).get("thinK")
+    ) || 1;
+var JQ = (o) => qF(o),
+  YF = (o) =>
+    (o || "")
+      .toUpperCase()
+      .replace(/\bSTREET\b/g, "ST")
+      .replace(/\bAVENUE\b/g, "AVE")
+      .replace(/\bBOULEVARD\b/g, "BLVD")
+      .replace(/\bDRIVE\b/g, "DR")
+      .replace(/\bPLACE\b/g, "PL")
+      .replace(/\bTERRACE\b/g, "TER")
+      .replace(/\bCOURT\b/g, "CT")
+      .replace(/\bLANE\b/g, "LN")
+      .replace(/\bROAD\b/g, "RD")
+      .replace(/\bHIGHWAY\b/g, "HWY"),
+  Sc = (o) => {
+    let t = new le();
+    return (
+      (t.name = o),
+      (t.matrixAutoUpdate = !1),
+      (t.matrixWorldNeedsUpdate = !0),
+      t
+    );
+  },
+  XQ =
+    (!!globalThis.SF_MP ||
+      (typeof location < "u" && /[?&]mp\b/.test(location.search || ""))) &&
+    !(typeof location < "u" && /[?&]nocarextra\b/.test(location.search || "")),
+  ud = 520,
+  EM = 2700,
+  g2 = 5200;
+function ZQ(o) {
+  let t = o.terrain.sea,
+    e = t.bits,
+    s = Object.values(o.regions || {})
+      .map((r) => r.sea)
+      .filter(Boolean),
+    n = (r) => r.toFixed(1),
+    i = `const SF_SEA = array<u32, ${e.length}>(${e.map((r) => (r >>> 0) + "u").join(",")});
+${s.map(
+  (r, l) =>
+    `const SF_SEA_R${l} = array<u32, ${r.bits.length}>(${r.bits.map((c) => (c >>> 0) + "u").join(",")});`,
+).join(`
+`)}
+fn sfSeaBit(i: i32, j: i32) -> f32 {
+${
+  bi.bake?.outsideSea
+    ? `  if (i < 0 || j < 0 || i >= ${t.nx} || j >= ${t.nz}) { return select(0.0, 1.0, j < 0 || i < 0 || (i >= ${t.nx} && j < ${Math.round((2600 - t.z0) / t.cell)})); }
+  let k = u32(j * ${t.nx} + i);`
+    : `  let k = u32(clamp(j, 0, ${t.nz - 1}) * ${t.nx} + clamp(i, 0, ${t.nx - 1}));`
+}   // (outside the mask: San Francisco's bay and ocean; a place's own edge carried on)
+  return f32((SF_SEA[k >> 5u] >> (k & 31u)) & 1u);
 }
-function vI(i, t) {
-  let e = sb(i);
-  if (e.done || ((e.done = !0), GJ())) return e;
-  let s = WJ(i, t);
-  for (let n of UJ)
-    try {
-      n.realClaims?.(s);
-    } catch (o) {
-      console.error("landmark claims:", n.NAME, o);
+// a sample at world p (a cell centre of the city's mask): a region's bit inside its box
+fn sfSeaAt(i: i32, j: i32) -> f32 {
+  let p = vec2f(${n(t.x0)}, ${n(t.z0)}) + (vec2f(f32(i), f32(j)) + 0.5) * ${n(t.cell)};
+${s.map(
+  (r, l) =>
+    `  { let q = (p - vec2f(${n(r.x0)}, ${n(r.z0)})) / ${n(r.cell)}; if (q.x >= 0.0 && q.y >= 0.0 && q.x < ${n(r.nx)} && q.y < ${n(r.nz)}) { let kk = u32(i32(q.y) * ${r.nx} + i32(q.x)); return f32((SF_SEA_R${l}[kk >> 5u] >> (kk & 31u)) & 1u); } }`,
+).join(`
+`)}
+  return sfSeaBit(i, j);
+}
+`,
+    a = `let q = (xz - vec2f(${t.x0.toFixed(1)}, ${t.z0.toFixed(1)})) / ${t.cell.toFixed(1)} - 0.5; let i = i32(floor(q.x)); let j = i32(floor(q.y)); let f = q - floor(q);
+  let a = mix(sfSeaAt(i, j), sfSeaAt(i + 1, j), f.x); let b = mix(sfSeaAt(i, j + 1), sfSeaAt(i + 1, j + 1), f.x);
+  return smoothstep(0.25, 0.75, mix(a, b, f.y));`;
+  return { fns: i, body: a };
+}
+function Yp(o, t, e, s, n, i, a, { plateau: r = !1 } = {}) {
+  let l = null,
+    c = {};
+  for (let f of o.edges)
+    f.name !== e ||
+      f.inner ||
+      f.s1 - f.s0 < 8 ||
+      (ys(f, s, n, c),
+      c.d < 250 &&
+        (!l || c.d < l.d) &&
+        (l = { E: f, s: c.s, d: c.d, dd: c.d - c.w }));
+  let h = l || t.roadAt(s, n, 60);
+  return h ? JF(h.E, h.s, i, a, { plateau: r }) : [s, n, Math.atan2(-i, -a)];
+}
+function JF(o, t, e, s, { plateau: n = !1 } = {}) {
+  let i = n
+      ? Math.min(o.L - 0.6, Math.max(0.6, t))
+      : Math.min(o.s1 - 3, Math.max(o.s0 + 3, t)),
+    a = Ob(o, i, i + 0.5),
+    [, r, l, , c, h, f] = a[0],
+    u = a[1][1] - r,
+    d = a[1][2] - l,
+    p = u * e + d * s >= 0 ? 1 : -1,
+    m = o.flags & 4 ? 0 : 2.3,
+    g = Math.max(1, o.lanes),
+    b = Cp(o),
+    v = o.oneway
+      ? (2 * (f - m) - b) / g
+      : Math.max((f - m - (o.median ? 1.6 : 0) - b) / g, 2.6),
+    x = o.oneway
+      ? -(f - m) + v * (g - 0.5)
+      : (o.median ? 1.6 : 0) + v * (g - 0.5),
+    y = o.oneway ? 1 : p;
+  return [r + c * x * y, l + h * x * y, Math.atan2(-u * p, -d * p)];
+}
+var KQ = (o, t) => {
+    for (let [e, s] of Object.entries(z0)) {
+      let n = s.bounds;
+      if (o >= n.x0 && o <= n.x1 && t >= n.z0 && t <= n.z1) return e;
     }
-  return e;
-}
+    return null;
+  },
+  b5t = (o) => {
+    let t = Math.floor(o.n / 2) * 3;
+    return [o.P[t], o.P[t + 2]];
+  };

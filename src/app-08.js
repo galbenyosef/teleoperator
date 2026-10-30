@@ -1,229 +1,229 @@
 // app 08 — math
-// Lines 2136-2362 of readable/app.pretty.js (statement-aligned).
-function Cit(i) {
-  switch (i.toLowerCase()) {
+// Lines 2169-2395 of readable/app.pretty.js (statement-aligned).
+function Zrt(o) {
+  switch (o.toLowerCase()) {
     case "scalar":
     case "double":
     case "float":
     case "number":
     case "integer":
-      return Eh;
+      return ef;
     case "vector":
     case "vector2":
     case "vector3":
     case "vector4":
-      return Gf;
+      return Su;
     case "color":
-      return og;
+      return Kg;
     case "quaternion":
-      return Th;
+      return sf;
     case "bool":
     case "boolean":
-      return zh;
+      return tf;
     case "string":
-      return Ah;
+      return nf;
   }
-  throw new Error("THREE.KeyframeTrack: Unsupported typeName: " + i);
+  throw new Error("THREE.KeyframeTrack: Unsupported typeName: " + o);
 }
-function Lit(i) {
-  if (i.type === void 0)
+function Qrt(o) {
+  if (o.type === void 0)
     throw new Error("THREE.KeyframeTrack: track type undefined, can not parse");
-  let t = Cit(i.type);
-  if (i.times === void 0) {
+  let t = Zrt(o.type);
+  if (o.times === void 0) {
     let s = [],
       n = [];
-    (cD(i.keys, s, n, "value"), (i.times = s), (i.values = n));
+    (uG(o.keys, s, n, "value"), (o.times = s), (o.values = n));
   }
   let e;
   return (
     t.parse !== void 0
-      ? (e = t.parse(i))
-      : (e = new t(i.name, i.times, i.values, i.interpolation)),
-    Xv(i.settings) &&
+      ? (e = t.parse(o))
+      : (e = new t(o.name, o.times, o.values, o.interpolation)),
+    W3(o.settings) &&
       (e.settings = {
-        inTangents: mc(i.settings.inTangents, Float32Array),
-        outTangents: mc(i.settings.outTangents, Float32Array),
+        inTangents: Wc(o.settings.inTangents, Float32Array),
+        outTangents: Wc(o.settings.outTangents, Float32Array),
       }),
     e
   );
 }
-function HO(i) {
+function GD(o) {
   try {
-    let t = i.slice(i.indexOf(":") + 1);
+    let t = o.slice(o.indexOf(":") + 1);
     return new URL(t).protocol === "blob:";
   } catch {
     return !1;
   }
 }
-function Fit() {
+function e0t() {
   this._document.hidden === !1 && this.reset();
 }
-function JO(i, t) {
-  return i.distance - t.distance;
+function tU(o, t) {
+  return o.distance - t.distance;
 }
-function C9(i, t, e, s) {
+function oA(o, t, e, s) {
   let n = !0;
   if (
-    (i.layers.test(t.layers) && i.raycast(t, e) === !1 && (n = !1),
+    (o.layers.test(t.layers) && o.raycast(t, e) === !1 && (n = !1),
     n === !0 && s === !0)
   ) {
-    let o = i.children;
-    for (let a = 0, r = o.length; a < r; a++) C9(o[a], t, e, !0);
+    let i = o.children;
+    for (let a = 0, r = i.length; a < r; a++) oA(i[a], t, e, !0);
   }
 }
-function fD(i) {
+function pG(o) {
   let t = [];
-  i.isBone === !0 && t.push(i);
-  for (let e = 0; e < i.children.length; e++) t.push(...fD(i.children[e]));
+  o.isBone === !0 && t.push(o);
+  for (let e = 0; e < o.children.length; e++) t.push(...pG(o.children[e]));
   return t;
 }
-function ua(i, t, e, s, n, o, a) {
-  i8.set(n, o, a).unproject(s);
-  let r = t[i];
+function Sa(o, t, e, s, n, i, a) {
+  a6.set(n, i, a).unproject(s);
+  let r = t[o];
   if (r !== void 0) {
     let l = e.getAttribute("position");
-    for (let c = 0, h = r.length; c < h; c++) l.setXYZ(r[c], i8.x, i8.y, i8.z);
+    for (let c = 0, h = r.length; c < h; c++) l.setXYZ(r[c], a6.x, a6.y, a6.z);
   }
 }
-function Jit(i, t) {
-  let e = i.image && i.image.width ? i.image.width / i.image.height : 1;
+function b0t(o, t) {
+  let e = o.image && o.image.width ? o.image.width / o.image.height : 1;
   return (
     e > t
-      ? ((i.repeat.x = 1),
-        (i.repeat.y = e / t),
-        (i.offset.x = 0),
-        (i.offset.y = (1 - i.repeat.y) / 2))
-      : ((i.repeat.x = t / e),
-        (i.repeat.y = 1),
-        (i.offset.x = (1 - i.repeat.x) / 2),
-        (i.offset.y = 0)),
-    i
+      ? ((o.repeat.x = 1),
+        (o.repeat.y = e / t),
+        (o.offset.x = 0),
+        (o.offset.y = (1 - o.repeat.y) / 2))
+      : ((o.repeat.x = t / e),
+        (o.repeat.y = 1),
+        (o.offset.x = (1 - o.repeat.x) / 2),
+        (o.offset.y = 0)),
+    o
   );
 }
-function Zit(i, t) {
-  let e = i.image && i.image.width ? i.image.width / i.image.height : 1;
+function x0t(o, t) {
+  let e = o.image && o.image.width ? o.image.width / o.image.height : 1;
   return (
     e > t
-      ? ((i.repeat.x = t / e),
-        (i.repeat.y = 1),
-        (i.offset.x = (1 - i.repeat.x) / 2),
-        (i.offset.y = 0))
-      : ((i.repeat.x = 1),
-        (i.repeat.y = e / t),
-        (i.offset.x = 0),
-        (i.offset.y = (1 - i.repeat.y) / 2)),
-    i
+      ? ((o.repeat.x = t / e),
+        (o.repeat.y = 1),
+        (o.offset.x = (1 - o.repeat.x) / 2),
+        (o.offset.y = 0))
+      : ((o.repeat.x = 1),
+        (o.repeat.y = e / t),
+        (o.offset.x = 0),
+        (o.offset.y = (1 - o.repeat.y) / 2)),
+    o
   );
 }
-function Qit(i) {
+function v0t(o) {
   return (
-    (i.repeat.x = 1),
-    (i.repeat.y = 1),
-    (i.offset.x = 0),
-    (i.offset.y = 0),
-    i
+    (o.repeat.x = 1),
+    (o.repeat.y = 1),
+    (o.offset.x = 0),
+    (o.offset.y = 0),
+    o
   );
 }
-function P6(i, t, e, s) {
-  let n = tot(s);
+function LS(o, t, e, s) {
+  let n = y0t(s);
   switch (e) {
-    case z6:
-      return i * t;
-    case K3:
-      return ((i * t) / n.components) * n.byteLength;
-    case mg:
-      return ((i * t) / n.components) * n.byteLength;
-    case Kf:
-      return ((i * t * 2) / n.components) * n.byteLength;
-    case Y3:
-      return ((i * t * 2) / n.components) * n.byteLength;
-    case E6:
-      return ((i * t * 3) / n.components) * n.byteLength;
-    case no:
-      return ((i * t * 4) / n.components) * n.byteLength;
-    case J3:
-      return ((i * t * 4) / n.components) * n.byteLength;
-    case gg:
-    case bg:
-      return Math.floor((i + 3) / 4) * Math.floor((t + 3) / 4) * 8;
-    case xg:
-    case vg:
-      return Math.floor((i + 3) / 4) * Math.floor((t + 3) / 4) * 16;
-    case Q3:
+    case TS:
+      return o * t;
+    case qy:
+      return ((o * t) / n.components) * n.byteLength;
+    case ob:
+      return ((o * t) / n.components) * n.byteLength;
+    case Au:
+      return ((o * t * 2) / n.components) * n.byteLength;
+    case jy:
+      return ((o * t * 2) / n.components) * n.byteLength;
+    case RS:
+      return ((o * t * 3) / n.components) * n.byteLength;
+    case go:
+      return ((o * t * 4) / n.components) * n.byteLength;
+    case $y:
+      return ((o * t * 4) / n.components) * n.byteLength;
+    case ab:
+    case rb:
+      return Math.floor((o + 3) / 4) * Math.floor((t + 3) / 4) * 8;
+    case lb:
+    case cb:
+      return Math.floor((o + 3) / 4) * Math.floor((t + 3) / 4) * 16;
+    case Ky:
+    case Jy:
+      return (Math.max(o, 16) * Math.max(t, 8)) / 4;
+    case Xy:
+    case Yy:
+      return (Math.max(o, 8) * Math.max(t, 8)) / 2;
+    case Zy:
+    case Qy:
     case e5:
-      return (Math.max(i, 16) * Math.max(t, 8)) / 4;
-    case Z3:
-    case t5:
-      return (Math.max(i, 8) * Math.max(t, 8)) / 2;
     case s5:
+      return Math.floor((o + 3) / 4) * Math.floor((t + 3) / 4) * 8;
+    case t5:
+    case hb:
     case n5:
-    case o5:
-    case a5:
-      return Math.floor((i + 3) / 4) * Math.floor((t + 3) / 4) * 8;
+      return Math.floor((o + 3) / 4) * Math.floor((t + 3) / 4) * 16;
     case i5:
-    case yg:
+      return Math.floor((o + 3) / 4) * Math.floor((t + 3) / 4) * 16;
+    case o5:
+      return Math.floor((o + 4) / 5) * Math.floor((t + 3) / 4) * 16;
+    case a5:
+      return Math.floor((o + 4) / 5) * Math.floor((t + 4) / 5) * 16;
     case r5:
-      return Math.floor((i + 3) / 4) * Math.floor((t + 3) / 4) * 16;
+      return Math.floor((o + 5) / 6) * Math.floor((t + 4) / 5) * 16;
     case l5:
-      return Math.floor((i + 3) / 4) * Math.floor((t + 3) / 4) * 16;
+      return Math.floor((o + 5) / 6) * Math.floor((t + 5) / 6) * 16;
     case c5:
-      return Math.floor((i + 4) / 5) * Math.floor((t + 3) / 4) * 16;
+      return Math.floor((o + 7) / 8) * Math.floor((t + 4) / 5) * 16;
     case h5:
-      return Math.floor((i + 4) / 5) * Math.floor((t + 4) / 5) * 16;
+      return Math.floor((o + 7) / 8) * Math.floor((t + 5) / 6) * 16;
     case f5:
-      return Math.floor((i + 5) / 6) * Math.floor((t + 4) / 5) * 16;
+      return Math.floor((o + 7) / 8) * Math.floor((t + 7) / 8) * 16;
     case u5:
-      return Math.floor((i + 5) / 6) * Math.floor((t + 5) / 6) * 16;
+      return Math.floor((o + 9) / 10) * Math.floor((t + 4) / 5) * 16;
     case d5:
-      return Math.floor((i + 7) / 8) * Math.floor((t + 4) / 5) * 16;
+      return Math.floor((o + 9) / 10) * Math.floor((t + 5) / 6) * 16;
     case p5:
-      return Math.floor((i + 7) / 8) * Math.floor((t + 5) / 6) * 16;
+      return Math.floor((o + 9) / 10) * Math.floor((t + 7) / 8) * 16;
     case m5:
-      return Math.floor((i + 7) / 8) * Math.floor((t + 7) / 8) * 16;
+      return Math.floor((o + 9) / 10) * Math.floor((t + 9) / 10) * 16;
     case g5:
-      return Math.floor((i + 9) / 10) * Math.floor((t + 4) / 5) * 16;
+      return Math.floor((o + 11) / 12) * Math.floor((t + 9) / 10) * 16;
     case b5:
-      return Math.floor((i + 9) / 10) * Math.floor((t + 5) / 6) * 16;
+      return Math.floor((o + 11) / 12) * Math.floor((t + 11) / 12) * 16;
     case x5:
-      return Math.floor((i + 9) / 10) * Math.floor((t + 7) / 8) * 16;
     case v5:
-      return Math.floor((i + 9) / 10) * Math.floor((t + 9) / 10) * 16;
     case y5:
-      return Math.floor((i + 11) / 12) * Math.floor((t + 9) / 10) * 16;
+      return Math.ceil(o / 4) * Math.ceil(t / 4) * 16;
     case w5:
-      return Math.floor((i + 11) / 12) * Math.floor((t + 11) / 12) * 16;
     case M5:
+      return Math.ceil(o / 4) * Math.ceil(t / 4) * 8;
+    case fb:
     case S5:
-    case k5:
-      return Math.ceil(i / 4) * Math.ceil(t / 4) * 16;
-    case _5:
-    case z5:
-      return Math.ceil(i / 4) * Math.ceil(t / 4) * 8;
-    case wg:
-    case E5:
-      return Math.ceil(i / 4) * Math.ceil(t / 4) * 16;
+      return Math.ceil(o / 4) * Math.ceil(t / 4) * 16;
   }
   throw new Error(`Unable to determine texture byte length for ${e} format.`);
 }
-function tot(i) {
-  switch (i) {
-    case r0:
-    case M6:
+function y0t(o) {
+  switch (o) {
+    case M0:
+    case kS:
       return { byteLength: 1, components: 1 };
-    case H1:
-    case S6:
-    case aa:
+    case Mm:
+    case zS:
+    case ga:
       return { byteLength: 2, components: 1 };
-    case $3:
-    case X3:
+    case Vy:
+    case Wy:
       return { byteLength: 2, components: 4 };
-    case Q0:
-    case V3:
-    case La:
+    case Ml:
+    case Gy:
+    case qa:
       return { byteLength: 4, components: 1 };
-    case k6:
-    case _6:
+    case _S:
+    case ES:
       return { byteLength: 4, components: 3 };
   }
-  throw new Error(`THREE.TextureUtils: Unknown texture type ${i}.`);
+  throw new Error(`THREE.TextureUtils: Unknown texture type ${o}.`);
 }

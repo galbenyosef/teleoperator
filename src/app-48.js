@@ -1,334 +1,339 @@
-// app 48 — math
-// Lines 60408-60739 of readable/app.pretty.js (statement-aligned).
-function pR({ B: i, A: t, colliders: e }, s = {}) {
-  let n = i.R("wharf"),
-    o = n.solid,
-    a = s.y ?? 3,
-    [r, l] = s.wheel || [ae[6], fe[0] - Qe[0].hw - Qe[0].sw - 5.5],
-    c = t.add("crabwheel", 1024, 1024, cS);
-  {
-    let m = a + 8.2,
-      g = 3.1,
-      b = At([0.05, 0.14, 0.32], Tt.metal);
-    (es(o, r, l, 0.22, a + 0.1, m - 0.5, 8, b),
-      es(o, r, l, 0.45, a + 0.1, a + 0.6, 8, At([0.4, 0.4, 0.38], Tt.conc)));
-    for (let v of [1, -1])
-      si(n.text, t, c, r + v * 0.16, m, l, v, 0, g * 2, g * 2, Da(!0));
-    let x = [];
-    for (let v = 0; v <= 36; v++) {
-      let y = (v / 36) * Math.PI * 2;
-      x.push([r, m + Math.sin(y) * g, l + Math.cos(y) * g]);
+// app 48 — top
+// Lines 60971-61307 of readable/app.pretty.js (statement-aligned).
+function j7({ B: o, A: t }, e = {}) {
+  let s = o.R("hyde"),
+    n = s.solid,
+    i = Cm("n", he[3]),
+    a = 22,
+    r = a / 2,
+    l = e.len ?? 290,
+    c = 3;
+  i.box(n, -(e.a0 || 0), -r, l, r, 1.9, c, V7, { bottom: !0 });
+  for (let h = 3; h < l; h += 5)
+    for (let f of [-r + 0.4, -r / 3, r / 3, r - 0.4]) {
+      let u = i.L(h, f);
+      os(n, u[0], u[1], 0.25, -6, 1.9, 6, Lb);
     }
-    Wi(o, x, 0.14, 6, At([0.8, 0.75, 0.6], Tt.metal));
-    for (let v = 0; v < 8; v++) {
-      let y = (v / 8) * Math.PI * 2 + Math.PI / 8,
-        M = [r, m + Math.sin(y) * g, l + Math.cos(y) * g],
-        S = [r, m + Math.sin(y) * (g + 0.9), l + Math.cos(y) * (g + 0.9)];
-      Wi(
-        o,
-        [M, [(M[0] + S[0]) / 2, (M[1] + S[1]) / 2, (M[2] + S[2]) / 2], S],
-        [0.1, 0.16, 0.12],
-        6,
-        At([0.45, 0.27, 0.12], Tt.planks),
+  (s0(n, i.L(0, -r), i.L(l, -r), c, Rt([0.35, 0.28, 0.2], Tt.planks), {
+    step: 3,
+  }),
+    i.box(n, 8, -8, 20, -1, c, c + 4.2, Rt([0.62, 0.58, 0.5], Tt.planks)),
+    bW(n, i, 8, -8, 20, -1, c + 4.2, 2, Rt([0.3, 0.12, 0.08], Tt.tar)),
+    i.box(n, 60, 2, 110, r - 1, c, c + 6.5, Rt([0.58, 0.55, 0.5], Tt.planks)),
+    bW(n, i, 60, 2, 110, r - 1, c + 6.5, 2.4, Rt([0.25, 0.26, 0.25], Tt.tar)));
+  for (let h = 10; h < l; h += 15)
+    for (let f of [-r + 0.5, r - 0.5]) {
+      let u = i.P(h, c, f);
+      Ws(
+        n,
+        u[0],
+        u[2],
+        [
+          [0.25, c],
+          [0.22, c + 0.5],
+          [0.32, c + 0.6],
+          [0.3, c + 0.7],
+          [0.01, c + 0.72],
+        ],
+        8,
+        Cb,
       );
     }
-    e.push({ t: "circ", x: r, z: l, r: 0.6 });
-  }
-  let h = [
-      [ae[6] - 58, 0],
-      [ae[6] - 34, 1],
-      [ae[6] + 26, 2],
-      [ae[6] + 50, 3],
-    ],
-    f = ["FRESH CRAB", "CRAB \xB7 SHRIMP", "CHOWDER", "COCKTAILS \xB7 CRAB"];
-  for (let [m, g] of h) {
-    let b = Ve.z + (s.real ? 0.2 : 1.2),
-      x = b + 3.2,
-      v = m - 3.5,
-      y = m + 3.5;
-    if (s.real && [v - 0.2, m, y + 0.2].some((S) => Qr(S, x + 0.3) === "road"))
-      continue;
-    (Ms(o, v, a, b, y, a + 1, x, At([0.7, 0.7, 0.68], Tt.metal)),
-      Ms(
-        o,
-        v + 0.1,
-        a + 1,
-        b + 0.2,
-        y - 0.1,
-        a + 1.12,
-        x - 0.3,
-        At([0.85, 0.9, 0.95], Tt.paint),
-      ));
-    for (let S = 0; S < 9; S++) {
-      let w = v + 0.6 + S * 0.7,
-        z = b + 0.8 + (S % 2) * 1.2;
-      Us(
-        o,
-        w,
-        z,
-        1,
-        0,
-        0.22,
-        0.17,
-        a + 1.12,
-        a + 1.28,
-        At([0.6, 0.1, 0.04], Tt.paint),
-      );
+  (udt(n, t, s, i, e.balclutha ?? 130, r + 7.5),
+    ddt(n, t, s, i, e.eureka ?? 215, -r - 10.5));
+}
+function bW(o, t, e, s, n, i, a, r, l) {
+  let c = t.L(e, s),
+    h = t.L(n, i);
+  V5(
+    o,
+    Math.min(c[0], h[0]),
+    Math.min(c[1], h[1]),
+    Math.max(c[0], h[0]),
+    Math.max(c[1], h[1]),
+    a,
+    r,
+    l,
+    Math.abs(c[0] - h[0]) > Math.abs(c[1] - h[1]),
+    l,
+    0.4,
+  );
+}
+function fdt(
+  o,
+  t,
+  e,
+  s,
+  n,
+  i,
+  a,
+  r,
+  l,
+  { sternRound: c = 0.25, n: h = 18, m: f = 6 } = {},
+) {
+  let u = (m) =>
+      (i / 2) *
+      (m < 0.4 ? Math.pow(Math.sin(((Math.PI / 2) * m) / 0.4), 0.55) : 1) *
+      (m > 0.8 ? 1 - Math.pow((m - 0.8) / 0.2, 2) * (1 - c) : 1),
+    d = (m) => a + 0.9 * Math.pow(1 - m, 2) + 0.5 * Math.pow(m, 3),
+    p = [];
+  for (let m = 0; m <= h; m++) {
+    let g = m / h,
+      b = e + n / 2 - g * n,
+      v = Math.max(0.08, u(g)),
+      x = d(g),
+      y = g < 0.1 ? r + (x - 1 - r) * (1 - g / 0.1) : r,
+      M = [];
+    for (let S = 0; S <= f; S++) {
+      let w = ((S / f) * Math.PI) / 2;
+      M.push([v * Math.pow(Math.cos(w), 0.35), x - (x - y) * Math.sin(w)]);
     }
-    for (let S of [v + 0.8, y - 0.8])
-      es(
-        o,
-        S,
-        b + 2.4,
-        0.45,
-        a + 1,
-        a + 1.9,
-        10,
-        At([0.55, 0.55, 0.55], Tt.metal),
-      );
-    for (let [S, w] of [
-      [v, b],
-      [y, b],
-      [v, x + 0.6],
-      [y, x + 0.6],
-    ])
-      es(o, S, w, 0.06, a, a + 3.3, 5, At([0.7, 0.7, 0.7], Tt.metal));
-    for (let S = 0; S < 10; S++) {
-      let w = v - 0.3 + S * 0.76,
-        z = w + 0.76;
-      xs(
-        o,
-        [w, a + 3.3, b - 0.3],
-        [z, a + 3.3, b - 0.3],
-        [z, a + 2.8, x + 1.4],
-        [w, a + 2.8, x + 1.4],
-        At(
-          S % 2
-            ? [0.8, 0.8, 0.78]
-            : g % 2
-              ? [0.5, 0.05, 0.04]
-              : [0.05, 0.2, 0.08],
-          Tt.paint,
-        ),
-        [m, a + 30, x + 20],
-      );
-    }
-    let M = t.word(f[g], {
-      font: "bold 110px Arial, Helvetica, sans-serif",
-      h: 130,
-    });
-    (si(
-      n.text,
-      t,
-      M,
-      m,
-      a + 3.7,
-      x + 1.45,
-      0,
-      1,
-      6.2,
-      null,
-      oo(g % 2 ? [1, 0.25, 0.15] : [1, 0.85, 0.3], !0),
-    ),
-      Ms(
-        o,
-        m - 3.3,
-        a + 3.3,
-        x + 1.3,
-        m + 3.3,
-        a + 4.1,
-        x + 1.42,
-        At([0.08, 0.08, 0.08], Tt.paint),
-      ),
-      e.push({ t: "box", x0: v - 0.2, z0: b - 0.2, x1: y + 0.2, z1: x + 0.2 }));
+    p.push({ a: b, ring: M, top: x, b: v });
   }
-  if (s.real) return;
-  let u = ["SEAFOOD", "CRAB HOUSE", "FISH GROTTO", "CHOWDER", "OYSTERS"],
-    d = 0;
-  for (let m = ae[6] + 10; m < ae[7] - 2; m += 22, d++) {
-    let g = m + 20,
-      b = Ve.z - 1.5,
-      x = b - 18,
-      v = 9 + (d % 2) * 1.5,
-      y = [
-        [1, 1, 1],
-        [0.95, 1, 1.05],
-        [1.05, 1, 0.95],
-      ][d % 3];
-    Ms(o, m - 1, 1.6, x - 1, g + 1, a, Ve.z, dR, { bottom: !0 });
-    for (let _ = m; _ <= g; _ += 5)
-      for (let R of [x - 0.5, (x + b) / 2]) es(o, _, R, 0.3, -6, 1.6, 6, qg);
-    let M = Ha("wharf", y);
-    (n.atlas.wall(m, b, g, b, a, a, a + v, a + v, M, d * 7, a),
-      n.atlas.wall(g, x, m, x, a, a, a + v, a + v, M, d * 3, a),
-      n.atlas.wall(m, x, m, b, a, a, a + v, a + v, M, 5, a),
-      n.atlas.wall(g, b, g, x, a, a, a + v, a + v, M, 11, a),
-      Ms(
-        o,
-        m - 0.4,
-        a + v,
-        x - 0.4,
-        g + 0.4,
-        a + v + 1,
-        b + 0.4,
-        At([0.72, 0.7, 0.64], Tt.paint),
-      ));
-    let S = t.word(u[d % u.length], {
-        font: 'bold 120px "Arial Black", Arial, sans-serif',
-        h: 140,
-      }),
-      w = 11,
-      z = (m + g) / 2;
-    for (let [_, R] of [
-      [z - w / 2 + 0.5, b - 3],
-      [z + w / 2 - 0.5, b - 3],
-    ])
-      ss(o, [_, a + v + 1, R], [_, a + v + 3.6, R], 0.12, 0.12, Wg);
-    si(
-      n.text,
-      t,
-      S,
-      z,
-      a + v + 2.6,
-      b - 2.9,
-      0,
-      1,
-      w,
-      null,
-      oo(d % 2 ? [1, 0.3, 0.15] : [0.95, 0.9, 0.75], !0),
-    );
-  }
-  let p = lS(77);
-  for (let m = 0; m < 10; m++) {
-    let g = ae[6] - 20 + (m % 5) * 26 + p() * 6,
-      b = Ve.z - 32 - Math.floor(m / 5) * 14 - p() * 4;
-    mR(o, g, b, Math.PI / 2 + (p() - 0.5) * 0.2, p);
-  }
-  for (let m = 0; m < 2; m++)
+  for (let m of [-1, 1])
+    for (let g = 0; g < h; g++)
+      for (let b = 0; b < f; b++) {
+        let v = p[g],
+          x = p[g + 1],
+          y = (w, _) => t.P(w.a, w.ring[_][1], s + m * w.ring[_][0]),
+          M = (v.ring[b][1] + v.ring[b + 1][1]) / 2,
+          S = M < 0.3 ? l.bottom : b === 0 ? l.band : l.top;
+        Ms(
+          o,
+          y(v, b),
+          y(x, b),
+          y(x, b + 1),
+          y(v, b + 1),
+          S,
+          t.P((v.a + x.a) / 2, M - 1, s + m * 60),
+        );
+      }
+  for (let m = 0; m < h; m++) {
+    let g = p[m],
+      b = p[m + 1];
     Ms(
       o,
-      ae[6] - 30,
-      -0.3,
-      Ve.z - 38 - m * 14,
-      ae[6] + 110,
-      0.4,
-      Ve.z - 36 - m * 14,
-      At([0.4, 0.37, 0.33], Tt.planks),
+      t.P(g.a, g.top - 0.9, s - g.b),
+      t.P(b.a, b.top - 0.9, s - b.b),
+      t.P(b.a, b.top - 0.9, s + b.b),
+      t.P(g.a, g.top - 0.9, s + g.b),
+      l.deck,
+      t.P(g.a, g.top + 20, s),
     );
+    for (let v of [-1, 1])
+      Ms(
+        o,
+        t.P(g.a, g.top - 0.9, s + v * (g.b - 0.05)),
+        t.P(b.a, b.top - 0.9, s + v * (b.b - 0.05)),
+        t.P(b.a, b.top, s + v * (b.b - 0.05)),
+        t.P(g.a, g.top, s + v * (g.b - 0.05)),
+        l.top,
+        t.P(g.a, g.top, s - v * 50),
+      );
+  }
+  {
+    let m = p[h];
+    Ms(
+      o,
+      t.P(m.a, m.top, s - m.b),
+      t.P(m.a, m.top, s + m.b),
+      t.P(m.a, 0.5, s + m.b * 0.6),
+      t.P(m.a, 0.5, s - m.b * 0.6),
+      l.top,
+      t.P(m.a - 20, m.top, s),
+    );
+  }
+  return { sheer: d, halfB: u, stationA: (m) => e + n / 2 - m * n };
 }
-function mR(i, t, e, s, n) {
-  let o = Math.cos(s),
-    a = Math.sin(s),
-    r = 11 + n() * 4,
-    l = 3.4,
-    c = At(
-      [
-        [0.8, 0.8, 0.78],
-        [0.2, 0.35, 0.5],
-        [0.55, 0.15, 0.1],
-        [0.15, 0.3, 0.2],
-      ][Math.floor(n() * 4)],
-      Tt.paint,
-    ),
-    h = At([0.85, 0.85, 0.82], Tt.paint);
-  Us(i, t, e, o, a, r / 2, l / 2, -0.6, 1.2, c, { bottom: !0 });
-  let f = t + (o * r) / 2,
-    u = e + (a * r) / 2;
-  (xs(
-    i,
-    [t + o * (r / 2) - (a * l) / 2, -0.6, e + a * (r / 2) + (o * l) / 2],
-    [f + o * 2.2, 1.3, u + a * 2.2],
-    [f + o * 2.2, 1.3, u + a * 2.2],
-    [t + o * (r / 2) - (a * l) / 2, 1.2, e + a * (r / 2) + (o * l) / 2],
-    c,
-    [f - a * 10, 1, u + o * 10],
-  ),
-    xs(
+function udt(o, t, e, s, n, i) {
+  let c = Rt([0.03, 0.03, 0.03], Tt.paint),
+    h = Rt([0.35, 0.07, 0.04], Tt.paint),
+    f = Rt([0.8, 0.78, 0.72], Tt.paint),
+    u = fdt(
+      o,
+      s,
+      n,
       i,
-      [t + o * (r / 2) + (a * l) / 2, -0.6, e + a * (r / 2) - (o * l) / 2],
-      [f + o * 2.2, 1.3, u + a * 2.2],
-      [f + o * 2.2, 1.3, u + a * 2.2],
-      [t + o * (r / 2) + (a * l) / 2, 1.2, e + a * (r / 2) - (o * l) / 2],
-      c,
-      [f + a * 10, 1, u - o * 10],
+      72,
+      11.8,
+      4.2,
+      -5,
+      { top: c, bottom: h, band: c, deck: Rt([0.45, 0.38, 0.3], Tt.planks) },
+      { sternRound: 0.45 },
     ),
-    Us(i, t + o * r * 0.12, e + a * r * 0.12, o, a, 1.6, 1.2, 1.2, 3.2, h, {
-      sides: [1, 0, 1, 1],
-    }));
-  let d = (g, b) => [
-    t + o * (r * 0.12 + 1.6) - a * g,
-    b,
-    e + a * (r * 0.12 + 1.6) + o * g,
-  ];
-  for (let [g, b, x, v, y] of [
-    [-1.2, 1.2, 1.2, 2.2, h],
-    [-1.2, 1.2, 3, 3.2, h],
-    [-1.2, -1, 2.2, 3, h],
-    [1, 1.2, 2.2, 3, h],
-    [-1, 1, 2.2, 3, At([0.05, 0.06, 0.07], Tt.glass)],
-  ])
-    xs(i, d(g, x), d(b, x), d(b, v), d(g, v), y, [t + o * 100, 3, e + a * 100]);
-  let p = t + o * r * 0.3,
-    m = e + a * r * 0.3;
-  (es(i, p, m, 0.07, 1.2, 8 + n() * 3, 5, h),
-    ss(i, [p, 6, m], [t - o * r * 0.45, 2, e - a * r * 0.45], 0.06, 0.06, h));
-}
-function cS(i, t, e, s, n, o = {}) {
-  let a = t + s / 2,
-    r = e + n / 2,
-    l = s / 2 - 6;
-  ((i.fillStyle = "#0f3b7a"),
-    i.beginPath(),
-    i.arc(a, r, l, 0, Math.PI * 2),
-    i.fill(),
-    (i.strokeStyle = "#f4ede0"),
-    (i.lineWidth = 14),
-    i.beginPath(),
-    i.arc(a, r, l - 8, 0, Math.PI * 2),
-    i.stroke(),
-    (i.fillStyle = "#eaf2f8"),
-    i.beginPath(),
-    i.arc(a, r, l * 0.6, 0, Math.PI * 2),
-    i.fill(),
-    (i.strokeStyle = "#f4ede0"),
-    (i.lineWidth = 8),
-    i.beginPath(),
-    i.arc(a, r, l * 0.6, 0, Math.PI * 2),
-    i.stroke());
-  let c = "FISHERMAN'S  WHARF",
-    h = 92;
-  ((i.font = `bold ${h}px Georgia, "Times New Roman", serif`),
-    (i.fillStyle = "#ffffff"),
-    (i.textAlign = "center"),
-    (i.textBaseline = "middle"));
-  let f = l * 0.8,
-    u = Math.PI * 1.55,
-    d = -Math.PI / 2 - u / 2,
-    p = [...c].map((b) => i.measureText(b).width),
-    m = p.reduce((b, x) => b + x, 0),
-    g = 0;
-  for (let b = 0; b < c.length; b++) {
-    let x = d + ((g + p[b] / 2) / m) * u;
-    ((g += p[b]),
-      i.save(),
-      i.translate(a + Math.cos(x) * f, r + Math.sin(x) * f),
-      i.rotate(x + Math.PI / 2),
-      i.fillText(c[b], 0, 0),
-      i.restore());
+    d = Rt([0.35, 0.25, 0.16], Tt.planks),
+    p = Rt([0.12, 0.1, 0.08], Tt.paint),
+    m = Rt([0.8, 0.76, 0.66], Tt.paint),
+    g = Rt([0.08, 0.07, 0.06], Tt.paint),
+    b = [
+      [0.22, 42],
+      [0.46, 45],
+      [0.7, 38],
+    ],
+    v = s.P(u.stationA(0) + 0.5, 4.2 + 1.2, i);
+  for (let [M, S] of b) {
+    let w = u.stationA(M),
+      _ = s.P(w, 4.2, i);
+    (os(o, _[0], _[2], 0.42, 4.2 - 0.5, 4.2 + S * 0.45, 8, d, 0.36),
+      os(o, _[0], _[2], 0.28, 4.2 + S * 0.45, 4.2 + S * 0.78, 6, d, 0.22),
+      os(o, _[0], _[2], 0.18, 4.2 + S * 0.78, 4.2 + S, 6, d, 0.08));
+    let z = s.P(w, 0, i);
+    if (
+      (zs(
+        o,
+        z[0] - 1.6,
+        4.2 + S * 0.44,
+        z[2] - 1.6,
+        z[0] + 1.6,
+        4.2 + S * 0.46,
+        z[2] + 1.6,
+        d,
+        { bottom: !0 },
+      ),
+      M < 0.65)
+    ) {
+      let A = [0.3, 0.42, 0.56, 0.68, 0.8, 0.9],
+        T = [24, 22, 19, 16, 13, 10];
+      A.forEach((E, R) => {
+        let P = 4.2 + S * E,
+          C = T[R] / 2;
+        (rs(o, s.P(w + 0.5, P, i - C), s.P(w + 0.5, P, i + C), 0.3, 0.3, p),
+          Qi(
+            o,
+            [
+              s.P(w + 0.85, P - 0.05, i - C * 0.85),
+              s.P(w + 1, P - 0.35, i),
+              s.P(w + 0.85, P - 0.05, i + C * 0.85),
+            ],
+            [0.18, 0.42, 0.18],
+            5,
+            m,
+          ));
+      });
+    } else
+      (rs(
+        o,
+        s.P(w - 0.4, 4.2 + 4, i),
+        s.P(w - 13, 4.2 + 6.5, i),
+        0.25,
+        0.25,
+        p,
+      ),
+        rs(
+          o,
+          s.P(w - 0.4, 4.2 + S * 0.44, i),
+          s.P(w - 11, 4.2 + S * 0.52, i),
+          0.2,
+          0.2,
+          p,
+        ),
+        Qi(
+          o,
+          [
+            s.P(w - 1, 4.2 + 4.5, i),
+            s.P(w - 7, 4.2 + 5.8, i),
+            s.P(w - 12.5, 4.2 + 6.8, i),
+          ],
+          0.3,
+          5,
+          m,
+        ));
+    for (let A of [-1, 1])
+      for (let T = -2; T <= 2; T++) {
+        let E = u.halfB(M) + 0.3;
+        (q5(
+          o,
+          s.P(w + T * 0.9, 4.2 + 0.8, i + A * E),
+          s.P(w, 4.2 + S * 0.44, i + A * 0.6),
+          0.03,
+          g,
+        ),
+          q5(
+            o,
+            s.P(w + T * 0.5, 4.2 + S * 0.45, i + A * 1.5),
+            s.P(w, 4.2 + S * 0.78, i + A * 0.3),
+            0.025,
+            g,
+          ));
+      }
+    (q5(
+      o,
+      s.P(w, 4.2 + S * 0.44, i),
+      M < 0.3 ? v : s.P(u.stationA(M - 0.24), 4.2 + 1, i),
+      0.03,
+      g,
+    ),
+      q5(
+        o,
+        s.P(w, 4.2 + S, i),
+        M < 0.3
+          ? s.P(u.stationA(0) + 14, 4.2 + 5, i)
+          : s.P(u.stationA(M - 0.24), 4.2 + S * 0.8, i),
+        0.025,
+        g,
+      ));
   }
-  ((i.fillStyle = "#e8b03a"), i.beginPath());
-  for (let b = 0; b < 10; b++) {
-    let x = Math.PI / 2 + (b / 10) * Math.PI * 2,
-      v = b % 2 ? 18 : 44;
-    i.lineTo(a + Math.cos(x) * v, r + l * 0.8 + Math.sin(x) * v - 4);
+  let x = u.stationA(0);
+  rs(o, s.P(x - 3, 4.2 + 1.2, i), s.P(x + 15, 4.2 + 4.6, i), 0.5, 0.5, d);
+  for (let M of [-1, 1])
+    q5(
+      o,
+      s.P(x + 14, 4.2 + 4.4, i),
+      s.P(x - 1, 4.2 + 0.9, i + M * 2.5),
+      0.03,
+      g,
+    );
+  (s.box(
+    o,
+    u.stationA(0.55),
+    i - 3,
+    u.stationA(0.5),
+    i + 3,
+    4.2 - 0.3,
+    4.2 + 2.4,
+    f,
+  ),
+    s.box(
+      o,
+      u.stationA(0.33),
+      i - 2.5,
+      u.stationA(0.29),
+      i + 2.5,
+      4.2 - 0.3,
+      4.2 + 2.2,
+      f,
+    ),
+    s.box(
+      o,
+      u.stationA(1) + 1,
+      i - 11.8 / 2 + 0.8,
+      u.stationA(0.84),
+      i + 11.8 / 2 - 0.8,
+      4.2 + 0.1,
+      4.2 + 1.4,
+      Rt([0.5, 0.4, 0.3], Tt.planks),
+    ));
+  let y = t.word("BALCLUTHA", {
+    font: "bold 100px Georgia, serif",
+    h: 120,
+    spacing: 6,
+  });
+  for (let M of [-1, 1]) {
+    let S = s.P(u.stationA(0.12), 4.4, i + M * (u.halfB(0.12) + 0.05));
+    W5(
+      e.text,
+      t,
+      y,
+      S,
+      M > 0
+        ? s.P(1, 0, 0).map((w, _) => w - s.P(0, 0, 0)[_])
+        : s.P(-1, 0, 0).map((w, _) => w - s.P(0, 0, 0)[_]),
+      [0, 1, 0],
+      s.P(0, 0, M).map((w, _) => w - s.P(0, 0, 0)[_]),
+      5,
+      null,
+      xo([0.85, 0.75, 0.45]),
+    );
   }
-  if ((i.fill(), o.crab)) {
-    let b = l * 1.05;
-    i.drawImage(o.crab, a - b / 2, r - b / 2, b, b);
-  } else
-    ((i.fillStyle = "#c8301c"),
-      i.beginPath(),
-      i.ellipse(a, r, l * 0.35, l * 0.25, 0, 0, Math.PI * 2),
-      i.fill());
-  i.textAlign = "start";
 }
+var q5 = (o, t, e, s, n) => rs(o, t, e, s * 2, s * 2, n);

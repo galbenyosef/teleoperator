@@ -1,110 +1,323 @@
-// app 391 — math
-// Lines 192456-192563 of readable/app.pretty.js (statement-aligned).
-var Cet = (i) =>
-    String(i).replace(
-      /[&<>"']/g,
-      (t) =>
-        ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        })[t],
-    ),
-  zM = (i) =>
-    (i < 0 ? "\u2212" : "") +
-    "$" +
-    Math.abs(Math.round(i)).toLocaleString("en-US"),
-  Let = (i) => {
-    let t = Math.max(0, (Date.now() - i) / 1e3);
-    return t < 60
-      ? "just now"
-      : t < 3600
-        ? Math.floor(t / 60) + " min ago"
-        : t < 86400
-          ? Math.floor(t / 3600) + " h ago"
-          : new Date(i).toLocaleDateString();
+// app 391 — pts
+// Lines 194992-195312 of readable/app.pretty.js (statement-aligned).
+es();
+Pn();
+var d1 = {
+    lamp: {
+      m: 160,
+      com: 3.6,
+      I: [1e3, 6],
+      pts: [
+        [0, 0, 0],
+        [0, 8.4, 0],
+        [0, 8.4, 2.95],
+        [0, 8.4, -0.1],
+      ],
+      loss: 0.09,
+      take: 0.75,
+      impact: 0.28,
+      metal: !0,
+    },
+    stop: {
+      m: 18,
+      com: 1.5,
+      I: [11, 0.4],
+      pts: [
+        [0, 0, 0],
+        [0, 2.75, 0],
+        [0.38, 2.35, -0.05],
+        [-0.38, 2.35, -0.05],
+      ],
+      loss: 0.025,
+      take: 1,
+      impact: 0.12,
+      metal: !0,
+    },
+    lamp2: {
+      m: 140,
+      com: 3,
+      I: [800, 5],
+      pts: [
+        [0, 0, 0],
+        [0, 6.4, 0],
+        [0, 5.9, 0.7],
+        [0, 5.9, -0.7],
+      ],
+      loss: 0.08,
+      take: 0.75,
+      impact: 0.26,
+      metal: !0,
+    },
+    plamp: {
+      m: 60,
+      com: 2,
+      I: [150, 2],
+      pts: [
+        [0, 0, 0],
+        [0, 4.6, 0],
+        [0.2, 4.2, 0],
+        [-0.2, 4.2, 0],
+      ],
+      loss: 0.04,
+      take: 0.9,
+      impact: 0.16,
+      metal: !0,
+    },
+    dlamp: {
+      m: 120,
+      com: 2.4,
+      I: [400, 4],
+      pts: [
+        [0, 0, 0],
+        [0, 5.3, 0],
+        [0.4, 4.6, 0],
+        [-0.4, 4.6, 0],
+      ],
+      loss: 0.06,
+      take: 0.8,
+      impact: 0.2,
+      metal: !0,
+    },
+    hydrant: {
+      m: 80,
+      com: 0.34,
+      I: [3.6, 1.4],
+      pts: [
+        [0.15, 0, 0.15],
+        [-0.15, 0, 0.15],
+        [0.15, 0, -0.15],
+        [-0.15, 0, -0.15],
+        [0, 0.72, 0],
+        [0.27, 0.42, 0],
+        [-0.27, 0.42, 0],
+      ],
+      loss: 0.1,
+      take: 0.55,
+      impact: 0.24,
+      water: !0,
+    },
   },
-  Zwt = `
-#chWallet .w { pointer-events: auto; cursor: pointer; }
-#chWallet .pd { display: block; margin-top: 4px; font: 600 10px var(--mono, monospace); letter-spacing: .1em; color: #ffd36b; text-align: right; }
-#walletLog { position: fixed; z-index: 40; right: max(12px, 2.5vw); top: max(12px, 2.5vh); width: min(380px, calc(100vw - 24px)); max-height: min(560px, calc(100vh - 24px)); display: none; flex-direction: column;
-  border-radius: 12px; background: rgba(9,11,15,.94); border: 1px solid rgba(255,255,255,.12); box-shadow: 0 14px 50px rgba(0,0,0,.5); color: #f3f4f1; font-family: var(--disp, sans-serif); }
-#walletLog.on { display: flex; }
-#walletLog header { display: flex; align-items: baseline; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
-#walletLog header h3 { margin: 0; font: 800 15px var(--disp, sans-serif); letter-spacing: .12em; text-transform: uppercase; }
-#walletLog header b { margin-left: auto; font: 800 20px var(--disp, sans-serif); font-variant-numeric: tabular-nums; }
-#walletLog header button { margin-left: 8px; width: 28px; height: 28px; border: 0; border-radius: 6px; background: rgba(255,255,255,.08); color: #fff; font-size: 16px; cursor: pointer; }
-#walletLog .pd { padding: 8px 16px; font: 600 11px/1.4 var(--mono, monospace); color: #ffd36b; background: rgba(255,211,107,.07); }
-#walletLog ol { list-style: none; margin: 0; padding: 4px 0; overflow-y: auto; }
-#walletLog li { display: grid; grid-template-columns: 1fr auto; gap: 1px 10px; padding: 7px 16px; border-bottom: 1px solid rgba(255,255,255,.05); }
-#walletLog li span { font: 600 13px var(--disp, sans-serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#walletLog li em { font: 800 13px var(--mono, monospace); font-style: normal; text-align: right; color: #7dffb0; } #walletLog li.neg em { color: #ff9a9a; }
-#walletLog li small { font: 500 10.5px var(--mono, monospace); color: rgba(243,244,241,.5); } #walletLog li small + small { text-align: right; }
-#walletLog li.pend em { color: #ffd36b; } #walletLog li.pend span::after { content: " \xB7 pending"; color: #ffd36b; font-size: 11px; }
-#walletLog footer { padding: 10px 16px 12px; font: 500 11px/1.45 var(--mono, monospace); color: rgba(243,244,241,.55); border-top: 1px solid rgba(255,255,255,.08); }
-`,
-  OE = class {
-    constructor(t) {
-      if (((this.pr = t), !document.getElementById("walletCss"))) {
-        let s = document.createElement("style");
-        ((s.id = "walletCss"),
-          (s.textContent = Zwt),
-          document.head.appendChild(s));
-      }
-      let e = (this.el = document.createElement("div"));
-      ((e.id = "walletLog"),
-        e.setAttribute("role", "dialog"),
-        e.setAttribute("aria-label", "Wallet history"),
-        document.body.appendChild(e),
-        e.addEventListener("click", (s) => {
-          s.target.closest("[data-x]") && this.toggle(!1);
-        }),
-        addEventListener(
-          "keydown",
-          (s) => {
-            this.on &&
-              s.code === "Escape" &&
-              (this.toggle(!1), s.stopPropagation());
-          },
-          !0,
-        ),
-        t.onCash?.(() => {
-          this.on && this.render();
-        }));
-    }
-    toggle(t = !this.on) {
-      ((this.on = t), this.el.classList.toggle("on", t), t && this.render());
-    }
-    render() {
-      let t = this.pr,
-        e = t.p.cash || { base: 0, log: [] },
-        s = t.wallet(),
-        n = t.pendingCash?.() || 0,
-        o = e.base || 0,
-        a = (e.log || [])
-          .map((r) => (r.pend || (o += r.a), { e: r, bal: o }))
-          .reverse();
-      this.el.innerHTML = `<header><h3>Wallet</h3><b>${zM(s)}</b><button type="button" data-x="1" aria-label="Close">\xD7</button></header>
-      ${n > 0.5 ? `<div class="pd">+${zM(n)} pending: income over $15,000 in a short time is held here and comes in as the limit refills (about $1,800 a minute).</div>` : ""}
-      <ol>${a.map(({ e: r, bal: l }) => `<li class="${r.a < 0 ? "neg" : ""}${r.pend ? " pend" : ""}"><span title="${Cet(r.held || r.why)}">${Cet(r.why || "Cash")}</span><em>${r.a < 0 ? "\u2212" : "+"}${zM(Math.abs(r.a))}</em><small>${Let(r.t)}${r.rel ? " \xB7 released " + Let(r.rel) : ""}</small><small>${r.pend ? "not in the balance yet" : "balance " + zM(l)}</small></li>`).join("") || "<li><span>No changes yet</span></li>"}</ol>
-      <footer>${Math.abs(e.base || 0) > 0.5 ? `Before this history: ${zM(e.base)}${e.baseT ? "" : " (your wallet when the history began)"}. ` : ""}Cash buys parts in the Garage. mindblown tokens (\u25C6) are separate: they pay for AI wraps and cars.</footer>`;
-    }
-  };
-var Iet = "sf-drive.chfilter",
-  gN = { trap: "speed", zone: "speed", drift: "drift", jump: "jump" },
-  Fet = (i) => "$" + Math.round(i).toLocaleString("en-US"),
-  Net = {
-    time: "Out of time",
-    cold: "The food went cold",
-    spilt: "The order is ruined - it went everywhere",
-    vip: "The VIP got out: too rough a ride",
-    busted: "BUSTED - the police caught you",
-    abandoned: "Abandoned",
-    teleport: "Left behind (teleported)",
-    quit: "Left the race",
-    place: "Off the podium",
-    few: "Not enough near misses",
-    off: "The police were switched off",
-  };
+  Nh = (o, t, e) => [
+    [o, 0, t],
+    [-o, 0, t],
+    [o, 0, -t],
+    [-o, 0, -t],
+    [o, e, t],
+    [-o, e, t],
+    [o, e, -t],
+    [-o, e, -t],
+  ];
+Object.assign(d1, {
+  meter: {
+    m: 22,
+    com: 0.75,
+    I: [4, 0.1],
+    pts: [
+      [0, 0, 0],
+      [0, 1.44, 0],
+      [0.1, 1.3, 0.08],
+      [-0.1, 1.3, -0.08],
+    ],
+    loss: 0.02,
+    take: 1,
+    impact: 0.07,
+    metal: !0,
+  },
+  bin: {
+    m: 35,
+    com: 0.45,
+    I: [3, 1.5],
+    pts: Nh(0.28, 0.28, 0.98),
+    loss: 0.03,
+    take: 0.9,
+    impact: 0.1,
+  },
+  newsbox: {
+    m: 70,
+    com: 0.55,
+    I: [9, 6],
+    pts: Nh(1, 0.2, 1.02),
+    loss: 0.05,
+    take: 0.8,
+    impact: 0.14,
+  },
+  bench: {
+    m: 45,
+    com: 0.45,
+    I: [12, 6],
+    pts: Nh(0.9, 0.25, 0.85),
+    loss: 0.04,
+    take: 0.85,
+    impact: 0.12,
+  },
+  rack: {
+    m: 25,
+    com: 0.45,
+    I: [5, 2],
+    pts: Nh(0.78, 0.05, 0.88),
+    loss: 0.03,
+    take: 0.9,
+    impact: 0.1,
+    metal: !0,
+  },
+  cafe0: {
+    m: 25,
+    com: 0.7,
+    I: [5, 2],
+    pts: Nh(0.8, 0.3, 2.4),
+    loss: 0.02,
+    take: 1,
+    impact: 0.06,
+  },
+  cafe1: {
+    m: 25,
+    com: 0.7,
+    I: [5, 2],
+    pts: Nh(0.8, 0.3, 2.4),
+    loss: 0.02,
+    take: 1,
+    impact: 0.06,
+  },
+  cone: {
+    m: 4,
+    com: 0.25,
+    I: [0.15, 0.05],
+    pts: Nh(0.2, 0.2, 0.7),
+    loss: 0.005,
+    take: 1.1,
+    impact: 0.04,
+  },
+  barricade: {
+    m: 16,
+    com: 0.6,
+    I: [4, 3],
+    pts: Nh(0.9, 0.2, 1.05),
+    loss: 0.015,
+    take: 1,
+    impact: 0.08,
+  },
+  worksign: {
+    m: 10,
+    com: 0.9,
+    I: [2, 0.5],
+    pts: Nh(0.35, 0.3, 1.8),
+    loss: 0.01,
+    take: 1,
+    impact: 0.06,
+    metal: !0,
+  },
+});
+Object.assign(d1, {
+  signal: {
+    m: 450,
+    com: 2.9,
+    I: [2600, 40],
+    pts: [
+      [0, 0, 0],
+      [0, 5.6, 0],
+      [0, 5.4, 5.1],
+      [0, 4.2, 4.4],
+      [0.3, 3, 0.36],
+    ],
+    loss: 0,
+    take: 0.3,
+    impact: 0.8,
+    lift: 0.3,
+    metal: !0,
+  },
+  signalp: {
+    m: 300,
+    com: 2.3,
+    I: [1300, 12],
+    pts: [
+      [0, 0, 0],
+      [0, 4.7, 0],
+      [0.3, 4.1, 0.36],
+      [0.3, 3, 0.36],
+    ],
+    loss: 0,
+    take: 0.3,
+    impact: 0.75,
+    lift: 0.3,
+    metal: !0,
+  },
+  wpole: {
+    m: 400,
+    com: 3.7,
+    I: [1900, 10],
+    pts: [
+      [0, 0, 0],
+      [0, 7.4, 0],
+      [0.12, 7.2, 0],
+    ],
+    loss: 0,
+    take: 0.3,
+    impact: 0.8,
+    lift: 0.3,
+    metal: !0,
+  },
+  flexpost: {
+    v0: 0,
+    m: 2,
+    com: 0.45,
+    I: [0.12, 0.01],
+    pts: Nh(0.06, 0.06, 0.95),
+    loss: 0.003,
+    take: 1.15,
+    impact: 0.02,
+  },
+});
+var S4 = (o, t, e = {}) => ({
+  m: o,
+  com: t * 0.48,
+  I: [(o * t * t) / 12, o * 0.02],
+  pts: [
+    [0, 0, 0],
+    [0, t, 0],
+    [0.15, t * 0.9, 0],
+    [-0.15, t * 0.5, 0.1],
+  ],
+  loss: 0,
+  take: 0.3,
+  impact: 0.8,
+  lift: 0.3,
+  metal: !0,
+  ...e,
+});
+Object.assign(d1, {
+  tpole: S4(320, 7.6),
+  fpole: S4(420, 7.2),
+  tlpole: S4(380, 7),
+  upole: S4(650, 10.4, {
+    pts: [
+      [0, 0, 0],
+      [0, 10.4, 0],
+      [0, 9.85, 1.15],
+      [0, 9.85, -1.25],
+    ],
+    metal: !1,
+    wood: !0,
+  }),
+  upolet: S4(800, 10.4, {
+    pts: [
+      [0, 0, 0],
+      [0, 10.4, 0],
+      [0, 9.85, 1.15],
+      [0, 9.85, -1.25],
+      [0, 8.2, -0.72],
+    ],
+    metal: !1,
+    wood: !0,
+  }),
+  shelter: {
+    m: 300,
+    com: 1.3,
+    I: [450, 300],
+    pts: Nh(2, 0.85, 2.56),
+    loss: 0,
+    take: 0.6,
+    impact: 0.3,
+    metal: !0,
+    glass: !0,
+  },
+});

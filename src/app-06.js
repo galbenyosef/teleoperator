@@ -1,40 +1,40 @@
 // app 06 — next
-// Lines 1467-1804 of readable/app.pretty.js (statement-aligned).
-function p3(i, t, e, s, n, o, a) {
-  if (!i) return;
-  !a && o && mit(i, s, n, o);
-  let r = i;
-  for (; i.prev !== i.next;) {
-    let l = i.prev,
-      c = i.next;
-    if (o ? rit(i, s, n, o) : ait(i)) {
-      (t.push(l.i, i.i, c.i), g3(i), (i = c.next), (r = c.next));
+// Lines 1500-1837 of readable/app.pretty.js (statement-aligned).
+function hy(o, t, e, s, n, i, a) {
+  if (!o) return;
+  !a && i && Frt(o, s, n, i);
+  let r = o;
+  for (; o.prev !== o.next;) {
+    let l = o.prev,
+      c = o.next;
+    if (i ? Ert(o, s, n, i) : _rt(o)) {
+      (t.push(l.i, o.i, c.i), uy(o), (o = c.next), (r = c.next));
       continue;
     }
-    if (((i = c), i === r)) {
+    if (((o = c), o === r)) {
       a
         ? a === 1
-          ? ((i = lit(E1(i), t)), p3(i, t, e, s, n, o, 2))
-          : a === 2 && cit(i, t, e, s, n, o)
-        : p3(E1(i), t, e, s, n, o, 1);
+          ? ((o = Trt(fm(o), t)), hy(o, t, e, s, n, i, 2))
+          : a === 2 && Rrt(o, t, e, s, n, i)
+        : hy(fm(o), t, e, s, n, i, 1);
       break;
     }
   }
 }
-function ait(i) {
-  let t = i.prev,
-    e = i,
-    s = i.next;
-  if (jo(t, e, s) >= 0) return !1;
+function _rt(o) {
+  let t = o.prev,
+    e = o,
+    s = o.next;
+  if (ea(t, e, s) >= 0) return !1;
   let n = t.x,
-    o = e.x,
+    i = e.x,
     a = s.x,
     r = t.y,
     l = e.y,
     c = s.y,
-    h = Math.min(n, o, a),
+    h = Math.min(n, i, a),
     f = Math.min(r, l, c),
-    u = Math.max(n, o, a),
+    u = Math.max(n, i, a),
     d = Math.max(r, l, c),
     p = s.next;
   for (; p !== t;) {
@@ -43,71 +43,71 @@ function ait(i) {
       p.x <= u &&
       p.y >= f &&
       p.y <= d &&
-      Gv(n, r, o, l, a, c, p.x, p.y) &&
-      jo(p.prev, p, p.next) >= 0
+      N3(n, r, i, l, a, c, p.x, p.y) &&
+      ea(p.prev, p, p.next) >= 0
     )
       return !1;
     p = p.next;
   }
   return !0;
 }
-function rit(i, t, e, s) {
-  let n = i.prev,
-    o = i,
-    a = i.next;
-  if (jo(n, o, a) >= 0) return !1;
+function Ert(o, t, e, s) {
+  let n = o.prev,
+    i = o,
+    a = o.next;
+  if (ea(n, i, a) >= 0) return !1;
   let r = n.x,
-    l = o.x,
+    l = i.x,
     c = a.x,
     h = n.y,
-    f = o.y,
+    f = i.y,
     u = a.y,
     d = Math.min(r, l, c),
     p = Math.min(h, f, u),
     m = Math.max(r, l, c),
     g = Math.max(h, f, u),
-    b = S9(d, p, t, e, s),
-    x = S9(m, g, t, e, s),
-    v = i.prevZ,
-    y = i.nextZ;
-  for (; v && v.z >= b && y && y.z <= x;) {
+    b = YR(d, p, t, e, s),
+    v = YR(m, g, t, e, s),
+    x = o.prevZ,
+    y = o.nextZ;
+  for (; x && x.z >= b && y && y.z <= v;) {
     if (
-      (v.x >= d &&
-        v.x <= m &&
-        v.y >= p &&
-        v.y <= g &&
-        v !== n &&
-        v !== a &&
-        Gv(r, h, l, f, c, u, v.x, v.y) &&
-        jo(v.prev, v, v.next) >= 0) ||
-      ((v = v.prevZ),
+      (x.x >= d &&
+        x.x <= m &&
+        x.y >= p &&
+        x.y <= g &&
+        x !== n &&
+        x !== a &&
+        N3(r, h, l, f, c, u, x.x, x.y) &&
+        ea(x.prev, x, x.next) >= 0) ||
+      ((x = x.prevZ),
       y.x >= d &&
         y.x <= m &&
         y.y >= p &&
         y.y <= g &&
         y !== n &&
         y !== a &&
-        Gv(r, h, l, f, c, u, y.x, y.y) &&
-        jo(y.prev, y, y.next) >= 0)
+        N3(r, h, l, f, c, u, y.x, y.y) &&
+        ea(y.prev, y, y.next) >= 0)
     )
       return !1;
     y = y.nextZ;
   }
-  for (; v && v.z >= b;) {
+  for (; x && x.z >= b;) {
     if (
-      v.x >= d &&
-      v.x <= m &&
-      v.y >= p &&
-      v.y <= g &&
-      v !== n &&
-      v !== a &&
-      Gv(r, h, l, f, c, u, v.x, v.y) &&
-      jo(v.prev, v, v.next) >= 0
+      x.x >= d &&
+      x.x <= m &&
+      x.y >= p &&
+      x.y <= g &&
+      x !== n &&
+      x !== a &&
+      N3(r, h, l, f, c, u, x.x, x.y) &&
+      ea(x.prev, x, x.next) >= 0
     )
       return !1;
-    v = v.prevZ;
+    x = x.prevZ;
   }
-  for (; y && y.z <= x;) {
+  for (; y && y.z <= v;) {
     if (
       y.x >= d &&
       y.x <= m &&
@@ -115,88 +115,88 @@ function rit(i, t, e, s) {
       y.y <= g &&
       y !== n &&
       y !== a &&
-      Gv(r, h, l, f, c, u, y.x, y.y) &&
-      jo(y.prev, y, y.next) >= 0
+      N3(r, h, l, f, c, u, y.x, y.y) &&
+      ea(y.prev, y, y.next) >= 0
     )
       return !1;
     y = y.nextZ;
   }
   return !0;
 }
-function lit(i, t) {
-  let e = i;
+function Trt(o, t) {
+  let e = o;
   do {
     let s = e.prev,
       n = e.next.next;
-    (!Q2(s, n) &&
-      aD(s, e, e.next, n) &&
-      m3(s, n) &&
-      m3(n, s) &&
-      (t.push(s.i, e.i, n.i), g3(e), g3(e.next), (e = i = n)),
+    (!Vg(s, n) &&
+      cG(s, e, e.next, n) &&
+      fy(s, n) &&
+      fy(n, s) &&
+      (t.push(s.i, e.i, n.i), uy(e), uy(e.next), (e = o = n)),
       (e = e.next));
-  } while (e !== i);
-  return E1(e);
+  } while (e !== o);
+  return fm(e);
 }
-function cit(i, t, e, s, n, o) {
-  let a = i;
+function Rrt(o, t, e, s, n, i) {
+  let a = o;
   do {
     let r = a.next.next;
     for (; r !== a.prev;) {
-      if (a.i !== r.i && xit(a, r)) {
-        let l = rD(a, r);
-        ((a = E1(a, a.next)),
-          (l = E1(l, l.next)),
-          p3(a, t, e, s, n, o, 0),
-          p3(l, t, e, s, n, o, 0));
+      if (a.i !== r.i && Nrt(a, r)) {
+        let l = hG(a, r);
+        ((a = fm(a, a.next)),
+          (l = fm(l, l.next)),
+          hy(a, t, e, s, n, i, 0),
+          hy(l, t, e, s, n, i, 0));
         return;
       }
       r = r.next;
     }
     a = a.next;
-  } while (a !== i);
+  } while (a !== o);
 }
-function hit(i, t, e, s) {
+function Art(o, t, e, s) {
   let n = [];
-  for (let o = 0, a = t.length; o < a; o++) {
-    let r = t[o] * s,
-      l = o < a - 1 ? t[o + 1] * s : i.length,
-      c = iD(i, r, l, s, !1);
-    (c === c.next && (c.steiner = !0), n.push(bit(c)));
+  for (let i = 0, a = t.length; i < a; i++) {
+    let r = t[i] * s,
+      l = i < a - 1 ? t[i + 1] * s : o.length,
+      c = rG(o, r, l, s, !1);
+    (c === c.next && (c.steiner = !0), n.push(Brt(c)));
   }
-  n.sort(fit);
-  for (let o = 0; o < n.length; o++) e = uit(n[o], e);
+  n.sort(Prt);
+  for (let i = 0; i < n.length; i++) e = Crt(n[i], e);
   return e;
 }
-function fit(i, t) {
-  let e = i.x - t.x;
-  if (e === 0 && ((e = i.y - t.y), e === 0)) {
-    let s = (i.next.y - i.y) / (i.next.x - i.x),
+function Prt(o, t) {
+  let e = o.x - t.x;
+  if (e === 0 && ((e = o.y - t.y), e === 0)) {
+    let s = (o.next.y - o.y) / (o.next.x - o.x),
       n = (t.next.y - t.y) / (t.next.x - t.x);
     e = s - n;
   }
   return e;
 }
-function uit(i, t) {
-  let e = dit(i, t);
+function Crt(o, t) {
+  let e = Lrt(o, t);
   if (!e) return t;
-  let s = rD(e, i);
-  return (E1(s, s.next), E1(e, e.next));
+  let s = hG(e, o);
+  return (fm(s, s.next), fm(e, e.next));
 }
-function dit(i, t) {
+function Lrt(o, t) {
   let e = t,
-    s = i.x,
-    n = i.y,
-    o = -1 / 0,
+    s = o.x,
+    n = o.y,
+    i = -1 / 0,
     a;
-  if (Q2(i, e)) return e;
+  if (Vg(o, e)) return e;
   do {
-    if (Q2(i, e.next)) return e.next;
+    if (Vg(o, e.next)) return e.next;
     if (n <= e.y && n >= e.next.y && e.next.y !== e.y) {
       let f = e.x + ((n - e.y) * (e.next.x - e.x)) / (e.next.y - e.y);
       if (
         f <= s &&
-        f > o &&
-        ((o = f), (a = e.x < e.next.x ? e : e.next), f === s)
+        f > i &&
+        ((i = f), (a = e.x < e.next.x ? e : e.next), f === s)
       )
         return a;
     }
@@ -213,38 +213,38 @@ function dit(i, t) {
       s >= e.x &&
       e.x >= l &&
       s !== e.x &&
-      oD(n < c ? s : o, n, l, c, n < c ? o : s, n, e.x, e.y)
+      lG(n < c ? s : i, n, l, c, n < c ? i : s, n, e.x, e.y)
     ) {
       let f = Math.abs(n - e.y) / (s - e.x);
-      m3(e, i) &&
-        (f < h || (f === h && (e.x > a.x || (e.x === a.x && pit(a, e))))) &&
+      fy(e, o) &&
+        (f < h || (f === h && (e.x > a.x || (e.x === a.x && Irt(a, e))))) &&
         ((a = e), (h = f));
     }
     e = e.next;
   } while (e !== r);
   return a;
 }
-function pit(i, t) {
-  return jo(i.prev, i, t.prev) < 0 && jo(t.next, i, i.next) < 0;
+function Irt(o, t) {
+  return ea(o.prev, o, t.prev) < 0 && ea(t.next, o, o.next) < 0;
 }
-function mit(i, t, e, s) {
-  let n = i;
+function Frt(o, t, e, s) {
+  let n = o;
   do
-    (n.z === 0 && (n.z = S9(n.x, n.y, t, e, s)),
+    (n.z === 0 && (n.z = YR(n.x, n.y, t, e, s)),
       (n.prevZ = n.prev),
       (n.nextZ = n.next),
       (n = n.next));
-  while (n !== i);
-  ((n.prevZ.nextZ = null), (n.prevZ = null), git(n));
+  while (n !== o);
+  ((n.prevZ.nextZ = null), (n.prevZ = null), Ort(n));
 }
-function git(i) {
+function Ort(o) {
   let t,
     e = 1;
   do {
-    let s = i,
+    let s = o,
       n;
-    i = null;
-    let o = null;
+    o = null;
+    let i = null;
     for (t = 0; s;) {
       t++;
       let a = s,
@@ -255,86 +255,86 @@ function git(i) {
         (r !== 0 && (l === 0 || !a || s.z <= a.z)
           ? ((n = s), (s = s.nextZ), r--)
           : ((n = a), (a = a.nextZ), l--),
-          o ? (o.nextZ = n) : (i = n),
-          (n.prevZ = o),
-          (o = n));
+          i ? (i.nextZ = n) : (o = n),
+          (n.prevZ = i),
+          (i = n));
       s = a;
     }
-    ((o.nextZ = null), (e *= 2));
+    ((i.nextZ = null), (e *= 2));
   } while (t > 1);
-  return i;
+  return o;
 }
-function S9(i, t, e, s, n) {
+function YR(o, t, e, s, n) {
   return (
-    (i = ((i - e) * n) | 0),
+    (o = ((o - e) * n) | 0),
     (t = ((t - s) * n) | 0),
-    (i = (i | (i << 8)) & 16711935),
-    (i = (i | (i << 4)) & 252645135),
-    (i = (i | (i << 2)) & 858993459),
-    (i = (i | (i << 1)) & 1431655765),
+    (o = (o | (o << 8)) & 16711935),
+    (o = (o | (o << 4)) & 252645135),
+    (o = (o | (o << 2)) & 858993459),
+    (o = (o | (o << 1)) & 1431655765),
     (t = (t | (t << 8)) & 16711935),
     (t = (t | (t << 4)) & 252645135),
     (t = (t | (t << 2)) & 858993459),
     (t = (t | (t << 1)) & 1431655765),
-    i | (t << 1)
+    o | (t << 1)
   );
 }
-function bit(i) {
-  let t = i,
-    e = i;
+function Brt(o) {
+  let t = o,
+    e = o;
   do ((t.x < e.x || (t.x === e.x && t.y < e.y)) && (e = t), (t = t.next));
-  while (t !== i);
+  while (t !== o);
   return e;
 }
-function oD(i, t, e, s, n, o, a, r) {
+function lG(o, t, e, s, n, i, a, r) {
   return (
-    (n - a) * (t - r) >= (i - a) * (o - r) &&
-    (i - a) * (s - r) >= (e - a) * (t - r) &&
-    (e - a) * (o - r) >= (n - a) * (s - r)
+    (n - a) * (t - r) >= (o - a) * (i - r) &&
+    (o - a) * (s - r) >= (e - a) * (t - r) &&
+    (e - a) * (i - r) >= (n - a) * (s - r)
   );
 }
-function Gv(i, t, e, s, n, o, a, r) {
-  return !(i === a && t === r) && oD(i, t, e, s, n, o, a, r);
+function N3(o, t, e, s, n, i, a, r) {
+  return !(o === a && t === r) && lG(o, t, e, s, n, i, a, r);
 }
-function xit(i, t) {
+function Nrt(o, t) {
   return (
-    i.next.i !== t.i &&
-    i.prev.i !== t.i &&
-    !vit(i, t) &&
-    ((m3(i, t) &&
-      m3(t, i) &&
-      yit(i, t) &&
-      (jo(i.prev, i, t.prev) || jo(i, t.prev, t))) ||
-      (Q2(i, t) && jo(i.prev, i, i.next) > 0 && jo(t.prev, t, t.next) > 0))
+    o.next.i !== t.i &&
+    o.prev.i !== t.i &&
+    !Hrt(o, t) &&
+    ((fy(o, t) &&
+      fy(t, o) &&
+      Drt(o, t) &&
+      (ea(o.prev, o, t.prev) || ea(o, t.prev, t))) ||
+      (Vg(o, t) && ea(o.prev, o, o.next) > 0 && ea(t.prev, t, t.next) > 0))
   );
 }
-function jo(i, t, e) {
-  return (t.y - i.y) * (e.x - t.x) - (t.x - i.x) * (e.y - t.y);
+function ea(o, t, e) {
+  return (t.y - o.y) * (e.x - t.x) - (t.x - o.x) * (e.y - t.y);
 }
-function Q2(i, t) {
-  return i.x === t.x && i.y === t.y;
+function Vg(o, t) {
+  return o.x === t.x && o.y === t.y;
 }
-function aD(i, t, e, s) {
-  let n = J4(jo(i, t, e)),
-    o = J4(jo(i, t, s)),
-    a = J4(jo(e, s, i)),
-    r = J4(jo(e, s, t));
+function cG(o, t, e, s) {
+  let n = Q8(ea(o, t, e)),
+    i = Q8(ea(o, t, s)),
+    a = Q8(ea(e, s, o)),
+    r = Q8(ea(e, s, t));
   return !!(
-    (n !== o && a !== r) ||
-    (n === 0 && Y4(i, e, t)) ||
-    (o === 0 && Y4(i, s, t)) ||
-    (a === 0 && Y4(e, i, s)) ||
-    (r === 0 && Y4(e, t, s))
+    (n !== i && a !== r) ||
+    (n === 0 && Z8(o, e, t)) ||
+    (i === 0 && Z8(o, s, t)) ||
+    (a === 0 && Z8(e, o, s)) ||
+    (r === 0 && Z8(e, t, s))
   );
 }
-function Y4(i, t, e) {
+function Z8(o, t, e) {
   return (
-    t.x <= Math.max(i.x, e.x) &&
-    t.x >= Math.min(i.x, e.x) &&
-    t.y <= Math.max(i.y, e.y) &&
-    t.y >= Math.min(i.y, e.y)
+    t.x <= Math.max(o.x, e.x) &&
+    t.x >= Math.min(o.x, e.x) &&
+    t.y <= Math.max(o.y, e.y) &&
+    t.y >= Math.min(o.y, e.y)
   );
 }
-function J4(i) {
-  return i > 0 ? 1 : i < 0 ? -1 : 0;
+function Q8(o) {
+  return o > 0 ? 1 : o < 0 ? -1 : 0;
 }

@@ -1,254 +1,344 @@
 // app 146 — math
-// Lines 92998-93249 of readable/app.pretty.js (statement-aligned).
-function Fut(i, t, e) {
-  t.presidio = [];
-  for (let [v, y] of Object.entries(Aut)) {
-    let M = y[0],
-      S = y[y.length - 1],
-      w = Iy(i, M[0], M[1]),
-      z = Iy(i, S[0], S[1]);
-    if (!w || !z) {
-      console.warn("highways: Presidio tunnel ends not found", v);
-      continue;
-    }
-    let _ =
-        i.edges.find(
-          (L) =>
-            L.jb === w.id &&
-            !L.synthetic &&
-            L.hwy &&
-            L.name === "Presidio Parkway",
-        ) || i.edges.find((L) => L.jb === w.id),
-      R = i.edges.find((L) => L.ja === z.id),
-      T = yb(y, 6),
-      E = [0];
-    for (let L = 1; L < T.length; L++)
-      E.push(
-        E[L - 1] + Math.hypot(T[L][0] - T[L - 1][0], T[L][1] - T[L - 1][1]),
-      );
-    let A = E[E.length - 1],
-      C = _ ? _.W[_.n - 1] : 5.4,
-      P = R ? R.W[0] : C,
-      I = cu(i, {
-        pts: T.map((L, F) => [L[0], L[1], w.y + ((z.y - w.y) * E[F]) / A]),
-        w: (L) => C + (P - C) * (E[L] / A),
-        lanes: _?.lanes ?? 3,
-        laneW: 3.6,
-        name: "Presidio Parkway",
-        ja: w.id,
-        jb: z.id,
-        rank: _?.rank ?? 8,
-        maxspeed: _?.maxspeed ?? 35,
-        dist: "presidio",
-        layer: 1,
-        flags: ij,
-        way: 0,
-        tunnel: v,
-      });
-    (w.type === "end" && (w.type = "j"),
-      z.type === "end" && (z.type = "j"),
-      (I.ta = I.tb = 0),
-      (I.s0 = 0),
-      (I.s1 = I.L),
-      _ && ((_.tb = 0), (_.s1 = _.L)),
-      R && ((R.ta = 0), (R.s0 = 0)),
-      t.presidio.push(I));
-  }
-  let s = (v) => t.presidio.find((y) => y.tunnel === v),
-    n = (v) => i.edges.filter((y) => y.ja === v.id).length,
-    o = (v) => i.edges.filter((y) => y.jb === v.id).length,
-    a = [];
-  if (s("n1")) {
-    let v = [s("n1")],
-      y = v[0];
-    for (let M = 0; M < 8; M++) {
-      let S = i.juns[y.jb];
-      if (!S || n(S) !== 1 || o(S) !== 1) break;
-      ((y = i.edges.find((w) => w.ja === S.id)), v.push(y));
-    }
-    a.push(v);
-  }
-  if (s("s2")) {
-    let v = [s("s2")],
-      y = v[0];
-    for (let M = 0; M < 8; M++) {
-      let S = i.juns[y.ja];
-      if (!S || n(S) !== 1 || o(S) !== 1) break;
-      ((y = i.edges.find((w) => w.jb === S.id)), v.unshift(y));
-    }
-    a.push(v);
-  }
-  let r = i.terrain,
-    l = {},
-    c = new Set(a.flat()),
-    h = [],
-    f = new Map(),
-    u = new Map(),
-    d = new Set(),
-    p = t.presidio.map((v) => {
-      let y = [v.P[0], v.P[1]],
-        M = [v.P[(v.n - 1) * 3], v.P[(v.n - 1) * 3 + 1]],
-        S = Math.hypot(M[0] - y[0], M[1] - y[1]),
-        w = (M[0] - y[0]) / S,
-        z = (M[1] - y[1]) / S,
-        _ = v.tunnel === "n1" ? 37 : 7,
-        R = v.tunnel === "s2" ? 37 : 7;
-      return (T, E) => {
-        let A = T - y[0],
-          C = E - y[1],
-          P = A * w + C * z,
-          I = -A * z + C * w;
-        return P > _ && P < S - R && Math.abs(I) < v.W[0] + 40;
-      };
-    }),
-    m = (v, y) => p.some((M) => M(v, y));
-  i.presidioCovered = m;
-  for (let v of i.edges) {
-    if (c.has(v) || v.layered || v.inner) continue;
-    let y = 1e9,
-      M = 1e9,
-      S = -1e9,
-      w = -1e9;
-    for (let _ = 0; _ < v.n; _++)
-      ((y = Math.min(y, v.P[_ * 3])),
-        (S = Math.max(S, v.P[_ * 3])),
-        (M = Math.min(M, v.P[_ * 3 + 1])),
-        (w = Math.max(w, v.P[_ * 3 + 1])));
-    if (S < -6700 || y > -5200 || w < -1e3 || M > -550) continue;
-    let z = v.W[0] + v.sw + 3;
-    ((v._cut = [y - z, M - z, S + z, w + z]), h.push(v));
-  }
-  let g = (v) => {
-    let y = i.juns[v[0].ja],
-      M = i.juns[v[v.length - 1].jb],
-      S = y.x > M.x ? y : M,
-      w = S === y ? M : y,
-      z = -5925,
-      _ = (R) => R * R * (3 - 2 * R);
-    return (R) => {
-      let T = 4 + (S.y - 4) * Math.max(0, Math.min(1, (R - z) / (S.x - z))),
-        E = 4 + (w.y - 4) * Math.max(0, Math.min(1, (z - R) / (z - w.x))),
-        A = _(Math.max(0, Math.min(1, (z + 40 - R) / 80)));
-      return T * (1 - A) + E * A;
-    };
-  };
-  for (let v of a) {
-    let y = g(v);
-    for (let M of v)
-      for (let S = 0; S < M.n; S++) M.P[S * 3 + 2] = y(M.P[S * 3]);
-  }
-  {
-    let v = performance.now();
-    (Nut(i, a),
-      ((i.atGradeT ||= {}).grade = +(performance.now() - v).toFixed(1)));
-  }
-  for (let v of a) {
-    let y = i.juns[v[0].ja],
-      M = i.juns[v[v.length - 1].jb],
-      S = g(v);
-    for (let w of v) {
-      for (let C = 0; C < w.n; C++) w.P[C * 3 + 2] = S(w.P[C * 3]);
-      ((w.flags |= 67),
-        (w.elev = !0),
-        (w.layered = !0),
-        w.layer < 1 && (w.layer = 1));
-      for (let C of [w.ja, w.jb]) {
-        let P = i.juns[C];
-        if (!(!P || P === y || P === M)) {
-          P.y = S(P.x);
-          for (let I of P.rings) I.y.fill(P.y);
-        }
+// Lines 93519-93860 of readable/app.pretty.js (statement-aligned).
+function imt(o, t) {
+  let e = (f) => f.cls === "motorway" || f.cls === "motorway_link",
+    s = new Set(t.flat()),
+    n = (f) => {
+      let u = 1e9,
+        d = 1e9,
+        p = -1e9,
+        m = -1e9;
+      for (let b = 0; b < f.n; b++)
+        ((u = Math.min(u, f.P[b * 3])),
+          (p = Math.max(p, f.P[b * 3])),
+          (d = Math.min(d, f.P[b * 3 + 1])),
+          (m = Math.max(m, f.P[b * 3 + 1])));
+      let g = Math.max(...f.W) + (f.sw || 0);
+      return [u - g, d - g, p + g, m + g];
+    },
+    i = (f) => !(f[2] < -6700 || f[0] > -5200 || f[3] < -1e3 || f[1] > -550),
+    a = o.edges.filter((f) => e(f) && !f.inner && i((f._bx = n(f))));
+  for (let f of t)
+    for (let [u, d, p] of [
+      [f[0].ja, f[0], 0],
+      [f[f.length - 1].jb, f[f.length - 1], f[f.length - 1].n - 1],
+    ]) {
+      let m = d.P[p * 3 + 2];
+      for (let g of a) {
+        if (s.has(g)) continue;
+        let b = g.ja === u,
+          v = g.jb === u;
+        if (!b && !v) continue;
+        let x = m - g.P[(b ? 0 : g.n - 1) * 3 + 2];
+        if (!(Math.abs(x) < 0.01 || Math.abs(x) > 1.5))
+          for (let y = 0; y < g.n; y++) {
+            let M = b ? g.S[y] : g.L - g.S[y];
+            if (M >= 25) continue;
+            let S = 1 - M / 25;
+            g.P[y * 3 + 2] += x * S * S * (3 - 2 * S);
+          }
       }
-      let z = 1e9,
-        _ = 1e9,
-        R = -1e9,
-        T = -1e9;
-      for (let C = 0; C < w.n; C++)
-        ((z = Math.min(z, w.P[C * 3])),
-          (R = Math.max(R, w.P[C * 3])),
-          (_ = Math.min(_, w.P[C * 3 + 1])),
-          (T = Math.max(T, w.P[C * 3 + 1])));
-      let E = 45,
-        A = {};
+    }
+  let r = {},
+    l = {},
+    c = [1e9, 1e9, -1e9, -1e9];
+  for (let f of a)
+    ((c[0] = Math.min(c[0], f._bx[0])),
+      (c[1] = Math.min(c[1], f._bx[1])),
+      (c[2] = Math.max(c[2], f._bx[2])),
+      (c[3] = Math.max(c[3], f._bx[3])));
+  let h = new Set();
+  for (let f of a)
+    for (let u = 0; u + 1 < f.n; u++) {
+      let d = Math.max(f.W[u], f.W[u + 1]) + 10;
       for (
-        let C = Math.max(0, Math.floor((_ - E - r.z0) / r.step));
-        C <= Math.min(r.nz - 1, Math.ceil((T + E - r.z0) / r.step));
-        C++
+        let p = Math.floor((Math.min(f.P[u * 3], f.P[u * 3 + 3]) - d) / 16);
+        p <= Math.floor((Math.max(f.P[u * 3], f.P[u * 3 + 3]) + d) / 16);
+        p++
       )
         for (
-          let P = Math.max(0, Math.floor((z - E - r.x0) / r.step));
-          P <= Math.min(r.nx - 1, Math.ceil((R + E - r.x0) / r.step));
-          P++
-        ) {
-          let I = r.x0 + P * r.step,
-            L = r.z0 + C * r.step;
-          if ((pS(w, I, L, A), A.d > w.W[0] + E)) continue;
-          if (m(I, L) && !(A.d < A.w + 4.5 && !w.tunnel)) {
-            A.d < A.w + 4.5 &&
-              (r.h[C * r.nx + P] = Math.max(r.h[C * r.nx + P], A.y + 7.6));
-            continue;
-          }
-          let F = A.y - 0.4 + Math.max(0, A.d - A.w - 3) * 1,
-            N = C * r.nx + P;
+          let m = Math.floor(
+            (Math.min(f.P[u * 3 + 1], f.P[u * 3 + 4]) - d) / 16,
+          );
+          m <= Math.floor((Math.max(f.P[u * 3 + 1], f.P[u * 3 + 4]) + d) / 16);
+          m++
+        )
+          h.add(p * 65536 + m);
+    }
+  for (let f of o.edges) {
+    if (f.inner || f.layered || f.tunnel || e(f) || f.synthetic) continue;
+    {
+      let P = f.P[0],
+        C = f.P[1],
+        I = f.L + 20;
+      if (P + I < c[0] || P - I > c[2] || C + I < c[1] || C - I > c[3])
+        continue;
+    }
+    let u = n(f);
+    if (!(u[2] > c[0] && u[0] < c[2] && u[3] > c[1] && u[1] < c[3])) continue;
+    let d = a.filter(
+      (P) =>
+        P._bx[0] < u[2] &&
+        P._bx[2] > u[0] &&
+        P._bx[1] < u[3] &&
+        P._bx[3] > u[1],
+    );
+    if (!d.length) continue;
+    let p = [],
+      m = new Uint8Array(Math.ceil(f.L / 4) + 2),
+      g = !1,
+      b = 0;
+    for (let P = 0; P * 4 <= f.L + 4; P++) {
+      let C = Math.min(f.L, P * 4);
+      for (; b + 2 < f.n && f.S[b + 1] < C;) b++;
+      let I = (C - f.S[b]) / Math.max(1e-6, f.S[b + 1] - f.S[b]),
+        L = f.P[b * 3] + (f.P[b * 3 + 3] - f.P[b * 3]) * I,
+        F = f.P[b * 3 + 1] + (f.P[b * 3 + 4] - f.P[b * 3 + 1]) * I;
+      if (h.has(Math.floor(L / 16) * 65536 + Math.floor(F / 16))) {
+        Ot(f, C, l);
+        for (let O of d) {
+          let B = O._bx;
           if (
-            (A.d < A.w + 3.5 && u.set(N, Math.min(u.get(N) ?? 1e9, F)),
-            r.h[N] <= F)
-          )
-            continue;
-          f.has(N) || f.set(N, r.h[N]);
-          let B = -1e9;
-          for (let H of h) {
-            if (
-              I < H._cut[0] ||
-              I > H._cut[2] ||
-              L < H._cut[1] ||
-              L > H._cut[3]
-            )
-              continue;
-            pS(H, I, L, l);
-            let O = l.w + H.sw + 1.5;
-            (l.d < O + 40 &&
-              (B = Math.max(B, l.y - 0.35 - Math.max(0, l.d - O) * 1.5)),
-              l.d < O + 1 && d.add(N));
+            !(
+              l.x < B[0] - l.w ||
+              l.x > B[2] + l.w ||
+              l.z < B[1] - l.w ||
+              l.z > B[3] + l.w
+            ) &&
+            (ys(O, l.x, l.z, r), r.d < r.w + l.w + 3 && Math.abs(r.y - l.y) < 3)
+          ) {
+            ((m[P] = 1), (g = !0));
+            break;
           }
-          r.h[N] = Math.max(F, Math.min(r.h[N], B));
         }
-    }
-    t.presidioChain = (t.presidioChain || []).concat(v);
-  }
-  let b = new Set();
-  for (let v of f.keys()) {
-    let y = v % r.nx,
-      M = (v - y) / r.nx;
-    for (let S = -1; S <= 1; S++)
-      for (let w = -1; w <= 1; w++) {
-        let z = y + w,
-          _ = M + S;
-        z >= 0 && _ >= 0 && z < r.nx && _ < r.nz && b.add(_ * r.nx + z);
       }
-  }
-  let x = new Map();
-  for (let v = 0; v < 3; v++) {
-    for (let y of b) {
-      let M = y % r.nx,
-        S = (y - M) / r.nx,
-        w = 0,
-        z = 0;
-      for (let _ = -1; _ <= 1; _++)
-        for (let R = -1; R <= 1; R++) {
-          let T = M + R,
-            E = S + _;
-          if (T < 0 || E < 0 || T >= r.nx || E >= r.nz) continue;
-          let A = R || _ ? (R && _ ? 0.5 : 1) : 2;
-          ((w += r.h[E * r.nx + T] * A), (z += A));
+    }
+    if (!g) continue;
+    for (let P = 8; P <= f.L - 8; P += 1) {
+      let C = Math.floor(P / 4);
+      if (!m[C] && !m[C + 1]) continue;
+      Ot(f, P, l);
+      let I = null;
+      for (let L of [-l.w, -l.w / 2, 0, l.w / 2, l.w]) {
+        let F = l.x + l.nx * L,
+          O = l.z + l.nz * L;
+        for (let B of d) {
+          let H = B._bx;
+          F < H[0] ||
+            F > H[2] ||
+            O < H[1] ||
+            O > H[3] ||
+            (ys(B, F, O, r),
+            !(
+              r.d > r.w + 0.3 ||
+              r.s < 0.3 ||
+              r.s > B.L - 0.3 ||
+              Math.abs(r.y - l.y) > 1.5
+            ) &&
+              (!I || Math.abs(r.y - l.y) < Math.abs(I.y - l.y)) &&
+              (I = { y: r.y, M: B, s: r.s }));
         }
-      x.set(y, w / z);
+      }
+      if (I) {
+        p.push([P, I.y - 0.02 - l.y]);
+        let L = I.M;
+        ((L.maskS ||= [1e9, -1e9]),
+          (L.maskS[0] = Math.min(L.maskS[0], I.s - 12)),
+          (L.maskS[1] = Math.max(L.maskS[1], I.s + 12)));
+      }
     }
-    for (let [y, M] of x) {
-      if (d.has(y)) continue;
-      let S = u.get(y),
-        w = Math.min(M, f.get(y) ?? r.h[y]);
-      (S !== void 0 && (w = Math.min(w, S)), (r.h[y] = w));
+    if (!p.length) continue;
+    let v = (P) => {
+        let C = p[0],
+          I = p[p.length - 1];
+        if (P <= C[0]) {
+          let B = Math.max(0, 1 - (C[0] - P) / 18);
+          return C[1] * B * B * (3 - 2 * B);
+        }
+        if (P >= I[0]) {
+          let B = Math.max(0, 1 - (P - I[0]) / 18);
+          return I[1] * B * B * (3 - 2 * B);
+        }
+        let L = 0;
+        for (; L + 1 < p.length && p[L + 1][0] < P;) L++;
+        let F = p[L],
+          O = p[L + 1];
+        return (
+          F[1] + ((O[1] - F[1]) * (P - F[0])) / Math.max(1e-6, O[0] - F[0])
+        );
+      },
+      x = Math.max(0.5, p[0][0] - 18),
+      y = Math.min(f.L - 0.5, p[p.length - 1][0] + 18),
+      M = [],
+      S = [];
+    for (let P = 0; P < f.n; P++) {
+      let C = f.S[P];
+      if (!(C > x && C < y)) {
+        if (C >= y && (!M.length || M[M.length - 1][3] < y))
+          for (let I = x; I <= y; I += 1)
+            (Ot(f, I, l), M.push([l.x, l.z, l.y, I, l.w]));
+        M.push([f.P[P * 3], f.P[P * 3 + 1], f.P[P * 3 + 2], C, f.W[P]]);
+      }
     }
+    {
+      let P = o.terrain,
+        C = Math.max(...f.W) + (f.sw || 0) + 1.5,
+        I = Math.min(u[0], u[2]),
+        L = {};
+      for (
+        let F = Math.max(0, Math.floor((u[1] - 8 - P.z0) / P.step));
+        F <= Math.min(P.nz - 1, Math.ceil((u[3] + 8 - P.z0) / P.step));
+        F++
+      )
+        for (
+          let O = Math.max(0, Math.floor((I - 8 - P.x0) / P.step));
+          O <= Math.min(P.nx - 1, Math.ceil((u[2] + 8 - P.x0) / P.step));
+          O++
+        ) {
+          let B = P.x0 + O * P.step,
+            H = P.z0 + F * P.step;
+          if ((ys(f, B, H, L), L.d > C + 6 || L.s < x || L.s > y)) continue;
+          let N = v(L.s);
+          if (N > -0.05) continue;
+          let D = F * P.nx + O,
+            U = L.y + N - 0.25 + Math.max(0, L.d - C);
+          P.h[D] > U && (P.h[D] = U);
+        }
+    }
+    {
+      let P = [1e9, 1e9, -1e9, -1e9],
+        C = Math.max(...f.W) + (f.sw || 0) + 2;
+      for (let I = x; I <= y + 1; I += 2)
+        (Ot(f, Math.min(I, y), l),
+          (P[0] = Math.min(P[0], l.x - C)),
+          (P[1] = Math.min(P[1], l.z - C)),
+          (P[2] = Math.max(P[2], l.x + C)),
+          (P[3] = Math.max(P[3], l.z + C)));
+      (o.atGrade ||= []).push({ F: f, corr: v, box: P, s0: x, s1: y });
+    }
+    let w = f.L,
+      _ = f.ta,
+      z = f.tb,
+      A = f.s0,
+      T = f.s1;
+    ((f.P = new Float32Array(
+      M.flatMap((P) => [
+        P[0],
+        P[1],
+        P[2] + (P[3] > 0 && P[3] < w ? v(P[3]) : 0),
+      ]),
+    )),
+      (f.W = new Float32Array(M.map((P) => P[4]))),
+      delete f._gb,
+      Tr(f));
+    let E = f.L / w;
+    ((f.ta = _ * E),
+      (f.tb = z * E),
+      (f.s0 = A * E),
+      (f.s1 = f.L - (w - T) * E));
+    let R = [];
+    for (let [P] of p) {
+      let C = R[R.length - 1];
+      C && P - C[1] <= 1.01 ? (C[1] = P) : R.push([P, P]);
+    }
+    f.xingS = R.map(([P, C]) => [(P - 0.25) * E, (C + 0.25) * E]);
   }
+}
+function h$(o) {
+  if (!o.atGrade) return;
+  let t = performance.now(),
+    e = new Set();
+  for (let f of o.atGrade) {
+    let u = f.box;
+    for (
+      let d = Math.floor((u[0] - 4) / jk);
+      d <= Math.floor((u[2] + 4) / jk);
+      d++
+    )
+      for (
+        let p = Math.floor((u[1] - 4) / jk);
+        p <= Math.floor((u[3] + 4) / jk);
+        p++
+      )
+        e.add(d + "," + p);
+  }
+  let s = [1e9, 1e9, -1e9, -1e9];
+  for (let f of o.atGrade) {
+    let u = f.box;
+    ((f.r = Math.max(...f.F.W) + (f.F.sw || 0) + 2),
+      (s[0] = Math.min(s[0], u[0])),
+      (s[1] = Math.min(s[1], u[1])),
+      (s[2] = Math.max(s[2], u[2])),
+      (s[3] = Math.max(s[3], u[3])));
+  }
+  let n = {},
+    i = (f, u) => {
+      if (f < s[0] || f > s[2] || u < s[1] || u > s[3]) return 0;
+      for (let d of o.atGrade) {
+        let p = d.box;
+        if (
+          f < p[0] ||
+          f > p[2] ||
+          u < p[1] ||
+          u > p[3] ||
+          (ys(d.F, f, u, n), n.d > d.r || n.s < d.s0 || n.s > d.s1)
+        )
+          continue;
+        let m = d.corr(n.s);
+        if (Math.abs(m) > 0.005) return m;
+      }
+      return 0;
+    },
+    a = 0,
+    r = 0,
+    l = 0;
+  for (let f of e)
+    for (let u of o.walks.get(f) || [])
+      u.ys &&
+        u.forEach((d, p) => {
+          let m = u.ys[p];
+          for (let g = 0; g < m.length; g++) {
+            let b = i(d[g * 2], d[g * 2 + 1]);
+            b && ((m[g] += b), a++);
+          }
+        });
+  for (let f of e)
+    for (let u of o.curbs.get(f) || [])
+      if (u.ys)
+        for (let d = 0; d < u.ys.length; d++) {
+          let p = i(u[d * 2], u[d * 2 + 1]);
+          p && ((u.ys[d] += p), r++);
+        }
+  let c = o.props,
+    h = c.pf;
+  for (let f = 0; f < c.n; f++) {
+    let u = h[f * 5],
+      d = h[f * 5 + 1];
+    if (u < s[0] || u > s[2] || d < s[1] || d > s[3]) continue;
+    let p = i(u, d);
+    p && ((h[f * 5 + 2] += p), l++);
+  }
+  ((o.atGradeMoved = { walks: a, curbs: r, props: l }),
+    ((o.atGradeT ||= {}).after = +(performance.now() - t).toFixed(1)));
+}
+function omt(o) {
+  return {
+    terrainAt: (t, e) => {
+      let s = (t - o.x0) / o.step,
+        n = (e - o.z0) / o.step,
+        i = Math.min(o.nx - 2, Math.max(0, Math.floor(s))),
+        a = Math.min(o.nz - 2, Math.max(0, Math.floor(n))),
+        r = Math.min(1, Math.max(0, s - i)),
+        l = Math.min(1, Math.max(0, n - a)),
+        c = o.h,
+        h = o.nx,
+        f = c[a * h + i],
+        u = c[a * h + i + 1],
+        d = c[(a + 1) * h + i],
+        p = c[(a + 1) * h + i + 1];
+      return r >= l
+        ? f + (u - f) * r + (p - u) * l
+        : f + (p - d) * r + (d - f) * l;
+    },
+  };
 }

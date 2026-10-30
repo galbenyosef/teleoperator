@@ -1,505 +1,317 @@
 // app 188 — math
-// Lines 106746-107248 of readable/app.pretty.js (statement-aligned).
-function Npt(i, t, e, s, n, o = null, a = null, r = null) {
-  let l = t.rings[0],
-    c = l.length / 2,
-    h = 0,
-    f = 1,
-    u = 0;
-  for (let L = 0; L < c; L++) {
-    let F = l[((L + 1) % c) * 2] - l[L * 2],
-      N = l[((L + 1) % c) * 2 + 1] - l[L * 2 + 1],
-      B = Math.hypot(F, N);
-    B > h && ((h = B), (f = F / B), (u = N / B));
+// Lines 107489-107803 of readable/app.pretty.js (statement-aligned).
+function aK(o, t, e, s) {
+  if (o.hide) return;
+  if (pc) {
+    let c = eK(pc, o);
+    c && (t = nK(t, o, c));
   }
-  let d = 1e9,
-    p = -1e9,
-    m = 1e9,
-    g = -1e9,
-    b = -u,
-    x = f;
-  for (let L = 0; L < c; L++) {
-    let F = l[L * 2] * f + l[L * 2 + 1] * u,
-      N = l[L * 2] * b + l[L * 2 + 1] * x;
-    ((d = Math.min(d, F)),
-      (p = Math.max(p, F)),
-      (m = Math.min(m, N)),
-      (g = Math.max(g, N)));
+  let n = QX(o, s),
+    i = (o.tcut ? Math.min(o.top - o.rh, o.tcut) : o.top - o.rh) + sK(o),
+    a = Math.max(
+      o.minh > 0 ? o.minh : o.st === 7 ? -2.5 : o.base - 0.3,
+      o.cut || -1e9,
+    ),
+    r = n.st === 6 ? (n.glass ? 5 : [3, 4][n.office % 2]) : (KX[n.st] ?? 1),
+    l = [...n.wall, (r + 0.5) / 16];
+  for (let c of o.rings) {
+    let h = c.length / 2,
+      f = Bn(o.seed, 6) * 40;
+    for (let u = 0; u < h; u++) {
+      let d = c[u * 2],
+        p = c[u * 2 + 1],
+        m = c[((u + 1) % h) * 2],
+        g = c[((u + 1) % h) * 2 + 1];
+      (t.wall(d, p, m, g, a, a, i, i, l, f, o.base),
+        (f += Math.hypot(m - d, g - p)));
+    }
   }
-  let v = t.seed >>> 0,
-    y = () => ((v = (v * 1664525 + 1013904223) >>> 0), v / 4294967296),
-    M = [],
-    S = (L, F) => en(l, L, F) && !t.rings.slice(1).some((N) => en(N, L, F)),
-    w = (L, F) => {
-      for (let N = 0; N < 10; N++) {
-        let B = d + 0.9 + L + y() * Math.max(0, p - d - 1.8 - 2 * L),
-          H = m + 0.9 + F + y() * Math.max(0, g - m - 1.8 - 2 * F),
-          O = f * B + b * H,
-          D = u * B + x * H,
-          U = Math.max(2, Math.ceil(2 * (L + 0.9))),
-          G = Math.max(2, Math.ceil(2 * (F + 0.9))),
-          q = !0;
-        for (let W = 0; W <= U && q; W++)
-          for (let V = 0; V <= G && q; V++) {
-            let Y = -1 + (2 * W) / U,
-              $ = -1 + (2 * V) / G,
-              st = O + f * (L + 0.9) * Y + b * (F + 0.9) * $,
-              Q = D + u * (L + 0.9) * Y + x * (F + 0.9) * $;
-            q = S(st, Q) && !(r && r(st, Q, e + 0.5));
-          }
-        if (q && r)
-          for (let W = 0; W <= U && q; W++)
-            for (let V = 0; V <= G && q; V++) {
-              let Y = -1 + (2 * W) / U,
-                $ = -1 + (2 * V) / G;
-              q = !r(
-                O + f * (L + 1.8) * Y + b * (F + 1.8) * $,
-                D + u * (L + 1.8) * Y + x * (F + 1.8) * $,
-                e + 0.5,
-              );
-            }
-        if (
-          q &&
-          !M.some(
-            ([W, V, Y]) =>
-              Math.hypot(W - O, V - D) < Y + Math.hypot(L, F) + 0.4,
-          )
+  o.tcut ||
+    (o.rs
+      ? oK(
+          n.st === 6 ? t : e,
+          o,
+          i,
+          n.st === 6
+            ? l
+            : o.roofCol
+              ? [...o.roofCol.slice(0, 3).map((c) => c * 0.85), 0]
+              : o.tile
+                ? [...YX.slice(0, 3).map((c) => c * 0.85), 0]
+                : [...XX[o.seed % 3].map((c) => c * 0.45), 0],
+          n.st === 6,
         )
-          return (M.push([O, D, Math.hypot(L, F)]), [O, D]);
-      }
-      return null;
+      : zx(e, o.rings, i, eL(o, n).far, !0));
+}
+function Bw(o) {
+  if (o.minh > o.base + 3) return null;
+  let t = o.rings[0],
+    e = 1e9,
+    s = 1e9,
+    n = -1e9,
+    i = -1e9;
+  for (let r = 0; r < t.length; r += 2)
+    ((e = Math.min(e, t[r])),
+      (n = Math.max(n, t[r])),
+      (s = Math.min(s, t[r + 1])),
+      (i = Math.max(i, t[r + 1])));
+  let a = {
+    t: "poly",
+    pts: t,
+    bb: [e, s, n, i],
+    y0: o.base - 2,
+    y1: o.top,
+    roof: !0,
+  };
+  if (o.rs && o.rh > 0) {
+    let [r, l] = Ef(t);
+    ((a.eave = o.top - o.rh),
+      (a.rh = o.rh),
+      (a.rs = o.rs),
+      (a.cx = r),
+      (a.cz = l));
+  }
+  return a;
+}
+var rK = Math.PI / 180,
+  bz = [
+    { id: 260519113, name: "Sing Chong", floors: 4 },
+    { id: 260208816, name: "Sing Fat", floors: 4 },
+  ],
+  lK = [-1096, 341],
+  Yu = { o: [-1246.3, 1222], n: [-Math.sin(9.3 * rK), -Math.cos(9.3 * rK)] };
+Yu.e = [-Yu.n[1], Yu.n[0]];
+var ao = { c: [-1098, -813], r0: 5.2, r1: 19 },
+  rgt = [
+    ["Drumm Street", 1, -14],
+    ["Main Street", -1, -16],
+    ["Front Street", 1, 14],
+    ["Beale Street", -1, 14],
+    ["Sutter Street", 1, -14],
+    ["2nd Street", -1, 16],
+    ["Montgomery Street", 1, -16],
+    ["New Montgomery Street", -1, 18],
+    ["Kearny Street", 1, -18],
+    ["4th Street", -1, 14],
+    ["Stockton Street", 1, -14],
+    ["5th Street", -1, -16],
+    ["7th Street", -1, 14],
+    ["Charles J. Brenham Place", 1, -12],
+    ["8th Street", -1, 16],
+    ["Grove Street", 1, -14],
+    ["Van Ness Avenue", 1, 16],
+    ["South Van Ness Avenue", -1, 16],
+    ["Church Street", 1, 14],
+    ["Church Street", -1, -14],
+  ],
+  lgt = [
+    ["Main Street", -230.626, 242.016, 0.707, -0.707, 0.707, 0.707, 3.391],
+    ["Front Street", -411.932, 393.547, 0.708, -0.706, -0.706, -0.708, 4.194],
+    ["Sutter Street", -570.184, 551.304, 0.704, -0.71, -0.71, -0.704, 7.169],
+    ["2nd Street", -666.98, 683.33, 0.714, -0.701, 0.701, 0.714, 9.558],
+    [
+      "Montgomery Street",
+      -787.285,
+      768.007,
+      0.703,
+      -0.711,
+      -0.711,
+      -0.703,
+      11.511,
+    ],
+    [
+      "New Montgomery Street",
+      -756.122,
+      776.307,
+      0.703,
+      -0.711,
+      0.711,
+      0.703,
+      10.767,
+    ],
+    ["Kearny Street", -916.037, 896.293, 0.705, -0.709, -0.709, -0.705, 13.97],
+    ["4th Street", -1102.276, 1118.825, 0.708, -0.706, 0.706, 0.708, 12.635],
+    [
+      "Stockton Street",
+      -1130.578,
+      1110.249,
+      0.708,
+      -0.706,
+      -0.706,
+      -0.708,
+      12.558,
+    ],
+    ["5th Street", -1302.519, 1319.714, 0.709, -0.705, 0.705, 0.709, 11.177],
+    ["7th Street", -1646.475, 1662.027, 0.66, -0.752, 0.752, 0.66, 13.394],
+    [
+      "Charles J. Brenham Place",
+      -1677.37,
+      1653.517,
+      0.66,
+      -0.752,
+      -0.752,
+      -0.66,
+      13.378,
+    ],
+    ["8th Street", -1880.836, 1896.212, 0.707, -0.707, 0.707, 0.707, 16.592],
+    [
+      "Van Ness Avenue",
+      -2250.703,
+      2223.167,
+      0.716,
+      -0.698,
+      -0.698,
+      -0.716,
+      16.739,
+    ],
+    [
+      "South Van Ness Avenue",
+      -2230.111,
+      2244.291,
+      0.716,
+      -0.698,
+      0.698,
+      0.716,
+      16.614,
+    ],
+    ["Church Street", -3092.612, 3098.296, -0.198, -0.98, 0.98, -0.198, 30.126],
+  ],
+  cgt = () =>
+    lgt.map(([o, t, e, s, n, i, a, r]) => ({
+      name: o,
+      c: [t, e],
+      u: [s, n],
+      n: [i, a],
+      y: r,
+      hw: 1.75,
+      hl: 4.1,
+    })),
+  hgt = null;
+function fgt(o, t) {
+  if (!t?.surfaceAt) return o;
+  let e = (n) => {
+      for (let i = -1; i <= 1; i += 0.25)
+        for (let a = -1; a <= 1; a += 0.5) {
+          let r = n.c[0] + n.u[0] * n.hl * i + n.n[0] * n.hw * a,
+            l = n.c[1] + n.u[1] * n.hl * i + n.n[1] * n.hw * a;
+          if (t.surfaceAt(r, l) === "road") return !1;
+        }
+      return !0;
     },
-    z = (L) => [L, L, L * 0.98, 0],
-    _ = [0.16, 0.16, 0.17, 0],
-    R = [0.62, 0.62, 0.6, 0],
-    T = t.top - t.base,
-    E = p - d,
-    A = g - m,
-    C = ((t._lk?.tg || 0) >> 3) & 7,
-    P = o?.kind ?? 0;
-  if (s <= 1) {
-    for (let L = 1 + (y() < 0.5 ? 1 : 0); L-- > 0;) {
-      let F = w(0.35, 0.28);
-      F &&
-        Pi(
-          i,
-          F[0],
-          F[1],
-          f,
-          u,
-          0.35,
-          0.28,
-          e,
-          e + 1.3 + y() * 0.8,
-          [0.42, 0.2, 0.14, 0],
-        );
+    s = [];
+  for (let n of o) {
+    if (e(n)) {
+      s.push(n);
+      continue;
     }
+    let i = null;
+    for (let a = 0.5; a <= 6 && !i; a += 0.5)
+      for (let r of [1, -1]) {
+        let l = { ...n, c: [n.c[0] + n.u[0] * a * r, n.c[1] + n.u[1] * a * r] };
+        if (e(l)) {
+          i = l;
+          break;
+        }
+      }
+    i && s.push(i);
+  }
+  return s;
+}
+function dK(o, t, e = !1) {
+  return e ? ugt(o, t) : (hgt ||= fgt(cgt(), t));
+}
+function ugt(o, t) {
+  let e = o.edges.filter((a) => a.name === "Market Street" && !(a.layer > 0)),
+    s = {},
+    n = {},
+    i = [];
+  for (let [a, r, l] of rgt) {
+    let c = null;
+    for (let w of o.edges)
+      if (w.name === a)
+        for (let _ of [0, w.n - 1]) {
+          let z = w.P[_ * 3],
+            A = w.P[_ * 3 + 1];
+          for (let T of e)
+            (ys(T, z, A, s),
+              s.d < 14 && (!c || s.d < c.d) && (c = { m: T, s: s.s, d: s.d }));
+        }
+    if (!c) continue;
+    Ot(c.m, Math.max(c.m.s0, Math.min(c.m.s1, c.s)), n);
+    let h = n.dx,
+      f = n.dz;
+    h - f < 0 && ((h = -h), (f = -f));
+    let u = l * (n.dx * h + n.dz * f),
+      d = Math.max(c.m.s0, Math.min(c.m.s1, c.s + u)),
+      p = null;
     {
-      let L = w(0.07, 0.07);
-      L && Pi(i, L[0], L[1], f, u, 0.07, 0.07, e, e + 0.9, _);
+      let w = n.x + h * l,
+        _ = n.z + f * l,
+        z = 1e9;
+      for (let A of e)
+        (ys(A, w, _, s),
+          s.d < z &&
+            ((z = s.d), (p = [A, Math.max(A.s0, Math.min(A.s1, s.s))])));
     }
-    if (y() < 0.5) {
-      let L = w(0.6, 0.8);
-      L &&
-        (Pi(i, L[0], L[1], f, u, 0.6, 0.8, e, e + 0.35, z(0.7)),
-        Pi(
-          i,
-          L[0],
-          L[1],
-          f,
-          u,
-          0.5,
-          0.7,
-          e + 0.35,
-          e + 0.45,
-          [0.05, 0.07, 0.09, 0],
-        ));
+    Ot(p[0], p[1], n);
+    let m = -f,
+      g = h;
+    (m + g > 0 && ((m = -m), (g = -g)), r < 0 && ((m = -m), (g = -g)));
+    let b = -1,
+      v = -1;
+    for (let w = 2; w < 40; w += 0.5) {
+      let _ = t.surfaceAt(n.x + m * w, n.z + g * w);
+      if (_ === "walk") (b < 0 && (b = w), (v = w));
+      else if (b > 0 && _ !== "walk") break;
     }
-    if (y() < 0.22) {
-      let L = w(1.9, 1.1);
-      if (L)
-        for (let F = -1; F <= 1; F += 2)
-          Pi(
-            i,
-            L[0] + f * F * 0.97,
-            L[1] + u * F * 0.97,
-            f,
-            u,
-            0.92,
-            1,
-            e + 0.25,
-            e + 0.33,
-            [0.03, 0.045, 0.08, 0],
-          );
-    }
-    if (P === 7) {
-      let L = w(1.6, 1.6);
-      if (L)
-        for (let [F, N] of [
-          [-1, -1],
-          [1, -1],
-          [1, 1],
-          [-1, 1],
-        ])
-          Pi(
-            i,
-            L[0] + f * F * 1.6 + b * N * 1.6,
-            L[1] + u * F * 1.6 + x * N * 1.6,
-            f,
-            u,
-            0.04,
-            0.04,
-            e,
-            e + 1.05,
-            _,
-          );
-    }
-    return;
+    if (b < 0 || v - b < 6.4) continue;
+    let x = Math.min(b + 2.6 + 1.5, (b + v) / 2),
+      y = n.x + m * x,
+      M = n.z + g * x,
+      S = t.probe(y, M);
+    S.walk &&
+      i.push({
+        name: a,
+        c: [y, M],
+        u: [h, f],
+        n: [m, g],
+        y: S.walk.y,
+        hw: 1.75,
+        hl: 4.1,
+      });
   }
-  if (s === 6 && T > 120 && E > 22 && A > 22 && Cn(t.seed, 90) < 0.25 && a) {
-    let L = Math.min(11, Math.min(E, A) * 0.3),
-      F = w(L, L);
-    if (F) {
-      let N = e + 0.6;
-      Pi(i, F[0], F[1], f, u, L, L, e, N, [0.2, 0.2, 0.21, 0], !1);
-      let B = (W, V) => [
-          F[0] + f * L * W + b * L * V,
-          N,
-          F[1] + u * L * W + x * L * V,
-        ],
-        H = [L / 20, 0, 0, 0.5 + 5.5 / 16],
-        O = B(-1, -1),
-        D = B(-1, 1),
-        U = B(1, 1),
-        G = B(1, -1);
-      (D[2] - O[2]) * (U[0] - O[0]) - (D[0] - O[0]) * (U[2] - O[2]) >= 0
-        ? a.quad(O, D, U, G, [-L, -L], [-L, L], [L, L], [L, -L], H, [0, 1, 0])
-        : a.quad(O, G, U, D, [-L, -L], [L, -L], [L, L], [-L, L], H, [0, 1, 0]);
-      for (let W = 0; W < 8; W++) {
-        let V = (W / 8) * Math.PI * 2;
-        Pi(
-          i,
-          F[0] + Math.cos(V) * (L + 0.3),
-          F[1] + Math.sin(V) * (L + 0.3),
-          f,
-          u,
-          0.08,
-          0.08,
-          N,
-          N + 0.25,
-          [1, 0.9, 0.3, 0],
-        );
-      }
-    }
-  }
-  if (s === 6 && T > 45 && E > 18 && A > 14) {
-    let L = E * 0.28,
-      F = A * 0.28,
-      N = w(L, F);
-    if (N) {
-      let B = 4.5 + Cn(t.seed, 9) * 4;
-      if (
-        (Pi(i, N[0], N[1], f, u, L, F, e, e + B, [
-          ...n.map((H) => H * 0.75),
-          0,
-        ]),
-        Pi(
-          i,
-          N[0],
-          N[1],
-          f,
-          u,
-          L + 0.12,
-          F + 0.12,
-          e + B * 0.45,
-          e + B * 0.8,
-          [0.1, 0.1, 0.11, 0],
-        ),
-        Cn(t.seed, 10) > 0.6 &&
-          Pi(
-            i,
-            N[0],
-            N[1],
-            f,
-            u,
-            0.2,
-            0.2,
-            e + 4,
-            e + 16 + Cn(t.seed, 11) * 12,
-            [0.3, 0.3, 0.3, 0],
-          ),
-        Cn(t.seed, 12) < 0.5)
-      )
-        for (let H = 0; H < 3; H++)
-          Pi(
-            i,
-            N[0] + f * (H - 1) * L * 0.6,
-            N[1] + u * (H - 1) * L * 0.6,
-            f,
-            u,
-            0.04,
-            0.04,
-            e + B,
-            e + B + 3 + H * 1.5,
-            _,
-          );
-    }
-  } else if (
-    (s === 6 || s === 2 || s === 3 || s === 8) &&
-    T > 18 &&
-    E > 14 &&
-    A > 10 &&
-    y() < 0.55
-  ) {
-    let L = Math.min(6, E * 0.22),
-      F = Math.min(4.5, A * 0.25),
-      N = w(L, F);
-    N &&
-      (Pi(i, N[0], N[1], f, u, L, F, e, e + 3.2, [...n.map((B) => B * 0.8), 0]),
-      Pi(
-        i,
-        N[0],
-        N[1],
-        f,
-        u,
-        L + 0.1,
-        F + 0.1,
-        e + 1.2,
-        e + 2.4,
-        [0.12, 0.12, 0.13, 0],
-      ));
-  }
-  if (
-    (s === 6 || (s >= 2 && T > 25)) &&
-    E > 16 &&
-    A > 12 &&
-    y() < (s === 6 ? 0.55 : 0.25)
-  ) {
-    let L = 1 + (E > 30 && y() < 0.5 ? 1 : 0),
-      F = w(1.6 * L + 0.2, 1.7);
-    if (F) {
-      let N = [0.62, 0.6, 0.55, 0],
-        B = 2.6 + y() * 0.8;
-      (Pi(i, F[0], F[1], f, u, 1.6 * L, 1.6, e, e + B, N),
-        Pi(
-          i,
-          F[0],
-          F[1],
-          f,
-          u,
-          1.6 * L + 0.1,
-          1.7,
-          e + 0.5,
-          e + B * 0.55,
-          [0.34, 0.34, 0.32, 0],
-        ));
-      for (let H = 0; H < L; H++) {
-        let O = (H - (L - 1) / 2) * 3.2;
-        (pk(
-          i,
-          F[0] + f * O,
-          F[1] + u * O,
-          1.25,
-          10,
-          e + B,
-          e + B + 0.9,
-          [0.5, 0.5, 0.47, 0],
-          !1,
-        ),
-          pk(
-            i,
-            F[0] + f * O,
-            F[1] + u * O,
-            1.1,
-            10,
-            e + B,
-            e + B + 0.85,
-            [0.06, 0.06, 0.065, 0],
-          ));
-      }
-    }
-  }
-  if (
-    (s === 5 || s === 2 || s === 4) &&
-    T > 12 &&
-    T < 60 &&
-    (C === 0 || C <= 3) &&
-    y() < (s === 5 ? 0.4 : 0.18)
-  ) {
-    let L = 1.5 + y() * 0.8,
-      F = w(L + 0.3, L + 0.3);
-    if (F) {
-      let N = 2.2 + y() * 1.2,
-        B = e + N,
-        H = B + 2.8 + y() * 1.2,
-        O = [0.3, 0.21, 0.14, 0];
-      for (let [D, U] of [
-        [-1, -1],
-        [1, -1],
-        [1, 1],
-        [-1, 1],
-      ])
-        Pi(
-          i,
-          F[0] + f * D * L * 0.6 + b * U * L * 0.6,
-          F[1] + u * D * L * 0.6 + x * U * L * 0.6,
-          f,
-          u,
-          0.09,
-          0.09,
-          e,
-          B,
-          [0.08, 0.08, 0.08, 0],
-        );
-      (Pi(
-        i,
-        F[0],
-        F[1],
-        f,
-        u,
-        L * 0.75,
-        L * 0.75,
-        B - 0.25,
-        B,
-        [0.1, 0.09, 0.08, 0],
-      ),
-        pk(i, F[0], F[1], L, 14, B, H, O, !1));
-      for (let D of [0.2, 0.5, 0.8])
-        pk(
-          i,
-          F[0],
-          F[1],
-          L + 0.07,
-          14,
-          B + (H - B) * D,
-          B + (H - B) * D + 0.07,
-          [0.06, 0.06, 0.06, 0],
-          !1,
-        );
-      Fpt(i, F[0], F[1], L + 0.12, 14, H, H + L * 0.55, [0.22, 0.17, 0.12, 0]);
-    }
-  }
-  if (P === 3 && y() < 0.7) {
-    for (let L = 2 + Math.floor(y() * 3); L-- > 0;) {
-      let F = w(0.9, 0.35);
-      F &&
-        (Pi(i, F[0], F[1], f, u, 0.9, 0.35, e, e + 0.55, [0.35, 0.27, 0.19, 0]),
-        Pi(
-          i,
-          F[0],
-          F[1],
-          f,
-          u,
-          0.85,
-          0.3,
-          e + 0.55,
-          e + 0.75 + y() * 0.3,
-          [0.07, 0.12, 0.04, 0],
-        ));
-    }
-    if (y() < 0.5) {
-      let L = w(1.8, 1.4);
-      if (L) {
-        let F = [0.3, 0.24, 0.17, 0];
-        for (let [N, B] of [
-          [-1, -1],
-          [1, -1],
-          [1, 1],
-          [-1, 1],
-        ])
-          Pi(
-            i,
-            L[0] + f * N * 1.7 + b * B * 1.3,
-            L[1] + u * N * 1.7 + x * B * 1.3,
-            f,
-            u,
-            0.07,
-            0.07,
-            e,
-            e + 2.4,
-            F,
-          );
-        for (let N = -3; N <= 3; N++)
-          Pi(
-            i,
-            L[0] + f * N * 0.55,
-            L[1] + u * N * 0.55,
-            f,
-            u,
-            0.04,
-            1.45,
-            e + 2.4,
-            e + 2.55,
-            F,
-          );
-      }
-    }
-  }
-  if (y() < 0.7) {
-    let L = w(1.3, 1.6);
-    L &&
-      Pi(i, L[0], L[1], f, u, 1.3, 1.6, e, e + 2.7, [
-        ...n.map((F) => F * 0.8),
-        0,
-      ]);
-  }
-  let I = 1 + Math.floor(y() * (T > 30 ? 6 : 4));
-  for (let L = 0; L < I; L++) {
-    let F = y() < 0.35,
-      N = F ? 1.1 : 0.55,
-      B = F ? 0.7 : 0.45,
-      H = F ? 1.5 : 0.9,
-      O = w(N, B);
-    O &&
-      (Pi(i, O[0], O[1], f, u, N, B, e, e + H, z(0.55 + y() * 0.2)),
-      Pi(i, O[0], O[1], f, u, N - 0.1, B - 0.1, e + H, e + H + 0.06, _),
-      F &&
-        Pi(
-          i,
-          O[0] + b * (B + 0.9),
-          O[1] + x * (B + 0.9),
-          f,
-          u,
-          0.25,
-          0.9,
-          e + 0.4,
-          e + 0.9,
-          R,
-        ));
-  }
-  for (let L = Math.floor(y() * 3); L-- > 0;) {
-    let F = w(0.07, 0.07);
-    F && Pi(i, F[0], F[1], f, u, 0.07, 0.07, e, e + 0.7 + y(), _);
-  }
-  if (y() < 0.3) {
-    let L = w(0.35, 0.35);
-    L &&
-      (Pi(i, L[0], L[1], f, u, 0.05, 0.05, e, e + 1, _),
-      Pi(i, L[0], L[1], f, u, 0.35, 0.04, e + 0.9, e + 1.5, z(0.85)));
-  }
-  if (T > 20 && y() < 0.2) {
-    let L = w(0.3, 0.3);
-    if (L) {
-      let F = 5 + y() * 6;
-      Pi(i, L[0], L[1], f, u, 0.05, 0.05, e, e + F, _);
-      for (let N = 1; N <= 3; N++)
-        Pi(
-          i,
-          L[0],
-          L[1],
-          f,
-          u,
-          0.5 - N * 0.1,
-          0.02,
-          e + F * (0.55 + N * 0.12),
-          e + F * (0.55 + N * 0.12) + 0.04,
-          _,
-        );
-    }
-  }
-  if (y() < 0.25) {
-    let L = w(1.6, 1);
-    L &&
-      Pi(i, L[0], L[1], f, u, 1.6, 1, e + 0.3, e + 0.42, [0.04, 0.06, 0.1, 0]);
-  }
+  return i;
+}
+var dgt = (o, t, e, s, n) =>
+  [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ].map(([i, a]) => [
+    o[0] + t[0] * s * i + e[0] * n * a,
+    o[1] + t[1] * s * i + e[1] * n * a,
+  ]);
+function pK(o) {
+  o.claim({ name: "singchong", ids: bz.map((t) => t.id), poly: null });
+  for (let t of dK(o.D, o.L))
+    o.claim({
+      name: "bart",
+      poly: dgt(t.c, t.u, t.n, t.hl + 1.2, t.hw + 0.9),
+      buildings: !1,
+    });
+  (o.claim({ name: "hallidie", ids: [128478751], poly: null }),
+    o.claim({
+      name: "hallidie",
+      poly: Ko.poly.map(([t, e]) => Ko.at(t, e)),
+      buildings: !1,
+    }),
+    o.claim({
+      name: "pioneer",
+      poly: Array.from({ length: 20 }, (t, e) => [
+        ao.c[0] + Math.cos((e / 20) * 2 * Math.PI) * (ao.r1 + 2.5),
+        ao.c[1] + Math.sin((e / 20) * 2 * Math.PI) * (ao.r1 + 2.5),
+      ]),
+      buildings: !1,
+    }));
 }

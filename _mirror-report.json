@@ -4,8 +4,8 @@
   "gated": false,
   "sessionRenewal": "none",
   "requests": 283,
-  "fetched": 410,
-  "bytes": 171250625,
+  "fetched": 432,
+  "bytes": 173514989,
   "paths": [
     "__mb/app/icon-180.png",
     "__mb/app/icon-192.png",
@@ -125,6 +125,25 @@
     "assets/audio/pass_car.mp3",
     "assets/audio/pass_truck.mp3",
     "assets/audio/rain.mp3",
+    "assets/audio/rd_avas.mp3",
+    "assets/audio/rd_bump.mp3",
+    "assets/audio/rd_bump_1.mp3",
+    "assets/audio/rd_bump_2.mp3",
+    "assets/audio/rd_fan.mp3",
+    "assets/audio/rd_land.mp3",
+    "assets/audio/rd_land_1.mp3",
+    "assets/audio/rd_mot_hi.mp3",
+    "assets/audio/rd_mot_lo.mp3",
+    "assets/audio/rd_mot_mid.mp3",
+    "assets/audio/rd_regen.mp3",
+    "assets/audio/rd_regen_1.mp3",
+    "assets/audio/rd_thrust.mp3",
+    "assets/audio/rd_thrust_start.mp3",
+    "assets/audio/rd_thrust_start_1.mp3",
+    "assets/audio/rd_tyre_hi.mp3",
+    "assets/audio/rd_tyre_lo.mp3",
+    "assets/audio/rd_tyre_mid.mp3",
+    "assets/audio/rd_wind.mp3",
     "assets/audio/sml_coast.mp3",
     "assets/audio/sml_high.mp3",
     "assets/audio/sml_idle.mp3",
@@ -201,6 +220,7 @@
     "assets/cybertruck/cybertruck.json",
     "assets/cybertruck/turntable.webp",
     "assets/lm/revolution.bin.gz",
+    "assets/missions/turntable.webp",
     "assets/osm/downtown.json",
     "assets/plates.webp",
     "assets/real/btags.bin.gz",
@@ -214,6 +234,7 @@
     "assets/real/marin/ground.bin.gz",
     "assets/real/marin/props.bin.gz",
     "assets/real/marin/terrain.bin.gz",
+    "assets/real/place.json",
     "assets/real/props.bin.gz",
     "assets/real/rails.bin.gz",
     "assets/real/roads.bin.gz",
@@ -223,6 +244,8 @@
     "assets/real/west/buildings.bin.gz",
     "assets/real/west/props.bin.gz",
     "assets/real/west/terrain.bin.gz",
+    "assets/real/yards.bin.gz",
+    "assets/roadster/turntable.webp",
     "assets/teleop_title.webp",
     "assets/teleop_title_portrait.webp",
     "assets/teleop_title_square.webp",
@@ -393,7 +416,6 @@
     "assets/tex/twigs_n.lq.webp",
     "assets/tex/twigs_n.webp",
     "assets/veg/trees.bin.gz",
-    "assets/veg/yards.bin.gz",
     "assets/waymo/turntable.webp",
     "assets/waymo/waymo.glb.gz",
     "assets/waymo/waymo.json",
@@ -2208,6 +2230,244 @@
     "Audio closure is exact: assets/audio/audio.json names 146 files, all 146 captured, and every captured audio file is named in it.",
     "The 9 un-gzipped /assets/real/*.bin and /assets/real/{marin,west}/*.bin probes 404 upstream (dist ships .gz only).",
     "Boot test: mirror served on loopback (directory-index-capable), game reached actual gameplay (Waymo driving in San Francisco, HUD live), docs/cover.png + docs/boot-evidence.png captured from gameplay, listener killed, port proven closed.",
-    "Drift probe tools/update.mjs: up to date — 410 captured files identical upstream (routes: /?mb=game -> index.html byte-exact; / -> shell.html byte-exact; /index.html -> shell-index.html byte-exact; every asset byte-exact)."
+    "Drift probe tools/update.mjs: up to date — 410 captured files identical upstream (routes: /?mb=game -> index.html byte-exact; / -> shell.html byte-exact; /index.html -> shell-index.html byte-exact; every asset byte-exact).",
+    "Refresh 2026-10-30: trust gate passed (384/410 still-served files byte-exact), 25 replaced (originals in legacy/2026-10-30/), 1 upstream-gone recorded, 20 closure addition(s).",
+    "Refresh 2026-10-30: trust gate passed (427/429 still-served files byte-exact), 0 replaced (originals in legacy/2026-10-30/), 0 upstream-gone recorded, 1 closure addition(s).",
+    "Refresh 2026-10-30: trust gate passed (428/430 still-served files byte-exact), 0 replaced (originals in legacy/2026-10-30/), 0 upstream-gone recorded, 2 closure addition(s).",
+    "Refresh 2026-10-30: 25 replaced files (originals under legacy/2026-10-30/), 1 upstream-gone (assets/veg/yards.bin.gz — the file moved to assets/real/yards.bin.gz, which is captured), 23 closure additions (19 rd_*.mp3, assets/real/place.json, assets/real/yards.bin.gz, assets/roadster/turntable.webp, assets/missions/turntable.webp). Capture 410 -> 432 files.",
+    "Presence-only (dynamic) documents: shell.html and shell-index.html are rendered per request — consecutive GETs return 37,131 / 36,845 / 36,805 B variants (the game iframe with a freshly signed mb_rec token, or no iframe). The manifest marks them dynamic:true; tools/update.mjs compares presence, and tools/verify.mjs still hashes the snapshot the mirror ships."
+  ],
+  "refreshes": [
+    {
+      "date": "2026-10-30",
+      "trustGate": "PASS",
+      "gate": "tools/update.mjs --dry-run against the live game host: 384 of the 410 files of the 2026-10-13 capture reproduced byte-for-byte; 25 genuinely changed upstream; 1 upstream-gone; 0 unreachable. The two feed-shell documents are presence-only (per-request variants).",
+      "checked": 410,
+      "identical": 384,
+      "presenceOnly": [
+        "shell-index.html",
+        "shell.html"
+      ],
+      "changed": [
+        "__mb/app/icon-180.png",
+        "__mb/app/icon-192.png",
+        "__mb/app/icon-512.png",
+        "app.js",
+        "assets/audio/audio.json",
+        "assets/real/btags.bin.gz",
+        "assets/real/buildings.bin.gz",
+        "assets/real/coast.bin.gz",
+        "assets/real/green.bin.gz",
+        "assets/real/ground.bin.gz",
+        "assets/real/props.bin.gz",
+        "assets/real/rails.bin.gz",
+        "assets/real/roads.bin.gz",
+        "assets/real/terrain.bin.gz",
+        "assets/real/west/buildings.bin.gz",
+        "assets/real/west/props.bin.gz",
+        "assets/real/west/terrain.bin.gz",
+        "boot.js",
+        "icon.webp",
+        "index.html",
+        "shell-index.html",
+        "shell.html",
+        "style.css",
+        "thumb.webp",
+        "workers/img.js"
+      ],
+      "upstreamGone": [
+        {
+          "file": "assets/veg/yards.bin.gz",
+          "status": 404,
+          "note": "404/410 on the live origin at refresh time; bytes preserved under legacy/2026-10-30/, entry removed from the manifest — not replaced, not invented"
+        }
+      ],
+      "added": [
+        {
+          "file": "assets/audio/rd_avas.mp3",
+          "bytes": 148001,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_bump.mp3",
+          "bytes": 6731,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_bump_1.mp3",
+          "bytes": 5895,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_bump_2.mp3",
+          "bytes": 6731,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_fan.mp3",
+          "bytes": 145493,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_land.mp3",
+          "bytes": 17180,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_land_1.mp3",
+          "bytes": 11746,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_mot_hi.mp3",
+          "bytes": 151345,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_mot_lo.mp3",
+          "bytes": 153435,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_mot_mid.mp3",
+          "bytes": 149255,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_regen.mp3",
+          "bytes": 40586,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_regen_1.mp3",
+          "bytes": 39332,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_thrust.mp3",
+          "bytes": 85308,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_thrust_start.mp3",
+          "bytes": 5895,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_thrust_start_1.mp3",
+          "bytes": 20106,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_tyre_hi.mp3",
+          "bytes": 148001,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_tyre_lo.mp3",
+          "bytes": 150927,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_tyre_mid.mp3",
+          "bytes": 151345,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/audio/rd_wind.mp3",
+          "bytes": 184364,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/real/place.json",
+          "bytes": 13826,
+          "via": "path literal"
+        },
+        {
+          "file": "assets/real/yards.bin.gz",
+          "bytes": 1319021,
+          "via": "assets/real/yards.bin (gzip twin)"
+        },
+        {
+          "file": "assets/missions/turntable.webp",
+          "bytes": 245806,
+          "via": "constructed dir template (.dir + turntable.webp)"
+        },
+        {
+          "file": "assets/roadster/turntable.webp",
+          "bytes": 219252,
+          "via": "constructed dir template (.dir + turntable.webp)"
+        }
+      ],
+      "finalManifest": {
+        "files": 432
+      },
+      "closure": {
+        "passes": 3,
+        "added": 23,
+        "addedFiles": [
+          "assets/audio/rd_avas.mp3",
+          "assets/audio/rd_bump.mp3",
+          "assets/audio/rd_bump_1.mp3",
+          "assets/audio/rd_bump_2.mp3",
+          "assets/audio/rd_fan.mp3",
+          "assets/audio/rd_land.mp3",
+          "assets/audio/rd_land_1.mp3",
+          "assets/audio/rd_mot_hi.mp3",
+          "assets/audio/rd_mot_lo.mp3",
+          "assets/audio/rd_mot_mid.mp3",
+          "assets/audio/rd_regen.mp3",
+          "assets/audio/rd_regen_1.mp3",
+          "assets/audio/rd_thrust.mp3",
+          "assets/audio/rd_thrust_start.mp3",
+          "assets/audio/rd_thrust_start_1.mp3",
+          "assets/audio/rd_tyre_hi.mp3",
+          "assets/audio/rd_tyre_lo.mp3",
+          "assets/audio/rd_tyre_mid.mp3",
+          "assets/audio/rd_wind.mp3",
+          "assets/real/place.json",
+          "assets/real/yards.bin.gz",
+          "assets/missions/turntable.webp",
+          "assets/roadster/turntable.webp"
+        ],
+        "notFound404": 28,
+        "notFound404List": [
+          "assets/audio/2CV.wav",
+          "assets/audio/3008gtrevving.wav",
+          "assets/audio/4WD Engine & Rev.wav",
+          "assets/audio/Lambo idle and rev.mp3",
+          "assets/audio/MISC_Police_PA_Officer_Speaking_001.wav",
+          "assets/audio/Porsche.MP3",
+          "assets/audio/S07-11 1972 Porsche in fast; idle; stop.wav",
+          "assets/audio/Whelen Horn.wav",
+          "assets/audio/Whelen Yelp.wav",
+          "assets/audio/m_e_bayline_0.mp3",
+          "assets/audio/m_e_horizon_1.mp3",
+          "assets/audio/m_e_neonrun_1.mp3",
+          "assets/audio/m_e_overdrive_1.mp3",
+          "assets/audio/m_e_redline_0.mp3",
+          "assets/audio/m_e_skyline_0.mp3",
+          "assets/audio/m_e_voltage_1.mp3",
+          "assets/audio/m_title_1.mp3",
+          "assets/audio/porsche_911.wav",
+          "assets/cars/turntable.webp",
+          "assets/lm/revolution.bin",
+          "assets/real/btags.bin",
+          "assets/real/marin/docks.bin",
+          "assets/real/sky.bin",
+          "assets/real/sky_field.bin",
+          "assets/real/turntable.webp",
+          "assets/real/yards.bin",
+          "assets/tex/turntable.webp",
+          "assets/veg/trees.bin"
+        ],
+        "bootDiscovered": [
+          "assets/roadster/turntable.webp",
+          "assets/missions/turntable.webp"
+        ],
+        "note": "The closure re-scan (PLAN §4) found the refresh's additions in three passes: (1) static path literals in the freshly fetched HTML/JS/CSS plus every bare filename in the captured JSON asset manifests; (2) constructed runtime paths — the garage loads `dir + \"turntable.webp\"` for every car and mission and only the `assets/<dir>/` literal is in the bundle, which the 2026-10-30 offline boot exposed as two local 404s (roadster, missions); (3) the served `.gz` twin of every `.bin` literal (assets/real/yards.bin.gz). 404s are genuine upstream absences (legacy audio names in audio.json, un-gzipped dist twins) — recorded, never invented."
+      },
+      "legacy": "legacy/2026-10-30/"
+    }
   ]
 }

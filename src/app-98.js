@@ -1,232 +1,327 @@
 // app 98 — math
-// Lines 77966-78195 of readable/app.pretty.js (statement-aligned).
-function IW(i, t, e, s = 0.15) {
-  let n = i.trench;
-  if (!n || !n.F) return;
-  let { N: o, F: a, br: r, yDeck: l } = n,
-    c = [0, 1, 0],
-    h = (g, b, x, v, y, M) =>
-      t.quad(g, b, x, v, [0, 0], [1, 0], [1, 1], [0, 1], y, M),
-    f = r.W[0] + 0.4 + 2.8,
-    u = {};
-  vs(r, Dh[0], Dh[1], u);
-  let d = u.dx,
-    p = u.dz,
-    m =
-      Math.abs(d * Hh[0] + p * Hh[1]) > 0.3
-        ? f / Math.abs(d * Hh[0] + p * Hh[1])
-        : f;
-  for (let g = 0; g < 2; g++) {
-    let b = g ? 1 : -1,
-      x = o[g],
-      v = a[g],
-      y = [Hh[0] * b, 0, Hh[1] * b],
-      M = [-y[0], 0, -y[2]],
-      S = (E) => Kn(x.v, E) + b * (Kn(x.w, E) + fft),
-      w = (E) => Kn(x.y, E),
-      z = (E) => Math.max(Kn(v.y, E) + s, w(E)),
-      _ = (E, A, C) => {
-        let [P, I] = em(E, S(E) + b * A);
-        return [P, C, I];
-      },
-      R = null,
-      T = () => {
-        if (!R || R[1] - R[0] < 4) {
-          R = null;
-          return;
-        }
-        let [E, A] = R,
-          C = (E + A) / 2,
-          P = em(E, S(E) + b * 0.15),
-          I = em(A, S(A) + b * 0.15),
-          L = (P[0] + I[0]) / 2,
-          F = (P[1] + I[1]) / 2,
-          N = I[0] - P[0],
-          B = I[1] - P[1],
-          H = Math.hypot(N, B),
-          O = Math.abs(C) < m + 0.5;
-        (e.push({
-          t: "obb",
-          x: L,
-          z: F,
-          hx: 0.22,
-          hz: H / 2 + 0.05,
-          c: B / H,
-          s: N / H,
-          wall: !0,
-          y0: Math.min(w(E), w(A)) - 1,
-          y1: O ? l - 1.9 : Math.max(z(E), z(A)) + 1.1,
-        }),
-          (R = null));
-      };
-    for (let E = Ur + 2; E < C0 - 2; E += 2) {
-      let A = E + 2,
-        C = z(E) - w(E),
-        P = z(A) - w(A);
-      if (Math.min(C, P) < 0.25) {
-        T();
-        continue;
-      }
-      let I = z(E),
-        L = z(A);
-      h(
-        _(E, 0, w(E) - 0.1),
-        _(A, 0, w(A) - 0.1),
-        _(A, 0, w(A) + 0.9),
-        _(E, 0, w(E) + 0.9),
-        pft,
-        M,
-      );
-      let F = Math.floor((E + 1e3) / 6),
-        N = 0.86 + (0.22 * (((F * 2654435761) >>> 0) % 1e3)) / 1e3,
-        B = [e7[0] * N, e7[1] * N, e7[2] * N, 0];
-      if (
-        (h(
-          _(E, 0, w(E) + 0.9),
-          _(A, 0, w(A) + 0.9),
-          _(A, 0, L + 0.08),
-          _(E, 0, I + 0.08),
-          B,
-          M,
-        ),
-        Math.floor((A + 1e3) / 6) !== F)
-      ) {
-        let H = Math.floor((A + 1e3) / 6) * 6 - 1e3;
-        h(
-          _(H - 0.04, -0.01, w(H) - 0.1),
-          _(H + 0.04, -0.01, w(H) - 0.1),
-          _(H + 0.04, -0.01, z(H) + 0.08),
-          _(H - 0.04, -0.01, z(H) + 0.08),
-          mft,
-          M,
-        );
-      }
-      if (
-        (h(
-          _(E, -0.12, I + 0.08),
-          _(A, -0.12, L + 0.08),
-          _(A, -0.12, L + 0.3),
-          _(E, -0.12, I + 0.3),
-          py,
-          M,
-        ),
-        h(
-          _(E, -0.12, I + 0.3),
-          _(A, -0.12, L + 0.3),
-          _(A, 0.4, L + 0.3),
-          _(E, 0.4, I + 0.3),
-          py,
-          c,
-        ),
-        h(
-          _(A, 0.4, L + 0.3),
-          _(E, 0.4, I + 0.3),
-          _(E, 0.4, I - 0.1),
-          _(A, 0.4, L - 0.1),
-          py,
-          y,
-        ),
-        Math.abs(E + 1) > m + 0.5)
-      ) {
-        for (let D of [1.05, 0.55])
-          h(
-            _(E, 0.2, I + 0.3 + D),
-            _(A, 0.2, L + 0.3 + D),
-            _(A, 0.2, L + 0.3 + D + 0.05),
-            _(E, 0.2, I + 0.3 + D + 0.05),
-            s7,
-            M,
-          );
-        let H = _(E, 0.17, I + 0.3),
-          O = _(E, 0.23, I + 0.3);
-        h(H, O, [O[0], I + 1.4, O[2]], [H[0], I + 1.4, H[2]], s7, M);
-      }
-      ((R = R ? [R[0], A] : [E, A]),
-        (R[1] - R[0] >= 8 || Math.abs(A) < m + 1 != Math.abs(E) < m + 1) &&
-          T());
+// Lines 78432-78756 of readable/app.pretty.js (statement-aligned).
+var Hpt = [
+    {
+      key: "broadway",
+      name: "Broadway",
+      a: [-1565, -188],
+      b: [-2142, -94],
+      twin: !0,
+      shape: "arch",
+      col: [0.8, 0.7, 0.44],
+      glow: [1, 0.86, 0.6],
+      portals: !0,
+    },
+    {
+      key: "stockton",
+      name: "Stockton Street",
+      a: [-1200.9, 582.7],
+      b: [-1244.8, 308.9],
+      mid: [[-1230.1, 400.9]],
+      twin: !1,
+      shape: "arch",
+      spring: 3,
+      rise: 1.5,
+      col: [0.8, 0.77, 0.7],
+      glow: [1, 0.62, 0.3],
+      portals: !0,
+    },
+    {
+      key: "gearyMasonic",
+      name: "Geary Boulevard",
+      a: [-4757, 1455],
+      b: [-4594, 1444],
+      twin: !0,
+      shape: "box",
+      col: [0.56, 0.55, 0.52],
+      glow: [0.95, 0.95, 0.9],
+      portals: !0,
+    },
+    {
+      key: "macarthurN",
+      name: "Veterans Boulevard",
+      a: [-6694, 327],
+      b: [-6688, -70],
+      oneway: !0,
+      left: 3.3,
+      shape: "box",
+      box: 6,
+      col: [0.74, 0.64, 0.44],
+      glow: [1, 0.78, 0.45],
+      portals: !0,
+    },
+    {
+      key: "macarthurS",
+      name: "Veterans Boulevard",
+      a: [-6695, -70],
+      b: [-6701, 327],
+      oneway: !0,
+      left: 3.3,
+      shape: "box",
+      box: 6,
+      col: [0.74, 0.64, 0.44],
+      glow: [1, 0.78, 0.45],
+      portals: !0,
+    },
+    {
+      key: "waldoN",
+      name: "Redwood Highway",
+      a: [-8100, -5299],
+      b: [-8162, -5600],
+      oneway: !0,
+      shape: "arch",
+      col: [0.78, 0.76, 0.7],
+      glow: [1, 0.86, 0.62],
+      portals: !0,
+      rainbow: !0,
+    },
+    {
+      key: "waldoS",
+      name: "Redwood Highway",
+      a: [-8194, -5593],
+      b: [-8132, -5293],
+      oneway: !0,
+      shape: "arch",
+      col: [0.78, 0.76, 0.7],
+      glow: [1, 0.86, 0.62],
+      portals: !0,
+      rainbow: !0,
+    },
+    {
+      key: "gearyFillmoreW",
+      name: "Geary Boulevard",
+      a: [-3458.4, 1231.4],
+      b: [-3483.9, 1235.5],
+      oneway: !0,
+      open: !0,
+    },
+    {
+      key: "gearyFillmoreE",
+      name: "Geary Boulevard",
+      a: [-3481.8, 1248.3],
+      b: [-3456.3, 1244.3],
+      oneway: !0,
+      open: !0,
+    },
+  ],
+  Dpt = 3.9,
+  Upt = 2,
+  Gpt = 5,
+  wo = 1,
+  ch = (o) => o.spring ?? Dpt,
+  hc = (o) => o.rise ?? Upt,
+  Fk = [0.5, 0.47, 0.42, 0],
+  jb = [0.6, 0.57, 0.51, 0],
+  Gu = (o) => o.box || Gpt,
+  Ok = (o) => (o.shape === "box" ? Gu(o) : ch(o) + hc(o)) + 0.5,
+  lh = 14,
+  Bq = (o, t, e, s) => {
+    let n = null,
+      i = s;
+    for (let a of o.juns) {
+      let r = Math.hypot(a.x - t, a.z - e);
+      r < i && ((i = r), (n = a));
     }
-    T();
+    return n;
+  };
+function Vpt(o, t) {
+  let e = 1e9,
+    s = -1e9,
+    n = 1e9,
+    i = -1e9;
+  for (let f = 0; f < t.n; f++)
+    ((e = Math.min(e, t.P[f * 3])),
+      (s = Math.max(s, t.P[f * 3])),
+      (n = Math.min(n, t.P[f * 3 + 1])),
+      (i = Math.max(i, t.P[f * 3 + 1])));
+  let a = o.edges.filter(
+    (f) =>
+      f !== t &&
+      f.elev &&
+      f.layered &&
+      !f.tunnel &&
+      !f.inner &&
+      (() => {
+        for (let u = 0; u < f.n; u++) {
+          let d = f.P[u * 3],
+            p = f.P[u * 3 + 1];
+          if (d > e - 20 && d < s + 20 && p > n - 20 && p < i + 20) return !0;
+        }
+        return !1;
+      })(),
+  );
+  if (!a.length) return 0;
+  for (let f of a)
+    for (let u of [0, 1]) {
+      let d = o.juns[u ? f.jb : f.ja];
+      if (!d) continue;
+      let p = u ? f.n - 1 : 0,
+        m = d.y - f.P[p * 3 + 2];
+      if (!(Math.abs(m) < 0.05 || Math.abs(m) > 1))
+        for (let g = 0; g < f.n; g++) {
+          let b = u ? f.L - f.S[g] : f.S[g];
+          b < 8 &&
+            (f.P[g * 3 + 2] +=
+              m * (1 - b / 8) * (1 - b / 8) * (3 - 2 * (1 - b / 8)));
+        }
+    }
+  let r = {},
+    l = [];
+  for (let f = 1; f + 1 < t.n; f++) {
+    let u = t.P[f * 3],
+      d = t.P[f * 3 + 1],
+      p = t.P[f * 3 + 2];
+    for (let m of a)
+      (ys(m, u, d, r),
+        r.d <= r.w + t.W[f] &&
+          r.s > 0.01 &&
+          r.s < m.L - 0.01 &&
+          r.y > p - 0.5 &&
+          r.y - p < 4.6 &&
+          l.push([t.S[f], r.y - 4.8]));
+  }
+  if (!l.length) return 0;
+  let c = 0,
+    h = new Float32Array(t.n);
+  for (let f = 1; f + 1 < t.n; f++) {
+    let u = t.P[f * 3 + 2];
+    for (let [d, p] of l) u = Math.min(u, p + 0.08 * Math.abs(t.S[f] - d));
+    u < t.P[f * 3 + 2] - 0.01 &&
+      ((h[f] = t.P[f * 3 + 2] - u), (t.P[f * 3 + 2] = u), c++);
+  }
+  return (c && ((t.drop = h), (o.dropped ||= []).push(t)), c);
+}
+function Wpt(o, t) {
+  let e = 1e9,
+    s = -1e9,
+    n = 1e9,
+    i = -1e9;
+  for (let h = 0; h < t.n; h++)
+    ((e = Math.min(e, t.P[h * 3])),
+      (s = Math.max(s, t.P[h * 3])),
+      (n = Math.min(n, t.P[h * 3 + 1])),
+      (i = Math.max(i, t.P[h * 3 + 1])));
+  let a = o.edges.filter(
+      (h) =>
+        h !== t &&
+        !h.tunnel &&
+        !h.inner &&
+        !h.elev &&
+        h.n > 1 &&
+        (() => {
+          for (let f = 0; f < h.n; f++) {
+            let u = h.P[f * 3],
+              d = h.P[f * 3 + 1];
+            if (u > e - 25 && u < s + 25 && d > n - 25 && d < i + 25) return !0;
+          }
+          return !1;
+        })(),
+    ),
+    r = {},
+    l = Array.from(t.W),
+    c = 0;
+  for (let h = 0; h < t.n; h++) {
+    let f = t.P[h * 3],
+      u = t.P[h * 3 + 1],
+      d = t.P[h * 3 + 2],
+      p = t.D[Math.min(h, t.n - 2) * 2],
+      m = t.D[Math.min(h, t.n - 2) * 2 + 1];
+    for (let g of a) {
+      if (
+        (ys(g, f, u, r),
+        r.s < 0.5 ||
+          r.s > g.L - 0.5 ||
+          r.y - d < 1.5 ||
+          r.d > t.W[h] + r.w + 3 ||
+          Math.abs(r.dx * p + r.dz * m) < 0.85)
+      )
+        continue;
+      let b = Math.max(4, r.d - r.w - 0.4);
+      b < l[h] && ((l[h] = b), c++);
+    }
+  }
+  if (!c) return 0;
+  for (let h = 0; h < 2; h++)
+    for (let f = 1; f < t.n; f++) {
+      let u = t.S[f] - t.S[f - 1];
+      l[f] = Math.min(l[f], l[f - 1] + u / 6);
+    }
+  for (let h = t.n - 2; h >= 0; h--) {
+    let f = t.S[h + 1] - t.S[h];
+    l[h] = Math.min(l[h], l[h + 1] + f / 6);
+  }
+  t.W0 = Float32Array.from(t.W);
+  for (let h = 0; h < t.n; h++) t.W[h] = l[h];
+  return ((t.split = !0), c);
+}
+function Nq(o, t, e, s, n) {
+  let i = [];
+  for (let v = 0; v < t.n; v++) {
+    let x = e ? t.L - t.S[v] : t.S[v];
+    x <= 70 && i.push([-x, t, v]);
+  }
+  let a = s.ja === n.id;
+  for (let v = 0; v < s.n; v++) {
+    let x = a ? s.S[v] : s.L - s.S[v];
+    x <= 110 && x > 0.01 && i.push([x, s, v]);
+  }
+  if ((i.sort((v, x) => v[0] - x[0]), i.length < 6)) return 0;
+  let r = ([, v, x]) => v.P[x * 3 + 2],
+    l = i[0][0],
+    c = i[i.length - 1][0],
+    h = Math.floor(c - l) + 1,
+    f = new Float64Array(h);
+  {
+    let v = 0;
+    for (let x = 0; x < h; x++) {
+      let y = l + x;
+      for (; v + 2 < i.length && i[v + 1][0] < y;) v++;
+      let M = i[v],
+        S = i[v + 1],
+        w =
+          S[0] > M[0]
+            ? Math.min(1, Math.max(0, (y - M[0]) / (S[0] - M[0])))
+            : 0;
+      f[x] = r(M) + (r(S) - r(M)) * w;
+    }
+  }
+  let u = 9,
+    d = Math.ceil(u * 2.5),
+    p = [];
+  for (let v = -d; v <= d; v++) p.push(Math.exp((-v * v) / (2 * u * u)));
+  let m = Float64Array.from(f);
+  for (let v = 0; v < 12; v++) {
+    let x = new Float64Array(h);
+    for (let y = 0; y < h; y++) {
+      let M = 0,
+        S = 0;
+      for (let w = -d; w <= d; w++) {
+        let _ = Math.min(h - 1, Math.max(0, y + w));
+        ((M += m[_] * p[w + d]), (S += p[w + d]));
+      }
+      x[y] = M / S;
+    }
+    for (let y = 0; y < h; y++) m[y] = Math.min(m[y], x[y]);
+  }
+  let g = (v) => {
+      let x = Math.max(0, Math.min(h - 1, v - l)),
+        y = Math.min(h - 2, Math.floor(x)),
+        M = x - y;
+      return [f[y] + (f[y + 1] - f[y]) * M, m[y] + (m[y + 1] - m[y]) * M];
+    },
+    b = 0;
+  for (let v of i) {
+    let [x, y] = g(v[0]),
+      M = Math.min(1, (v[0] - l) / 15, (c - v[0]) / 15),
+      S = x + (Math.min(x, y) - x) * Math.max(0, M),
+      w = v[2] * 3 + 2;
+    ((b = Math.max(b, x - S)), (v[1].P[w] += S - x));
   }
   {
-    let g = [];
-    for (let b = 0; b <= r.L + 0.01; b += 2)
-      (Ot(r, Math.min(b, r.L), u), g.push([u.x, u.z, u.y, u.nx, u.nz, u.w]));
-    for (let b of [-1, 1])
-      for (let x = 0; x + 1 < g.length; x++) {
-        let [v, y, M, S, w, z] = g[x],
-          [_, R, T, E, A, C] = g[x + 1],
-          P = (j, X, K) => [j[0] + j[3] * X * b, K, j[1] + j[4] * X * b],
-          I = g[x],
-          L = g[x + 1],
-          F = z + 0.4,
-          N = z + 3.2,
-          B = C + 0.4,
-          H = C + 3.2,
-          O = [S * b, 0, w * b],
-          D = [-S * b, 0, -w * b];
-        (b > 0
-          ? (j, X, K, nt) => h(j, X, K, nt, PW, c)
-          : (j, X, K, nt) => h(X, j, nt, K, PW, c))(
-          P(I, F, M + 0.2),
-          P(L, B, T + 0.2),
-          P(L, H, T + 0.2),
-          P(I, N, M + 0.2),
-        );
-        let G =
-          b > 0
-            ? [
-                P(L, H, T - 1.6),
-                P(I, N, M - 1.6),
-                P(I, N, M + 0.2),
-                P(L, H, T + 0.2),
-              ]
-            : [
-                P(I, N, M - 1.6),
-                P(L, H, T - 1.6),
-                P(L, H, T + 0.2),
-                P(I, N, M + 0.2),
-              ];
-        h(...G, py, O);
-        let q = [
-          P(I, F, M - 1.6),
-          P(I, N, M - 1.6),
-          P(L, H, T - 1.6),
-          P(L, B, T - 1.6),
-        ];
-        h(
-          ...(b > 0 ? q : q.slice().reverse()),
-          [0.3, 0.3, 0.29, 0],
-          [0, -1, 0],
-        );
-        let W = P(I, N - 0.15, M + 0.35),
-          V = P(L, H - 0.15, T + 0.35);
-        (h(W, V, [V[0], T + 1.35, V[2]], [W[0], M + 1.35, W[2]], gft, O),
-          h(
-            P(I, N - 0.25, M + 0.2),
-            P(L, H - 0.25, T + 0.2),
-            P(L, H - 0.25, T + 0.35),
-            P(I, N - 0.25, M + 0.35),
-            py,
-            D,
-          ));
-        let Y = P(I, N - 0.15, M + 1.35),
-          $ = P(L, H - 0.15, T + 1.35);
-        h(Y, $, [$[0], T + 1.45, $[2]], [Y[0], M + 1.45, Y[2]], s7, O);
-        let st = Math.hypot(_ - v, R - y),
-          Q = P([(v + _) / 2, (y + R) / 2, 0, S, w], N - 0.15, 0);
-        st > 0.2 &&
-          e.push({
-            t: "obb",
-            x: Q[0],
-            z: Q[2],
-            hx: 0.2,
-            hz: st / 2 + 0.05,
-            c: (R - y) / st,
-            s: (_ - v) / st,
-            y0: Math.min(M, T) - 0.5,
-            y1: Math.max(M, T) + 1.5,
-            rail: !0,
-          });
-      }
+    let v = e ? t.n - 1 : 0,
+      [x, y] = g(0),
+      M = Math.min(x, y);
+    ((t.P[v * 3 + 2] = M), (s.P[(a ? 0 : s.n - 1) * 3 + 2] = M), (n.y = M));
   }
+  return ((t.crest = (t.crest || 0) + b), b);
 }

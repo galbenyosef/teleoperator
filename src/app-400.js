@@ -1,330 +1,301 @@
-// app 400 — math
-// Lines 195320-195647 of readable/app.pretty.js (statement-aligned).
-var AMt = [
-    [
-      [-122.476, 37.811],
-      [-122.4785, 37.8102],
-      [-122.4795, 37.808],
-      [-122.4805, 37.805],
-      [-122.4818, 37.801],
-      [-122.4832, 37.7968],
-      [-122.484, 37.7935],
-      [-122.4862, 37.7905],
-      [-122.49, 37.7885],
-      [-122.495, 37.788],
-      [-122.5, 37.7882],
-      [-122.505, 37.7888],
-      [-122.5095, 37.7858],
-      [-122.513, 37.781],
-      [-122.5118, 37.7765],
-      [-122.5108, 37.77],
-      [-122.51, 37.755],
-      [-122.507, 37.71],
-      [-122.503, 37.66],
-      [-122.37, 37.66],
-      [-122.376, 37.71],
-      [-122.38, 37.745],
-      [-122.3822, 37.752],
-      [-122.3835, 37.76],
-      [-122.3845, 37.768],
-      [-122.4, 37.768],
-      [-122.45, 37.79],
-      [-122.47, 37.805],
-    ],
-    [
-      [-122.53, 37.815],
-      [-122.523, 37.8178],
-      [-122.513, 37.8195],
-      [-122.503, 37.8207],
-      [-122.496, 37.8232],
-      [-122.49, 37.8262],
-      [-122.484, 37.8264],
-      [-122.479, 37.8254],
-      [-122.4768, 37.829],
-      [-122.4748, 37.833],
-      [-122.476, 37.837],
-      [-122.479, 37.842],
-      [-122.48, 37.847],
-      [-122.478, 37.853],
-      [-122.483, 37.86],
-      [-122.488, 37.868],
-      [-122.495, 37.88],
-      [-122.56, 37.88],
-      [-122.56, 37.815],
-    ],
-    [
-      [-122.47, 37.87],
-      [-122.456, 37.8645],
-      [-122.4485, 37.87],
-      [-122.445, 37.878],
-      [-122.43, 37.886],
-      [-122.47, 37.895],
-    ],
-    [
-      [-122.446, 37.864],
-      [-122.44, 37.8712],
-      [-122.43, 37.8722],
-      [-122.421, 37.8662],
-      [-122.418, 37.858],
-      [-122.425, 37.852],
-      [-122.435, 37.8528],
-      [-122.4432, 37.857],
-    ],
-    [
-      [-122.4262, 37.8284],
-      [-122.4248, 37.8291],
-      [-122.4222, 37.828],
-      [-122.4198, 37.8262],
-      [-122.4194, 37.825],
-      [-122.4206, 37.8245],
-      [-122.4232, 37.8255],
-      [-122.4255, 37.827],
-    ],
-    [
-      [-122.3772, 37.8098],
-      [-122.3745, 37.8128],
-      [-122.369, 37.8148],
-      [-122.362, 37.8152],
-      [-122.358, 37.8122],
-      [-122.3572, 37.8085],
-      [-122.361, 37.805],
-      [-122.367, 37.804],
-      [-122.373, 37.8055],
-    ],
-    [
-      [-122.3748, 37.8166],
-      [-122.379, 37.823],
-      [-122.3775, 37.829],
-      [-122.372, 37.8332],
-      [-122.364, 37.8316],
-      [-122.36, 37.8262],
-      [-122.3605, 37.8196],
-      [-122.366, 37.8166],
-      [-122.3695, 37.8166],
-      [-122.37, 37.8148],
-      [-122.3716, 37.8148],
-      [-122.3713, 37.8166],
-    ],
-  ].map(JE),
-  RMt = [
-    [
-      [-122.476, 37.811],
-      [-122.4785, 37.8102],
-      [-122.4795, 37.808],
-      [-122.4805, 37.805],
-      [-122.4818, 37.801],
-      [-122.4832, 37.7968],
-      [-122.484, 37.7935],
-      [-122.485, 37.788],
-      [-122.47, 37.787],
-      [-122.47, 37.81],
-    ],
-    [
-      [-122.495, 37.788],
-      [-122.5, 37.7882],
-      [-122.505, 37.7888],
-      [-122.5095, 37.7858],
-      [-122.513, 37.781],
-      [-122.5118, 37.7765],
-      [-122.502, 37.778],
-      [-122.494, 37.782],
-    ],
-  ].map(JE),
-  _N = [
-    {
-      id: "101",
-      pts: [
-        o2.at(o2.s1),
-        ...JE([
-          [-122.48, 37.829],
-          [-122.4812, 37.833],
-          [-122.483, 37.84],
-          [-122.487, 37.847],
-          [-122.492, 37.854],
-          [-122.498, 37.862],
-          [-122.502, 37.87],
-        ]),
-      ],
-    },
-    {
-      id: "80",
-      pts: [
-        a2.at(a2.s1),
-        ...JE([
-          [-122.3625, 37.8098],
-          [-122.356, 37.813],
-          [-122.34, 37.816],
-          [-122.32, 37.8195],
-          [-122.3, 37.8232],
-        ]),
-      ],
-    },
-  ],
-  PMt = [
-    { name: "Golden Gate Bridge", B: o2, s0: 60, s1: 1580, col: "#ffc0a6" },
-    { name: "Bay Bridge", B: a2, s0: 950, s1: 3050, col: zs.labelMajor },
-  ],
-  Zet = [
-    ...[
-      ["Golden Gate Bridge", "bridge", zs.lmBridge, o2.at(640), 0],
-      ["Bay Bridge", "bridge", zs.lmBridge, a2.at(a2.anch), 0],
-    ].map(([i, t, e, s, n]) => ({ name: i, icon: t, col: e, p: s, tier: n })),
-    ...[
-      ["Alcatraz", "light", zs.lm, -122.4229, 37.8267, 0],
-      ["Ferry Building", "clock", zs.lm, -122.3935, 37.7955, 0],
-      ["Coit Tower", "coit", zs.lm, -122.4058, 37.8024, 0],
-      ["Transamerica Pyramid", "pyramid", zs.lm, -122.4028, 37.7952, 0],
-      ["Salesforce Tower", "sky", zs.lm, -122.3969, 37.7897, 0],
-      ["Lombard St", "zig", zs.lm, -122.4187, 37.8021, 0],
-      ["Pier 39", "pier", zs.lm, -122.4098, 37.8087, 0],
-      ["Palace of Fine Arts", "dome", zs.lmCulture, -122.4484, 37.8029, 0],
-      ["Oracle Park", "ball", zs.lm, -122.3893, 37.7786, 0],
-      ["Fisherman's Wharf", "fish", zs.lmFood, -122.4169, 37.8081, 0],
-      ["Union Square", "star", zs.lmPark, -122.4075, 37.788, 1],
-      ["Ghirardelli Square", "g", zs.lmFood, -122.4229, 37.8059, 1],
-      ["Grace Cathedral", "cross", zs.lmCulture, -122.4133, 37.7919, 1],
-      ["Exploratorium", "museum", zs.lmCulture, -122.3987, 37.8016, 1],
-      ["City Hall", "hall", zs.lm, -122.4193, 37.7793, 1],
-      ["Painted Ladies", "house", zs.lm, -122.433, 37.7762, 1],
-      ["Fort Point", "fort", zs.lm, -122.477, 37.8106, 1],
-      ["Conservatory of Flowers", "flower", zs.lmPark, -122.4602, 37.7717, 1],
-      ["Dragon Gate", "gate", zs.lm, -122.4058, 37.7908, 1],
-      ["Cable Car Museum", "train", zs.lm, -122.4115, 37.7946, 2],
-      ["Hyde St Pier", "ship", zs.lm, -122.4217, 37.8088, 2],
-      ["Saints Peter and Paul", "cross", zs.lmCulture, -122.4104, 37.8015, 2],
-      ["Peace Pagoda", "gate", zs.lm, -122.4298, 37.7851, 2],
-      ["R-Evolution", "figure", zs.lmCulture, -122.3945, 37.7947, 1],
-      ["Legion of Honor", "museum", zs.lmCulture, -122.5007, 37.7845, 1],
-      ["Sutro Baths", "fort", zs.lm, -122.5138, 37.7801, 2],
-      ["Vista Point", "star", zs.lm, -122.4801, 37.8328, 1],
-      ["Sausalito Ferry", "ship", zs.lm, -122.4775, 37.8562, 2],
-      ["Houseboats", "house", zs.lm, -122.5015, 37.875, 1],
-    ].map(([i, t, e, s, n, o]) => ({
-      name: i,
-      icon: t,
-      col: e,
-      p: Gi(s, n),
-      tier: o,
-    })),
-  ],
-  zN = [
-    ["MARINA", -122.4362, 37.8012, 0],
-    ["COW HOLLOW", -122.437, 37.7978, 1],
-    ["PACIFIC HEIGHTS", -122.4345, 37.7925, 0],
-    ["PRESIDIO HEIGHTS", -122.453, 37.7882, 1],
-    ["RUSSIAN HILL", -122.419, 37.8, 0],
-    ["NORTH BEACH", -122.4088, 37.8032, 0],
-    ["TELEGRAPH HILL", -122.4045, 37.8012, 1],
-    ["CHINATOWN", -122.4068, 37.7942, 0],
-    ["NOB HILL", -122.4155, 37.793, 0],
-    ["FINANCIAL DISTRICT", -122.399, 37.7937, 0],
-    ["UNION SQUARE", -122.408, 37.7872, 1],
-    ["TENDERLOIN", -122.4143, 37.784, 1],
-    ["SOMA", -122.4005, 37.7795, 0],
-    ["FISHERMAN'S WHARF", -122.415, 37.8078, 1],
-    ["EMBARCADERO", -122.3955, 37.7985, 1],
-    ["JACKSON SQUARE", -122.402, 37.7968, 1],
-    ["CIVIC CENTER", -122.4165, 37.78, 1],
-    ["HAYES VALLEY", -122.425, 37.776, 1],
-    ["WESTERN ADDITION", -122.433, 37.7815, 0],
-    ["JAPANTOWN", -122.4298, 37.7862, 1],
-    ["LAUREL HEIGHTS", -122.4495, 37.7855, 1],
-    ["LONE MOUNTAIN", -122.452, 37.779, 1],
-    ["NOPA", -122.442, 37.777, 1],
-    ["INNER RICHMOND", -122.464, 37.78, 0],
-    ["RINCON HILL", -122.3915, 37.7858, 1],
-    ["SOUTH BEACH", -122.3895, 37.7825, 1],
-    ["MISSION BAY", -122.3925, 37.7715, 1],
-    ["LOWER HAIGHT", -122.431, 37.7718, 1],
-    ["HAIGHT-ASHBURY", -122.447, 37.7697, 1],
-    ["ALAMO SQUARE", -122.4345, 37.776, 1],
-    ["MISSION", -122.418, 37.76, 0],
-    ["DUBOCE TRIANGLE", -122.432, 37.7672, 1],
-    ["THE CASTRO", -122.435, 37.7609, 0],
-    ["NOE VALLEY", -122.433, 37.751, 0],
-    ["TWIN PEAKS", -122.4475, 37.7535, 0],
-    ["COLE VALLEY", -122.45, 37.765, 1],
-    ["CORONA HEIGHTS", -122.439, 37.765, 1],
-    ["DOLORES HEIGHTS", -122.43, 37.757, 1],
-    ["MISSION DOLORES", -122.4265, 37.7635, 1],
-    ["EUREKA VALLEY", -122.4405, 37.758, 2],
-    ["INNER MISSION", -122.414, 37.753, 1],
-    ["POTRERO HILL", -122.401, 37.76, 0],
-    ["MISSION", -122.419, 37.768, 3],
-    ["SEA CLIFF", -122.489, 37.7868, 0],
-    ["OUTER RICHMOND", -122.4985, 37.7805, 1],
-    ["SAUSALITO", -122.481, 37.856, 0],
-    ["FORT BAKER", -122.476, 37.835, 1],
-    ["MARINSHIP", -122.496, 37.866, 1],
-    ["MARIN CITY", -122.51, 37.874, 2],
-    ["SOMA", -122.4125, 37.7755, 3],
-  ].map(([i, t, e, s]) => ({ n: i, p: Gi(t, e), tier: s }));
-function Qet(i, t) {
-  let e = null,
-    s = 1e9,
-    n = i > -2600 ? Math.sign(ZS(i, t)) : 0;
-  for (let o of zN) {
-    if (n && o.p[0] > -2600 && Math.sign(ZS(o.p[0], o.p[1])) !== n) continue;
-    let a = Math.hypot(o.p[0] - i, o.p[1] - t) * (o.tier ? 1.15 : 1);
-    a < s && ((s = a), (e = o));
-  }
-  return e && s < 1600 ? e.n : "SAN FRANCISCO";
-}
-var CMt = [
-    ["Presidio of San Francisco", -122.4662, 37.7985, 0],
-    ["Golden Gate Park", -122.464, 37.77, 0],
-    ["Crissy Field", -122.463, 37.8045, 1],
-    ["Marina Green", -122.4405, 37.8058, 1],
-    ["Fort Mason", -122.4305, 37.805, 2],
-    ["Aquatic Park", -122.423, 37.8072, 2],
-    ["Washington Square", -122.4101, 37.8008, 1],
-    ["Alta Plaza Park", -122.4378, 37.7912, 1],
-    ["Lafayette Park", -122.4276, 37.7915, 1],
-    ["Alamo Square", -122.4346, 37.7765, 1],
-    ["Huntington Park", -122.4125, 37.7923, 2],
-    ["Portsmouth Square", -122.4053, 37.7948, 2],
-    ["Yerba Buena Gardens", -122.4023, 37.7849, 2],
-    ["Mountain Lake Park", -122.4695, 37.7872, 2],
-    ["Presidio Golf Course", -122.4598, 37.79, 2],
-    ["The Panhandle", -122.446, 37.7726, 2],
-    ["Pioneer Park", -122.4062, 37.803, 2],
-    ["Rincon Park", -122.39, 37.7905, 2],
-    ["Sue Bierman Park", -122.3963, 37.796, 2],
-    ["Lyon Street Steps", -122.4467, 37.7922, 2],
-    ["Baker Beach", -122.4836, 37.7936, 1],
-    ["Lands End", -122.505, 37.7865, 1],
-    ["Angel Island", -122.4318, 37.8621, 0],
-    ["Marin Headlands", -122.505, 37.833, 0],
-    ["Lincoln Park", -122.499, 37.7835, 1],
-    ["China Beach", -122.4912, 37.7882, 2],
-    ["Sutro Heights Park", -122.5114, 37.7775, 2],
-    ["Fort Miley", -122.504, 37.782, 2],
-  ].map(([i, t, e, s]) => ({ n: i, p: Gi(t, e), tier: s })),
-  LMt = [
-    ["Yerba Buena Island", -122.366, 37.8105],
-    ["Treasure Island", -122.37, 37.8245],
-  ].map(([i, t, e]) => ({ n: i, p: Gi(t, e) })),
-  IMt = [
-    ["San Francisco Bay", -122.399, 37.8185],
-    ["Golden Gate", -122.495, 37.814],
-    ["Pacific Ocean", -122.523, 37.795],
-    ["Richardson Bay", -122.478, 37.861],
-  ].map(([i, t, e]) => ({ n: i, p: Gi(t, e) })),
-  Hp = 256,
-  tst = (i, t) => i * 65536 + t;
-function EN(i, t, e, s, n, o) {
-  for (let a = Math.floor(t / Hp); a <= Math.floor(s / Hp); a++)
-    for (let r = Math.floor(e / Hp); r <= Math.floor(n / Hp); r++) {
-      let l = tst(a, r),
-        c = i.get(l);
-      (c || i.set(l, (c = [])), c.push(o));
+// app 400 — fov
+// Lines 197728-198026 of readable/app.pretty.js (statement-aligned).
+var Eit = {
+    none: "",
+    vivid: "saturate(1.45) contrast(1.08)",
+    noir: "grayscale(1) contrast(1.35) brightness(.95)",
+    warm: "sepia(.35) saturate(1.25) hue-rotate(-8deg)",
+    cool: "saturate(1.1) hue-rotate(12deg) brightness(1.02)",
+    film: "contrast(1.12) saturate(.85) sepia(.18)",
+  },
+  XT = (o, t, e) => (o < t ? t : o > e ? e : o),
+  KT = class {
+    constructor(t) {
+      if (
+        (Object.assign(this, t),
+        (this.on = !1),
+        (this.s = { fov: 50, exp: 0, blur: 0, vig: !1, filter: "none" }),
+        (this.keys = new Set()),
+        (this.saved = 0),
+        !document.getElementById("phCss"))
+      ) {
+        let i = document.createElement("style");
+        ((i.id = "phCss"), (i.textContent = xSt), document.head.appendChild(i));
+      }
+      let e = (this.panel = document.createElement("div"));
+      ((e.id = "phPanel"),
+        e.setAttribute("role", "dialog"),
+        e.setAttribute("aria-label", "Photo mode"),
+        (e.innerHTML = `<h3>Photo mode</h3>
+      <label>Field of view <b data-o="fov"></b><input type="range" min="15" max="100" step="1" data-s="fov"></label>
+      <label>Exposure <b data-o="exp"></b><input type="range" min="-1" max="1" step="0.05" data-s="exp"></label>
+      <label>Depth blur <b data-o="blur"></b><input type="range" min="0" max="12" step="0.5" data-s="blur"></label>
+      <label>Filter</label><div class="fl">${Object.keys(Eit)
+        .map(
+          (i) =>
+            `<button type="button" data-f="${i}">${i[0].toUpperCase() + i.slice(1)}</button>`,
+        )
+        .join("")}</div>
+      <div class="fl" style="margin-top:8px"><button type="button" data-vig>Vignette</button></div>
+      <div class="bt"><button type="button" class="go" data-act="save">Save PNG</button><button type="button" data-act="exit">Exit</button></div>
+      <small>Drag: look \xB7 W A S D / arrows: move \xB7 Q / E: down / up \xB7 Shift: faster \xB7 wheel: zoom \xB7 Esc: back to the drive \xB7 within 30 m of the car</small>`),
+        document.body.appendChild(e),
+        (this.blurEl = document.createElement("div")),
+        (this.blurEl.id = "phBlur"),
+        (this.vigEl = document.createElement("div")),
+        (this.vigEl.id = "phVig"),
+        document.body.append(this.blurEl, this.vigEl),
+        e.addEventListener("input", (i) => {
+          let a = i.target.dataset.s;
+          a && ((this.s[a] = +i.target.value), this.apply());
+        }),
+        e.addEventListener("click", (i) => {
+          let a = i.target.closest("button");
+          a &&
+            (a.dataset.f
+              ? (this.s.filter = a.dataset.f)
+              : a.dataset.vig !== void 0
+                ? (this.s.vig = !this.s.vig)
+                : a.dataset.act === "save"
+                  ? this.save()
+                  : a.dataset.act === "exit" && this.close(),
+            this.apply());
+        }),
+        addEventListener(
+          "keydown",
+          (i) => {
+            this.on &&
+              (i.target?.matches?.("input") ||
+                (i.code === "Escape" || i.code === "KeyF"
+                  ? this.close()
+                  : this.keys.add(i.code),
+                i.preventDefault(),
+                i.stopPropagation()));
+          },
+          !0,
+        ),
+        addEventListener(
+          "keyup",
+          (i) => {
+            this.on && (this.keys.delete(i.code), i.stopPropagation());
+          },
+          !0,
+        ));
+      let s = this.view,
+        n = null;
+      (s.addEventListener(
+        "pointerdown",
+        (i) => {
+          this.on &&
+            ((n = { x: i.clientX, y: i.clientY }),
+            s.setPointerCapture?.(i.pointerId),
+            i.stopPropagation());
+        },
+        !0,
+      ),
+        s.addEventListener(
+          "pointermove",
+          (i) => {
+            !this.on ||
+              !n ||
+              ((this.yaw -= (i.clientX - n.x) * 0.004),
+              (this.pitch = XT(
+                this.pitch - (i.clientY - n.y) * 0.004,
+                -1.4,
+                1.4,
+              )),
+              (n = { x: i.clientX, y: i.clientY }),
+              i.stopPropagation());
+          },
+          !0,
+        ),
+        s.addEventListener(
+          "pointerup",
+          () => {
+            n = null;
+          },
+          !0,
+        ),
+        s.addEventListener(
+          "wheel",
+          (i) => {
+            this.on &&
+              ((this.s.fov = XT(this.s.fov + Math.sign(i.deltaY) * 3, 15, 100)),
+              this.apply(),
+              i.preventDefault());
+          },
+          { passive: !1 },
+        ));
     }
-}
-function ZE(i, t, e, s, n, o, a, r) {
-  for (let l = Math.floor(t / Hp); l <= Math.floor(s / Hp); l++)
-    for (let c = Math.floor(e / Hp); c <= Math.floor(n / Hp); c++) {
-      let h = i.get(tst(l, c));
-      if (h) for (let f of h) r[f] !== a && ((r[f] = a), o.push(f));
+    open() {
+      if (this.on) return;
+      let t = this.camera;
+      ((this.on = !0),
+        this.keys.clear(),
+        (this.back = {
+          p: t.position.clone(),
+          q: t.quaternion.clone(),
+          fov: t.fov,
+        }));
+      let e = t.getWorldDirection(t.position.clone());
+      ((this.yaw = Math.atan2(-e.x, -e.z)),
+        (this.pitch = Math.asin(XT(e.y, -1, 1))),
+        (this.s.fov = Math.round(t.fov)),
+        (this.pos = t.position.clone()),
+        (this.c0 = { x: this.v.pos.x, y: this.v.pos.y, z: this.v.pos.z }),
+        document.body.classList.add("photo"),
+        this.apply(),
+        this.onOpen?.());
     }
-  return o;
-}
+    close() {
+      if (!this.on) return;
+      this.on = !1;
+      let t = this.camera;
+      (t.position.copy(this.back.p),
+        t.quaternion.copy(this.back.q),
+        (t.fov = this.back.fov),
+        t.updateProjectionMatrix(),
+        document.body.classList.remove("photo"),
+        (this.canvas.style.filter = ""),
+        this.onClose?.());
+    }
+    filterStr() {
+      return `${Eit[this.s.filter] || ""} brightness(${(1 + this.s.exp * 0.6).toFixed(2)})`.trim();
+    }
+    apply() {
+      for (let e of this.panel.querySelectorAll("input[data-s]")) {
+        let s = e.dataset.s;
+        document.activeElement !== e && (e.value = this.s[s]);
+        let n = this.panel.querySelector(`[data-o="${s}"]`);
+        n &&
+          (n.textContent =
+            s === "exp"
+              ? (this.s.exp > 0 ? "+" : "") + this.s.exp.toFixed(2)
+              : s === "fov"
+                ? this.s.fov + "\xB0"
+                : this.s.blur
+                  ? this.s.blur.toFixed(1)
+                  : "off");
+      }
+      for (let e of this.panel.querySelectorAll("[data-f]"))
+        e.setAttribute("aria-pressed", String(e.dataset.f === this.s.filter));
+      if (
+        (this.panel
+          .querySelector("[data-vig]")
+          .setAttribute("aria-pressed", String(this.s.vig)),
+        !this.on)
+      )
+        return;
+      this.canvas.style.filter = this.filterStr();
+      let t = this.blurEl;
+      if ((t.classList.toggle("on", this.s.blur > 0), this.s.blur > 0)) {
+        let e =
+          "radial-gradient(ellipse 60% 55% at 50% 52%, transparent 35%, #000 85%)";
+        ((t.style.backdropFilter = t.style.webkitBackdropFilter =
+          `blur(${this.s.blur}px)`),
+          (t.style.maskImage = t.style.webkitMaskImage = e));
+      }
+      this.vigEl.classList.toggle("on", this.s.vig);
+    }
+    frame(t) {
+      let e = this.camera,
+        s = this.keys,
+        n = (s.has("ShiftLeft") || s.has("ShiftRight") ? 14 : 5) * t,
+        i = -Math.sin(this.yaw),
+        a = -Math.cos(this.yaw),
+        r = -a,
+        l = i,
+        c =
+          (+(s.has("KeyW") || s.has("ArrowUp")) -
+            +(s.has("KeyS") || s.has("ArrowDown"))) *
+          n,
+        h =
+          (+(s.has("KeyD") || s.has("ArrowRight")) -
+            +(s.has("KeyA") || s.has("ArrowLeft"))) *
+          n,
+        f = (+s.has("KeyE") - +s.has("KeyQ")) * n,
+        u = this.pos;
+      ((u.x += i * c + r * h), (u.z += a * c + l * h), (u.y += f));
+      let d = u.x - this.c0.x,
+        p = u.z - this.c0.z,
+        m = Math.hypot(d, p);
+      m > 30 &&
+        ((u.x = this.c0.x + (d / m) * 30), (u.z = this.c0.z + (p / m) * 30));
+      let g = this.groundY ? this.groundY(u.x, u.z, u.y) : -1e9;
+      ((u.y = XT(
+        u.y,
+        (Number.isFinite(g) ? g : this.c0.y - 5) + 0.25,
+        this.c0.y + 25,
+      )),
+        e.position.copy(u),
+        e.rotation.set(this.pitch, this.yaw, 0, "YXZ"),
+        Math.abs(e.fov - this.s.fov) > 0.01 &&
+          ((e.fov = this.s.fov), e.updateProjectionMatrix()),
+        e.updateMatrixWorld());
+    }
+    async save() {
+      let t = this.capture(),
+        e = new Image();
+      await new Promise((c, h) => {
+        ((e.onload = c), (e.onerror = h), (e.src = t));
+      });
+      let s = e.width,
+        n = e.height,
+        i = document.createElement("canvas");
+      ((i.width = s), (i.height = n));
+      let a = i.getContext("2d");
+      if (
+        ((a.filter = this.filterStr() || "none"),
+        a.drawImage(e, 0, 0),
+        this.s.blur > 0)
+      ) {
+        let c = document.createElement("canvas");
+        ((c.width = s), (c.height = n));
+        let h = c.getContext("2d"),
+          f = s / innerWidth;
+        ((h.filter = `${this.filterStr() || ""} blur(${(this.s.blur * f).toFixed(1)}px)`),
+          h.drawImage(e, 0, 0),
+          (h.filter = "none"));
+        let u = h.createRadialGradient(
+          s / 2,
+          n * 0.52,
+          Math.min(s, n) * 0.2,
+          s / 2,
+          n * 0.52,
+          Math.max(s, n) * 0.55,
+        );
+        (u.addColorStop(0, "rgba(0,0,0,0)"),
+          u.addColorStop(1, "rgba(0,0,0,1)"),
+          (h.globalCompositeOperation = "destination-in"),
+          (h.fillStyle = u),
+          h.fillRect(0, 0, s, n),
+          (a.filter = "none"),
+          a.drawImage(c, 0, 0));
+      }
+      if (((a.filter = "none"), this.s.vig)) {
+        let c = a.createRadialGradient(
+          s / 2,
+          n / 2,
+          Math.min(s, n) * 0.35,
+          s / 2,
+          n / 2,
+          Math.max(s, n) * 0.62,
+        );
+        (c.addColorStop(0, "rgba(0,0,0,0)"),
+          c.addColorStop(1, "rgba(0,0,0,.55)"),
+          (a.fillStyle = c),
+          a.fillRect(0, 0, s, n));
+      }
+      let r = i.toDataURL("image/png");
+      ((this.last = r), this.saved++);
+      let l = document.createElement("a");
+      return (
+        (l.href = r),
+        (l.download = `san-francisco-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.png`),
+        document.body.appendChild(l),
+        l.click(),
+        l.remove(),
+        r
+      );
+    }
+  };

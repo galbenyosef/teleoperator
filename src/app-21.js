@@ -1,8 +1,8 @@
 // app 21 — kind
-// Lines 42942-43272 of readable/app.pretty.js (statement-aligned).
-var Si,
-  nZ = Vi(() => {
-    Si = {
+// Lines 43028-43358 of readable/app.pretty.js (statement-aligned).
+var ptt,
+  mtt = Ki(() => {
+    ptt = {
       name: "Palace of Fine Arts",
       x: -4936,
       z: -799,
@@ -16,9 +16,9 @@ var Si,
       ],
     };
   });
-var Lu,
-  iZ = Vi(() => {
-    Lu = [
+var gtt,
+  btt = Ki(() => {
+    gtt = [
       {
         id: "california",
         name: "California Street Sprint",
@@ -42,9 +42,9 @@ var Lu,
       },
     ];
   });
-var EZ,
-  TZ = Vi(() => {
-    EZ = [
+var vet,
+  yet = Ki(() => {
+    vet = [
       [
         "Ferry Building",
         "Ferry Building",
@@ -164,21 +164,21 @@ var EZ,
       ["Cavallo Point", "Fort Baker", -122.477, 37.835, "Murray Circle"],
     ];
   });
-var ju,
-  nv,
-  Htt = Vi(() => {
-    ((ju = (i, t) => {
-      let e = Math.hypot(i, t) || 1;
-      return [i / e, t / e];
+var Ed,
+  Ynt,
+  Jnt = Ki(() => {
+    ((Ed = (o, t) => {
+      let e = Math.hypot(o, t) || 1;
+      return [o / e, t / e];
     }),
-      (nv = [
+      (Ynt = [
         {
           id: "gg",
           kind: "trap",
           name: "Golden Gate Bridge",
           x: -7500,
           z: -2740,
-          dir: ju(0.139, 0.99),
+          dir: Ed(0.139, 0.99),
           hw: 16,
           stars: [150, 200, 250],
         },
@@ -188,7 +188,7 @@ var ju,
           name: "The Embarcadero",
           x: -614,
           z: -763,
-          dir: ju(0.576, 0.817),
+          dir: Ed(0.576, 0.817),
           hw: 14,
           stars: [110, 150, 190],
         },
@@ -198,7 +198,7 @@ var ju,
           name: "Marina Boulevard",
           x: -3973,
           z: -1193,
-          dir: ju(-0.987, 0.159),
+          dir: Ed(-0.987, 0.159),
           hw: 11,
           stars: [110, 150, 190],
         },
@@ -208,7 +208,7 @@ var ju,
           name: "Bay Bridge",
           x: 1198,
           z: -87,
-          dir: ju(-0.648, 0.762),
+          dir: Ed(-0.648, 0.762),
           hw: 18,
           stars: [150, 200, 250],
         },
@@ -229,7 +229,7 @@ var ju,
           name: "Crissy Field",
           a: [-5380, -960],
           b: [-6470, -905],
-          dir: ju(-0.999, 0.05),
+          dir: Ed(-0.999, 0.05),
           hw: 10,
           stars: [110, 150, 180],
           maxT: 60,
@@ -260,7 +260,7 @@ var ju,
           name: "Kearny Street",
           x: -1157,
           z: -929,
-          dir: ju(-0.162, -0.987),
+          dir: Ed(-0.162, -0.987),
           hw: 9,
           stars: [15, 30, 50],
         },
@@ -270,7 +270,7 @@ var ju,
           name: "Montgomery Street",
           x: -950,
           z: -528,
-          dir: ju(-0.16, -0.987),
+          dir: Ed(-0.16, -0.987),
           hw: 9,
           stars: [15, 30, 50],
         },
@@ -280,7 +280,7 @@ var ju,
           name: "Stockton Street",
           x: -1239,
           z: 348,
-          dir: ju(-0.158, -0.988),
+          dir: Ed(-0.158, -0.988),
           hw: 9,
           stars: [12, 24, 34],
         },
@@ -290,15 +290,15 @@ var ju,
           name: "Jones Street",
           x: -1910,
           z: -143,
-          dir: ju(0.158, 0.987),
+          dir: Ed(0.158, 0.987),
           hw: 9,
           stars: [20, 40, 60],
         },
       ]));
   });
-var wM,
-  het = Vi(() => {
-    wM = [
+var wit,
+  Mit = Ki(() => {
+    wit = [
       { id: "twinpeaks", kind: "xp", name: "Twin Peaks", x: -4807, z: 4802 },
       { id: "coit", kind: "travel", name: "Coit Tower", x: -1120, z: -690 },
       { id: "landsend", kind: "xp", name: "Lands End", x: -9863, z: 1742 },

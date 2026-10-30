@@ -1,352 +1,269 @@
 // app 326 — math
-// Lines 159187-159536 of readable/app.pretty.js (statement-aligned).
-var ec = {
-    flat6: { label: "Flat-six", audio: "flat6", ice: !0 },
-    v12: { label: "V12", audio: "v12", ice: !0 },
-    diesel: { label: "Diesel", audio: "dsl", ice: !0 },
-    small: { label: "Small engine", audio: "sml", ice: !0 },
-    v8: { label: "V8, high-revving", audio: "ferrari", ice: !0 },
-    v8tt: { label: "V8, twin-turbo", audio: "corvette", ice: !0 },
-    ev: { label: "Electric", audio: "waymo", ice: !1 },
-    ev_sport: { label: "Electric, sporty", audio: "cybercab", ice: !1 },
-    ev_truck: { label: "Electric, heavy", audio: "cybertruck", ice: !1 },
-  },
-  nz = [
-    "flat6",
-    "v8",
-    "v8tt",
-    "v12",
-    "diesel",
-    "small",
-    "ev",
-    "ev_sport",
-    "ev_truck",
-  ],
-  iF = (i) => (typeof i == "string" && Object.hasOwn(ec, i) ? i : null),
-  y3t = [
-    [
-      /\b(electric|ev|e-?tron|battery|plug-?in|zero[- ]emission|taycan|tesla|model [sxy3]|cyber ?(truck|cab)|robotaxi|leaf|ioniq|rivian|lucid)\b/,
-      "ev",
-    ],
-    [
-      /\b(flat[- ]?(six|6)|boxer|air[- ]?cooled|911|porsche|carrera|cayman|boxster|gt3|targa|singer)\b/,
-      "flat6",
-    ],
-    [
-      /\b(v12|v-12|twelve[- ]cylinder|lamborghini|aventador|murcielago|countach|pagani|zonda|aston|vanquish|db9|f12|812)\b/,
-      "v12",
-    ],
-    [
-      /\b(diesel|tdi|turbo-?diesel|pickup|pick-up|4x4|off-?road|truck|lorry|land ?cruiser|hilux|defender|bus|van)\b/,
-      "diesel",
-    ],
-    [
-      /\b(ferrari|f40|f50|enzo|supercar|hypercar|v10|formula|race ?car|racing|le mans)\b/,
-      "v8",
-    ],
-    [
-      /\b(v8|v-8|corvette|mustang|camaro|charger|challenger|hemi|muscle|amg|hot ?rod|nascar|twin[- ]?turbo|biturbo|jeep|hummer)\b/,
-      "v8tt",
-    ],
-    [
-      /\b(mini|kei|small|beetle|bug|fiat|smart|city car|2cv|kart|go-?kart|buggy|microcar|bubble ?car)\b/,
-      "small",
-    ],
-    [
-      /\b(hatch|hatchback|roadster|classic|vintage|retro|sports? car|coupe)\b/,
-      "flat6",
-    ],
-  ];
-function w3t({ name: i = "", prompt: t = "", L: e = 4.5, H: s = 1.4 } = {}) {
-  let n = (String(i) + " " + String(t)).toLowerCase();
-  for (let [o, a] of y3t)
-    if (o.test(n))
-      return a !== "ev"
-        ? a
-        : /\b(truck|pickup|pick-up|suv|van|bus|4x4|off-?road)\b/.test(n) ||
-            e > 5.1 ||
-            s > 1.75
-          ? "ev_truck"
-          : /\b(sport|super|hyper|race|racing|coupe|roadster|fast)\b/.test(n) ||
-              s < 1.3
-            ? "ev_sport"
-            : "ev";
-  return e > 5.1 || s > 1.75 ? "v8tt" : "flat6";
-}
-function iz(i, t = "") {
-  if (!i) return "ev";
-  let e = iF(i.snd);
-  if (e) return e;
-  let s = i.vehicle,
-    n = s ? Math.abs(s.max[2] - s.min[2]) : 4.5,
-    o = s ? Math.abs(s.max[1] - s.min[1]) : 1.4;
-  return w3t({ name: i.name, prompt: t || i.prompt || "", L: n, H: o });
-}
-var oQ = /^[0-9a-f]{64}$/,
-  iQ = (i, t, e) => (Number.isFinite(+i) ? Math.max(t, Math.min(e, +i)) : null);
-function oF(i) {
-  if (!i || typeof i != "object") return null;
-  let t = (c) =>
-      Array.isArray(c) &&
-      c.length === 3 &&
-      c.every((h) => iQ(h, -20, 20) !== null)
-        ? c.map((h) => Math.round(+h * 1e3) / 1e3)
-        : null,
-    e = t(i.min),
-    s = t(i.max);
-  if (!e || !s) return null;
-  let n = s[2] - e[2],
-    o = s[0] - e[0],
-    a = s[1] - e[1];
-  if (!(n >= 1.2 && n <= 9 && o >= 0.6 && o <= 3.5 && a > 0.3 && a < 5))
-    return null;
-  let r =
-    Array.isArray(i.wheels) && i.wheels.length === 4 ? i.wheels.map(t) : null;
-  if (!r || r.some((c) => !c)) return null;
-  let l =
-    Array.isArray(i.wheelR) &&
-    i.wheelR.length === 4 &&
-    i.wheelR.every((c) => iQ(c, 0.05, 1.5) !== null)
-      ? i.wheelR.map((c) => Math.round(+c * 1e3) / 1e3)
-      : r.map((c) => Math.max(0.1, c[1]));
-  return { min: e, max: s, wheels: r, wheelR: l };
-}
-function lf(i) {
-  let t =
-      i?.files?.glb?.sha256 ||
-      (/\/__mb\/items\/([0-9a-f]{64})\.glb$/.exec(i?.files?.glb?.url || "") ||
-        [])[1],
-    e = oF(i?.vehicle);
-  if (!oQ.test(t || "") || !e) return null;
-  let s =
-    i.files?.icon?.url &&
-    /^\/__mb\/items\/[0-9a-f]{64}\.png$/.test(i.files.icon.url)
-      ? i.files.icon.url
-      : null;
-  return {
-    id: typeof i.id == "string" ? i.id.slice(0, 64) : "",
-    name: aF(i.name) || "Custom car",
-    sha: t,
-    icon: s,
-    vehicle: e,
-    own: !i.shared,
-  };
-}
-var aF = (i) =>
-  typeof i == "string"
-    ? i
-        .replace(/[^A-Za-z0-9 _.'-]/g, "")
-        .trim()
-        .slice(0, 24)
-    : "";
-function vl(i) {
-  if (!i || typeof i != "object" || !oQ.test(i.sha || "")) return null;
-  let t = oF(i.vehicle);
-  return t
-    ? {
-        id:
-          typeof i.id == "string"
-            ? i.id.replace(/[^A-Za-z0-9-]/g, "").slice(0, 64)
-            : "",
-        name: aF(i.name) || "Custom car",
-        sha: i.sha,
-        icon:
-          typeof i.icon == "string" &&
-          /^\/__mb\/items\/[0-9a-f]{64}\.png$/.test(i.icon)
-            ? i.icon
-            : null,
-        vehicle: t,
-        own: !!i.own,
-        ...(iF(i.snd) ? { snd: i.snd } : {}),
-      }
-    : null;
-}
-var rF = (i) => "/__mb/items/" + i.sha + ".glb";
-function lF(i) {
-  if (((i = vl(i)), !i)) return "";
-  let t = i.vehicle,
-    e = [...t.min, ...t.max, ...t.wheels.flat(), ...t.wheelR].map(
-      (s) => +s.toFixed(3),
-    );
-  return i.sha + "|" + i.name + "|" + e.join(",") + (i.snd ? "|" + i.snd : "");
-}
-function oz(i) {
-  if (typeof i != "string" || i.length > 400) return null;
-  let [t, e, s, n] = i.split("|"),
-    o = (s || "").split(",").map(Number);
-  return o.length !== 22 || !o.every(Number.isFinite)
-    ? null
-    : vl({
-        sha: t,
-        name: e,
-        snd: n,
-        vehicle: {
-          min: o.slice(0, 3),
-          max: o.slice(3, 6),
-          wheels: [
-            o.slice(6, 9),
-            o.slice(9, 12),
-            o.slice(12, 15),
-            o.slice(15, 18),
-          ],
-          wheelR: o.slice(18, 22),
-        },
-      });
-}
-function Vw(i) {
-  let t = (c) => [-c[0], c[1], -c[2]],
-    e = i.wheels.map(t),
-    s = (e[0][2] + e[1][2] + e[2][2] + e[3][2]) / 4,
-    n = (c) => [c[0], c[1], c[2] - s],
-    o = t(i.min),
-    a = t(i.max),
-    r = [Math.min(o[0], a[0]), i.min[1], Math.min(o[2], a[2]) - s],
-    l = [Math.max(o[0], a[0]), i.max[1], Math.max(o[2], a[2]) - s];
-  return {
-    mid: s,
-    wheels: e.map(n),
-    wheelR: i.wheelR.slice(),
-    min: r,
-    max: l,
-    L: l[2] - r[2],
-    W: l[0] - r[0],
-    H: l[1] - r[1],
-  };
-}
-var lz = { image: [10, 60] },
-  sc = () => globalThis.mindblown || null,
-  Mp = () => typeof sc()?.generate?.image == "function",
-  nh = () => typeof sc()?.items?.pick == "function",
-  cf = () => !!sc()?.viewer?.signedIn,
-  rQ = () => sc()?.viewer?.username || "";
-var az = { image: 0, car: 0 };
-function lQ() {
-  let i = sc(),
-    t = (s) => {
-      s &&
-        ((az.image = Math.max(0, +s.tokens_image || 0)),
-        (az.car = Math.max(0, +s.tokens_car || 0)));
-    },
-    e = () =>
-      fetch("tune.json")
-        .then((s) => s.json())
-        .then((s) =>
-          Object.fromEntries(Object.entries(s).map(([n, o]) => [n, o?.value])),
-        )
-        .catch(() => ({}));
-  (typeof i?.tune == "function"
-    ? Promise.resolve(i.tune()).catch(e)
-    : e()
-  ).then(t, () => {});
-  try {
-    i?.tune?.on?.(t);
-  } catch {}
-}
-var M3t = (i) =>
-    i >= 1e6
-      ? (i / 1e6).toFixed(i >= 1e7 ? 0 : 1) + "M"
-      : i >= 1e3
-        ? Math.round(i / 1e3) + "k"
-        : String(Math.round(i)),
-  Ou = (i, t = 1) =>
-    az[i] > 0 && t > 0 ? "\u2248 " + M3t(az[i] * t) + " tokens" : "",
-  Om = (i, t = 1) => Ou(i, t) || "Uses mindblown tokens";
-function Ox() {
-  return '<i class="gr-mb" aria-hidden="true"></i><span>Tokens</span><b>balance on mindblown.ai</b>';
-}
-var Hu = {
-    sign_in: [
-      "Sign in to generate",
-      "Generating uses your own mindblown allowance - sign in to mindblown first.",
-    ],
-    allowance: [
-      "Allowance used up",
-      "Your mindblown allowance for this month is spent. mindblown shows its plans to upgrade.",
-    ],
-    too_fast: [
-      "Too many at once",
-      "That is the limit for now (6 pictures a minute, 200 a day). Try again in a little while.",
-    ],
-    not_allowed: [
-      "Try other words",
-      "mindblown's safety check turned that one down. Describe the design differently.",
-    ],
-    unavailable: [
-      "Generator unavailable",
-      "mindblown could not make it right now. Try again shortly.",
-    ],
-    unconfirmed: ["Not sent", "Nothing was generated: it was not confirmed."],
-    offline: [
-      "Not on mindblown",
-      "Generating works on the published game (teleop2.mindblown.ai), signed in to mindblown.",
-    ],
-  },
-  S3t =
-    /\b(porsche|ferrari|lamborghini|lambo|mclaren|bugatti|pagani|koenigsegg|aston ?martin|bentley|rolls[- ]?royce|maserati|alfa ?romeo|fiat|bmw|audi|mercedes(?:[- ]benz)?|amg|volkswagen|vw|tesla|waymo|cybertruck|cybercab|ford|mustang|chevrolet|chevy|corvette|camaro|dodge|viper|nissan|gt-?r|toyota|supra|honda|nsx|mazda|subaru|mitsubishi|lexus|jaguar|land ?rover|range ?rover|lotus|mini|hyundai|kia|rivian|lucid|gulf|martini|redbull|red bull|monster|castrol|shell|nike|adidas)\b/gi,
-  k3t = (i) =>
-    String(i || "")
-      .replace(S3t, "")
-      .replace(/\b[a-z]{0,3}\d+[a-z]{0,3}\b/gi, "")
-      .replace(/\s+/g, " ")
-      .trim();
-function cz(i, { mode: t = "f", palette: e = [], variation: s = 0 } = {}) {
-  let n = k3t(i).slice(0, 600);
-  return [
-    t === "t"
-      ? "Flat 2D vehicle wrap graphic: a seamless, tileable repeating pattern, edge to edge."
-      : "Flat 2D side-profile livery layout for a car wrap, a very wide composition (about 3:1). All the graphics - stripes, colour blocks, shapes - sit in one horizontal band through the middle of the image (the part that runs along the doors, below the windows); the top and bottom quarters are one plain, flat background colour. Shapes run horizontally along the length, nothing important at the far left or right edges.",
-    `Design: ${n || "a bold, modern racing livery"}.`,
-    e.length ? `Colour palette: ${e.slice(0, 6).join(", ")}.` : "",
-    "Opaque solid colours with high contrast, crisp vector-like edges, print-ready. Absolutely no text, no letters, no numbers, no race numbers, no logos, no brand marks, no model names, no watermark. No car, no vehicle, no background scene, no perspective, no shadows.",
-    s ? `Variation ${s}: a fresh take on the same idea.` : "",
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .slice(0, 3900);
-}
-async function hz(i, { size: t = "wide", signal: e, confirmed: s = !1 } = {}) {
-  let n = sc();
-  if (!s)
-    return (
-      console.warn("generate: not confirmed - not sent"),
-      { refused: "unconfirmed" }
-    );
-  if (!Mp()) return { refused: "offline" };
-  let o = Promise.resolve()
-    .then(() => n.generate.image(i, { size: t }))
-    .then(
-      (a) => a || { refused: "unavailable" },
-      (a) => (
-        console.warn("generate", a),
-        {
-          refused:
-            a?.reason === "INVALID_REQUEST" ? "not_allowed" : "unavailable",
-        }
-      ),
-    );
-  return e
-    ? new Promise((a) => {
-        if (e.aborted) return a({ cancelled: !0, late: o });
-        (e.addEventListener("abort", () => a({ cancelled: !0, late: o }), {
-          once: !0,
-        }),
-          o.then(a));
-      })
-    : o;
-}
-async function _3t(i, t) {
-  let e = sc();
-  if (!e?.items?.keep || !i) return null;
-  try {
-    return (
-      (
-        await e.items.keep(i, "image", {
-          name: (String(t || "").trim() || "Car wrap").slice(0, 60),
-        })
-      )?.files?.png?.url || null
-    );
-  } catch (s) {
-    return (console.warn("keep", s?.reason || s), null);
+// Lines 156377-156643 of readable/app.pretty.js (statement-aligned).
+function hMt(o, t, e, s, n, i, a, r) {
+  let l = (e - t.x) * t.nx + (s - t.z) * t.nz,
+    c = l >= -0.3 ? 1 : -1,
+    h = { x: t.nx * c, z: t.nz * c },
+    f =
+      a * Math.abs(n.x * h.x + n.z * h.z) + r * Math.abs(i.x * h.x + i.z * h.z),
+    u = f + t.hz - c * l;
+  if (u <= 0) return null;
+  let d = e,
+    p = s,
+    m = 1 / 0;
+  for (let [g, b] of [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ]) {
+    let v = e + n.x * a * g + i.x * r * b,
+      x = s + n.z * a * g + i.z * r * b,
+      y = v * h.x + x * h.z;
+    y < m && ((m = y), (d = v), (p = x));
   }
+  return { d: Math.min(u, 1.5), n: h, px: d, pz: p };
 }
-var rz = "sf-drive.wrapdocs";
+function fet(o, t, e, s, n, i, a, r, l, c, h, f, u = !1) {
+  let d = [e, s, l, c],
+    p = o - a,
+    m = t - r,
+    g = null;
+  for (let y of d) {
+    let M =
+        n * Math.abs(e.x * y.x + e.z * y.z) +
+        i * Math.abs(s.x * y.x + s.z * y.z),
+      S =
+        h * Math.abs(l.x * y.x + l.z * y.z) +
+        f * Math.abs(c.x * y.x + c.z * y.z),
+      w = p * y.x + m * y.z,
+      _ = M + S - Math.abs(w);
+    if (_ <= 0) return null;
+    (!g || _ < g.d) &&
+      (g = { d: _, n: w >= 0 ? { x: y.x, z: y.z } : { x: -y.x, z: -y.z } });
+  }
+  let b = o,
+    v = t,
+    x = 1 / 0;
+  for (let [y, M] of [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ]) {
+    let S = o + e.x * n * y + s.x * i * M,
+      w = t + e.z * n * y + s.z * i * M,
+      _ = S * g.n.x + w * g.n.z;
+    _ < x && ((x = _), (b = S), (v = w));
+  }
+  if (((g.px = b), (g.pz = v), u)) {
+    let y = 0,
+      M = 0,
+      S = 0,
+      w = (_, z, A, T, E, R, P, C) => {
+        let I = _ - A,
+          L = z - T;
+        return (
+          Math.abs(I * E.x + L * E.z) <= P + 0.001 &&
+          Math.abs(I * R.x + L * R.z) <= C + 0.001
+        );
+      };
+    for (let [_, z] of [
+      [-1, -1],
+      [1, -1],
+      [1, 1],
+      [-1, 1],
+    ]) {
+      let A = o + e.x * n * _ + s.x * i * z,
+        T = t + e.z * n * _ + s.z * i * z;
+      w(A, T, a, r, l, c, h, f) && ((M += A), (S += T), y++);
+      let E = a + l.x * h * _ + c.x * f * z,
+        R = r + l.z * h * _ + c.z * f * z;
+      w(E, R, o, t, e, s, n, i) && ((M += E), (S += R), y++);
+    }
+    y && ((g.px = M / y), (g.pz = S / y));
+  }
+  return g;
+}
+var uet = {
+  4: [
+    [1, 0],
+    [0.92, 0.38],
+    [0.71, 0.71],
+    [0.38, 0.92],
+    [0.02, 1],
+  ],
+  1: [
+    [1, 0],
+    [0.004, 1],
+  ],
+  2: [
+    [1, 0],
+    [0.3, 1],
+  ],
+};
+function det(o, t, e) {
+  if (!o.rh) return o.y1;
+  let s = o.pts,
+    n = s.length / 2,
+    i = t - o.cx,
+    a = e - o.cz;
+  if (Math.hypot(i, a) < 1e-6) return o.y1;
+  let l = 1 / 0;
+  for (let f = 0; f < n; f++) {
+    let u = s[f * 2] - o.cx,
+      d = s[f * 2 + 1] - o.cz,
+      p = s[((f + 1) % n) * 2] - o.cx - u,
+      m = s[((f + 1) % n) * 2 + 1] - o.cz - d,
+      g = i * m - a * p;
+    if (Math.abs(g) < 1e-9) continue;
+    let b = (u * m - d * p) / g,
+      v = (u * a - d * i) / g;
+    b > 0 && v >= 0 && v <= 1 && b < l && (l = b);
+  }
+  if (!Number.isFinite(l)) return o.y1;
+  let c = 1 / l,
+    h = uet[o.rs] || uet[2];
+  if (c >= 1) return o.eave;
+  for (let f = 0; f + 1 < h.length; f++) {
+    let [u, d] = h[f],
+      [p, m] = h[f + 1];
+    if (c <= u && c >= p)
+      return o.eave + o.rh * (d + ((m - d) * (u - c)) / (u - p));
+  }
+  return o.y1;
+}
+function fMt(o, t, e) {
+  let s = !1;
+  for (let n = 0, i = o.length / 2, a = i - 1; n < i; a = n++) {
+    let r = o[n * 2],
+      l = o[n * 2 + 1],
+      c = o[a * 2],
+      h = o[a * 2 + 1];
+    l > e != h > e && t < ((c - r) * (e - l)) / (h - l) + r && (s = !s);
+  }
+  return s;
+}
+function uMt(o, t, e, s, n, i, a) {
+  let r = a.pts,
+    l = r.length / 2,
+    c = Math.abs(e.x) * n + Math.abs(s.x) * i,
+    h = Math.abs(e.z) * n + Math.abs(s.z) * i;
+  if (o + c < a.bb[0] || o - c > a.bb[2] || t + h < a.bb[1] || t - h > a.bb[3])
+    return null;
+  if (a.sgn === void 0) {
+    let u = 0;
+    for (let d = 0, p = l - 1; d < l; p = d++)
+      u += r[p * 2] * r[d * 2 + 1] - r[d * 2] * r[p * 2 + 1];
+    a.sgn = u < 0 ? 1 : -1;
+  }
+  let f = null;
+  for (let [u, d] of [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ]) {
+    let p = o + e.x * n * u + s.x * i * d,
+      m = t + e.z * n * u + s.z * i * d;
+    if (p < a.bb[0] || p > a.bb[2] || m < a.bb[1] || m > a.bb[3]) continue;
+    let g = !1;
+    for (let M = 0, S = l - 1; M < l; S = M++) {
+      let w = r[M * 2],
+        _ = r[M * 2 + 1],
+        z = r[S * 2],
+        A = r[S * 2 + 1];
+      _ > m != A > m && p < ((z - w) * (m - _)) / (A - _) + w && (g = !g);
+    }
+    if (!g) continue;
+    let b = 1 / 0,
+      v = null,
+      x = 1 / 0,
+      y = null;
+    for (let M = 0; M < l; M++) {
+      let S = r[M * 2],
+        w = r[M * 2 + 1],
+        _ = r[((M + 1) % l) * 2],
+        z = r[((M + 1) % l) * 2 + 1],
+        A = _ - S,
+        T = z - w,
+        E = Math.hypot(A, T);
+      if (E < 1e-6) continue;
+      let R = ((p - S) * A + (m - w) * T) / (E * E);
+      R = R < 0 ? 0 : R > 1 ? 1 : R;
+      let P = Math.hypot(p - S - A * R, m - w - T * R),
+        C = { x: (-T / E) * a.sgn, z: (A / E) * a.sgn };
+      P < b
+        ? (v && v.x * C.x + v.z * C.z < 0.5 && ((x = b), (y = v)),
+          (b = P),
+          (v = C))
+        : P < x && (!v || v.x * C.x + v.z * C.z < 0.5) && ((x = P), (y = C));
+    }
+    if (v && y && x < 0.55 && Math.abs(v.x * s.x + v.z * s.z) > 0.7) {
+      let M = 0.9 * (1 - x / 0.55),
+        S = v.x + y.x * M,
+        w = v.z + y.z * M,
+        _ = Math.hypot(S, w);
+      v = { x: S / _, z: w / _ };
+    }
+    v && (!f || b > f.d) && (f = { d: b, n: v, px: p, pz: m });
+  }
+  for (let u = 0; u < l; u++) {
+    let d = r[u * 2] - o,
+      p = r[u * 2 + 1] - t,
+      m = d * e.x + p * e.z,
+      g = d * s.x + p * s.z,
+      b = n - Math.abs(m),
+      v = i - Math.abs(g);
+    if (b <= 0 || v <= 0) continue;
+    let x = Math.min(b, v),
+      y =
+        b < v
+          ? { x: -e.x * Math.sign(m), z: -e.z * Math.sign(m) }
+          : { x: -s.x * Math.sign(g), z: -s.z * Math.sign(g) };
+    if (b >= v && b < 0.55) {
+      let M = 0.9 * (1 - b / 0.55),
+        S = y.x - e.x * Math.sign(m) * M,
+        w = y.z - e.z * Math.sign(m) * M,
+        _ = Math.hypot(S, w);
+      y = { x: S / _, z: w / _ };
+    }
+    (!f || x > f.d) && (f = { d: x, n: y, px: r[u * 2], pz: r[u * 2 + 1] });
+  }
+  return f;
+}
+function dMt(o, t, e, s, n, i, a) {
+  let r = a.x - o,
+    l = a.z - t,
+    c = r * e.x + l * e.z,
+    h = r * s.x + l * s.z,
+    f = Math.max(-n, Math.min(n, c)),
+    u = Math.max(-i, Math.min(i, h)),
+    d = c - f,
+    p = h - u,
+    m = Math.hypot(d, p);
+  if (m > a.r) return null;
+  let g, b, v;
+  if (m > 1e-6) ((g = -d / m), (b = -p / m), (v = a.r - m));
+  else {
+    let S = n - Math.abs(c),
+      w = i - Math.abs(h);
+    S < w
+      ? ((g = -Math.sign(c) || 1), (b = 0), (v = S + a.r))
+      : ((g = 0), (b = -Math.sign(h) || 1), (v = w + a.r));
+  }
+  if (a.r < 0.6 && g === 0 && Math.abs(b) > 0.5) {
+    let S = n - Math.abs(c);
+    if (S < 0.55) {
+      let w = 0.9 * (1 - Math.max(0, S) / 0.55);
+      g = -Math.sign(c) * w;
+      let _ = Math.hypot(g, b);
+      ((g /= _), (b /= _));
+    }
+  }
+  let x = { x: e.x * g + s.x * b, z: e.z * g + s.z * b },
+    y = o + e.x * f + s.x * u,
+    M = t + e.z * f + s.z * u;
+  return { d: v, n: x, px: y, pz: M };
+}
+Pn();

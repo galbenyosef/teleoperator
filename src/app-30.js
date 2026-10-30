@@ -1,7 +1,7 @@
 // app 30 — math
-// Lines 46880-47599 of readable/app.pretty.js (statement-aligned).
-var tct = 7,
-  ect = `
+// Lines 47087-47806 of readable/app.pretty.js (statement-aligned).
+var yut = 7,
+  wut = `
 @group(0) @binding(4) var tDepth: DEPTH_T;
 @group(1) @binding(0) var vRG: texture_2d<u32>;
 @group(1) @binding(1) var vBA: texture_2d<u32>;
@@ -64,7 +64,7 @@ fn hazeAt(fp: vec2f) -> f32 {   // bilinear from the half-resolution haze buffer
   return a;
 }
 `,
-  sct = `
+  Mut = `
 @group(0) @binding(4) var tDepth: DEPTH_T;
 @group(1) @binding(0) var oRG: texture_storage_2d<r32uint, write>;
 @group(1) @binding(1) var oBA: texture_storage_2d<r32uint, write>;
@@ -85,7 +85,7 @@ fn hazeAt(fp: vec2f) -> f32 {   // bilinear from the half-resolution haze buffer
   textureStore(oRH, g.xy, vec4u(pack2x16float(vec2f(0.0)), 0u, 0u, 0u));
 }
 `,
-  nct = `
+  Sut = `
 @group(0) @binding(0) var tR: texture_2d<u32>;
 @vertex fn vsFull(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
   let p = vec2f(f32((i << 1u) & 2u), f32(i & 2u)); return vec4f(p * 2.0 - 1.0, 0.0, 1.0);
@@ -98,7 +98,7 @@ fn hazeAt(fp: vec2f) -> f32 {   // bilinear from the half-resolution haze buffer
   return vec4f(0.0, 0.0, 0.0, r);
 }
 `,
-  j6 = class {
+  $S = class {
     constructor(t, e) {
       ((this.r = t),
         (this.d = t.device),
@@ -114,23 +114,23 @@ fn hazeAt(fp: vec2f) -> f32 {   // bilinear from the half-resolution haze buffer
         (this._last = null),
         (this.ready = !1),
         (this.list = []),
-        (this.box = new Ti()),
-        (this._v = new xt()),
-        (this._m = new ye()),
+        (this.box = new xi()),
+        (this._v = new dt()),
+        (this._m = new fe()),
         (this.whenReady = this._init().catch((s) => {
           console.warn("MindblownRenderer VFX: init failed", s);
         })));
     }
     wgsl(t) {
-      return this.prelude + WA + t.replaceAll("DEPTH_T", this.depthT);
+      return this.prelude + x7 + t.replaceAll("DEPTH_T", this.depthT);
     }
     module(t, e) {
       let s = this.d.createShaderModule({ code: t, label: e });
       return (
         s.getCompilationInfo?.().then((n) => {
-          for (let o of n.messages)
-            o.type === "error" &&
-              console.error(`[${e}] ${o.lineNum}:${o.linePos} ${o.message}`);
+          for (let i of n.messages)
+            i.type === "error" &&
+              console.error(`[${e}] ${i.lineNum}:${i.linePos} ${i.message}`);
         }),
         s
       );
@@ -138,16 +138,16 @@ fn hazeAt(fp: vec2f) -> f32 {   // bilinear from the half-resolution haze buffer
     async _init() {
       let t = this.d,
         e = this.r;
-      ((this.gBuf = Jf(t, 96, z0.UNIFORM | z0.COPY_DST, "vfx-globals")),
-        (this.vlBuf = Jf(
+      ((this.gBuf = Cu(t, 96, K0.UNIFORM | K0.COPY_DST, "vfx-globals")),
+        (this.vlBuf = Cu(
           t,
           96,
-          z0.STORAGE | z0.COPY_DST | z0.COPY_SRC,
+          K0.STORAGE | K0.COPY_DST | K0.COPY_SRC,
           "vfx-light",
         )),
-        (this.ambDummy = Jf(t, 80, z0.STORAGE | z0.COPY_DST, "vfx-amb0")),
+        (this.ambDummy = Cu(t, 80, K0.STORAGE | K0.COPY_DST, "vfx-amb0")),
         (this.g = new Float32Array(24)),
-        (this.vlRead = Jf(t, 96, z0.MAP_READ | z0.COPY_DST, "vfx-light-read")),
+        (this.vlRead = Cu(t, 96, K0.MAP_READ | K0.COPY_DST, "vfx-light-read")),
         (this.lightCPU = null),
         (this.sClamp = t.createSampler({
           magFilter: "linear",
@@ -164,29 +164,29 @@ fn hazeAt(fp: vec2f) -> f32 {   // bilinear from the half-resolution haze buffer
           addressModeV: "repeat",
           addressModeW: "repeat",
         })),
-        (this.tNoise = tl(t, [128, 128, 128], "rgba8unorm", ma.TB | ma.SB, {
+        (this.tNoise = Sl(t, [128, 128, 128], "rgba8unorm", za.TB | za.SB, {
           dimension: "3d",
         })),
-        (this.tDetail = tl(t, [32, 32, 32], "rgba8unorm", ma.TB | ma.SB, {
+        (this.tDetail = Sl(t, [32, 32, 32], "rgba8unorm", za.TB | za.SB, {
           dimension: "3d",
         })));
       let s = this.module(
-          GA +
+          b7 +
             `fn sat(x: f32) -> f32 { return clamp(x, 0.0, 1.0); }
 fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v - lo) * (nhi - nlo) / (hi - lo); }`,
           "vfx-noise",
         ),
-        [n, o] = await Promise.all(
-          ["base", "detail"].map((v) =>
+        [n, i] = await Promise.all(
+          ["base", "detail"].map((x) =>
             t.createComputePipelineAsync({
               layout: "auto",
-              compute: { module: s, entryPoint: v },
+              compute: { module: s, entryPoint: x },
             }),
           ),
         );
       {
-        let v = t.createCommandEncoder(),
-          y = v.beginComputePass();
+        let x = t.createCommandEncoder(),
+          y = x.beginComputePass();
         (y.setPipeline(n),
           y.setBindGroup(
             0,
@@ -196,26 +196,26 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
             }),
           ),
           y.dispatchWorkgroups(32, 32, 32),
-          y.setPipeline(o),
+          y.setPipeline(i),
           y.setBindGroup(
             0,
             t.createBindGroup({
-              layout: o.getBindGroupLayout(0),
+              layout: i.getBindGroupLayout(0),
               entries: [{ binding: 1, resource: this.tDetail.createView() }],
             }),
           ),
           y.dispatchWorkgroups(8, 8, 8),
           y.end(),
-          t.queue.submit([v.finish()]));
+          t.queue.submit([x.finish()]));
       }
-      ((this.tBB = tl(t, [256, 1], "rgba16float", ma.TB | ma.CD)),
+      ((this.tBB = Sl(t, [256, 1], "rgba16float", za.TB | za.CD)),
         t.queue.writeTexture(
           { texture: this.tBB },
-          rU(aU(256)),
+          hV(cV(256)),
           { bytesPerRow: 256 * 8 },
           [256, 1],
         ));
-      let a = (v, y) => ({ binding: v, visibility: tct, ...y }),
+      let a = (x, y) => ({ binding: x, visibility: yut, ...y }),
         r = [
           a(0, { buffer: {} }),
           a(2, { buffer: {} }),
@@ -252,7 +252,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           { binding: 2, visibility: 4, texture: { viewDimension: "2d-array" } },
         ],
       })),
-        (this.glLGroup = c0(t, l, [
+        (this.glLGroup = k0(t, l, [
           [0, e.frameBuf],
           [2, this.gBuf],
           [6, this.sRep],
@@ -311,7 +311,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
             { binding: 0, visibility: 2, texture: { sampleType: "uint" } },
           ],
         })));
-      let h = this.module(nct, "vfx-react"),
+      let h = this.module(Sut, "vfx-react"),
         f = { operation: "max", srcFactor: "one", dstFactor: "one" };
       t.createRenderPipelineAsync({
         layout: t.createPipelineLayout({
@@ -336,10 +336,10 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           depthCompare: "always",
         },
       })
-        .then((v) => (this.pReact = v))
-        .catch((v) => console.warn("vfx react", v));
-      let u = (v, y) => ({
-        binding: v,
+        .then((x) => (this.pReact = x))
+        .catch((x) => console.warn("vfx react", x));
+      let u = (x, y) => ({
+        binding: x,
         visibility: 2,
         texture: { sampleType: y },
       });
@@ -356,22 +356,22 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         (this.linLayout = t.createBindGroupLayout({
           entries: [u(4, "unfilterable-float")],
         })));
-      let d = this.module(this.prelude + WA + oU, "vfx-light"),
-        p = this.module(this.wgsl(sct), "vfx-prep"),
-        m = this.module(this.wgsl(ect), "vfx-composite"),
-        g = (...v) => t.createPipelineLayout({ bindGroupLayouts: v }),
-        b = (v, y, M, S, w = 15) =>
+      let d = this.module(this.prelude + x7 + lV, "vfx-light"),
+        p = this.module(this.wgsl(Mut), "vfx-prep"),
+        m = this.module(this.wgsl(wut), "vfx-composite"),
+        g = (...x) => t.createPipelineLayout({ bindGroupLayouts: x }),
+        b = (x, y, M, S, w = 15) =>
           t.createRenderPipelineAsync({
             layout: g(this.gl1, y),
             vertex: { module: m, entryPoint: "vsFull" },
             fragment: {
               module: m,
-              entryPoint: v,
+              entryPoint: x,
               targets: [{ format: M, blend: S, writeMask: w }],
             },
             primitive: { topology: "triangle-list" },
           }),
-        x = {
+        v = {
           color: { srcFactor: "one", dstFactor: "src-alpha" },
           alpha: { srcFactor: "zero", dstFactor: "one" },
         };
@@ -386,8 +386,8 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
             compute: { module: p, entryPoint: "prep" },
           }),
           b("fsUp", this.upLayout, "rgba16float", void 0),
-          b("fsDisp", this.dispLayout, e.format, x),
-          b("fsLin", this.linLayout, "rgba16float", x, 7),
+          b("fsDisp", this.dispLayout, e.format, v),
+          b("fsLin", this.linLayout, "rgba16float", v, 7),
         ])),
         (this.ready = !0));
     }
@@ -403,10 +403,10 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           [8, this.tDetail.createView({ dimension: "3d" })],
           [9, this.tBB.createView()],
         ];
-      (this.g0 || (this.g0 = c0(e, this.gl0, n)),
+      (this.g0 || (this.g0 = k0(e, this.gl0, n)),
         t &&
           t !== this._depthView &&
-          ((this._depthView = t), (this.g1 = c0(e, this.gl1, [...n, [4, t]]))));
+          ((this._depthView = t), (this.g1 = k0(e, this.gl1, [...n, [4, t]]))));
     }
     _size(t, e) {
       if (this._W === t && this._H === e) return;
@@ -415,23 +415,23 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
       for (let r of [this.acc, this.vRG, this.vBA, this.vD, this.vRH])
         r?.destroy();
       let n = Math.ceil(t / 2),
-        o = Math.ceil(e / 2);
+        i = Math.ceil(e / 2);
       ((this.hw = n),
-        (this.hh = o),
-        (this.acc = tl(s, [t, e], "rgba16float", ma.RA | ma.TB)),
-        (this.vRG = tl(s, [n, o], "r32uint", ma.SB | ma.TB)),
-        (this.vBA = tl(s, [n, o], "r32uint", ma.SB | ma.TB)),
-        (this.vD = tl(s, [n, o], "r32float", ma.SB | ma.TB)),
-        (this.vRH = tl(s, [n, o], "r32uint", ma.SB | ma.TB)));
+        (this.hh = i),
+        (this.acc = Sl(s, [t, e], "rgba16float", za.RA | za.TB)),
+        (this.vRG = Sl(s, [n, i], "r32uint", za.SB | za.TB)),
+        (this.vBA = Sl(s, [n, i], "r32uint", za.SB | za.TB)),
+        (this.vD = Sl(s, [n, i], "r32float", za.SB | za.TB)),
+        (this.vRH = Sl(s, [n, i], "r32uint", za.SB | za.TB)));
       let a = [
         [0, this.vRG.createView()],
         [1, this.vBA.createView()],
         [2, this.vD.createView()],
         [3, this.vRH.createView()],
       ];
-      ((this.io = c0(s, this.ioLayout, a)),
-        (this.prepGroup = c0(s, this.prepLayout, a)),
-        (this.reactGroup = c0(s, this.reactLayout, [
+      ((this.io = k0(s, this.ioLayout, a)),
+        (this.prepGroup = k0(s, this.prepLayout, a)),
+        (this.reactGroup = k0(s, this.reactLayout, [
           [0, this.vRH.createView()],
         ])),
         (this._comp = null));
@@ -442,7 +442,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         camera: e,
         scene: s,
         sun: n,
-        skyOcean: o,
+        skyOcean: i,
         sky: a,
         W: r,
         H: l,
@@ -461,7 +461,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         this.frameNo++,
         (this.camera = e),
         (this.scene = s),
-        (this.skyOcean = o || null),
+        (this.skyOcean = i || null),
         this._size(r, l));
       let u = this.g,
         d = n.light;
@@ -483,17 +483,17 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         (u[13] = m.g * p),
         (u[14] = m.b * p),
         (u[15] = p > 0 ? 1 : 0),
-        (u[16] = o ? 1 : 0),
+        (u[16] = i ? 1 : 0),
         (u[17] = c
           ? this.r.environmentIntensity * (s.environmentIntensity ?? 1)
           : 0),
         (u[18] = 0),
         (u[19] = 0));
       let g = a?.material?.uniforms?.sunPosition?.value;
-      ((this.sunDir = (this._sd ||= new xt())
-        .copy(g && o ? g : n.dir)
+      ((this.sunDir = (this._sd ||= new dt())
+        .copy(g && i ? g : n.dir)
         .normalize()),
-        (this.sunOn = o && g ? this.sunDir.y > -0.04 : p > 0),
+        (this.sunOn = i && g ? this.sunDir.y > -0.04 : p > 0),
         (u[20] = this.sunDir.x),
         (u[21] = this.sunDir.y),
         (u[22] = this.sunDir.z),
@@ -503,8 +503,8 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
       for (let b of t)
         b._sys ||
           ((b._sys = this),
-          (b._setupPromise = Promise.resolve(b._setup?.(this)).catch((x) => {
-            (console.warn("VFX setup failed", b, x), (b.enabled = !1));
+          (b._setupPromise = Promise.resolve(b._setup?.(this)).catch((v) => {
+            (console.warn("VFX setup failed", b, v), (b.enabled = !1));
           })));
       this.active = t.filter((b) => b._ready && b.enabled);
       for (let b of this.active)
@@ -516,7 +516,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         ? this._lg
         : ((this._lgKey = s),
           (this._lgAmb = e),
-          (this._lg = c0(this.d, this.lightLayout, [
+          (this._lg = k0(this.d, this.lightLayout, [
             [0, e || this.ambDummy],
             [1, this.vlBuf],
             [2, t.createView({ dimension: "2d-array" })],
@@ -529,9 +529,9 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         n.setBindGroup(0, this.glLGroup),
         n.setBindGroup(1, this._lightGroup(e, this.skyOcean?.amb)),
         n.dispatchWorkgroups(1));
-      for (let o of this.active) o._simulate && o._simulate(n, this);
+      for (let i of this.active) i._simulate && i._simulate(n, this);
       n.end();
-      for (let o of this.active) (o._afterSim?.(t), o._prepass?.(t, this));
+      for (let i of this.active) (i._afterSim?.(t), i._prepass?.(t, this));
       !this._vlBusy &&
         this.frameNo % 16 === 4 &&
         (t.copyBufferToBuffer(this.vlBuf, 0, this.vlRead, 0, 96),
@@ -572,7 +572,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
       let e = this.camera,
         s = this._v,
         n = this._m.multiplyMatrices(e.projectionMatrix, e.matrixWorldInverse),
-        o = 1e9,
+        i = 1e9,
         a = 1e9,
         r = -1e9,
         l = -1e9;
@@ -591,15 +591,15 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         )
           return [0, 0, this._W, this._H];
         (s.applyMatrix4(n),
-          (o = Math.min(o, s.x)),
+          (i = Math.min(i, s.x)),
           (r = Math.max(r, s.x)),
           (a = Math.min(a, s.y)),
           (l = Math.max(l, s.y)));
       }
-      if (r < -1 || o > 1 || l < -1 || a > 1) return null;
+      if (r < -1 || i > 1 || l < -1 || a > 1) return null;
       let c = this._W,
         h = this._H,
-        f = Math.max(0, Math.floor((o * 0.5 + 0.5) * c) - 2),
+        f = Math.max(0, Math.floor((i * 0.5 + 0.5) * c) - 2),
         u = Math.min(c, Math.ceil((r * 0.5 + 0.5) * c) + 2),
         d = Math.max(0, Math.floor((0.5 - l * 0.5) * h) - 2),
         p = Math.min(h, Math.ceil((0.5 - a * 0.5) * h) + 2);
@@ -613,7 +613,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         t.setBindGroup(0, this.reactGroup),
         t.draw(3));
     }
-    post(t, { depthView: e, linTex: s, linView: n, displayView: o, span: a }) {
+    post(t, { depthView: e, linTex: s, linView: n, displayView: i, span: a }) {
       if (!this.hasPost) return;
       let r = this.d;
       this._groups(e);
@@ -632,19 +632,19 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         u = this.camera.getWorldPosition(this._v).clone();
       for (let g of this.active) {
         let b = g._screenBox?.(this),
-          x = b ? this.rect(b) : [0, 0, this._W, this._H];
-        x &&
+          v = b ? this.rect(b) : [0, 0, this._W, this._H];
+        v &&
           (g._march &&
-            l.push({ o: g, rc: x, dist: b ? b.distanceToPoint(u) : 0 }),
+            l.push({ o: g, rc: v, dist: b ? b.distanceToPoint(u) : 0 }),
           g._drawParticles && c.push(g),
-          f(x));
+          f(v));
       }
       if (!h) return;
       let d = [h[0], h[1], h[2] - h[0], h[3] - h[1]];
       if (
         ((this._reactOn = l.some((g) => (g.o.reactive ?? 0) > 0)), l.length)
       ) {
-        l.sort((b, x) => b.dist - x.dist);
+        l.sort((b, v) => b.dist - v.dist);
         let g = t.beginComputePass(
           a ? { timestampWrites: a("vfx volumes") } : {},
         );
@@ -653,29 +653,29 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           g.setBindGroup(1, this.prepGroup),
           g.dispatchWorkgroups(Math.ceil(this.hw / 8), Math.ceil(this.hh / 8)));
         for (let b of l) {
-          let x = [
+          let v = [
             Math.floor(b.rc[0] / 2),
             Math.floor(b.rc[1] / 2),
             Math.ceil(b.rc[2] / 2) + 1,
             Math.ceil(b.rc[3] / 2) + 1,
           ];
-          b.o._march(g, this, x);
+          b.o._march(g, this, v);
         }
         g.end();
       }
       this._comp ||
         (this._comp = {
-          up: c0(r, this.upLayout, [
+          up: k0(r, this.upLayout, [
             [0, this.vRG.createView()],
             [1, this.vBA.createView()],
             [2, this.vD.createView()],
           ]),
-          lin: c0(r, this.linLayout, [[4, this.acc.createView()]]),
+          lin: k0(r, this.linLayout, [[4, this.acc.createView()]]),
           disp: new Map(),
         });
       let p = this._comp.disp.get(s);
       p ||
-        ((p = c0(r, this.dispLayout, [
+        ((p = k0(r, this.dispLayout, [
           [3, s.createView()],
           [4, this.acc.createView()],
           [5, this.vRH.createView()],
@@ -703,18 +703,18 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         for (let b of c) b._drawParticles(g, this);
         g.end();
       }
-      for (let [g, b, x, v] of [
-        [this.pDisp, o, "vfx composite", p],
+      for (let [g, b, v, x] of [
+        [this.pDisp, i, "vfx composite", p],
         [this.pLin, n, null, this._comp.lin],
       ]) {
         let y = t.beginRenderPass({
           colorAttachments: [{ view: b, loadOp: "load", storeOp: "store" }],
-          timestampWrites: a && x ? a(x, !0, !1) : a ? a(null, !1, !0) : void 0,
+          timestampWrites: a && v ? a(v, !0, !1) : a ? a(null, !1, !0) : void 0,
         });
         (m(y),
           y.setPipeline(g),
           y.setBindGroup(0, this.g1),
-          y.setBindGroup(1, v),
+          y.setBindGroup(1, x),
           y.draw(3),
           y.end());
       }

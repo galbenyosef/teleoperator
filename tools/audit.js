@@ -434,7 +434,7 @@ if (manifest) {
 
 // ── vendor rule: wholeFile sections carry the recorded shape ────────────
 const VENDOR_GUARDS = [
-  ["app-three-core-vendor.js", /\(L9 = "186"\)/, /window\.__THREE__/],
+  ["app-three-core-vendor.js", /__THREE__/, /"186"/],
   ["app-three-webgl-vendor.js", /isWebGLRenderer/, /three\.js r\$\{/],
   ["app-three-addons-vendor.js", /name: "CopyShader"/, /MeshoptSimplifier/],
   ["app-three-buffergeometry-vendor.js", /THREE\.BufferGeometryUtils/, /mergeGeometries/],
@@ -497,12 +497,18 @@ for (const s of sections) {
         problem(`src/${s.file}: ${kind} import "${spec}" but no capture provenance is known`);
         continue;
       }
-      const target = path.posix.normalize(path.posix.join(baseDir === "." ? "" : baseDir, spec));
-      if (!fs.existsSync(path.join(proj, target))) {
+      // Browser semantics: a traversal can never escape the ORIGIN root, and a
+      // directory is a legal target (`new URL("../../../assets/real/", …)`,
+      // which the app's PLACE_OUT tooling and the root-served bundle both use).
+      let target = path.posix.normalize(path.posix.join(baseDir === "." ? "" : baseDir, spec));
+      while (target.startsWith("../")) target = target.slice(3);
+      target = target.replace(/^\/+/, "").replace(/\/+$/, "");
+      if (!target || !fs.existsSync(path.join(proj, target))) {
         problem(`src/${s.file}: unresolvable ${kind} import "${spec}" (capture carries no ${target})`);
         continue;
       }
       resolvedImports++;
+      if (!fs.statSync(path.join(proj, target)).isFile()) continue;
       const targetCode = fs.readFileSync(path.join(proj, target), "utf8");
       const targetExports = exportsOf(targetCode);
       for (const n of namedImports(clause)) {
@@ -513,6 +519,13 @@ for (const s of sections) {
     }
     if (spec.startsWith("node:") || spec.startsWith("vite/") || spec.startsWith("/")) {
       whitelisted++;
+      continue;
+    }
+    // A bare path-shaped specifier is resolved against the document base (the
+    // capture root): `new URL("assets/real/place.json", document.baseURI)`.
+    const rootRel = path.posix.normalize(spec).replace(/\/+$/, "");
+    if (rootRel && !rootRel.startsWith("..") && fs.existsSync(path.join(proj, rootRel))) {
+      resolvedImports++;
       continue;
     }
     problem(`src/${s.file}: unresolvable ${kind} import "${spec}" — bare/URL specifier not whitelisted`);

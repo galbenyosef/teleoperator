@@ -1,251 +1,335 @@
 // app 158 — math
-// Lines 96835-97083 of readable/app.pretty.js (statement-aligned).
-var Wj = 32,
-  qj = 64,
-  jj = 128,
-  Vj = (i) => !!(i.flags & ll.tram) && !(i.flags & ll.cable) && Vh(i) === 0.45,
-  ddt = (i) =>
-    !i.hwy &&
-    !i.elev &&
-    !i.layer &&
-    (i.cls === "service" ||
-      i.cls === "living_street" ||
-      i.cls === "pedestrian" ||
-      (i.lanes <= 1 &&
-        i.W[0] <= 4 &&
-        /(Alley|Place|Lane)$/.test(i.name || "")));
-function tP(i) {
-  return (
-    ((i.flags | (i.noX || 0) | (ddt(i) ? 15 : 0)) & 15) | 16 | (Vj(i) ? Wj : 0)
-  );
-}
-var pdt = new Set([
-    "Mission Street",
-    "Geary Street",
-    "O'Farrell Street",
-    "3rd Street",
-    "Kearny Street",
-    "Stockton Street",
-  ]),
-  mdt = new Set(["fidi", "towers", "union", "tenderloin", "soma", "mission"]);
-function $j(i) {
-  if (i.tcode !== void 0) return i.tcode;
-  let t = 0;
-  return (
-    i.cls === "busway"
-      ? (t =
-          i.name === "Van Ness Bus Rapid Transit" || i.name === "Market Street"
-            ? 3
-            : 0)
-      : i.name === "Market Street" && i.flags & ll.tram && !i.oneway
-        ? (t = 2)
-        : pdt.has(i.name) &&
-          mdt.has(i.dist) &&
-          i.lanes >= 2 &&
-          !i.hwy &&
-          !i.elev &&
-          (t = 1),
-    t === 1 &&
-      i.name === "3rd Street" &&
-      Ot(i, (i.s0 + i.s1) / 2, {}).z > 1900 &&
-      (t = 0),
-    (i.tcode = t)
-  );
-}
-var Ij = {
-    "Valencia Street": 3,
-    "Polk Street": 1,
-    "Folsom Street": 3,
-    "Howard Street": 3,
-    "The Embarcadero": 3,
-  },
-  gdt = new Set([
-    "Duboce Avenue",
-    "Steiner Street",
-    "Waller Street",
-    "Pierce Street",
-    "Haight Street",
-    "Scott Street",
-  ]);
-function Ib(i) {
-  if (i.bcode !== void 0) return i.bcode;
-  let t = 0;
-  if (
-    !i.inner &&
-    !i.elev &&
-    !i.hwy &&
-    !i.sunk &&
-    i.cls !== "busway" &&
-    i.cls !== "service"
-  ) {
-    let e = Ot(i, i.L / 2, {});
-    if (
-      (Ij[i.name] &&
-      ((i.name !== "Folsom Street" && i.name !== "Howard Street") ||
-        i.dist === "soma" ||
-        i.dist === "towers")
-        ? (t = Ij[i.name])
-        : i.name === "Market Street"
-          ? (t =
-              i.dist === "hayes" ? 1 : i.flags & ll.tram && !i.oneway ? 2 : 0)
-          : gdt.has(i.name) &&
-              e.x > -3760 &&
-              e.x < -3300 &&
-              e.z > 2600 &&
-              e.z < 2960
-            ? (t = 2)
-            : ((i.name === "Fell Street" && e.x > -3900 && e.x < -3650) ||
-                (i.name === "Masonic Avenue" && e.z > 1470 && e.z < 2380)) &&
-              (t = 3),
-      t === 1 || t === 3)
-    ) {
-      let s = i.flags & 4 ? 0 : 2.3,
-        n = i.oneway ? 0 : Vh(i) > 0.2 && Vh(i) < 0.4 ? 1.6 : 0,
-        o = t === 1 ? 1.7 : 2.5,
-        a = (l) => (i.oneway ? (2 * (e.w - s) - o) / l : (e.w - s - n - o) / l),
-        r = Math.max(1, i.lanes);
-      for (; r > 1 && a(r) < 2.8;) r--;
-      a(r) < 2.8 ? (t = e.w > 3.5 ? 2 : 0) : (i.lanes = r);
+// Lines 97320-97652 of readable/app.pretty.js (statement-aligned).
+function Q$(o) {
+  if (o.paintPrepped) return;
+  ((o.paintPrepped = !0), qmt(o));
+  let t = new Map(),
+    e = {},
+    s = {};
+  for (let a of o.edges)
+    if (!a.inner && !a.oneway && !a.elev && N$.has(a.name)) {
+      let r = t.get(a.name);
+      (r || t.set(a.name, (r = [])), r.push(a));
     }
+  let n = 0;
+  for (let a of o.edges) {
+    if (!a.oneway || a.inner || a.elev || !a.name || a.s1 - a.s0 < 1) continue;
+    let r = t.get(a.name);
+    if (!r) continue;
+    Ot(a, (a.s0 + a.s1) / 2, e);
+    let l = e.x,
+      c = e.z,
+      h = null,
+      f = 0;
+    for (let u of r) {
+      if (u.layer !== a.layer) continue;
+      let d = {};
+      if ((ys(u, l, c, d), !(d.d < 40))) continue;
+      let p = 0;
+      for (let m = 0; m < 5; m++)
+        (Ot(a, a.s0 + ((a.s1 - a.s0) * (m + 0.5)) / 5, e),
+          Z$(u, e.x, e.z, s),
+          s.s > -2 &&
+            s.s < u.L + 2 &&
+            Math.abs(s.v) < s.w - 0.5 &&
+            (Ot(u, Math.min(u.L, Math.max(0, s.s)), d),
+            Math.abs(e.dx * d.dx + e.dz * d.dz) > 0.95 && p++));
+      p > f && ((f = p), (h = u));
+    }
+    h && f >= 3 && ((a.twin = h), n++);
   }
-  return (i.bcode = t);
-}
-function Xj(i) {
-  if (!i.bikesPrepped) {
-    i.bikesPrepped = !0;
-    for (let t of i.edges) Ib(t);
-  }
-}
-var tp = (i) => {
-    let t = Ib(i);
-    return t === 1 ? 1.7 : t === 3 ? 2.5 : 0;
-  },
-  eP = (i) =>
-    (Math.max(1, Math.min(15, i.lanes)) + 16 * $j(i) + 64 * Ib(i)) / 4;
-function Hy(i, t, e, s) {
-  let n = $g(t, e, s);
-  if (n.length < 2) return;
-  let o = t.twin || null;
-  if (t.xingS && !o) return bdt(i, t, e, s, n);
-  let a = t.s1 - t.s0,
-    r = tP(t),
-    l = Vh(t),
-    c = eP(t),
-    h = (a + 4096 * r) / 256,
-    f = i.v,
-    u = {},
-    d = {},
-    p = o ? (o.s1 - o.s0 + 4096 * (tP(o) | qj)) / 256 : 0,
-    m = o ? Vh(o) : 0,
-    g = o ? eP(o) : 0;
-  for (let b = 0; b < n.length; b++) {
-    let [x, v, y, M, S, w, z] = n[b];
-    Ot(t, Math.min(t.L, x + (b === n.length - 1 ? -0.01 : 0.01)), u);
-    let _ = Math.hypot(S, w) || 1,
-      R = S / _,
-      T = w / _,
-      E = u.dx,
-      A = u.gy,
-      C = u.dz,
-      P = 0 * C - T * A,
-      I = T * E - R * C,
-      L = R * A - 0 * E,
-      F = Math.hypot(P, I, L) || 1;
-    if (((P /= F), (I /= F), (L /= F), o)) {
-      for (let H of [-1, 1]) {
-        let O = v + S * z * H,
-          D = y + w * z * H;
-        (Kj(o, O, D, d),
-          i.vert(O, M - 0.02, D, P, I, L, d.s - o.s0, d.v, [
-            d.w / 32,
-            p,
-            m,
-            g,
-          ]));
+  let i = 0;
+  for (let a of o.juns) {
+    if (!a.polys.length || a.elev || a.layered) continue;
+    let r = a.legs
+        .filter(([O]) => !O.inner && !O.twin && !O.elev)
+        .map(([O, B]) => {
+          let H = B === "a" ? 1 : -1,
+            N = Ot(O, B === "a" ? O.s0 : O.s1, {});
+          return {
+            E: O,
+            end: B,
+            x: N.x,
+            z: N.z,
+            dx: N.dx * H,
+            dz: N.dz * H,
+            w: N.w,
+          };
+        }),
+      l = null,
+      c = null,
+      h = 0;
+    for (let O = 0; O < r.length; O++)
+      for (let B = O + 1; B < r.length; B++) {
+        let H = r[O],
+          N = r[B];
+        if (
+          H.E.oneway ||
+          N.E.oneway ||
+          !N$.has(H.E.name) ||
+          H.E.name !== N.E.name ||
+          H.E.median !== N.E.median
+        )
+          continue;
+        let D = N.x - H.x,
+          U = N.z - H.z,
+          G = Math.hypot(D, U);
+        G < Gmt ||
+          G <= h ||
+          (D * H.dx + U * H.dz) / G > -0.97 ||
+          (D * N.dx + U * N.dz) / G < 0.97 ||
+          Math.abs(H.w - N.w) > 1 ||
+          ((l = H), (c = N), (h = G));
       }
-      continue;
+    if (!l) continue;
+    let f = (c.x - l.x) / h,
+      u = (c.z - l.z) / h,
+      d = -u,
+      p = f,
+      m = Math.min(l.w, c.w),
+      g = (O, B) => {
+        let H = !1;
+        for (let N of a.polys)
+          for (let D of N) {
+            let U = D.pts,
+              G = U.length / 2;
+            for (let W = 0, V = G - 1; W < G; V = W++) {
+              let $ = U[W * 2 + 1],
+                J = U[V * 2 + 1];
+              $ > B != J > B &&
+                O < U[V * 2] + ((U[W * 2] - U[V * 2]) * (B - J)) / ($ - J) &&
+                (H = !H);
+            }
+          }
+        return H;
+      },
+      b = r.filter((O) => O !== l && O !== c),
+      v = {},
+      x = (O, B) => {
+        let H = l.x + f * O + d * B,
+          N = l.z + u * O + p * B;
+        if (g(H, N)) return !0;
+        for (let D of b)
+          if (
+            (ys(D.E, H, N, v),
+            v.d < v.w + 0.1 && v.s >= D.E.s0 && v.s <= D.E.s1)
+          )
+            return !0;
+        return !1;
+      },
+      y = m + 4.5,
+      M = m / y,
+      S = (O) => {
+        let B = [],
+          H = null;
+        for (let N = -4; N <= h + 4; N += 0.25) {
+          let D = x(N, O * y);
+          D && H === null
+            ? (H = N)
+            : !D && H !== null && (B.push([H, N - 0.25]), (H = null));
+        }
+        return (
+          H !== null && B.push([H, h + 4]),
+          B.filter(([N, D]) => D - N >= 3)
+        );
+      },
+      w = S(-1),
+      _ = S(1),
+      z = new Set(),
+      A = [];
+    for (let O of w) {
+      let B = null,
+        H = 0;
+      if (
+        (_.forEach((G, W) => {
+          let V = Math.min(O[1], G[1]) - Math.max(O[0], G[0]);
+          !z.has(W) && V > H && ((H = V), (B = W));
+        }),
+        B === null)
+      ) {
+        A.push([O[0], O[0], O[1], O[1]]);
+        continue;
+      }
+      z.add(B);
+      let N = _[B],
+        D = (O[0] + N[0]) / 2,
+        U = (O[1] + N[1]) / 2;
+      A.push([
+        D + (O[0] - D) * M,
+        D + (N[0] - D) * M,
+        U + (O[1] - U) * M,
+        U + (N[1] - U) * M,
+      ]);
     }
-    let N = [z / 32, h, l, c],
-      B = x - t.s0;
-    (i.vert(v - S * z, M, y - w * z, P, I, L, B, -z, N),
-      i.vert(v + S * z, M, y + w * z, P, I, L, B, z, N));
-  }
-  for (let b = 0; b + 1 < n.length; b++) {
-    let x = f + b * 2,
-      v = x + 1,
-      y = x + 2,
-      M = x + 3;
-    (i.tri(x, v, M), i.tri(x, M, y));
-  }
-}
-function bdt(i, t, e, s, n) {
-  let o = {},
-    a = [];
-  for (let [m, g] of t.xingS)
-    for (let b of [m, g]) b > e + 0.05 && b < s - 0.05 && a.push(b);
-  for (let m of a) {
-    let g = n.findIndex((b) => b[0] > m);
-    g <= 0 ||
-      (Ot(t, m, o), n.splice(g, 0, [m, o.x, o.z, o.y, o.nx, o.nz, o.w]));
-  }
-  let r = t.s1 - t.s0,
-    l = tP(t),
-    c = Vh(t),
-    h = eP(t),
-    f = (m) => t.xingS.some(([g, b]) => m > g && m < b),
-    u = -1,
-    d = null,
-    p = (m, g) => {
-      let [b, x, v, y, M, S, w] = n[m];
-      Ot(t, Math.min(t.L, b + (m === n.length - 1 ? -0.01 : 0.01)), o);
-      let z = Math.hypot(M, S) || 1,
-        _ = M / z,
-        R = S / z,
-        T = o.dx,
-        E = o.gy,
-        A = o.dz,
-        C = -R * E,
-        P = R * T - _ * A,
-        I = _ * E,
-        L = Math.hypot(C, P, I) || 1;
-      ((C /= L), (P /= L), (I /= L));
-      let F = [w / 32, (r + 4096 * (l | (g ? jj : 0))) / 256, c, h],
-        N = b - t.s0,
-        B = i.v;
-      return (
-        i.vert(x - M * w, y, v - S * w, C, P, I, N, -w, F),
-        i.vert(x + M * w, y, v + S * w, C, P, I, N, w, F),
-        B
-      );
+    _.forEach((O, B) => {
+      z.has(B) || A.push([O[0], O[0], O[1], O[1]]);
+    });
+    let T = !1,
+      E = !1;
+    A = A.filter((O) =>
+      O[2] + O[3] < 6
+        ? ((T = !0), !1)
+        : O[0] + O[1] > 2 * h - 6
+          ? ((E = !0), !1)
+          : !0,
+    ).sort((O, B) => O[0] + O[1] + O[2] + O[3] - (B[0] + B[1] + B[2] + B[3]));
+    let R = 9,
+      P = [];
+    for (let O of A) {
+      let B = P[P.length - 1];
+      B && (O[0] < B[2] + R || O[1] < B[3] + R)
+        ? ((B[0] = Math.min(B[0], O[0])),
+          (B[1] = Math.min(B[1], O[1])),
+          (B[2] = Math.max(B[2], O[2])),
+          (B[3] = Math.max(B[3], O[3])))
+        : P.push(O.slice());
+    }
+    let C = (O, B) => ({ c: (O + B) / 2, k: (B - O) / (2 * m) }),
+      I = P.length,
+      L = [];
+    for (let O = 0; O <= I; O++) {
+      let B = O === 0 ? [0, 0] : [P[O - 1][2], P[O - 1][3]],
+        H = O === I ? [h, h] : [P[O][0], P[O][1]],
+        N = Math.min(H[0] - B[0], H[1] - B[1]) < 6.5,
+        D =
+          O === 0 && I
+            ? l.E.lanes
+            : O === I && I
+              ? c.E.lanes
+              : Math.max(l.E.lanes, c.E.lanes);
+      L.push({
+        a: C(...B),
+        b: C(...H),
+        xa: O > 0 && !N,
+        xb: O < I && !N,
+        lanes: Math.max(1, D),
+        la: O === 0 ? l.E.lanes : D,
+        lb: O === I ? c.E.lanes : D,
+      });
+    }
+    let F = (O, B) => {
+      B && (O.E.noX = (O.E.noX || 0) | (O.end === "a" ? 1 : 2));
     };
-  for (let m = 0; m + 1 < n.length; m++) {
-    let g = f((n[m][0] + n[m + 1][0]) / 2),
-      b = d === g && u >= 0 ? u : p(m, g),
-      x = p(m + 1, g);
-    (i.tri(b, b + 1, x + 1), i.tri(b, x + 1, x), (u = x), (d = g));
+    (F(l, !T && (I === 0 || L[0].xb)),
+      F(c, !E && (I === 0 || L[I].xa)),
+      (a.paint = {
+        ox: l.x,
+        oz: l.z,
+        ex: f,
+        ez: u,
+        nx: d,
+        nz: p,
+        hw: m,
+        S: h,
+        kind: kf(l.E),
+        tc: Y$(l.E),
+        bc: yx(l.E),
+        fl: (l.E.flags & Al.noPark) | 16 | (K$(l.E) ? j$ : 0) | $$,
+        M: P.map((O) => [C(O[0], O[1]), C(O[2], O[3])]),
+        pieces: L,
+      }),
+      i++);
+  }
+  o.paintStats = { twins: n, juns: i };
+}
+function Vmt(o, t, e) {
+  let s = [],
+    n = [],
+    i = (a) => a.s - t - e * a.v;
+  for (let a = 0; a < o.length; a++) {
+    let r = o[a],
+      l = o[(a + 1) % o.length],
+      c = i(r),
+      h = i(l);
+    if (((c <= 0 ? s : n).push(r), (c < 0 && h > 0) || (c > 0 && h < 0))) {
+      let f = c / (c - h),
+        u = {
+          x: r.x + (l.x - r.x) * f,
+          z: r.z + (l.z - r.z) * f,
+          y: r.y + (l.y - r.y) * f,
+          s: r.s + (l.s - r.s) * f,
+          v: r.v + (l.v - r.v) * f,
+        };
+      (s.push(u), n.push(u));
+    }
+  }
+  return [s.length >= 3 ? s : null, n.length >= 3 ? n : null];
+}
+function Wmt(o, t, e) {
+  let s = t.paint,
+    n = [];
+  for (let [l, c] of s.M) n.push(l, c);
+  let i = s.pieces.map((l) =>
+      Math.abs(l.a.k - l.b.k) > 0.02
+        ? { c: (l.a.c + l.b.c) / 2, k: (l.a.k + l.b.k) / 2 }
+        : null,
+    ),
+    a = n.concat(i.filter(Boolean)),
+    r = (l, c, h) => [
+      s.hw / 32,
+      (Math.max(0.5, l) + 4096 * c) / 256,
+      s.kind,
+      (Math.max(1, h) + 16 * (s.tc || 0) + 64 * (s.bc || 0)) / 4,
+    ];
+  for (let l of t.polys) {
+    let c = l.map((m) => m.pts),
+      h = l.map((m) => m.y),
+      { tris: f, flat: u } = e(c),
+      d = [];
+    for (let m of h) for (let g = 0; g < m.length; g++) d.push(m[g]);
+    let p = (m) => {
+      let g = u[m * 2],
+        b = u[m * 2 + 1],
+        v = g - s.ox,
+        x = b - s.oz;
+      return {
+        x: g,
+        z: b,
+        y: d[m],
+        s: v * s.ex + x * s.ez,
+        v: v * s.nx + x * s.nz,
+      };
+    };
+    for (let [m, g, b] of f) {
+      let v = [[p(m), p(g), p(b)]];
+      for (let x of a) {
+        let y = [];
+        for (let M of v) for (let S of Vmt(M, x.c, x.k)) S && y.push(S);
+        v = y;
+      }
+      for (let x of v) {
+        let y = 0,
+          M = 0;
+        for (let A of x) ((y += A.s), (M += A.v));
+        ((y /= x.length), (M /= x.length));
+        let S = 0;
+        for (let A of n) y > A.c + A.k * M && S++;
+        let w, _;
+        if (S & 1) {
+          let A = n[S - 1];
+          ((w = (T) => T.s - A.c - A.k * T.v),
+            (_ = r(
+              10,
+              s.fl | X$ | 3,
+              Math.max(s.pieces[0].lanes, s.pieces[s.pieces.length - 1].lanes),
+            )));
+        } else {
+          let A = s.pieces[S / 2],
+            T = i[S / 2],
+            E = (A.b.c - A.a.c) / (T ? 2 : 1);
+          T && y > T.c + T.k * M
+            ? ((w = (R) => E - (A.b.c + A.b.k * R.v - R.s)),
+              (_ = r(E, s.fl | 1 | (A.xb ? 0 : 2), A.lb)))
+            : T
+              ? ((w = (R) => R.s - A.a.c - A.a.k * R.v),
+                (_ = r(E, s.fl | 2 | (A.xa ? 0 : 1), A.la)))
+              : ((w = (R) => R.s - A.a.c - A.a.k * R.v),
+                (_ = r(E, s.fl | (A.xa ? 0 : 1) | (A.xb ? 0 : 2), A.lanes)));
+        }
+        let z = o.v;
+        for (let A of x) o.vert(A.x, A.y, A.z, 0, 1, 0, w(A), A.v, _);
+        for (let A = 1; A + 1 < x.length; A++) nz(o, z, z + A, z + A + 1);
+      }
+    }
   }
 }
-function Kj(i, t, e, s = {}) {
-  let n = {};
-  vs(i, t, e, n);
-  let o = n.s,
-    a = n.v,
-    r = i.P;
-  if (o < 1e-6 || o > i.L - 1e-6) {
-    let l = o < 1e-6 ? 0 : i.n - 1,
-      c = o < 1e-6 ? 0 : i.n - 2,
-      h = i.D[c * 2],
-      f = i.D[c * 2 + 1],
-      u = t - r[l * 3],
-      d = e - r[l * 3 + 1];
-    ((o = i.S[l] + u * h + d * f), (a = -u * f + d * h));
-  }
-  return (
-    (s.s = o),
-    (s.v = a),
-    (s.w = Ot(i, Math.min(i.L, Math.max(0, o)), {}).w),
-    s
-  );
-}
-var xdt = 24,
-  Fj = new Set(["Market Street"]);

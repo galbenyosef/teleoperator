@@ -1,55 +1,55 @@
 // app 05 — math
-// Lines 1127-1466 of readable/app.pretty.js (statement-aligned).
-function Of(i) {
-  return i < 0.04045
-    ? i * 0.0773993808
-    : Math.pow(i * 0.9478672986 + 0.0521327014, 2.4);
+// Lines 1160-1499 of readable/app.pretty.js (statement-aligned).
+function xu(o) {
+  return o < 0.04045
+    ? o * 0.0773993808
+    : Math.pow(o * 0.9478672986 + 0.0521327014, 2.4);
 }
-function U2(i) {
-  return i < 0.0031308 ? i * 12.92 : 1.055 * Math.pow(i, 0.41666) - 0.055;
+function Pg(o) {
+  return o < 0.0031308 ? o * 12.92 : 1.055 * Math.pow(o, 0.41666) - 0.055;
 }
-function UT(i) {
-  return (typeof HTMLImageElement < "u" && i instanceof HTMLImageElement) ||
-    (typeof HTMLCanvasElement < "u" && i instanceof HTMLCanvasElement) ||
-    (typeof ImageBitmap < "u" && i instanceof ImageBitmap)
-    ? s3.getDataURL(i)
-    : i.data
+function pR(o) {
+  return (typeof HTMLImageElement < "u" && o instanceof HTMLImageElement) ||
+    (typeof HTMLCanvasElement < "u" && o instanceof HTMLCanvasElement) ||
+    (typeof ImageBitmap < "u" && o instanceof ImageBitmap)
+    ? Z3.getDataURL(o)
+    : o.data
       ? {
-          data: Array.from(i.data),
-          width: i.width,
-          height: i.height,
-          type: i.data.constructor.name,
+          data: Array.from(o.data),
+          width: o.width,
+          height: o.height,
+          type: o.data.constructor.name,
         }
-      : (As("Texture: Unable to serialize Texture."), {});
+      : (Cs("Texture: Unable to serialize Texture."), {});
 }
-function qT(i, t, e) {
+function bR(o, t, e) {
   return (
     e < 0 && (e += 1),
     e > 1 && (e -= 1),
     e < 1 / 6
-      ? i + (t - i) * 6 * e
+      ? o + (t - o) * 6 * e
       : e < 1 / 2
         ? t
         : e < 2 / 3
-          ? i + (t - i) * 6 * (2 / 3 - e)
-          : i
+          ? o + (t - o) * 6 * (2 / 3 - e)
+          : o
   );
 }
-function ZT(i, t, e, s, n) {
-  for (let o = 0, a = i.length - 3; o <= a; o += 3) {
-    t1.fromArray(i, o);
-    let r = n.x * Math.abs(t1.x) + n.y * Math.abs(t1.y) + n.z * Math.abs(t1.z),
-      l = t.dot(t1),
-      c = e.dot(t1),
-      h = s.dot(t1);
+function zR(o, t, e, s, n) {
+  for (let i = 0, a = o.length - 3; i <= a; i += 3) {
+    N1.fromArray(o, i);
+    let r = n.x * Math.abs(N1.x) + n.y * Math.abs(N1.y) + n.z * Math.abs(N1.z),
+      l = t.dot(N1),
+      c = e.dot(N1),
+      h = s.dot(N1);
     if (Math.max(-Math.max(l, c, h), Math.min(l, c, h)) > r) return !1;
   }
   return !0;
 }
-function Lnt() {
-  let i = new ArrayBuffer(4),
-    t = new Float32Array(i),
-    e = new Uint32Array(i),
+function Qat() {
+  let o = new ArrayBuffer(4),
+    t = new Float32Array(o),
+    e = new Uint32Array(o),
     s = new Uint32Array(512),
     n = new Uint32Array(512);
   for (let l = 0; l < 256; ++l) {
@@ -76,16 +76,16 @@ function Lnt() {
               (n[l] = 13),
               (n[l | 256] = 13));
   }
-  let o = new Uint32Array(2048),
+  let i = new Uint32Array(2048),
     a = new Uint32Array(64),
     r = new Uint32Array(64);
   for (let l = 1; l < 1024; ++l) {
     let c = l << 13,
       h = 0;
     for (; (c & 8388608) === 0;) ((c <<= 1), (h -= 8388608));
-    ((c &= -8388609), (h += 947912704), (o[l] = c | h));
+    ((c &= -8388609), (h += 947912704), (i[l] = c | h));
   }
-  for (let l = 1024; l < 2048; ++l) o[l] = 939524096 + ((l - 1024) << 13);
+  for (let l = 1024; l < 2048; ++l) i[l] = 939524096 + ((l - 1024) << 13);
   for (let l = 1; l < 31; ++l) a[l] = l << 23;
   ((a[31] = 1199570944), (a[32] = 2147483648));
   for (let l = 33; l < 63; ++l) a[l] = 2147483648 + ((l - 32) << 23);
@@ -96,130 +96,130 @@ function Lnt() {
     uint32View: e,
     baseTable: s,
     shiftTable: n,
-    mantissaTable: o,
+    mantissaTable: i,
     exponentTable: a,
     offsetTable: r,
   };
 }
-function b0(i) {
-  (Math.abs(i) > 65504 && As("DataUtils.toHalfFloat(): Value out of range."),
-    (i = Tn(i, -65504, 65504)),
-    (Bf.floatView[0] = i));
-  let t = Bf.uint32View[0],
+function G0(o) {
+  (Math.abs(o) > 65504 && Cs("DataUtils.toHalfFloat(): Value out of range."),
+    (o = Ln(o, -65504, 65504)),
+    (bu.floatView[0] = o));
+  let t = bu.uint32View[0],
     e = (t >> 23) & 511;
-  return Bf.baseTable[e] + ((t & 8388607) >> Bf.shiftTable[e]);
+  return bu.baseTable[e] + ((t & 8388607) >> bu.shiftTable[e]);
 }
-function Uv(i) {
-  let t = i >> 10;
+function B3(o) {
+  let t = o >> 10;
   return (
-    (Bf.uint32View[0] =
-      Bf.mantissaTable[Bf.offsetTable[t] + (i & 1023)] + Bf.exponentTable[t]),
-    Bf.floatView[0]
+    (bu.uint32View[0] =
+      bu.mantissaTable[bu.offsetTable[t] + (o & 1023)] + bu.exponentTable[t]),
+    bu.floatView[0]
   );
 }
-function E4(i, t, e, s, n, o) {
-  (L2.subVectors(i, e).addScalar(0.5).multiply(s),
+function R8(o, t, e, s, n, i) {
+  (Sg.subVectors(o, e).addScalar(0.5).multiply(s),
     n !== void 0
-      ? ((Iv.x = o * L2.x - n * L2.y), (Iv.y = n * L2.x + o * L2.y))
-      : Iv.copy(L2),
-    i.copy(t),
-    (i.x += Iv.x),
-    (i.y += Iv.y),
-    i.applyMatrix4(nD));
+      ? ((A3.x = i * Sg.x - n * Sg.y), (A3.y = n * Sg.x + i * Sg.y))
+      : A3.copy(Sg),
+    o.copy(t),
+    (o.x += A3.x),
+    (o.y += A3.y),
+    o.applyMatrix4(aG));
 }
-function Dnt(i, t, e, s, n, o, a, r) {
+function art(o, t, e, s, n, i, a, r) {
   let l;
   if (
-    (t.side === ia
-      ? (l = s.intersectTriangle(a, o, n, !0, r))
-      : (l = s.intersectTriangle(n, o, a, t.side === Fa, r)),
+    (t.side === pa
+      ? (l = s.intersectTriangle(a, i, n, !0, r))
+      : (l = s.intersectTriangle(n, i, a, t.side === $a, r)),
     l === null)
   )
     return null;
-  (N4.copy(r), N4.applyMatrix4(i.matrixWorld));
-  let c = e.ray.origin.distanceTo(N4);
+  (N8.copy(r), N8.applyMatrix4(o.matrixWorld));
+  let c = e.ray.origin.distanceTo(N8);
   return c < e.near || c > e.far
     ? null
-    : { distance: c, point: N4.clone(), object: i };
+    : { distance: c, point: N8.clone(), object: o };
 }
-function B4(i, t, e, s, n, o, a, r, l, c) {
-  (i.getVertexPosition(r, C4),
-    i.getVertexPosition(l, L4),
-    i.getVertexPosition(c, I4));
-  let h = Dnt(i, t, e, s, C4, L4, I4, dO);
+function H8(o, t, e, s, n, i, a, r, l, c) {
+  (o.getVertexPosition(r, I8),
+    o.getVertexPosition(l, F8),
+    o.getVertexPosition(c, O8));
+  let h = art(o, t, e, s, I8, F8, O8, gD);
   if (h) {
-    let f = new xt();
-    (gc.getBarycoord(dO, C4, L4, I4, f),
-      n && (h.uv = gc.getInterpolatedAttribute(n, r, l, c, f, new Re())),
-      o && (h.uv1 = gc.getInterpolatedAttribute(o, r, l, c, f, new Re())),
+    let f = new dt();
+    (qc.getBarycoord(gD, I8, F8, O8, f),
+      n && (h.uv = qc.getInterpolatedAttribute(n, r, l, c, f, new Pe())),
+      i && (h.uv1 = qc.getInterpolatedAttribute(i, r, l, c, f, new Pe())),
       a &&
-        ((h.normal = gc.getInterpolatedAttribute(a, r, l, c, f, new xt())),
+        ((h.normal = qc.getInterpolatedAttribute(a, r, l, c, f, new dt())),
         h.normal.dot(s.direction) > 0 && h.normal.multiplyScalar(-1)));
-    let u = { a: r, b: l, c, normal: new xt(), materialIndex: 0 };
-    (gc.getNormal(C4, L4, I4, u.normal), (h.face = u), (h.barycoord = f));
+    let u = { a: r, b: l, c, normal: new dt(), materialIndex: 0 };
+    (qc.getNormal(I8, F8, O8, u.normal), (h.face = u), (h.barycoord = f));
   }
   return h;
 }
-function r9(i, t) {
-  return i - t;
+function IR(o, t) {
+  return o - t;
 }
-function jnt(i, t) {
-  return i.z - t.z;
+function frt(o, t) {
+  return o.z - t.z;
 }
-function Vnt(i, t) {
-  return t.z - i.z;
+function urt(o, t) {
+  return t.z - o.z;
 }
-function Jnt(i, t, e = 0) {
+function brt(o, t, e = 0) {
   let s = t.itemSize;
   if (
-    i.isInterleavedBufferAttribute ||
-    i.array.constructor !== t.array.constructor
+    o.isInterleavedBufferAttribute ||
+    o.array.constructor !== t.array.constructor
   ) {
-    let n = i.count;
-    for (let o = 0; o < n; o++)
+    let n = o.count;
+    for (let i = 0; i < n; i++)
       for (let a = 0; a < s; a++)
-        t.setComponent(o + e, a, i.getComponent(o, a));
-  } else t.array.set(i.array, e * s);
+        t.setComponent(i + e, a, o.getComponent(i, a));
+  } else t.array.set(o.array, e * s);
   t.needsUpdate = !0;
 }
-function i1(i, t) {
-  if (i.constructor !== t.constructor) {
-    let e = Math.min(i.length, t.length);
-    for (let s = 0; s < e; s++) t[s] = i[s];
+function G1(o, t) {
+  if (o.constructor !== t.constructor) {
+    let e = Math.min(o.length, t.length);
+    for (let s = 0; s < e; s++) t[s] = o[s];
   } else {
-    let e = Math.min(i.length, t.length);
-    t.set(new i.constructor(i.buffer, 0, e));
+    let e = Math.min(o.length, t.length);
+    t.set(new o.constructor(o.buffer, 0, e));
   }
 }
-function q4(i, t, e, s, n, o, a) {
-  let r = i.geometry.attributes.position;
+function j8(o, t, e, s, n, i, a) {
+  let r = o.geometry.attributes.position;
   if (
-    (x8.fromBufferAttribute(r, n),
-    v8.fromBufferAttribute(r, o),
-    e.distanceSqToSegment(x8, v8, c9, kO) > s)
+    (y6.fromBufferAttribute(r, n),
+    w6.fromBufferAttribute(r, i),
+    e.distanceSqToSegment(y6, w6, OR, ED) > s)
   )
     return;
-  c9.applyMatrix4(i.matrixWorld);
-  let c = t.ray.origin.distanceTo(c9);
+  OR.applyMatrix4(o.matrixWorld);
+  let c = t.ray.origin.distanceTo(OR);
   if (!(c < t.near || c > t.far))
     return {
       distance: c,
-      point: kO.clone().applyMatrix4(i.matrixWorld),
+      point: ED.clone().applyMatrix4(o.matrixWorld),
       index: a,
       face: null,
       faceIndex: null,
       barycoord: null,
-      object: i,
+      object: o,
     };
 }
-function TO(i, t, e, s, n, o, a) {
-  let r = M9.distanceSqToPoint(i);
+function PD(o, t, e, s, n, i, a) {
+  let r = KR.distanceSqToPoint(o);
   if (r < e) {
-    let l = new xt();
-    (M9.closestPointToPoint(i, l), l.applyMatrix4(s));
+    let l = new dt();
+    (KR.closestPointToPoint(o, l), l.applyMatrix4(s));
     let c = n.ray.origin.distanceTo(l);
     if (c < n.near || c > n.far) return;
-    o.push({
+    i.push({
       distance: c,
       distanceToRay: Math.sqrt(r),
       point: l,
@@ -231,110 +231,110 @@ function TO(i, t, e, s, n, o, a) {
     });
   }
 }
-function xA() {
-  let i = 0,
+function qA() {
+  let o = 0,
     t = 0,
     e = 0,
     s = 0;
-  function n(o, a, r, l) {
-    ((i = o),
+  function n(i, a, r, l) {
+    ((o = i),
       (t = r),
-      (e = -3 * o + 3 * a - 2 * r - l),
-      (s = 2 * o - 2 * a + r + l));
+      (e = -3 * i + 3 * a - 2 * r - l),
+      (s = 2 * i - 2 * a + r + l));
   }
   return {
-    initCatmullRom: function (o, a, r, l, c) {
-      n(a, r, c * (r - o), c * (l - a));
+    initCatmullRom: function (i, a, r, l, c) {
+      n(a, r, c * (r - i), c * (l - a));
     },
-    initNonuniformCatmullRom: function (o, a, r, l, c, h, f) {
-      let u = (a - o) / c - (r - o) / (c + h) + (r - a) / h,
+    initNonuniformCatmullRom: function (i, a, r, l, c, h, f) {
+      let u = (a - i) / c - (r - i) / (c + h) + (r - a) / h,
         d = (r - a) / h - (l - a) / (h + f) + (l - r) / f;
       ((u *= h), (d *= h), n(a, r, u, d));
     },
-    calc: function (o) {
-      let a = o * o,
-        r = a * o;
-      return i + t * o + e * a + s * r;
+    calc: function (i) {
+      let a = i * i,
+        r = a * i;
+      return o + t * i + e * a + s * r;
     },
   };
 }
-function PO(i, t, e, s, n) {
-  let o = (s - t) * 0.5,
+function ID(o, t, e, s, n) {
+  let i = (s - t) * 0.5,
     a = (n - e) * 0.5,
-    r = i * i,
-    l = i * r;
+    r = o * o,
+    l = o * r;
   return (
-    (2 * e - 2 * s + o + a) * l + (-3 * e + 3 * s - 2 * o - a) * r + o * i + e
+    (2 * e - 2 * s + i + a) * l + (-3 * e + 3 * s - 2 * i - a) * r + i * o + e
   );
 }
-function Znt(i, t) {
-  let e = 1 - i;
+function xrt(o, t) {
+  let e = 1 - o;
   return e * e * t;
 }
-function Qnt(i, t) {
-  return 2 * (1 - i) * i * t;
+function vrt(o, t) {
+  return 2 * (1 - o) * o * t;
 }
-function tit(i, t) {
-  return i * i * t;
+function yrt(o, t) {
+  return o * o * t;
 }
-function Vv(i, t, e, s) {
-  return Znt(i, t) + Qnt(i, e) + tit(i, s);
+function G3(o, t, e, s) {
+  return xrt(o, t) + vrt(o, e) + yrt(o, s);
 }
-function eit(i, t) {
-  let e = 1 - i;
+function wrt(o, t) {
+  let e = 1 - o;
   return e * e * e * t;
 }
-function sit(i, t) {
-  let e = 1 - i;
-  return 3 * e * e * i * t;
+function Mrt(o, t) {
+  let e = 1 - o;
+  return 3 * e * e * o * t;
 }
-function nit(i, t) {
-  return 3 * (1 - i) * i * i * t;
+function Srt(o, t) {
+  return 3 * (1 - o) * o * o * t;
 }
-function iit(i, t) {
-  return i * i * i * t;
+function krt(o, t) {
+  return o * o * o * t;
 }
-function $v(i, t, e, s, n) {
-  return eit(i, t) + sit(i, e) + nit(i, s) + iit(i, n);
+function V3(o, t, e, s, n) {
+  return wrt(o, t) + Mrt(o, e) + Srt(o, s) + krt(o, n);
 }
-function oit(i, t, e = 2) {
+function zrt(o, t, e = 2) {
   let s = t && t.length,
-    n = s ? t[0] * e : i.length,
-    o = iD(i, 0, n, e, !0),
+    n = s ? t[0] * e : o.length,
+    i = rG(o, 0, n, e, !0),
     a = [];
-  if (!o || o.next === o.prev) return a;
+  if (!i || i.next === i.prev) return a;
   let r, l, c;
-  if ((s && (o = hit(i, t, o, e)), i.length > 80 * e)) {
-    ((r = i[0]), (l = i[1]));
+  if ((s && (i = Art(o, t, i, e)), o.length > 80 * e)) {
+    ((r = o[0]), (l = o[1]));
     let h = r,
       f = l;
     for (let u = e; u < n; u += e) {
-      let d = i[u],
-        p = i[u + 1];
+      let d = o[u],
+        p = o[u + 1];
       (d < r && (r = d), p < l && (l = p), d > h && (h = d), p > f && (f = p));
     }
     ((c = Math.max(h - r, f - l)), (c = c !== 0 ? 32767 / c : 0));
   }
-  return (p3(o, a, e, r, l, c, 0), a);
+  return (hy(i, a, e, r, l, c, 0), a);
 }
-function iD(i, t, e, s, n) {
-  let o;
-  if (n === wit(i, t, e, s) > 0)
-    for (let a = t; a < e; a += s) o = CO((a / s) | 0, i[a], i[a + 1], o);
+function rG(o, t, e, s, n) {
+  let i;
+  if (n === Urt(o, t, e, s) > 0)
+    for (let a = t; a < e; a += s) i = FD((a / s) | 0, o[a], o[a + 1], i);
   else
-    for (let a = e - s; a >= t; a -= s) o = CO((a / s) | 0, i[a], i[a + 1], o);
-  return (o && Q2(o, o.next) && (g3(o), (o = o.next)), o);
+    for (let a = e - s; a >= t; a -= s) i = FD((a / s) | 0, o[a], o[a + 1], i);
+  return (i && Vg(i, i.next) && (uy(i), (i = i.next)), i);
 }
-function E1(i, t) {
-  if (!i) return i;
-  t || (t = i);
-  let e = i,
+function fm(o, t) {
+  if (!o) return o;
+  t || (t = o);
+  let e = o,
     s;
   do
     if (
-      ((s = !1), !e.steiner && (Q2(e, e.next) || jo(e.prev, e, e.next) === 0))
+      ((s = !1), !e.steiner && (Vg(e, e.next) || ea(e.prev, e, e.next) === 0))
     ) {
-      if ((g3(e), (e = t = e.prev), e === e.next)) break;
+      if ((uy(e), (e = t = e.prev), e === e.next)) break;
       s = !0;
     } else e = e.next;
   while (s || e !== t);

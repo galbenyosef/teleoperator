@@ -1,220 +1,165 @@
-// app 209 — math
-// Lines 112970-113187 of readable/app.pretty.js (statement-aligned).
-function Vy(i, t, e, s, n = 0.9) {
-  (ys(i, t, e, e + 0.7, Pk), ys(i, t, e + 0.7, s, $y));
-  for (let o of Xo(t)) {
-    for (
-      let a = 0;
-      a <= o.L + 0.01;
-      a += o.L / Math.max(1, Math.round(o.L / n))
-    )
-      nn(
-        i,
-        [
-          o.a[0] + o.u[0] * a + o.n[0] * 0.04,
-          o.a[1] + o.u[1] * a + o.n[1] * 0.04,
-        ],
-        o.u,
-        o.n,
-        0.05,
-        0.05,
-        e + 0.7,
-        s,
-        Gc,
-        !1,
-      );
-    for (
-      let a = e + 0.7;
-      a < s + 0.01;
-      a += Math.max(
-        0.6,
-        (s - e - 0.7) / Math.max(1, Math.round((s - e - 0.7) / 1.3)),
-      )
-    )
-      nn(
-        i,
-        [o.m[0] + o.n[0] * 0.05, o.m[1] + o.n[1] * 0.05],
-        o.u,
-        o.n,
-        o.L / 2,
-        0.05,
-        a - 0.05,
-        a + 0.05,
-        Gc,
-      );
-  }
-}
-function rX(i, t, e, s, n, o, a, r = 10) {
-  let l = (s + n) / 2,
-    c = (n - s) / 2,
-    h = (u, d) => {
-      let p = (Math.PI * d) / r;
-      return [u, o + Math.sin(p) * a, l - Math.cos(p) * c];
-    };
-  for (let u = 0; u < r; u++) {
-    let d = h(t, u),
-      p = h(e, u),
-      m = h(e, u + 1),
-      g = h(t, u + 1),
-      b = (Math.PI * (u + 0.5)) / r;
-    ne(i, [d, p, m, g], u % 2 ? $y : iC, [
-      0,
-      Math.sin(b) * c,
-      -Math.cos(b) * a,
-    ]);
-  }
-  for (let [u, d] of [
-    [t, -1],
-    [e, 1],
-  ]) {
-    let p = [];
-    for (let m = 0; m <= r; m++) p.push(h(u, m));
-    ne(i, [[u, o, l], ...p], $y, [d, 0, 0]);
-  }
-  let f = Math.max(2, Math.round((e - t) / 1.5));
-  for (let u = 0; u <= f; u++) {
-    let d = t + ((e - t) * u) / f;
-    for (let p = 0; p < r; p++) {
-      let m = h(d, p),
-        g = h(d, p + 1),
-        b = (Math.PI * (p + 0.5)) / r;
-      Ae(
-        i,
-        [m[0], m[1] + Math.sin(b) * 0.05, m[2] - Math.cos(b) * 0.05],
-        [g[0], g[1] + Math.sin(b) * 0.05, g[2] - Math.cos(b) * 0.05],
-        0.07,
-        Gc,
-        3,
-      );
-    }
-  }
-  Ae(i, h(t, r / 2), h(e, r / 2), 0.12, Gc, 4);
-}
-function lX(i, t, e, s, n, o, a, r = 0) {
-  let l = Array.from({ length: 8 }, (f, u) => [
-    t + Math.cos(((u + 0.5) / 8) * Math.PI * 2) * s,
-    e + Math.sin(((u + 0.5) / 8) * Math.PI * 2) * s,
-  ]);
-  (Vy(i, l, n, o, 1),
-    Oe(
-      i,
-      t,
-      e,
+// app 209 — yellow
+// Lines 113444-113606 of readable/app.pretty.js (statement-aligned).
+function axt(o, t) {
+  let { L: e } = t,
+    s = 75.3,
+    n = -5870.5;
+  (fY(o, n, 2545, 9.5, s, s + 9, 8.5, 1.8),
+    Uw(o, Ax(n - 3.6, 2554, n + 3.6, 2563), s, s + 6.5));
+  {
+    oe(
+      o,
       [
-        [s * 1.05, o - 0.2],
-        [s * 1.05, o + 0.5],
+        [n - 3.9, s + 6.5, 2563.1],
+        [n + 3.9, s + 6.5, 2563.1],
+        [n, s + 9.3, 2563.1],
       ],
-      16,
-      Gc,
-    ));
-  let c = [];
-  for (let f = 0; f <= 8; f++) {
-    let u = ((f / 8) * Math.PI) / 2;
-    c.push([
-      s * Math.cos(u) * (1 - 0.1 * Math.sin(u)) + 0.02,
-      o + 0.5 + Math.sin(u) * a * (1 + 0.15 * (1 - Math.cos(u))),
-    ]);
-  }
-  ((c[c.length - 1][0] = Math.max(0.05, r ? r * 0.8 : 0.05)),
-    Oe(i, t, e, c, 16, iC));
-  for (let f = 0; f < 16; f++) {
-    let u = (f / 16) * Math.PI * 2;
-    for (let d = 0; d + 1 < c.length; d++) {
-      let p = c[d],
-        m = c[d + 1],
-        g = 0.06;
-      Ae(
-        i,
-        [t + Math.cos(u) * (p[0] + g), p[1], e - Math.sin(u) * (p[0] + g)],
-        [t + Math.cos(u) * (m[0] + g), m[1], e - Math.sin(u) * (m[0] + g)],
-        0.08,
-        Gc,
-        3,
-      );
-    }
-  }
-  let h = c[c.length - 1][1];
-  if (r) {
-    let f = h;
-    (Oe(
-      i,
-      t,
-      e,
-      [
-        [r, f - 0.2],
-        [r, f + r * 1.2],
-      ],
-      8,
-      $y,
-    ),
-      Oe(
-        i,
-        t,
-        e,
+      IL,
+      [0, 0, 1],
+    );
+    for (let c of [-1, 1])
+      (oe(
+        o,
         [
-          [r * 1.15, f + r * 1.2],
-          [r * 0.6, f + r * 1.9],
-          [0.15, f + r * 2.3],
+          [n, s + 9.3, 2554],
+          [n, s + 9.3, 2563.2],
+          [n + c * 3.9, s + 6.5, 2563.2],
+          [n + c * 3.9, s + 6.5, 2554],
         ],
-        8,
-        Gc,
+        Gw,
+        [c * 2.8, 3.9, 0],
       ),
-      (h = f + r * 2.3));
+        Ce(
+          o,
+          [n, s + 9.35, 2563.2],
+          [n + c * 3.9, s + 6.55, 2563.2],
+          0.12,
+          xh,
+          4,
+        ));
+    (Ce(o, [n, s + 9.35, 2554], [n, s + 9.35, 2563.2], 0.1, xh, 4),
+      cn(
+        o,
+        [n, 2563.15],
+        [1, 0],
+        [0, 1],
+        1.4,
+        0.1,
+        s,
+        s + 3.2,
+        Lt(Ct.matte, 0.2, 0.18, 0.15),
+      ));
   }
-  Oe(
-    i,
-    t,
-    e,
-    [
-      [0.18, h],
-      [0.3, h + 0.5],
-      [0.05, h + 2],
-    ],
-    6,
-    Gc,
-  );
-}
-function Fmt(i, t, e, s, n, o, a, r = 0) {
-  let l = Math.cos(r),
-    c = Math.sin(r),
-    h = Math.max(n, o),
-    f = 0.8;
-  for (let u = e - h; u < e + h; u += f)
-    for (let d = s - h; d < s + h; d += f) {
-      let p = u + f / 2 - e,
-        m = d + f / 2 - s,
-        g = (p * l + m * c) / n,
-        b = (-p * c + m * l) / o,
-        x = Math.hypot(g, b);
-      if (x > 1) continue;
-      let v = [
-          [u, d],
-          [u + f, d],
-          [u + f, d + f],
-          [u, d + f],
-        ].map(([M, S]) => [M, t.terrainAt(M, S) + 0.14, S]),
-        y = Math.min(a.length - 1, Math.floor(x * a.length));
-      i.quad(
-        v[0],
-        v[3],
-        v[2],
-        v[1],
-        [v[0][0], v[0][2]],
-        [v[3][0], v[3][2]],
-        [v[2][0], v[2][2]],
-        [v[1][0], v[1][2]],
-        a[y],
-        [0, 1, 0],
+  for (let [c, h] of [
+    [-5896, -5880.5],
+    [-5860.5, -5845],
+  ])
+    (Uw(o, Ax(c, 2538, h, 2554), s, s + 4.6),
+      hY(o, c, h, 2537.6, 2554.4, s + 4.6, 3.6));
+  for (let c of [-5900.5, -5840])
+    (Uw(o, Ax(c - 5.5, 2536, c + 5.5, 2560), s, s + 5.8),
+      fY(o, c, 2548, 5.2, s + 5.8, s + 6.6, 4.2, 0.9),
+      cn(o, [c, 2548], [1, 0], [0, 1], 5.6, 12.1, s + 5.6, s + 6, xh));
+  (Uw(o, Ax(-5914, 2516, -5840, 2534), s, s + 3.6, 1.1),
+    hY(o, -5914, -5840, 2515.6, 2534.4, s + 3.6, 2.2, 6));
+  let i = 2563.5,
+    a = 2573,
+    r = 2584;
+  {
+    let c = Ax(n - 16, i, n + 16, a);
+    for (let u = n - 16; u < n + 16; u += 2)
+      for (let d = i; d < a; d += 2)
+        oe(
+          o,
+          [
+            [u, s + 0.12, d],
+            [u + 2, s + 0.12, d],
+            [u + 2, s + 0.12, d + 2],
+            [u, s + 0.12, d + 2],
+          ],
+          AL,
+          [0, 1, 0],
+          (p) => [p[0], p[2]],
+        );
+    Ss(o, c, s - 3, s + 0.12, Pz);
+    for (let u of [-1, 1])
+      cn(
+        o,
+        [n + u * 9.5, a],
+        [1, 0],
+        [0, 1],
+        6.5,
+        0.25,
+        s + 0.12,
+        s + 0.85,
+        Pz,
+      );
+    let h = e.terrainAt(n, r) + 0.05,
+      f = Math.max(3, Math.round((s - h) / 0.17));
+    for (let u = 0; u < f; u++) {
+      let d = a + ((r - a) * u) / f,
+        p = a + ((r - a) * (u + 1)) / f,
+        m = s + 0.12 - ((s + 0.12 - h) * (u + 1)) / f;
+      cn(
+        o,
+        [n, (d + p) / 2],
+        [1, 0],
+        [0, 1],
+        3.2,
+        (p - d) / 2,
+        m - 1.5,
+        m,
+        ixt,
       );
     }
+    for (let u of [-1, 1])
+      cn(
+        o,
+        [n + u * 3.45, (a + r) / 2],
+        [0, 1],
+        [1, 0],
+        (r - a) / 2,
+        0.25,
+        h - 0.5,
+        s + 0.6,
+        Pz,
+      );
+  }
+  for (let c = r; c < 2648; c += 2) {
+    let h = [
+      [n - 2.2, c],
+      [n + 2.2, c],
+      [n + 2.2, c + 2],
+      [n - 2.2, c + 2],
+    ].map(([f, u]) => [f, e.terrainAt(f, u) + 0.1, u]);
+    oe(o, h, AL, [0, 1, 0], (f) => [f[0], f[2]]);
+  }
+  for (let c = -5920; c < -5820; c += 2) {
+    if (Math.abs(c + 1 - n) < 16) continue;
+    let h = [
+      [c, i + 2],
+      [c + 2, i + 2],
+      [c + 2, i + 4.5],
+      [c, i + 4.5],
+    ].map(([f, u]) => [f, e.terrainAt(f, u) + 0.1, u]);
+    oe(o, h, AL, [0, 1, 0], (f) => [f[0], f[2]]);
+  }
+  let l = [
+    [n - 9, 2600, 5, 13, [Yo.red, Yo.orange, Yo.yellow]],
+    [n + 9, 2600, 5, 13, [Yo.red, Yo.orange, Yo.yellow]],
+    [n - 26, 2592, 11, 6, [Yo.purple, Yo.white, Yo.orange, Yo.yellow], 0.25],
+    [n + 26, 2592, 11, 6, [Yo.purple, Yo.white, Yo.orange, Yo.yellow], -0.25],
+    [n - 30, 2622, 9, 5, [Yo.blue, Yo.white, Yo.pink], -0.2],
+    [n + 30, 2622, 9, 5, [Yo.blue, Yo.white, Yo.pink], 0.2],
+    [n - 18, 2578, 7, 3, [Yo.yellow, Yo.red]],
+    [n + 18, 2578, 7, 3, [Yo.yellow, Yo.red]],
+  ];
+  for (let [c, h, f, u, d, p] of l) oxt(o, e, c, h, f, u, d, p || 0);
+  LL(t, Ax(-5915, 2515, -5833, 2564), s - 3, s + 24);
 }
-var Do = {
-  red: It(Lt.matte, 0.75, 0.08, 0.05),
-  orange: It(Lt.matte, 0.9, 0.38, 0.05),
-  yellow: It(Lt.matte, 0.92, 0.75, 0.08),
-  white: It(Lt.matte, 0.92, 0.92, 0.88),
-  purple: It(Lt.matte, 0.35, 0.12, 0.55),
-  pink: It(Lt.matte, 0.9, 0.35, 0.55),
-  blue: It(Lt.matte, 0.25, 0.3, 0.75),
-  green: It(Lt.leaf, 0.09, 0.2, 0.05),
-};
+var td = We(we.stucco, 0.5, 0.42, 0.3),
+  pr = We(we.stucco, 0.74, 0.6, 0.38),
+  rxt = We(we.stucco, 0.38, 0.3, 0.2),
+  Dw = Lt(Ct.stone, 0.2, 0.21, 0.22),
+  gh = Lt(Ct.glass, 0.08, 0.08, 0.09),
+  uY = Lt(Ct.stone, 0.42, 0.36, 0.3);

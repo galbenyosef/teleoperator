@@ -1,262 +1,302 @@
 // app 344 — math
-// Lines 166578-166837 of readable/app.pretty.js (statement-aligned).
-var Cz = (i) => Math.atan2(Math.sin(i), Math.cos(i)),
-  E5t = {
-    ku: 3.2,
-    ka: 2.5,
-    ki: 0.5,
-    kh: 7,
-    kc: 2.2,
-    kv: 8,
-    ks: 1,
-    tr: 0.07,
-    aUp: 9,
-    aDn: 14,
-    rMax: 2.6,
-    gap: 7,
-    head: 1.3,
-    fade: 0.4,
-    snap: 20,
+// Lines 165987-166286 of readable/app.pretty.js (statement-aligned).
+async function XM(o) {
+  let t = await createImageBitmap(o, {
+      resizeWidth: 48,
+      resizeHeight: 48,
+      resizeQuality: "low",
+    }),
+    e = new OffscreenCanvas(48, 48),
+    s = e.getContext("2d");
+  (s.drawImage(t, 0, 0), t.close?.());
+  let n = s.getImageData(0, 0, 48, 48).data,
+    i = [];
+  for (let h = 0; h < n.length; h += 4)
+    n[h + 3] > 200 && i.push([n[h], n[h + 1], n[h + 2]]);
+  if (!i.length) return [];
+  let a = Array.from({ length: 6 }, (h, f) =>
+      i[Math.floor(((f + 0.5) / 6) * i.length)].slice(),
+    ),
+    r = new Array(i.length).fill(0);
+  for (let h = 0; h < 8; h++) {
+    for (let u = 0; u < i.length; u++) {
+      let d = 0,
+        p = 1e9;
+      for (let m = 0; m < a.length; m++) {
+        let g =
+          (i[u][0] - a[m][0]) ** 2 +
+          (i[u][1] - a[m][1]) ** 2 +
+          (i[u][2] - a[m][2]) ** 2;
+        g < p && ((p = g), (d = m));
+      }
+      r[u] = d;
+    }
+    let f = a.map(() => [0, 0, 0, 0]);
+    for (let u = 0; u < i.length; u++) {
+      let d = f[r[u]];
+      ((d[0] += i[u][0]), (d[1] += i[u][1]), (d[2] += i[u][2]), d[3]++);
+    }
+    a = a.map((u, d) =>
+      f[d][3]
+        ? [f[d][0] / f[d][3], f[d][1] / f[d][3], f[d][2] / f[d][3], f[d][3]]
+        : [...u.slice(0, 3), 0],
+    );
+  }
+  let l = (h) =>
+      "#" +
+      h
+        .slice(0, 3)
+        .map((f) => Math.round(f).toString(16).padStart(2, "0"))
+        .join(""),
+    c = [];
+  for (let h of a.filter((f) => f[3] > 0).sort((f, u) => u[3] - f[3]))
+    c.every((f) => {
+      let u = parseInt(f.slice(1), 16);
+      return (
+        Math.abs(((u >> 16) & 255) - h[0]) +
+          Math.abs(((u >> 8) & 255) - h[1]) +
+          Math.abs((u & 255) - h[2]) >
+        40
+      );
+    }) && c.push(l(h));
+  return c.slice(0, 5);
+}
+var cst = "sf-drive.builds",
+  i4t = 6,
+  rB = new Set(),
+  KM = null,
+  lB = (o) => {
+    if (
+      !o ||
+      typeof o != "object" ||
+      typeof o.id != "string" ||
+      !/^m[0-9a-z]{1,16}$/.test(o.id)
+    )
+      return null;
+    let t = (s) =>
+        typeof s == "string"
+          ? s.replace(/[\u0000-\u001f<>]/g, "").slice(0, 300)
+          : "",
+      e =
+        o.item && typeof o.item == "object"
+          ? {
+              id: t(o.item.id).slice(0, 64),
+              name: t(o.item.name).slice(0, 40),
+              sha: /^[0-9a-f]{64}$/.test(o.item.sha || "") ? o.item.sha : null,
+              icon: /^\/__mb\/items\/[0-9a-f]{64}\.png$/.test(o.item.icon || "")
+                ? o.item.icon
+                : null,
+            }
+          : null;
+    return {
+      id: o.id,
+      kind: o.kind === "wrap" ? "wrap" : "car",
+      name: t(o.name).slice(0, 40) || "AI car",
+      prompt: t(o.prompt),
+      thumb:
+        typeof o.thumb == "string" &&
+        /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(o.thumb) &&
+        o.thumb.length < 16e3
+          ? o.thumb
+          : null,
+      base: t(o.base).slice(0, 40),
+      t0: Number.isFinite(+o.t0) ? +o.t0 : Date.now(),
+      t1: Number.isFinite(+o.t1) ? +o.t1 : 0,
+      status: ["making", "ready", "closed", "driven"].includes(o.status)
+        ? o.status
+        : "making",
+      prev: t(o.prev).slice(0, 64),
+      item: e,
+      ride: Ul(o.ride),
+      spent: {
+        pictures: Math.max(0, Math.floor(+o.spent?.pictures || 0)),
+        cars: Math.max(0, Math.floor(+o.spent?.cars || 0)),
+      },
+    };
   },
-  Lz = class {
-    constructor(t = {}) {
-      ((this.o = { ...E5t, ...t }),
-        (this.init = !1),
-        (this.x = 0),
-        (this.z = 0),
-        (this.psi = 0),
-        (this.u = 0),
-        (this.v = 0),
-        (this.r = 0),
-        (this.ax = 0),
-        (this.ay = 0),
-        (this.fadeT = 0),
-        (this.Tu0 = null),
-        (this.aT = 0),
-        (this.fades = 0));
-    }
-    reset(t) {
-      let e = { x: -Math.sin(t.psi), z: -Math.cos(t.psi) };
-      ((this.x = t.x),
-        (this.z = t.z),
-        (this.psi = t.psi),
-        (this.u = t.vx * e.x + t.vz * e.z),
-        (this.v = t.vx * Math.cos(t.psi) - t.vz * Math.sin(t.psi)),
-        (this.r = t.r || 0),
-        (this.init = !0),
-        (this.Tu0 = null),
-        (this.aT = 0),
-        (this.ia = 0),
-        Object.assign((this.lastTarget ||= {}), {
-          x: t.x,
-          z: t.z,
-          psi: t.psi,
-          vx: t.vx,
-          vz: t.vz,
-          r: t.r || 0,
-        }));
-    }
-    coast(t, e = null) {
-      if (!this.init || !(t > 0)) return this;
-      let s = Math.exp(-t * 2);
-      return (
-        e !== null && this.u > -0.5
-          ? ((this.u = Math.max(0, this.u + e * t)),
-            (this.r *= this.u < 0.3 ? s : Math.exp(-t * 0.3)),
-            (this.v *= s))
-          : ((this.u =
-              Math.sign(this.u) * Math.max(0, Math.abs(this.u) - 2 * t)),
-            (this.r *= s),
-            (this.v *= s)),
-        (this.psi += this.r * t),
-        (this.x +=
-          (-Math.sin(this.psi) * this.u + Math.cos(this.psi) * this.v) * t),
-        (this.z +=
-          (-Math.cos(this.psi) * this.u - Math.sin(this.psi) * this.v) * t),
-        (this.ax = 0),
-        (this.ay = this.u * this.r),
-        (this.Tu0 = null),
-        this
-      );
-    }
-    kick(t, e, s = 0) {
-      let n = Math.cos(this.psi),
-        o = Math.sin(this.psi);
-      ((this.u += -t * o - e * n), (this.v += t * n - e * o), (this.r += s));
-    }
-    get vx() {
-      return -Math.sin(this.psi) * this.u + Math.cos(this.psi) * this.v;
-    }
-    get vz() {
-      return -Math.cos(this.psi) * this.u - Math.sin(this.psi) * this.v;
-    }
-    step(t, e) {
-      let s = this.o;
-      if (!this.init || !Number.isFinite(this.x + this.z + this.psi))
-        return (this.reset(t), this);
-      if (!(e > 0)) return this;
-      let n = { x: -Math.sin(t.psi), z: -Math.cos(t.psi) },
-        o = t.vx * n.x + t.vz * n.z,
-        a = t.vx * Math.cos(t.psi) - t.vz * Math.sin(t.psi);
-      if (this.Tu0 !== null) {
-        let m = Math.max(-15, Math.min(15, (o - this.Tu0) / e));
-        this.aT += (m - this.aT) * Math.min(1, e * 10);
-      }
-      this.Tu0 = o;
-      let r = t.x - this.x,
-        l = t.z - this.z,
-        c = Cz(t.psi - this.psi);
-      if (t.jump || Math.hypot(r, l) > s.snap * 3)
-        return (
-          this.reset(t),
-          (this.fadeT = 0),
-          (this.snaps = (this.snaps || 0) + 1),
-          this
-        );
-      (Math.hypot(r, l) > s.gap || Math.abs(c) > s.head) &&
-        (this.fadeT > 0 || this.fades++, (this.fadeT = s.fade));
-      let h = this.lastTarget;
-      if (
-        (this.fadeT > 0 &&
-          h &&
-          (this.fadeT = Math.min(
-            s.fade,
-            this.fadeT +
-              s.fade *
-                Math.max(
-                  Math.hypot(t.x - h.x - h.vx * e, t.z - h.z - h.vz * e) /
-                    s.gap,
-                  Math.abs(Cz(t.psi - h.psi - h.r * e)) / s.head,
-                ),
-          )),
-        Object.assign((this.lastTarget ||= {}), {
-          x: t.x,
-          z: t.z,
-          psi: t.psi,
-          vx: t.vx,
-          vz: t.vz,
-          r: t.r || 0,
-        }),
-        this.fadeT > 0)
-      ) {
-        let m = Math.min(1, e / this.fadeT);
-        return (
-          (this.fadeT = this.fadeT - e > 1e-9 ? this.fadeT - e : 0),
-          (this.u += (o - this.u) * m),
-          (this.v += (a - this.v) * m),
-          (this.r += ((t.r || 0) - this.r) * m),
-          (this.x +=
-            (-Math.sin(this.psi) * this.u + Math.cos(this.psi) * this.v) * e),
-          (this.z +=
-            (-Math.cos(this.psi) * this.u - Math.sin(this.psi) * this.v) * e),
-          (this.psi += this.r * e),
-          (this.x += (t.x - this.x) * m),
-          (this.z += (t.z - this.z) * m),
-          (this.psi += Cz(t.psi - this.psi) * m),
-          this
-        );
-      }
-      let f = Math.max(1, Math.ceil(e / (1 / 120))),
-        u = e / f,
-        d = this.u,
-        p = this.r;
-      for (let m = 0; m < f; m++) {
-        let g = Math.sin(this.psi),
-          b = Math.cos(this.psi),
-          x = -g,
-          v = -b,
-          y = b,
-          M = -g,
-          S = u * (m + 1) - e,
-          w = t.x + t.vx * S,
-          z = t.z + t.vz * S,
-          _ = t.psi + (t.r || 0) * S,
-          R = w - this.x,
-          T = z - this.z,
-          E = R * x + T * v,
-          A = R * y + T * M,
-          C = Cz(_ - this.psi);
-        this.ia = Math.max(-10, Math.min(10, (this.ia || 0) + E * u));
-        let P = Math.max(
-          -s.aDn,
-          Math.min(
-            s.aUp,
-            this.aT + s.ku * (o - this.u) + s.ka * E + s.ki * this.ia,
-          ),
-        );
-        this.u += P * u;
-        let I = Math.max(3, Math.abs(this.u)),
-          L =
-            (t.r || 0) +
-            s.kh * C -
-            (((s.kc * A) / I) * Math.sign(this.u || 1) * s.kh) / 3,
-          F = Math.max(
-            Math.min(s.rMax, 9.5 / I + Math.abs(t.r || 0) * 0.5 + 0.3),
-            Math.abs(t.r || 0) * 1.25,
-          );
-        this.r +=
-          (Math.max(-F, Math.min(F, L)) - this.r) * Math.min(1, u / s.tr);
-        let N = Math.max(0, Math.min(1, (Math.abs(a) - 2) / 3)),
-          B = Math.max(
-            -0.5 * Math.abs(a),
-            Math.min(0.5 * Math.abs(a), N * s.ks * A),
-          );
-        ((this.v += (a + B - this.v) * Math.min(1, u * s.kv)),
-          (this.psi += this.r * u),
-          (this.x += (x * this.u + y * this.v) * u),
-          (this.z += (v * this.u + M * this.v) * u));
-      }
-      return (
-        (this.ax = (this.u - d) / e),
-        (this.ay = this.u * this.r),
-        (this.dr = (this.r - p) / e),
-        this
-      );
+  Av = (o) => (Array.isArray(o) ? o.map(lB).filter(Boolean).slice(-i4t) : []),
+  o4t = () => {
+    try {
+      return Av(JSON.parse(localStorage.getItem(cst) || "[]"));
+    } catch {
+      return [];
     }
   };
-ml();
-var Iz = [
-    "#ffb347",
-    "#38c8ff",
-    "#ff5ad1",
-    "#7dff6a",
-    "#ffe14d",
-    "#b48cff",
-    "#ff6b5a",
-    "#4dffd2",
-  ],
-  T5t = 33,
-  ZQ = 3,
-  A5t = 40,
-  R5t = 140,
-  P5t = 40,
-  C5t = 280,
-  L5t = 46,
-  I5t = 250,
-  F5t = 8,
-  N5t = 4e3,
-  B5t = 0.06,
-  O5t = 60,
-  yl = {
-    delay: 25,
-    w: 6,
-    accel: 0.25,
-    maxAge: 700,
-    hold: 700,
-    maxAgeI: 1500,
-    holdI: 1500,
-    late0I: 800,
-    jitter: !1,
+function aB(o) {
+  o = Av(o);
+  try {
+    localStorage.setItem(cst, JSON.stringify(o));
+  } catch {}
+  KM?.p && ((KM.p.builds = o), KM.save?.(!0));
+  for (let t of rB)
+    try {
+      t(o);
+    } catch {}
+}
+var Vn = {
+    on(o) {
+      return (rB.add(o), () => rB.delete(o));
+    },
+    bindProfile(o) {
+      KM = o;
+    },
+    list() {
+      let o = new Map();
+      for (let t of [...o4t(), ...Av(KM?.p?.builds)]) {
+        let e = o.get(t.id),
+          s = (n) => ["making", "closed", "ready", "driven"].indexOf(n.status);
+        (!e || s(t) > s(e)) && o.set(t.id, t);
+      }
+      return [...o.values()].sort((t, e) => t.t0 - e.t0);
+    },
+    get(o) {
+      return Vn.list().find((t) => t.id === o) || null;
+    },
+    open() {
+      return Vn.list().filter(
+        (o) =>
+          o.status === "making" ||
+          o.status === "ready" ||
+          o.status === "closed",
+      );
+    },
+    making() {
+      return Vn.list().filter(
+        (o) => o.status === "making" || o.status === "closed",
+      );
+    },
+    add(o) {
+      let t = lB({
+        id: "m" + Date.now().toString(36),
+        t0: Date.now(),
+        status: "making",
+        ...o,
+      });
+      return (aB([...Vn.list(), t]), t);
+    },
+    update(o, t) {
+      let e = Vn.list(),
+        s = e.findIndex((n) => n.id === o);
+      return s < 0 ? null : ((e[s] = lB({ ...e[s], ...t })), aB(e), e[s]);
+    },
+    remove(o) {
+      aB(Vn.list().filter((t) => t.id !== o));
+    },
+    spent(o, t, e = 1) {
+      let s = Vn.get(o);
+      if (!s) return;
+      let n = { ...s.spent };
+      (t === "car" ? (n.cars += e) : (n.pictures += e),
+        Vn.update(o, { spent: n }));
+    },
   },
-  $a =
-    typeof location < "u"
-      ? new URLSearchParams(location.search)
-      : new URLSearchParams();
-$a.has("mpw") && (yl.w = +$a.get("mpw"));
-$a.has("mpd") && (yl.delay = +$a.get("mpd"));
-$a.has("mpage") && (yl.maxAge = +$a.get("mpage"));
-$a.has("mphold") && (yl.hold = +$a.get("mphold"));
-$a.has("mpi") && (yl.maxAgeI = yl.holdI = +$a.get("mpi"));
-$a.has("mpl") && (yl.late0I = +$a.get("mpl"));
-$a.has("mpj") && ((yl.jitter = !0), (yl.jitK = +$a.get("mpj")));
-$a.has("mpjm") && (yl.jitMax = +$a.get("mpjm"));
+  YM = (o) => {
+    let t = Math.max(0, Math.round((Date.now() - o) / 6e4));
+    return t < 1
+      ? "just now"
+      : t < 60
+        ? t + " min"
+        : Math.floor(t / 60) + " h " + (t % 60) + " min";
+  };
+var hst = "sf-drive.spendcap",
+  fst = "sf-drive.spend",
+  ust = "sf-drive.spend.session",
+  R2 = (o, t = 0) => (Number.isFinite(+o) && +o >= 0 ? Math.floor(+o) : t),
+  cB = new Set(),
+  JM = null,
+  dst = () => {
+    for (let o of cB)
+      try {
+        o();
+      } catch {}
+  },
+  Ti = {
+    on(o) {
+      return (cB.add(o), () => cB.delete(o));
+    },
+    bindProfile(o) {
+      JM = o;
+    },
+    cap() {
+      try {
+        let o = localStorage.getItem(hst);
+        return o === null ? 5 : Math.max(0, Math.min(100, R2(o, 5)));
+      } catch {
+        return 5;
+      }
+    },
+    setCap(o) {
+      try {
+        localStorage.setItem(hst, String(Math.max(0, Math.min(100, R2(o, 5)))));
+      } catch {}
+      dst();
+    },
+    session() {
+      try {
+        return R2(sessionStorage.getItem(ust));
+      } catch {
+        return Ti._s || 0;
+      }
+    },
+    lifetime() {
+      let o = { pictures: 0, cars: 0 };
+      try {
+        let e = JSON.parse(localStorage.getItem(fst) || "null");
+        e && (o = { pictures: R2(e.pictures), cars: R2(e.cars) });
+      } catch {}
+      let t = JM?.p?.spend;
+      return (
+        t &&
+          (o = {
+            pictures: Math.max(o.pictures, R2(t.pictures)),
+            cars: Math.max(o.cars, R2(t.cars)),
+          }),
+        o
+      );
+    },
+    record(o, t = 1) {
+      let e = Ti.lifetime();
+      o === "car" ? (e.cars += t) : (e.pictures += t);
+      try {
+        localStorage.setItem(fst, JSON.stringify(e));
+      } catch {}
+      let s = Ti.session() + t;
+      try {
+        sessionStorage.setItem(ust, String(s));
+      } catch {
+        Ti._s = s;
+      }
+      (JM?.p && ((JM.p.spend = e), JM.save?.(!0)), dst());
+    },
+    over(o = 1) {
+      return Ti.session() + o > Ti.cap();
+    },
+    tokens() {
+      let o = Ti.lifetime(),
+        t = vd("image", o.pictures),
+        e = vd("car", o.cars);
+      return (o.pictures && !t) || (o.cars && !e)
+        ? null
+        : {
+            pictures: o.pictures,
+            cars: o.cars,
+            text: [t, e].filter(Boolean).join(" + ") || "\u2248 0 tokens",
+          };
+    },
+    lifeLine() {
+      let o = Ti.lifetime(),
+        t = Ti.tokens();
+      return `${o.pictures} AI picture${o.pictures === 1 ? "" : "s"} \xB7 ${o.cars} AI car${o.cars === 1 ? "" : "s"}${t && (o.pictures || o.cars) ? " \xB7 " + t.text.replace(/ \+ /, " + ") + " (estimate)" : ""}`;
+    },
+  };
+function ZM(o, t = 1, e = "") {
+  let s = vd(o, t),
+    n = Ti.session(),
+    i = Ti.cap(),
+    a = n + t > i;
+  return `<p><b>${e || (o === "car" ? "Create a car with AI?" : t > 1 ? `Make ${t} wrap designs?` : "Make a wrap design?")}</b></p>
+    <p>This uses your mindblown tokens. After the free 10M a month, tokens cost real money. Estimated: ${s || "cost unknown"}.</p>
+    <p class="sp-sess${a ? " over" : ""}">This session: ${n} of your limit of ${i} AI generation${i === 1 ? "" : "s"}${a ? " - this goes over it." : "."}</p>
+    ${a ? '<label class="sp-over"><input type="checkbox" class="sp-go"> Go over my limit for this one</label>' : ""}`;
+}
+var QM = (o, t = 1) => !Ti.over(t) || !!o?.querySelector?.(".sp-go")?.checked;

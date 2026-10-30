@@ -1,330 +1,339 @@
 // app 169 — math
-// Lines 100743-101070 of readable/app.pretty.js (statement-aligned).
-function nP(i, t, e) {
-  let s = i._dpt;
-  if (!s) {
-    let h = Math.max(2, Math.ceil(i.L / 1.5) + 1),
-      f = new Float32Array(h),
-      u = {},
-      d = i.L / (h - 1);
-    for (let m = 0; m < h; m++) {
-      Ot(i, d * m, u);
-      let g = Oy(i, u.w);
-      for (let b of [-1, -0.5, 0, 0.5, 1])
-        g = Math.min(
-          g,
-          ik(
-            e,
-            u.x + u.nx * u.w * b,
-            u.z + u.nz * u.w * b,
-            u.y,
-            i,
-            I0(i) ? 0.7 : iV,
-          ),
-        );
-      f[m] = g;
-    }
-    s = new Float32Array(h);
-    let p = Math.ceil(12 / Math.max(0.5, d));
-    for (let m = 0; m < h; m++) {
-      let g = 9;
-      for (let b = Math.max(0, m - p); b <= Math.min(h - 1, m + p); b++)
-        g = Math.min(g, f[b]);
-      s[m] = g;
-    }
-    i._dpt = s;
-  }
-  let n = (h) => {
-      let f =
-          Math.max(0, Math.min(1, h / Math.max(1e-6, i.L))) * (s.length - 1),
-        u = Math.min(s.length - 2, Math.floor(f));
-      return s[u] + (s[u + 1] - s[u]) * (f - u);
+// Lines 101307-101643 of readable/app.pretty.js (statement-aligned).
+function lX(o, t, e = null) {
+  let s = (a, r, l, c = Sf, h = 4) => {
+      dh(e, a, r, 0, l) && WC(o, a, r, l, c, h);
     },
-    o = i.S,
-    a = 0,
-    r = i.n - 1;
-  for (; r - a > 1;) {
-    let h = (a + r) >> 1;
-    o[h] <= t ? (a = h) : (r = h);
+    n = VC(t, e);
+  if (n.length >= 3) {
+    let a = [
+      n.reduce((r, l) => r + l[0], 0) / n.length,
+      n.reduce((r, l) => r + l[1], 0) / n.length + 7,
+      n.reduce((r, l) => r + l[2], 0) / n.length,
+    ];
+    for (let r = 0; r < n.length; r++) {
+      let l = n[r],
+        c = n[(r + 1) % n.length],
+        h = [l[0], l[1] + 7.3, l[2]],
+        f = [(h[0] + a[0]) / 2, (h[1] + a[1]) / 2 - 0.35, (h[2] + a[2]) / 2];
+      dh(e, h, f) &&
+        dh(e, f, a) &&
+        (s(h, f, 0.012, Sf, 3), s(f, a, 0.012, Sf, 3));
+      let u = [c[0], c[1] + 7.1, c[2]],
+        d = [
+          (h[0] + u[0]) / 2,
+          (h[1] + 7.1 - 7.3 + u[1]) / 2 - 0.3,
+          (h[2] + u[2]) / 2,
+        ],
+        p = [l[0], l[1] + 7.1, l[2]];
+      dh(e, p, d) &&
+        dh(e, d, u) &&
+        (s(p, d, 0.012, Sf, 3), s(d, u, 0.012, Sf, 3));
+    }
   }
-  let l = o[r] - o[a],
-    c = l > 1e-6 ? Math.max(0, Math.min(1, (t - o[a]) / l)) : 0;
-  return n(o[a]) + (n(o[r]) - n(o[a])) * c;
-}
-var Udt = 4.35,
-  iV = 0.8;
-function ik(i, t, e, s, n = null, o = iV) {
-  if (!i?.probe) return 9;
-  let a = -1e9;
-  for (let r of i.probe(t, e).all)
-    (n && (r.E === n || r.J === n)) || r.y > s - 0.3 || (r.y > a && (a = r.y));
-  return a < -1e8 ? 9 : Math.max(o, s - a - Udt);
-}
-var Pb = [0.56, 0.55, 0.52, 0.82],
-  Cb = [0.6, 0.59, 0.56, 0.82],
-  cl = [0.42, 0.415, 0.4, 0.87],
-  Gdt = [0.72, 0.72, 0.69, 0.82],
-  Wdt = [0.4, 0.4, 0.39, 0.82],
-  qdt = /^(Route 80|James Lick Freeway)$/,
-  jdt = /^(John F Foran Freeway|Southern Embarcadero Freeway)$/,
-  Vdt = {
-    girders: !1,
-    hu: 0.85,
-    hv: 0.85,
-    ch: 0.5,
-    cap: 0.6,
-    sp: 36,
-    col: Pb,
-    band: null,
-    fence: !0,
-  },
-  Dj = {
-    girders: !1,
-    hu: 0.75,
-    hv: 1.05,
-    ch: 0.16,
-    cap: 1.5,
-    sp: 32,
-    col: Pb,
-    band: Wdt,
-    fence: !0,
-  },
-  Uj = {
-    girders: !0,
-    hu: 0.78,
-    hv: 0.78,
-    ch: 0.46,
-    cap: 1.3,
-    sp: 26,
-    col: Gdt,
-    band: null,
-  };
-function hP(i) {
-  if (i._via) return i._via;
-  let t = Vdt;
-  if (qdt.test(i.name || "")) t = Dj;
-  else if (jdt.test(i.name || "")) t = Uj;
-  else if (!i.name && i.cls === "motorway_link") {
-    let e = Ot(i, (i.s0 + i.s1) / 2, {});
-    e.z > 2300 && e.x > -700
-      ? (t = Uj)
-      : e.z < 2480 && e.x > -1300 && e.x < 400 && (t = Dj);
-  }
-  return (i._via = t);
-}
-function $o(i, t, e, s, n, o, a, r, l, c, h) {
-  let f = (e[1] - t[1]) * (n[2] - t[2]) - (e[2] - t[2]) * (n[1] - t[1]),
-    u = (e[2] - t[2]) * (n[0] - t[0]) - (e[0] - t[0]) * (n[2] - t[2]),
-    d = (e[0] - t[0]) * (n[1] - t[1]) - (e[1] - t[1]) * (n[0] - t[0]);
-  f * h[0] + u * h[1] + d * h[2] >= 0
-    ? i.quad(t, e, s, n, o, a, r, l, c, h)
-    : i.quad(t, n, s, e, o, l, r, a, c, h);
-}
-function Eb(i, t, e, s, n, o, a, r, l, c, h, f = 0, u = 1) {
-  let d = -n,
-    p = s,
-    m = [
-      [o, -a + r],
-      [o, a - r],
-      [o - r, a],
-      [-o + r, a],
-      [-o, a - r],
-      [-o, -a + r],
-      [-o + r, -a],
-      [o - r, -a],
-    ],
-    g = ([x, v], y) => [t + (s * x + d * v) * y, e + (n * x + p * v) * y],
-    b = 0;
-  for (let x = 0; x < 8; x++) {
-    let v = m[x],
-      y = m[(x + 1) % 8],
-      M = g(v, 1),
-      S = g(y, 1),
-      w = g(v, u),
-      z = g(y, u),
-      _ = Math.hypot(S[0] - M[0], S[1] - M[1]);
-    if (_ < 0.001) continue;
-    let R = (v[0] + y[0]) / 2,
-      T = (v[1] + y[1]) / 2,
-      E = y[0] - v[0],
-      A = y[1] - v[1],
-      C = A * R - E * T >= 0 ? 1 : -1,
-      P = A * C,
-      I = -E * C,
-      L = Math.hypot(P, I),
-      F = (s * P + d * I) / L,
-      N = (n * P + p * I) / L,
-      B = ((u - 1) * Math.hypot(R, T)) / Math.max(0.1, c - l),
-      H = Math.hypot(1, B);
-    ($o(
-      i,
-      [M[0], l, M[1]],
-      [S[0], l, S[1]],
-      [z[0], c, z[1]],
-      [w[0], c, w[1]],
-      [b, f],
-      [b + _, f],
-      [b + _, f + c - l],
-      [b, f + c - l],
-      h,
-      [F / H, -B / H, N / H],
-    ),
-      (b += _));
-  }
-}
-function iP(i, t, e, s, n, o, a, r, l, c) {
-  let h = -n,
-    f = s,
-    u = [
-      [-1, -1],
-      [1, -1],
-      [1, 1],
-      [-1, 1],
-    ].map(([d, p]) => [t + s * o * d + h * a * p, e + n * o * d + f * a * p]);
-  for (let d = 0; d < 4; d++) {
-    let p = u[d],
-      m = u[(d + 1) % 4],
-      g = (p[0] + m[0]) / 2 - t,
-      b = (p[1] + m[1]) / 2 - e,
-      x = Math.hypot(g, b),
-      v = Math.hypot(m[0] - p[0], m[1] - p[1]);
-    $o(
-      i,
-      [p[0], r, p[1]],
-      [m[0], r, m[1]],
-      [m[0], l, m[1]],
-      [p[0], l, p[1]],
-      [0, 0],
-      [v, 0],
-      [v, l - r],
-      [0, l - r],
-      c,
-      [g / x, 0, b / x],
-    );
-  }
-  $o(
-    i,
-    [u[0][0], r, u[0][1]],
-    [u[1][0], r, u[1][1]],
-    [u[2][0], r, u[2][1]],
-    [u[3][0], r, u[3][1]],
-    [-o, -a],
-    [o, -a],
-    [o, a],
-    [-o, a],
-    c,
-    [0, -1, 0],
-  );
-}
-function Lb(i, t, e, s, n, o, a) {
-  (e[2] - t[2]) * (s[0] - t[0]) - (e[0] - t[0]) * (s[2] - t[2]) >= 0 === a
-    ? i.quad(
-        t,
-        e,
-        s,
-        n,
-        [t[0], t[2]],
-        [e[0], e[2]],
-        [s[0], s[2]],
-        [n[0], n[2]],
-        o,
-      )
-    : i.quad(
-        t,
-        n,
-        s,
-        e,
-        [t[0], t[2]],
-        [n[0], n[2]],
-        [s[0], s[2]],
-        [e[0], e[2]],
-        o,
-      );
-}
-function fP(i, t = null) {
-  if (!i.trolley || i.s1 - i.s0 < 12) return [];
-  let e = [],
-    s = Math.max(1, Math.round((i.s1 - i.s0 - 4) / 34)),
-    n = (o, a, r) =>
-      (!t || t.surfaceAt(o, a) !== "road") && Jd(t, o, a, r, r + 7.3, 0.2);
-  for (let o = 0; o <= s; o++) {
-    let a = i.s0 + 2 + ((i.s1 - i.s0 - 4) * o) / s,
-      r = Ot(i, a, {}),
-      l = r.w + 0.45,
-      c = r.y + 0.15,
-      h = r.x - r.nx * l,
-      f = r.z - r.nz * l,
-      u = r.x + r.nx * l,
-      d = r.z + r.nz * l;
-    e.push({
-      s: a,
-      L: n(h, f, c) ? [h, c, f] : null,
-      R: n(u, d, c) ? [u, c, d] : null,
-      o: r,
-    });
-  }
-  return e;
-}
-var jh = [0.05, 0.05, 0.05, 0];
-function uP(i, t = null) {
-  if (i._tc !== void 0) return i._tc;
-  let e = [];
-  for (let [a, r] of i.legs || []) {
+  let i = [];
+  for (let [a, r] of t.legs || []) {
     if (!a.trolley || a.elev || a.s1 - a.s0 < 12) continue;
     let l = r === "a" ? a.s0 + 2 : a.s1 - 2,
       c = Ot(a, l, {}),
-      h = r === "a" ? 1 : -1;
-    e.push({
-      a: [c.dx * h, c.dz * h],
-      o: c,
-      ang: Math.atan2(c.dz * h, c.dx * h),
+      h = r === "a" ? -1 : 1,
+      f = a.oneway ? [-0.3, 0.3] : [-2.5, -1.9, 1.9, 2.5];
+    i.push({
+      dx: c.dx * h,
+      dz: c.dz * h,
+      w: f.map((u) => ({
+        r: u * h,
+        p: [c.x + c.nx * u, c.y + 5.9, c.z + c.nz * u],
+      })),
     });
   }
-  let s = [],
-    n = e.filter(
-      (a, r) =>
-        !e.some((l, c) => c < r && a.a[0] * l.a[0] + a.a[1] * l.a[1] > 0.9),
-    ),
-    o = !1;
-  for (let a of n)
-    for (let r of n)
-      Math.abs(a.a[0] * r.a[0] + a.a[1] * r.a[1]) < 0.6 && (o = !0);
-  if (n.length >= 3 && o) {
-    n.sort((a, r) => a.ang - r.ang);
-    for (let a = 0; a < n.length; a++) {
-      let r = n[a],
-        l = n[(a + 1) % n.length],
-        c = (y, M) => {
-          let S = y.o.nx,
-            w = y.o.nz;
-          S * M.a[0] + w * M.a[1] < 0 && ((S = -S), (w = -w));
-          let z = y.o.w + 0.45;
-          return [y.o.x + S * z, y.o.z + w * z];
-        },
-        h = c(r, l),
-        f = c(l, r),
-        u = r.a[0] * l.a[1] - r.a[1] * l.a[0];
-      if (Math.abs(u) < 0.3) continue;
-      let d = ((f[0] - h[0]) * l.a[1] - (f[1] - h[1]) * l.a[0]) / u;
-      if (d < -25 || d > 6) continue;
-      let p = h[0] + r.a[0] * d,
-        m = h[1] + r.a[1] * d,
-        g = r.a[0] + l.a[0],
-        b = r.a[1] + l.a[1],
-        x = Math.hypot(g, b) || 1;
-      if (t) {
-        let y = 0;
-        for (
-          ;
-          y < 6 && t.surfaceAt(p + (g / x) * y, m + (b / x) * y) === "road";
-        )
-          y += 0.5;
-        if (y >= 6) continue;
-        ((p += (g / x) * (y + 0.3)), (m += (b / x) * (y + 0.3)));
+  if (!(i.length < 2))
+    for (let a = 0; a < i.length; a++)
+      for (let r = a + 1; r < i.length; r++) {
+        let l = i[a],
+          c = i[r];
+        if (!(l.dx * c.dx + l.dz * c.dz > 0.5))
+          for (let h of l.w) {
+            let f = null,
+              u = 1e9;
+            for (let v of c.w) {
+              let x = Math.abs(v.r + h.r);
+              x < u && ((u = x), (f = v));
+            }
+            let d = h.p,
+              p = f.p,
+              m = [(d[0] + p[0]) / 2, (d[1] + p[1]) / 2, (d[2] + p[2]) / 2],
+              g = l.dx * c.dz - l.dz * c.dx;
+            if (Math.abs(g) > 0.2) {
+              let v = ((p[0] - d[0]) * c.dz - (p[2] - d[2]) * c.dx) / g;
+              v > 0 && v < 40 && (m = [d[0] + l.dx * v, m[1], d[2] + l.dz * v]);
+            }
+            let b = [d];
+            for (let v = 1; v <= 4; v++) {
+              let x = v / 4,
+                y = 1 - x;
+              b.push([
+                y * y * d[0] + 2 * y * x * m[0] + x * x * p[0],
+                y * y * d[1] + 2 * y * x * m[1] + x * x * p[1],
+                y * y * d[2] + 2 * y * x * m[2] + x * x * p[2],
+              ]);
+            }
+            if (b.slice(1).every((v, x) => dh(e, b[x], v)))
+              for (let v = 1; v < b.length; v++) s(b[v - 1], b[v], 0.021);
+          }
       }
-      let v = (t ? t.driveHeight(p, m) : (r.o.y + l.o.y) / 2) + 0.15;
-      Jd(t, p, m, v, v + 7.3, 0.2) && s.push([p, v, m]);
+}
+function WC(o, t, e, s, n = Sf, i = 4) {
+  let a = e[0] - t[0],
+    r = e[1] - t[1],
+    l = e[2] - t[2],
+    c = Math.hypot(a, r, l);
+  if (c < 0.01) return;
+  let h = [a / c, r / c, l / c],
+    f = Math.abs(h[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0],
+    u = [
+      h[1] * f[2] - h[2] * f[1],
+      h[2] * f[0] - h[0] * f[2],
+      h[0] * f[1] - h[1] * f[0],
+    ],
+    d = Math.hypot(...u);
+  u = u.map((g) => g / d);
+  let p = [
+      h[1] * u[2] - h[2] * u[1],
+      h[2] * u[0] - h[0] * u[2],
+      h[0] * u[1] - h[1] * u[0],
+    ],
+    m =
+      i === 4
+        ? [u, p, u.map((g) => -g), p.map((g) => -g)]
+        : Array.from({ length: i }, (g, b) => {
+            let v = (b / i) * 2 * Math.PI,
+              x = Math.cos(v),
+              y = Math.sin(v);
+            return [
+              u[0] * x + p[0] * y,
+              u[1] * x + p[1] * y,
+              u[2] * x + p[2] * y,
+            ];
+          });
+  for (let g = 0; g < i; g++) {
+    let b = m[g],
+      v = m[(g + 1) % i],
+      x = (_, z, A, T) =>
+        o.vert(
+          _[0] + z[0] * s,
+          _[1] + z[1] * s,
+          _[2] + z[2] * s,
+          z[0],
+          z[1],
+          z[2],
+          A,
+          T,
+          n,
+        ),
+      y = x(t, b, 0, 0),
+      M = x(e, b, c, 0),
+      S = x(e, v, c, 1),
+      w = x(t, v, 0, 1);
+    (o.tri(y, M, S), o.tri(y, S, w));
+  }
+}
+var b2t = new Set([
+    "russian",
+    "telegraph",
+    "northbeach",
+    "nob",
+    "pacific",
+    "cowhollow",
+    "western",
+    "richmond",
+    "hayes",
+    "haight",
+    "castro",
+    "dolores",
+    "noe",
+    "twinpeaks",
+    "mission",
+    "soma",
+  ]),
+  x2t = new Set(["residential", "tertiary", "unclassified", "living_street"]),
+  q$ = (o, t) => {
+    let e = Math.sin(o * 12.9898 + t * 78.233) * 43758.5453;
+    return e - Math.floor(e);
+  };
+function qC(o, t = null) {
+  if (
+    o._util !== void 0 ||
+    ((o._util = []),
+    o.trolley ||
+      o.elev ||
+      o.sunk ||
+      o.hwy ||
+      o.inner ||
+      !x2t.has(o.cls) ||
+      o.s1 - o.s0 < 30 ||
+      o.flags & Al.cable)
+  )
+    return o._util;
+  let e = Ot(o, (o.s0 + o.s1) / 2, {});
+  if (!b2t.has(Di(e.x, e.z)) || q$(Math.round(e.x), Math.round(e.z)) > 0.72)
+    return o._util;
+  let s = q$(e.z, e.x) < 0.5 ? -1 : 1,
+    n = Math.max(1, Math.round((o.s1 - o.s0 - 8) / 36));
+  for (let i = 0; i <= n; i++) {
+    let a = o.s0 + 4 + ((o.s1 - o.s0 - 8) * i) / n,
+      r = Ot(o, a, {}),
+      l = r.w + 0.5,
+      c = r.x + r.nx * l * s,
+      h = r.z + r.nz * l * s;
+    if (t && t.surfaceAt(c + r.nx * s * 0.3, h + r.nz * s * 0.3) === "road") {
+      o._util.push({ s: a, P: null, o: r, sd: s });
+      continue;
+    }
+    let f = (t ? t.driveHeight(c, h, null, r.y) : r.y) + 0.12;
+    o._util.push({
+      s: a,
+      P: Rp(t, c, h, f, f + 10.4, 0.25) ? [c, f, h] : null,
+      o: r,
+      sd: s,
+      k: i,
+      y: !!t,
+    });
+  }
+  return o._util;
+}
+var TC = [0.025, 0.025, 0.027, 0];
+function RC(o, t, e, s, n, i, a = 4, r = null) {
+  if (!dh(r, t, e, s, n)) return;
+  let l = t;
+  for (let c = 1; c <= a; c++) {
+    let h = c / a,
+      f = [
+        t[0] + (e[0] - t[0]) * h,
+        t[1] + (e[1] - t[1]) * h - 4 * s * h * (1 - h),
+        t[2] + (e[2] - t[2]) * h,
+      ];
+    (WC(o, l, f, n, i), (l = f));
+  }
+}
+function cX(o, t, e, s, n = null) {
+  let i = qC(t, n);
+  if (i.length) {
+    if (n)
+      for (let a of i)
+        a.P &&
+          !a.y &&
+          ((a.P[1] = n.driveHeight(a.P[0], a.P[2]) + 0.12), (a.y = !0));
+    for (let a = 0; a < i.length; a++) {
+      let r = i[a];
+      if (!r.P || r.s < e - 0.01 || r.s >= s + 0.01) continue;
+      let [l, c, h] = r.P,
+        f = r.o,
+        u = f.nx * r.sd,
+        d = f.nz * r.sd,
+        p = 10.4,
+        m = c + p - 0.55;
+      if (r.k % 2 === 0)
+        for (let w of [-7, 6]) {
+          let _ = l + u * (t.sw - 0.3) + f.dx * w,
+            z = h + d * (t.sw - 0.3) + f.dz * w,
+            A = (n ? n.driveHeight(_ - u * 0.6, z - d * 0.6) : c) + 5.4;
+          RC(
+            o,
+            [l + u * 0.3, c + 6.9, h + d * 0.3],
+            [_, A, z],
+            0.25,
+            0.01,
+            TC,
+            3,
+            n,
+          );
+        }
+      let g = i[a + 1];
+      if (!g || !g.P) continue;
+      let [b, v, x] = g.P,
+        y = g.o.nx * g.sd,
+        M = g.o.nz * g.sd,
+        S = v + p - 0.55;
+      for (let w of [-1.1, 0, 1])
+        RC(
+          o,
+          [l + u * w, m + 0.24, h + d * w],
+          [b + y * w, S + 0.24, x + M * w],
+          0.35,
+          0.011,
+          TC,
+          4,
+          n,
+        );
+      for (let [w, _, z, A] of [
+        [6.9, -0.3, 0.013, 0.55],
+        [6.5, -0.3, 0.013, 0.6],
+        [5.6, 0.12, 0.03, 0.75],
+      ])
+        RC(
+          o,
+          [l - u * _, c + w, h - d * _],
+          [b - y * _, v + w, x - M * _],
+          A,
+          z,
+          TC,
+          4,
+          n,
+        );
     }
   }
-  return (i._tc = s);
 }
+function hX(o, t, e, s, n = null) {
+  let i = (l, c, h, f = Sf, u = 4) => {
+      dh(n, l, c, 0, h) && WC(o, l, c, h, f, u);
+    },
+    a = GC(t, n);
+  if (!a.length) return;
+  let r = t.oneway
+    ? [[-0.3, 0.3]]
+    : [
+        [-2.5, -1.9],
+        [1.9, 2.5],
+      ];
+  for (let l = 0; l < a.length; l++) {
+    let c = a[l];
+    if (c.s < e - 0.01 || c.s >= s + 0.01) continue;
+    if (c.L && c.R) {
+      i([c.L[0], c.L[1] + 7, c.L[2]], [c.R[0], c.R[1] + 7, c.R[2]], 0.012);
+      let f = (c.L[1] + c.R[1]) / 2 + 6.9;
+      for (let u of r) {
+        let d = (u[0] + u[1]) / 2,
+          p = c.o.x + c.o.nx * d,
+          m = c.o.z + c.o.nz * d;
+        i([p, c.o.y + 5.9, m], [p, f, m], 0.012, Sf, 3);
+      }
+    }
+    let h = a[l + 1];
+    if (h) {
+      for (let [f, u] of [
+        [c.L, h.L],
+        [c.R, h.R],
+      ])
+        if (f && u) {
+          let d = [f[0], f[1] + 7.25, f[2]],
+            p = [u[0], u[1] + 7.25, u[2]],
+            m = [
+              (d[0] + p[0]) / 2,
+              (d[1] + p[1]) / 2 - 0.45,
+              (d[2] + p[2]) / 2,
+            ];
+          dh(n, d, m) &&
+            dh(n, m, p) &&
+            (i(d, m, 0.026, Sf, 3), i(m, p, 0.026, Sf, 3));
+        }
+      for (let f of r)
+        for (let u of f) {
+          let d = [c.o.x + c.o.nx * u, c.o.y + 5.9, c.o.z + c.o.nz * u],
+            p = [h.o.x + h.o.nx * u, h.o.y + 5.9, h.o.z + h.o.nz * u];
+          i(d, p, 0.021);
+        }
+    }
+  }
+}
+es();

@@ -1,296 +1,349 @@
 // app 207 — math
-// Lines 112329-112622 of readable/app.pretty.js (statement-aligned).
-function Smt(i, t) {
-  let { L: e } = t,
-    [s, n] = Xl.lotta,
-    o = e.driveHeight(s, n);
-  Oe(
-    i,
-    s,
-    n,
-    [
-      [1.75, o - 0.2],
-      [1.75, o + 0.18],
-      [1.5, o + 0.18],
-      [1.5, o + 0.32],
-      [0.01, o + 0.32],
-    ],
-    4,
-    Mmt,
-    {
-      rf: (c, h) =>
-        (c / Math.max(Math.abs(Math.cos(h)), Math.abs(Math.sin(h)))) * 0.82,
-    },
-  );
-  let a = (c, h) =>
-    c /
-    Math.max(
-      Math.abs(Math.cos(h - Math.PI / 4)),
-      Math.abs(Math.sin(h - Math.PI / 4)),
-    );
-  Oe(
-    i,
-    s,
-    n,
-    [
-      [1.15, o + 0.32],
-      [1.15, o + 0.55],
-      [1, o + 0.62],
-      [0.95, o + 1.9],
-      [1.08, o + 2],
-      [1.08, o + 2.2],
-      [0.85, o + 2.35],
-      [0.8, o + 3.3],
-      [0.95, o + 3.42],
-      [0.95, o + 3.6],
-      [0.6, o + 3.8],
-      [0.01, o + 3.85],
-    ],
-    16,
-    XP,
-    { rf: (c, h) => a(c, h) * 0.72, flat: !0 },
-  );
-  for (let c = 0; c < 4; c++) {
-    let h = (c * Math.PI) / 2,
-      f = Math.cos(h),
-      u = Math.sin(h);
-    (Oe(
-      i,
-      s + f * 1,
-      n + u * 1,
-      [
-        [0.01, o + 0.75],
-        [0.42, o + 0.85],
-        [0.5, o + 1.1],
-        [0.46, o + 1.15],
-      ],
-      10,
-      KP,
-    ),
-      Oe(
-        i,
-        s + f * 0.95,
-        n + u * 0.95,
-        [
-          [0.01, o + 1.3],
-          [0.2, o + 1.38],
-          [0.22, o + 1.6],
-          [0.12, o + 1.75],
-          [0.01, o + 1.78],
-        ],
-        8,
-        XP,
-      ),
-      Oe(
-        i,
-        s + f * 0.88,
-        n + u * 0.88,
-        [
-          [0.01, o + 2.45],
-          [0.3, o + 2.5],
-          [0.3, o + 3],
-          [0.01, o + 3.05],
-        ],
-        12,
-        KP,
-      ));
-  }
-  let r = [],
-    l = o + 3.85;
-  for (let c = 0; c < 6; c++) {
-    let h = 0.42 - c * 0.035;
-    (r.push([h + 0.08, l], [h + 0.08, l + 0.12], [h, l + 0.16], [h, l + 0.62]),
-      (l += 0.62));
-  }
-  (r.push(
-    [0.35, l],
-    [0.45, l + 0.18],
-    [0.3, l + 0.35],
-    [0.14, l + 0.4],
-    [0.14, l + 0.9],
-    [0.01, l + 0.92],
-  ),
-    Oe(i, s, n, r, 14, XP),
-    Oe(
-      i,
-      s,
-      n,
-      [
-        [0.18, l + 0.92],
-        [0.3, l + 1.2],
-        [0.3, l + 1.75],
-        [0.18, l + 1.85],
-        [0.01, l + 1.9],
-      ],
-      8,
-      wmt,
-    ),
-    Oe(
-      i,
-      s,
-      n,
-      [
-        [0.32, l + 1.85],
-        [0.2, l + 2.1],
-        [0.06, l + 2.35],
-        [0.01, l + 2.6],
-      ],
-      8,
-      KP,
-    ),
-    t.colliders.push({ t: "circ", x: s, z: n, r: 1.3, y0: o - 1, y1: o + 9 }));
-}
-var J$ = yn(sn.WIN, be.precast, 0.66, 0.63, 0.57),
-  Z$ = Be(be.precast, 0.74, 0.71, 0.66),
-  YP = It(Lt.glass, 0.09, 0.11, 0.14),
-  Q$ = It(Lt.gloss, 0.1, 0.14, 0.2),
-  JP = It(Lt.gloss, 0.72, 0.71, 0.68),
-  kmt = Be(be.granite, 0.36, 0.2, 0.17);
-function _mt(i, t) {
-  let { D: e, L: s } = t,
-    n = sX(e, Xl.marquis);
-  if (!n) return;
-  let o = va(n),
-    a = Xo(o),
-    [r] = iX(s, o),
-    l = r,
-    c = l + (n.top - n.base),
-    h = oX(o),
-    { u: f, n: u } = h;
-  ys(i, o, r - 0.6, l + 9, kmt, { vBase: l });
-  for (let y of a)
-    y.L > 5 &&
-      ne(
-        i,
-        [
-          [y.a[0] + y.n[0] * 0.09, l + 1, y.a[1] + y.n[1] * 0.09],
-          [y.b[0] + y.n[0] * 0.09, l + 1, y.b[1] + y.n[1] * 0.09],
-          [y.b[0] + y.n[0] * 0.09, l + 7.5, y.b[1] + y.n[1] * 0.09],
-          [y.a[0] + y.n[0] * 0.09, l + 7.5, y.a[1] + y.n[1] * 0.09],
-        ],
-        YP,
-        [y.n[0], 0, y.n[1]],
-      );
-  let d = l + (c - l) * 0.62,
-    p = c - 17;
-  (ys(i, o, l + 9, d, J$, { vBase: l }),
-    vo(i, a, 0.3, l + 9, l + 9.6, Z$),
-    Ua(i, o, d, It(Lt.stone, 0.42, 0.41, 0.39)));
-  let m = (y, M) =>
-      [
-        [-1, -1],
-        [1, -1],
-        [1, 1],
-        [-1, 1],
-      ].map(([S, w]) => [
-        h.c[0] + f[0] * y * S + u[0] * M * w,
-        h.c[1] + f[1] * y * S + u[1] * M * w,
-      ]),
-    g = h.hl * 0.78,
-    b = Math.min(h.hw * 0.62, 15),
-    x = m(g, b);
-  ys(i, x, d, p, J$, { vBase: l });
-  for (let y of [-0.55, 0, 0.55])
-    for (let M of [-1, 1]) {
-      let S = [
-        h.c[0] + f[0] * g * y + u[0] * (b + 0.06) * M,
-        h.c[1] + f[1] * g * y + u[1] * (b + 0.06) * M,
-      ];
-      nn(i, S, f, u, 1.4, 0.05, d, p, YP);
+// Lines 112879-113225 of readable/app.pretty.js (statement-aligned).
+function Zbt(o, t) {
+  let { D: e, L: s } = t;
+  for (let n of mc.rincon) {
+    let i = oY(e, n);
+    if (!i) continue;
+    let a = Ra(i),
+      r = ia(a),
+      [l] = rY(s, a),
+      c = Math.max(l, i.base),
+      h =
+        n === mc.rincon[0]
+          ? c + (i.top - i.base)
+          : c + Math.min(i.top - i.base, 150),
+      f = i.cut || -1e9,
+      u = Math.max(c + 6.6, f);
+    (i.cut ||
+      (Ss(o, a, l - 0.6, c + 6, nY, { vBase: c }),
+      Eo(o, r, 0.25, c + 6, c + 6.6, Jbt)),
+      Ss(o, a, u, h - 4, Ybt, { vBase: c }));
+    for (let m = c + 9.7; m < h - 5; m += 3.1)
+      if (m > f)
+        for (let g of r) {
+          let v = [g.a[0] + g.n[0] * 0.09, g.a[1] + g.n[1] * 0.09],
+            x = [g.b[0] + g.n[0] * 0.09, g.b[1] + g.n[1] * 0.09];
+          oe(
+            o,
+            [
+              [v[0], m, v[1]],
+              [x[0], m, x[1]],
+              [x[0], m + 0.32, x[1]],
+              [v[0], m + 0.32, v[1]],
+            ],
+            Hw,
+            [g.n[0], 0, g.n[1]],
+          );
+        }
+    (Ss(o, a, h - 4, h, nY),
+      Eo(o, r, 0.2, h - 0.4, h + 0.2, Hw),
+      sr(o, a, h, Lt(Ct.stone, 0.5, 0.5, 0.49)));
+    let d = lY(a),
+      p = null;
+    for (let m of r) {
+      if (m.L < 6) continue;
+      let g = (m.m[0] - d.c[0]) * m.n[0] + (m.m[1] - d.c[1]) * m.n[1];
+      (!p || m.L > p.e.L * 1.3 || (m.L > p.e.L * 0.7 && g > p.d)) &&
+        (p = { e: m, d: g });
     }
-  (ys(i, x, p, p + 3, YP), vo(i, Xo(x), 0.35, p + 3, p + 3.5, Z$));
-  let v = (y, M, S, w, z = 14) => {
-    let _ = (R) => [Math.cos(R) * S, Math.sin(R) * S];
-    for (let R = 0; R < z; R++) {
-      let T = (Math.PI * R) / z,
-        E = (Math.PI * (R + 1)) / z,
-        [A, C] = _(T),
-        [P, I] = _(E),
-        L = (F, N, B) => [
-          y[0] + f[0] * F + u[0] * N,
-          w + B,
-          y[1] + f[1] * F + u[1] * N,
-        ];
-      ne(i, [L(-M, A, C), L(M, A, C), L(M, P, I), L(-M, P, I)], Q$, [
-        u[0] * Math.cos((T + E) / 2),
-        Math.sin((T + E) / 2),
-        u[1] * Math.cos((T + E) / 2),
-      ]);
-      for (let F of [-1, 1])
-        ne(
-          i,
+    if (p) {
+      let m = p.e,
+        g = [m.m[0] + m.n[0] * 0.9, m.m[1] + m.n[1] * 0.9];
+      (cn(o, g, m.u, m.n, 0.45, 0.9, u, h + 14, Hw),
+        cn(
+          o,
           [
-            [y[0] + f[0] * M * F, w, y[1] + f[1] * M * F],
-            L(M * F, A, C),
-            L(M * F, P, I),
+            m.m[0] + m.n[0] * 0.6 + m.u[0] * m.L * 0.3,
+            m.m[1] + m.n[1] * 0.6 + m.u[1] * m.L * 0.3,
           ],
-          Q$,
-          [f[0] * F, 0, f[1] * F],
-        );
-    }
-    for (let R = -M + Math.min(2.2, M) / 2; R < M - 0.5; R += 2.2)
-      for (let T = 0; T < z; T++) {
-        let [E, A] = _((Math.PI * T) / z),
-          [C, P] = _((Math.PI * (T + 1)) / z),
-          I = 1.02;
-        Ae(
-          i,
-          [
-            y[0] + f[0] * R + u[0] * E * I,
-            w + A * I,
-            y[1] + f[1] * R + u[1] * E * I,
-          ],
-          [
-            y[0] + f[0] * R + u[0] * C * I,
-            w + P * I,
-            y[1] + f[1] * R + u[1] * C * I,
-          ],
-          0.22,
-          JP,
-          4,
-        );
-      }
-    for (let R of [-1, 1])
-      for (let T = 1; T < 8; T++) {
-        let E = (Math.PI * T) / 8,
-          [A, C] = _(E),
-          P = [y[0] + f[0] * (M + 0.05) * R, y[1] + f[1] * (M + 0.05) * R];
-        Ae(
-          i,
-          [P[0], w, P[1]],
-          [P[0] + u[0] * A, w + C, P[1] + u[1] * A],
-          0.18,
-          JP,
-          4,
-        );
-      }
-    for (let R of [-1, 1])
-      for (let T = 0; T < z; T++) {
-        let [E, A] = _((Math.PI * T) / z),
-          [C, P] = _((Math.PI * (T + 1)) / z),
-          I = [y[0] + f[0] * (M + 0.05) * R, y[1] + f[1] * (M + 0.05) * R];
-        Ae(
-          i,
-          [I[0] + u[0] * E, w + A, I[1] + u[1] * E],
-          [I[0] + u[0] * C, w + P, I[1] + u[1] * C],
+          m.u,
+          m.n,
           0.3,
-          JP,
-          4,
-        );
-      }
-  };
-  v(h.c, g - 0.5, b - 0.3, p + 3.5);
-  for (let y of [-1, 1]) {
-    let M = [
-        h.c[0] + f[0] * (g + (h.hl - g) / 2) * y,
-        h.c[1] + f[1] * (g + (h.hl - g) / 2) * y,
-      ],
-      S = Math.max(1.5, (h.hl - g) / 2 - 0.6);
-    h.hl - g > 4 && v(M, S, Math.min(b * 0.75, 9), d, 10);
+          0.6,
+          u,
+          h + 6,
+          Hw,
+        ),
+        cn(
+          o,
+          [
+            m.m[0] + m.n[0] * 0.6 - m.u[0] * m.L * 0.3,
+            m.m[1] + m.n[1] * 0.6 - m.u[1] * m.L * 0.3,
+          ],
+          m.u,
+          m.n,
+          0.3,
+          0.6,
+          u,
+          h + 6,
+          Hw,
+        ));
+    }
+    aY(t, a, l - 3, h + 2);
   }
-  nX(t, o, r - 3, c + 2);
 }
-var zmt = It(Lt.glass, 0.1, 0.25, 0.26),
-  qy = It(Lt.gloss, 0.86, 0.87, 0.86),
-  tX = It(Lt.glass, 0.05, 0.08, 0.09),
-  Emt = Be(be.precast, 0.62, 0.6, 0.56);
+var Rz = We(we.granite, 0.56, 0.55, 0.52),
+  TL = We(we.granite, 0.45, 0.44, 0.42),
+  Qbt = Lt(Ct.water, 0.5, 0.54, 0.56),
+  txt = Lt(Ct.water, 0.16, 0.21, 0.2),
+  ext = Lt(Ct.glass, 0.04, 0.045, 0.05);
+function sxt(o, t) {
+  let { L: e } = t,
+    [s, n] = mc.moscone,
+    i = n[0] - s[0],
+    a = n[1] - s[1],
+    r = Math.hypot(i, a),
+    l = [i / r, a / r],
+    c = [-l[1], l[0]];
+  {
+    let M = [(s[0] + n[0]) / 2 + c[0] * 6, (s[1] + n[1]) / 2 + c[1] * 6];
+    e.surfaceAt(M[0], M[1]) !== "park" &&
+      e.surfaceAt(M[0] - c[0] * 12, M[1] - c[1] * 12) === "park" &&
+      (c = [-c[0], -c[1]]);
+  }
+  let h = 42.3,
+    f = 36,
+    u = (M, S) => [s[0] + l[0] * M + c[0] * S, s[1] + l[1] * M + c[1] * S],
+    d = u(h, 3.2),
+    p = e.terrainAt(d[0], d[1]) + 0.05,
+    m = 8.6;
+  (cn(o, u(h, 1), l, c, f / 2 + 1, 0.4, p - 0.5, p + m - 0.9, ext),
+    cn(o, u(h, -1), l, c, f / 2 + 2, 2.1, p + m - 0.9, p + m, TL));
+  for (let M = -9; M <= 9; M++) {
+    let S = u(h + M * 2, 0.95);
+    Ce(o, [S[0], p + m, S[1]], [S[0], p + m + 1.05, S[1]], 0.03, Az, 4);
+  }
+  {
+    let M = u(h - f / 2 - 2, 0.95),
+      S = u(h + f / 2 + 2, 0.95);
+    Ce(o, [M[0], p + m + 1.05, M[1]], [S[0], p + m + 1.05, S[1]], 0.04, Az, 4);
+  }
+  let g = h - f / 2,
+    b = 0;
+  for (; g < h + f / 2 - 0.5;) {
+    let M = (Math.sin(b * 12.9898) * 43758.5453) % 1,
+      S = Math.abs(M),
+      w = 1.4 + 1.3 * S,
+      _ = b % 3 === 1 ? 1.4 : b % 3 === 2 ? 0.7 : 0.3,
+      z = 1.2 + 1.6 * Math.abs(Math.sin(b * 3.7)),
+      A = m + 0.8 - 2.4 * Math.abs(Math.sin(b * 7.1)),
+      T = g + w / 2;
+    cn(
+      o,
+      u(T, 1.6 + z / 2),
+      l,
+      c,
+      w / 2,
+      z / 2,
+      p - 0.4,
+      p + A,
+      b % 2 ? Rz : TL,
+    );
+    let E = (R, P, C, I) => {
+      let L = u(R - P / 2, C),
+        F = u(R + P / 2, C),
+        O = u(R - P * 0.6, C + 0.3),
+        B = u(R + P * 0.6, C + 0.3);
+      oe(
+        o,
+        [
+          [L[0], I, L[1]],
+          [F[0], I, F[1]],
+          [B[0], p + 0.2, B[1]],
+          [O[0], p + 0.2, O[1]],
+        ],
+        Qbt,
+        [c[0], 0, c[1]],
+      );
+    };
+    if (S > 0.2)
+      for (let R = 0, P = 2 + Math.floor(S * 4); R < P; R++) {
+        let C = (R + 0.5) / P,
+          I = 0.05 + 0.14 * Math.abs(Math.sin(b * 9.1 + R * 4.3));
+        E(g + w * (0.12 + 0.76 * C), I, 1.6 + z + 0.08, p + A + 0.05);
+      }
+    if (_ > 0.6)
+      for (let R = 0, P = Math.max(2, Math.round(_ / 0.3)); R < P; R++)
+        E(
+          g + w + (_ * (R + 0.5)) / P,
+          0.08 + 0.1 * ((R + b) % 2),
+          1.3,
+          p + m - 0.9,
+        );
+    ((g += w + _), b++);
+  }
+  let v = 9.5,
+    x = [
+      u(h - f / 2 - 1, 1.6),
+      u(h + f / 2 + 1, 1.6),
+      u(h + f / 2 + 1, v),
+      u(h - f / 2 - 1, v),
+    ];
+  (Ta(o, x, p + 0.2, txt),
+    cn(o, u(h, v + 0.45), l, c, f / 2 + 1.5, 0.45, p - 0.3, p + 0.38, Rz));
+  for (let M of [-1, 1])
+    cn(
+      o,
+      u(h + M * (f / 2 + 1.25), (v + 1.6) / 2),
+      l,
+      c,
+      0.3,
+      (v - 1.6) / 2 + 0.3,
+      p - 0.3,
+      p + 0.38,
+      Rz,
+    );
+  for (let M = 0; M < 16; M++) {
+    let S = Math.abs(Math.sin(M * 5.17)),
+      w = Math.abs(Math.sin(M * 2.31)),
+      _ = u(h - f / 2 + 2 + (f - 4) * S, 3.5 + (v - 4.5) * w);
+    cn(
+      o,
+      _,
+      [Math.cos(M), Math.sin(M)],
+      [-Math.sin(M), Math.cos(M)],
+      0.7 + 0.5 * w,
+      0.45 + 0.3 * S,
+      p - 0.2,
+      p + 0.3 + 0.25 * S,
+      M % 2 ? Rz : TL,
+    );
+  }
+  let y = u(h, (v + 1.6) / 2);
+  t.colliders.push({
+    t: "obb",
+    x: y[0],
+    z: y[1],
+    hx: (v - 1.6) / 2 + 1,
+    hz: f / 2 + 1.8,
+    c: l[1],
+    s: l[0],
+    y0: p - 2,
+    y1: p + m + 2,
+  });
+}
+var RL = [];
+function cY(o, t, e) {
+  let s = [
+      ["islands", Wbt],
+      ["lotta", $bt],
+      ["marquis", Kbt],
+      ["rincon", Zbt],
+      ["mlkfalls", sxt],
+    ],
+    n = (i, a) => {
+      let r = new Be();
+      try {
+        a(r, e);
+      } catch (l) {
+        console.error("r20:", i, l);
+      }
+      return r;
+    };
+  if (typeof window > "u" || typeof document > "u" || !document.body) {
+    for (let [i, a] of s) vn(o.group, n(i, a), t.lm, "R20_" + i);
+    return;
+  }
+  for (let [i, a] of s)
+    RL.push(() => {
+      let r = e.colliders,
+        l = [];
+      e.colliders = l;
+      let c;
+      try {
+        c = n(i, a);
+      } finally {
+        e.colliders = r;
+      }
+      return (vn(o.rc?.group || o.group, c, t.lm, "R20_" + i), l);
+    });
+}
+var bh = {
+    cons: 30675038,
+    consKiosks: [906618461, 906618462, 906618463],
+    consRear: [
+      1169102808, 1169102809, 1169102810, 1169102811, 1169102812, 1169102813,
+      1169102814, 1169102815,
+    ],
+    consLawn: [
+      [-5935, 2510],
+      [-5795, 2510],
+      [-5795, 2690],
+      [-5935, 2690],
+    ],
+    ign: 225193440,
+    ignParts: [1028575824, 1028575825, 1028575826, 1028575827],
+    lone: [274298058, 274298055, 274298054],
+  },
+  nxt = [
+    [-5906, 2584, 1.15],
+    [-5834, 2586, 1.1],
+    [-5899, 2614, 1],
+    [-5842, 2612, 1.2],
+    [-5889, 2569, 0.95],
+    [-5851, 2570, 1.05],
+    [-5921, 2560, 1.1],
+    [-5820, 2561, 1],
+    [-5914, 2628, 1.2],
+    [-5827, 2631, 1.05],
+    [-5893, 2596, 0.9],
+    [-5847, 2598, 1.15],
+  ];
+function dY(o) {
+  (o.claim({
+    name: "conservatory",
+    ids: [bh.cons, ...bh.consKiosks, ...bh.consRear],
+    poly: bh.consLawn,
+    frac: 0.6,
+    props: ["ptree", "tree", "lamp", "car", "hydrant", "palm"],
+  }),
+    o.claim({ name: "stignatius", ids: [bh.ign, ...bh.ignParts], poly: null }),
+    o.claim({ name: "lonemountain", ids: bh.lone, poly: null }));
+}
+var pY = (o, t) => {
+    let e = o.bld;
+    if (e.seed) {
+      for (let s = 0; s < e.n; s++) if (e.seed[s] === t) return er(o, s);
+    }
+    return null;
+  },
+  LL = (o, t, e, s) => {
+    let n = 1e9,
+      i = -1e9,
+      a = 1e9,
+      r = -1e9;
+    for (let [l, c] of t)
+      ((n = Math.min(n, l)),
+        (i = Math.max(i, l)),
+        (a = Math.min(a, c)),
+        (r = Math.max(r, c)));
+    o.colliders.push({
+      t: "poly",
+      pts: Float32Array.from(t.flat()),
+      bb: [n, a, i, r],
+      y0: e,
+      y1: s,
+    });
+  },
+  mY = (o, t) => {
+    let e = 1e9,
+      s = -1e9;
+    for (let [n, i] of t) {
+      let a = o.terrainAt(n, i);
+      ((e = Math.min(e, a)), (s = Math.max(s, a)));
+    }
+    return [e, s];
+  },
+  Ax = (o, t, e, s) => [
+    [o, t],
+    [e, t],
+    [e, s],
+    [o, s],
+  ],
+  xh = Lt(Ct.gloss, 0.95, 0.95, 0.92),
+  Gw = Lt(Ct.gloss, 0.5, 0.56, 0.58),
+  IL = Lt(Ct.gloss, 0.62, 0.67, 0.68),
+  Pz = We(we.stucco, 0.9, 0.9, 0.86),
+  AL = We(we.granite, 0.66, 0.64, 0.6),
+  ixt = We(we.granite, 0.74, 0.72, 0.68);

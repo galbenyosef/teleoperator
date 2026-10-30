@@ -1,6 +1,6 @@
-// app 32 — queue
-// Lines 47949-48294 of readable/app.pretty.js (statement-aligned).
-var pU = `
+// app 32 — gpubufferusage
+// Lines 48156-48475 of readable/app.pretty.js (statement-aligned).
+var bV = `
 fn crowdPaletteFallback(uv: vec2f, codes: vec3f, smoothStyle: bool) -> vec3f {
   let packed = floor(codes.g + 0.5);
   let tone = floor(packed / 32.0);
@@ -23,7 +23,7 @@ fn crowdPaletteFallback(uv: vec2f, codes: vec3f, smoothStyle: bool) -> vec3f {
   return textureSampleLevel(matMap, matSamp, vec2f(column + 0.5, row + 0.5) / vec2f(16.0, 40.0), 0.0).rgb;
 }
 `;
-var mU = `
+var xV = `
 fn trafficFallback(uv: vec2f, col: vec4f, bc: vec4f) -> vec3f {
   let t = textureSampleLevel(matMap, matSamp, uv, 0.0);
   let mk = textureSampleLevel(matExtra, matSamp, uv, 0.0);
@@ -84,7 +84,7 @@ fn trafficFallback(uv: vec2f, col: vec4f, bc: vec4f) -> vec3f {
   return outc;
 }
 `;
-var gU = `
+var vV = `
 fn landmarkBand(x: f32, period: f32, a: f32, b: f32, footprint: f32) -> f32 {
   let w = max(footprint, 1e-4);
   let lo = x - w * 0.5; let hi = x + w * 0.5;
@@ -133,79 +133,12 @@ fn landmarkFallback(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f, haze: f32) -> v
   return c;
 }
 `;
-var jA = (i) =>
-  i?.reason === "internal" ||
-  /XPC_ERROR_CONNECTION_(?:INTERRUPTED|INVALID)|internal error/i.test(
-    String(i?.message || i),
-  );
-function bU(i, t = 45e3) {
-  let e,
-    s = new Promise((n, o) => {
-      e = setTimeout(() => o(new Error("Shader compilation timed out")), t);
-    });
-  return Promise.race([i, s])
-    .catch((n) => {
-      let o = new Error("The graphics shaders could not start. Please retry.", {
-        cause: n,
-      });
-      throw ((o.name = "ShaderStartupError"), o);
-    })
-    .finally(() => clearTimeout(e));
-}
-var H5 = class {
-  constructor({
-    concurrency: t = 2,
-    retries: e = 2,
-    delay: s = (n) => new Promise((o) => setTimeout(o, n)),
-  } = {}) {
-    ((this.concurrency = t),
-      (this.retries = e),
-      (this.delay = s),
-      (this.active = 0),
-      (this.queue = []));
-  }
-  run(t, { priority: e = 0 } = {}) {
-    let s,
-      n = new Promise((o, a) => {
-        ((s = { compile: t, resolve: o, reject: a, priority: e }),
-          this.queue.push(s),
-          this.drain());
-      });
-    return (
-      (n.prioritize = (o) => {
-        s.priority = Math.max(s.priority, o);
-      }),
-      n
-    );
-  }
-  drain() {
-    for (; this.active < this.concurrency && this.queue.length;) {
-      this.queue.sort((e, s) => s.priority - e.priority);
-      let t = this.queue.shift();
-      (this.active++,
-        this.compile(t.compile)
-          .then(t.resolve, t.reject)
-          .finally(() => {
-            (this.active--, this.drain());
-          }));
-    }
-  }
-  async compile(t) {
-    for (let e = 0; ; e++)
-      try {
-        return await t(e);
-      } catch (s) {
-        if (e >= this.retries || !jA(s)) throw s;
-        await this.delay(1e3 * (e + 1));
-      }
-  }
-};
-async function xU(i, t = 3e3) {
+async function yV(o, t = 3e3) {
   let e = [],
     s = !0,
     n,
-    o = async () => {
-      let a = i.createShaderModule({
+    i = async () => {
+      let a = o.createShaderModule({
           label: "bundle-offset-check",
           code: `
       @group(0) @binding(0) var<uniform> color: vec4f;
@@ -216,7 +149,7 @@ async function xU(i, t = 3e3) {
       @fragment fn fs() -> @location(0) vec4f { return color; }
     `,
         }),
-        r = i.createBindGroupLayout({
+        r = o.createBindGroupLayout({
           entries: [
             {
               binding: 0,
@@ -225,9 +158,9 @@ async function xU(i, t = 3e3) {
             },
           ],
         }),
-        l = await i.createRenderPipelineAsync({
+        l = await o.createRenderPipelineAsync({
           label: "bundle-offset-check",
-          layout: i.createPipelineLayout({ bindGroupLayouts: [r] }),
+          layout: o.createPipelineLayout({ bindGroupLayouts: [r] }),
           vertex: { module: a, entryPoint: "vs" },
           fragment: {
             module: a,
@@ -237,21 +170,21 @@ async function xU(i, t = 3e3) {
           multisample: { count: 1, mask: 2147483647 },
         });
       if (!s) return { safe: !1, reason: "timeout" };
-      let c = (x) => (e.push(x), x),
-        h = i.limits.minUniformBufferOffsetAlignment,
+      let c = (v) => (e.push(v), v),
+        h = o.limits.minUniformBufferOffsetAlignment,
         f = c(
-          i.createBuffer({
+          o.createBuffer({
             size: h + 16,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
           }),
         );
-      (i.queue.writeBuffer(f, 0, new Float32Array([1, 0, 0, 1])),
-        i.queue.writeBuffer(f, h, new Float32Array([0, 1, 0, 1])));
-      let u = i.createBindGroup({
+      (o.queue.writeBuffer(f, 0, new Float32Array([1, 0, 0, 1])),
+        o.queue.writeBuffer(f, h, new Float32Array([0, 1, 0, 1])));
+      let u = o.createBindGroup({
           layout: r,
           entries: [{ binding: 0, resource: { buffer: f, size: 16 } }],
         }),
-        d = i.createRenderBundleEncoder({
+        d = o.createRenderBundleEncoder({
           label: "bundle-offset-check",
           colorFormats: ["rgba8unorm"],
         });
@@ -260,22 +193,22 @@ async function xU(i, t = 3e3) {
         d.draw(3));
       let p = d.finish(),
         m = c(
-          i.createTexture({
+          o.createTexture({
             size: [1, 1],
             format: "rgba8unorm",
             usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
           }),
         ),
         g = c(
-          i.createBuffer({
+          o.createBuffer({
             size: 256,
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
           }),
         ),
         b = [];
-      for (let x = 0; x < 2; x++) {
-        let v = i.createCommandEncoder(),
-          y = v.beginRenderPass({
+      for (let v = 0; v < 2; v++) {
+        let x = o.createCommandEncoder(),
+          y = x.beginRenderPass({
             colorAttachments: [
               {
                 view: m.createView(),
@@ -287,25 +220,25 @@ async function xU(i, t = 3e3) {
           });
         (y.executeBundles([p]),
           y.end(),
-          v.copyTextureToBuffer(
+          x.copyTextureToBuffer(
             { texture: m },
             { buffer: g, bytesPerRow: 256 },
             [1, 1],
           ),
-          i.queue.submit([v.finish()]),
+          o.queue.submit([x.finish()]),
           await g.mapAsync(GPUMapMode.READ),
           b.push([...new Uint8Array(g.getMappedRange(0, 4))]),
           g.unmap());
       }
       return {
-        safe: b.every((x) => x.join() === "0,255,0,255"),
+        safe: b.every((v) => v.join() === "0,255,0,255"),
         reason: "pixels",
         pixels: b,
       };
     };
   try {
     return await Promise.race([
-      o().catch(() => ({ safe: !1, reason: "unavailable" })),
+      i().catch(() => ({ safe: !1, reason: "unavailable" })),
       new Promise((a) => {
         n = setTimeout(() => a({ safe: !1, reason: "timeout" }), t);
       }),
@@ -316,33 +249,74 @@ async function xU(i, t = 3e3) {
   }
 }
 {
-  let i = _d?.prototype;
-  if (i && !i.__mindblown) {
+  let o = ip?.prototype;
+  if (o && !o.__mindblown) {
     let t = (s) => {
-        let n = new ei();
+        let n = new ai();
         return (
-          (n.mapping = Vf),
+          (n.mapping = Eu),
           (n.userData.mbEnv = s),
           { texture: n, dispose() {}, isWebGLRenderTarget: !0 }
         );
       },
       e = (s, n) => {
-        let o = i[s];
-        i[s] = function (...a) {
+        let i = o[s];
+        o[s] = function (...a) {
           return (
             this._renderer?._fallback &&
               (this._renderer = this._renderer._fallback),
-            this._renderer?.isMindblownRenderer ? n(...a) : o?.apply(this, a)
+            this._renderer?.isMindblownRenderer ? n(...a) : i?.apply(this, a)
           );
         };
       };
     (e("fromEquirectangular", (s) => t(s.userData?.mbEnv || { equirect: s })),
       e("fromCubemap", (s) => t(s.userData?.mbEnv || { cube: s })),
-      e("fromScene", (s, n, o, a, r) =>
-        t({ scene: s, sigma: n, near: o, far: a, opts: r }),
+      e("fromScene", (s, n, i, a, r) =>
+        t({ scene: s, sigma: n, near: i, far: a, opts: r }),
       ),
       e("compileEquirectangularShader", () => {}),
       e("compileCubemapShader", () => {}),
-      (i.__mindblown = !0));
+      (o.__mindblown = !0));
   }
+}
+var EV = Symbol("mbCache"),
+  TV = Symbol("mbUid"),
+  O5 = Symbol("mbSlot"),
+  vb = 4096,
+  kb = 16,
+  ur = 768,
+  yb = 4096,
+  Eut = 4,
+  FV = globalThis.MB_SHADOW_RES || 2048,
+  Tut = (2 * Math.PI) / 180,
+  ZS = 128,
+  QS = 4,
+  zb = Math.min(2048, FV),
+  wb = 256,
+  eh = { x: 16, y: 9, z: 24, max: 48 },
+  _b = 2,
+  JS = globalThis.MB_POINT_RES || 1024,
+  H5 = 4,
+  OV = 4 + 16 * QS,
+  BV = OV + 16 * H5,
+  B5 = BV + 96 * _b,
+  Pm = 20,
+  RV = 4 * (B5 + Pm * ZS),
+  Rut = new fe().elements,
+  Am = new fe().set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 1),
+  N5 = 296 + kb * 12;
+function AV(o, t) {
+  let e = t.elements;
+  ((o[N5] = -(e[10] + e[11]) * 0.5),
+    (o[N5 + 1] = e[14] * 0.5),
+    (o[N5 + 2] =
+      e[2] === 0 &&
+      e[6] === 0 &&
+      e[3] === 0 &&
+      e[7] === 0 &&
+      e[11] === -1 &&
+      e[15] === 0
+        ? 1
+        : 0),
+    (o[N5 + 3] = 0));
 }

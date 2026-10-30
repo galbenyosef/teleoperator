@@ -1,527 +1,343 @@
 // app 211 — math
-// Lines 113351-113875 of readable/app.pretty.js (statement-aligned).
-function Omt(i, t) {
-  let { D: e, L: s } = t,
-    n = fX(e, Uc.ign);
-  if (!n) return;
-  let o = va(n),
-    a = null;
-  for (let P of Xo(o)) (!a || P.L > a.L) && (a = P);
-  let r = a.u[1] > 0 ? a.u : [-a.u[0], -a.u[1]],
-    l = [-r[1], r[0]],
-    c = (P) => P[0] * r[0] + P[1] * r[1],
-    h = (P) => P[0] * l[0] + P[1] * l[1],
-    f = Math.min(...o.map(c)),
-    u = Math.max(...o.map(c)),
-    d = Math.min(...o.map(h)),
-    p = Math.max(...o.map(h)),
-    m = (P, I) => [r[0] * P + l[0] * I, r[1] * P + l[1] * I],
-    [g, b] = uX(s, o),
-    x = g,
-    v = b,
-    y = (d + p) / 2,
-    M = (p - d) / 2,
-    S = (P, I, L, F, N, B, H, O = !0) =>
-      nn(
-        i,
-        m((P + I) / 2, (L + F) / 2),
-        r,
-        l,
-        (I - P) / 2,
-        (F - L) / 2,
-        N,
-        B,
-        H,
-        O,
-      ),
-    w = u - 2,
-    z = f + 12,
-    _ = 10.5,
-    R = v + 15,
-    T = v + 25;
-  (S(z, w - _, d, p, x - 0.6, R, vu), S(z, w - _, y - 9, y + 9, R, T, vu));
-  let E = (P, I, L) => {
-    let F = m(P, I);
-    return [F[0], L, F[1]];
-  };
-  for (let P of [-1, 1])
-    ne(
-      i,
-      [
-        E(z, y + P * 9.3, T),
-        E(w - _, y + P * 9.3, T),
-        E(w - _, y, T + 3.5),
-        E(z, y, T + 3.5),
-      ],
-      cX,
-      [l[0] * P, 3, l[1] * P],
-    );
-  let A = 5.4,
-    C = Math.floor((w - _ - z) / A);
-  for (let P of [-1, 1]) {
-    let I = P < 0 ? d : p,
-      L = P * 0.35,
-      F = [l[0] * P, l[1] * P];
-    for (let N = 0; N <= C; N++) {
-      let B = z + N * A + (w - _ - z - C * A) / 2;
-      S(B - 0.5, B + 0.5, I + L - 0.35, I + L + 0.35, x - 0.6, R - 2, Za);
-    }
-    for (let N = 0; N < C; N++) {
-      let B = z + (N + 0.5) * A + (w - _ - z - C * A) / 2,
-        H = m(B, I + P * 0.09),
-        O = [];
-      O.push([H[0] - r[0] * 1.8, v + 0.5, H[1] - r[1] * 1.8]);
-      for (let G = 0; G <= 8; G++) {
-        let q = (Math.PI * G) / 8;
-        O.push([
-          H[0] - r[0] * 1.8 * Math.cos(q),
-          v + 7.5 + 1.8 * Math.sin(q),
-          H[1] - r[1] * 1.8 * Math.cos(q),
-        ]);
-      }
-      (O.push([H[0] + r[0] * 1.8, v + 0.5, H[1] + r[1] * 1.8]),
-        ne(i, O, Bmt, [F[0], 0, F[1]]));
-      let D = m(B, I + P * 0.14);
-      ne(
-        i,
-        Array.from({ length: 10 }, (G, q) => {
-          let W = (q / 10) * Math.PI * 2;
-          return [
-            D[0] + r[0] * Math.cos(W) * 0.9,
-            v + 11.3 + Math.sin(W) * 0.9,
-            D[1] + r[1] * Math.cos(W) * 0.9,
-          ];
-        }),
-        Dc,
-        [F[0], 0, F[1]],
-      );
-      let U = m(B, y + P * 9.04);
-      ne(
-        i,
-        Array.from({ length: 10 }, (G, q) => {
-          let W = (q / 10) * Math.PI * 2;
-          return [
-            U[0] + r[0] * Math.cos(W) * 1.1,
-            R + 5 + Math.sin(W) * 1.1,
-            U[1] + r[1] * Math.cos(W) * 1.1,
-          ];
-        }),
-        Dc,
-        [F[0], 0, F[1]],
-      );
-    }
-    S(z, w - _, I - (P < 0 ? 0.6 : 0), I + (P > 0 ? 0.6 : 0), R - 2, R - 1, Za);
-    for (let N = z + 0.4; N < w - _; N += 0.7)
-      S(
-        N - 0.12,
-        N + 0.12,
-        I - P * 0.3 - 0.12,
-        I - P * 0.3 + 0.12,
-        R,
-        R + 0.9,
-        Za,
-        !1,
-      );
-    (S(z, w - _, I - P * 0.3 - 0.25, I - P * 0.3 + 0.25, R + 0.9, R + 1.15, Za),
-      S(z, w - _, y + P * 9 - 0.3, y + P * 9 + 0.3, T - 1, T, Za));
-  }
-  {
-    let P = m(z, y);
-    (Oe(
-      i,
-      P[0],
-      P[1],
-      [
-        [M * 0.55, x - 0.6],
-        [M * 0.55, R],
-      ],
-      16,
-      vu,
-    ),
-      Oe(
-        i,
-        P[0],
-        P[1],
+// Lines 114132-114472 of readable/app.pretty.js (statement-aligned).
+var cxt = We(we.granite, 0.72, 0.7, 0.66),
+  hxt = Tn(ln.WIN, we.stucco, 0.93, 0.86, 0.7),
+  Px = We(we.stucco, 0.95, 0.88, 0.72),
+  CL = We(we.terracotta, 0.62, 0.24, 0.14),
+  PL = Lt(Ct.matte, 0.32, 0.52, 0.46);
+function fxt(o, t, e, s) {
+  let [n, i] = mY(t.L, e),
+    a = i + s;
+  Ss(o, e, n - 0.6, a, hxt, { vBase: i - 4 });
+  let r = ia(e);
+  return (
+    Eo(o, r, 0.3, a - 0.5, a, Px),
+    r.forEach((l, c) => {
+      let h = [-l.n[0], -l.n[1]],
+        f = 0.7,
+        u = 2.6,
+        d = r[(c + r.length - 1) % r.length],
+        p = r[(c + 1) % r.length],
+        m = d.u[0] * l.u[0] + d.u[1] * l.u[1] > 0.996 ? 0 : f,
+        g = p.u[0] * l.u[0] + p.u[1] * l.u[1] > 0.996 ? 0 : f;
+      oe(
+        o,
         [
-          [M * 0.57, R],
-          [M * 0.3, R + 4],
-          [0.1, R + 5],
-        ],
-        16,
-        cX,
-      ));
-  }
-  {
-    let P = z + (w - _ - z) * 0.22,
-      I = m(P, y),
-      L = 8,
-      F = T + 1;
-    (Oe(
-      i,
-      I[0],
-      I[1],
-      [
-        [L + 0.6, T - 2],
-        [L + 0.6, F],
-      ],
-      16,
-      vu,
-    ),
-      Oe(
-        i,
-        I[0],
-        I[1],
-        [
-          [L, F],
-          [L, F + 6],
-        ],
-        16,
-        vu,
-      ));
-    for (let H = 0; H < 8; H++) {
-      let O = ((H + 0.5) / 8) * Math.PI * 2,
-        D = [I[0] + Math.cos(O) * (L + 0.05), I[1] - Math.sin(O) * (L + 0.05)];
-      nn(
-        i,
-        D,
-        [Math.sin(O), Math.cos(O)],
-        [Math.cos(O), -Math.sin(O)],
-        0.9,
-        0.1,
-        F + 1.6,
-        F + 4.8,
-        Dc,
-      );
-    }
-    let N = [];
-    for (let H = 0; H <= 8; H++) {
-      let O = ((H / 8) * Math.PI) / 2;
-      N.push([(L + 0.3) * Math.cos(O) + 0.05, F + 6.2 + Math.sin(O) * 9]);
-    }
-    Oe(i, I[0], I[1], N, 16, jy);
-    for (let H = 0; H < 12; H++) {
-      let O = (H / 12) * Math.PI * 2;
-      for (let D = 0; D + 1 < N.length; D++)
-        Ae(
-          i,
           [
-            I[0] + Math.cos(O) * (N[D][0] + 0.1),
-            N[D][1],
-            I[1] - Math.sin(O) * (N[D][0] + 0.1),
+            l.a[0] + l.n[0] * f - l.u[0] * m,
+            a,
+            l.a[1] + l.n[1] * f - l.u[1] * m,
           ],
           [
-            I[0] + Math.cos(O) * (N[D + 1][0] + 0.1),
-            N[D + 1][1],
-            I[1] - Math.sin(O) * (N[D + 1][0] + 0.1),
+            l.b[0] + l.n[0] * f + l.u[0] * g,
+            a,
+            l.b[1] + l.n[1] * f + l.u[1] * g,
           ],
-          0.18,
-          Za,
-          3,
-        );
-    }
-    let B = F + 15.2;
-    (Oe(
-      i,
-      I[0],
-      I[1],
-      [
-        [1.6, B - 0.3],
-        [1.6, B + 3],
-      ],
-      8,
-      Za,
-    ),
-      Oe(
-        i,
-        I[0],
-        I[1],
-        [
-          [1.9, B + 3],
-          [0.2, B + 5.5],
-          [0.06, B + 7.5],
+          [l.b[0] + h[0] * u, a + 2.2, l.b[1] + h[1] * u],
+          [l.a[0] + h[0] * u, a + 2.2, l.a[1] + h[1] * u],
         ],
-        8,
-        jy,
-      ));
+        CL,
+        [l.n[0], 1.2, l.n[1]],
+      );
+    }),
+    sr(o, e, a + 2.15, CL),
+    LL(t, e, n - 3, a + 3),
+    { gmin: n, gmax: i, top: a }
+  );
+}
+function uxt(o, t) {
+  let { D: e } = t,
+    s = null;
+  for (let u of bh.lone) {
+    let d = pY(e, u);
+    if (!d) continue;
+    let p = Ra(d),
+      m = fxt(o, t, p, u === bh.lone[0] ? 15 : 12);
+    u === bh.lone[0] && (s = { pts: p, ...m });
   }
-  for (let P of [d + _ / 2, p - _ / 2]) {
-    let I = w - _ / 2;
-    S(I - _ / 2, I + _ / 2, P - _ / 2, P + _ / 2, x - 0.6, v + 30, vu);
-    for (let F of [v + 15, v + 30])
-      S(
-        I - _ / 2 - 0.3,
-        I + _ / 2 + 0.3,
-        P - _ / 2 - 0.3,
-        P + _ / 2 + 0.3,
-        F - 1,
-        F + 0.06,
-        Za,
-      );
-    for (let [F, N] of [
-      [-1, -1],
-      [1, -1],
-      [1, 1],
-      [-1, 1],
-    ])
-      S(
-        I + (F * _) / 2 - 0.9,
-        I + (F * _) / 2 + 0.9,
-        P + (N * _) / 2 - 0.9,
-        P + (N * _) / 2 + 0.9,
-        x - 0.6,
-        v + 29,
-        Za,
-        !1,
-      );
-    for (let [F, N] of [
-      [1, 0],
-      [0, 1],
-      [-1, 0],
-      [0, -1],
-    ]) {
-      let B = [r[0] * F + l[0] * N, r[1] * F + l[1] * N],
-        H = [-B[1], B[0]],
-        O = m(I + F * (_ / 2 + 0.09), P + N * (_ / 2 + 0.09));
-      ne(
-        i,
-        [
-          [O[0] - H[0] * 0.9, v + 6, O[1] - H[1] * 0.9],
-          [O[0] + H[0] * 0.9, v + 6, O[1] + H[1] * 0.9],
-          [O[0] + H[0] * 0.9, v + 10.5, O[1] + H[1] * 0.9],
-          [O[0], v + 11.4, O[1]],
-          [O[0] - H[0] * 0.9, v + 10.5, O[1] - H[1] * 0.9],
-        ],
-        Dc,
-        [B[0], 0, B[1]],
-      );
-    }
-    for (let [F, N] of [
-      [1, 0],
-      [0, 1],
-      [-1, 0],
-      [0, -1],
-    ]) {
-      let B = [r[0] * F + l[0] * N, r[1] * F + l[1] * N],
-        H = [-B[1], B[0]],
-        O = m(I + F * (_ / 2 + 0.09), P + N * (_ / 2 + 0.09));
-      ne(
-        i,
-        [
-          [O[0] - H[0] * 1.3, v + 19, O[1] - H[1] * 1.3],
-          [O[0] + H[0] * 1.3, v + 19, O[1] + H[1] * 1.3],
-          [O[0] + H[0] * 1.3, v + 25.5, O[1] + H[1] * 1.3],
-          [O[0], v + 26.8, O[1]],
-          [O[0] - H[0] * 1.3, v + 25.5, O[1] - H[1] * 1.3],
-        ],
-        Dc,
-        [B[0], 0, B[1]],
-      );
-    }
-    S(
-      I - _ / 2 + 0.8,
-      I + _ / 2 - 0.8,
-      P - _ / 2 + 0.8,
-      P + _ / 2 - 0.8,
-      v + 30,
-      v + 41,
-      vu,
-    );
-    for (let [F, N] of [
-      [1, 0],
-      [0, 1],
-      [-1, 0],
-      [0, -1],
-    ]) {
-      let B = [r[0] * F + l[0] * N, r[1] * F + l[1] * N],
-        H = [-B[1], B[0]],
-        O = m(I + F * (_ / 2 - 0.71), P + N * (_ / 2 - 0.71));
-      ne(
-        i,
-        [
-          [O[0] - H[0] * 1.6, v + 32, O[1] - H[1] * 1.6],
-          [O[0] + H[0] * 1.6, v + 32, O[1] + H[1] * 1.6],
-          [O[0] + H[0] * 1.6, v + 38, O[1] + H[1] * 1.6],
-          [O[0], v + 39.4, O[1]],
-          [O[0] - H[0] * 1.6, v + 38, O[1] - H[1] * 1.6],
-        ],
-        Dc,
-        [B[0], 0, B[1]],
-      );
-    }
-    S(
-      I - _ / 2 + 0.4,
-      I + _ / 2 - 0.4,
-      P - _ / 2 + 0.4,
-      P + _ / 2 - 0.4,
-      v + 41,
-      v + 42.2,
-      Za,
-    );
-    let L = m(I, P);
-    Oe(
-      i,
-      L[0],
-      L[1],
+  if (!s) return;
+  let n = s.pts,
+    i = 0,
+    a = 0;
+  for (let [u, d] of n) ((i += u / n.length), (a += d / n.length));
+  let r = n[0];
+  for (let u of n)
+    u[1] - Math.abs(u[0] - i) * 0.3 > r[1] - Math.abs(r[0] - i) * 0.3 &&
+      (r = u);
+  let l = i * 0.5 + r[0] * 0.5,
+    c = Math.min(r[1] - 6, a + 14),
+    h = s.top,
+    f = 4.6;
+  cn(o, [l, c], [1, 0], [0, 1], f, f, s.gmin, h + 12, Px);
+  for (let [u, d] of [
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+    [0, -1],
+  ]) {
+    let p = [l + u * (f + 0.09), c + d * (f + 0.09)],
+      m = [-d, u];
+    oe(
+      o,
       [
-        [3.4, v + 42.2],
-        [3.4, v + 49],
-        [3.8, v + 49],
-        [3.8, v + 49.8],
+        [p[0] - m[0] * 1.1, h + 4, p[1] - m[1] * 1.1],
+        [p[0] + m[0] * 1.1, h + 4, p[1] + m[1] * 1.1],
+        [p[0] + m[0] * 1.1, h + 9, p[1] + m[1] * 1.1],
+        [p[0], h + 10.6, p[1]],
+        [p[0] - m[0] * 1.1, h + 9, p[1] - m[1] * 1.1],
       ],
-      8,
-      Za,
+      gh,
+      [u, 0, d],
     );
-    for (let F = 0; F < 8; F++) {
-      let N = ((F + 0.5) / 8) * Math.PI * 2,
-        B = [L[0] + Math.cos(N) * 3.42, L[1] - Math.sin(N) * 3.42];
-      nn(
-        i,
-        B,
-        [Math.sin(N), Math.cos(N)],
-        [Math.cos(N), -Math.sin(N)],
-        0.65,
-        0.06,
-        v + 43.5,
-        v + 48,
-        Dc,
-      );
-    }
-    (Oe(
-      i,
-      L[0],
-      L[1],
-      [
-        [3.6, v + 49.8],
-        [2.4, v + 53.5],
-        [0.9, v + 55.5],
-      ],
-      8,
-      jy,
-    ),
-      Oe(
-        i,
-        L[0],
-        L[1],
-        [
-          [0.9, v + 55.5],
-          [0.9, v + 57.5],
-          [1.1, v + 57.5],
-          [0.12, v + 60.5],
-          [0.05, v + 62.5],
-        ],
-        8,
-        Za,
-      ),
-      Ae(i, [L[0], v + 61.6, L[1]], [L[0], v + 64, L[1]], 0.08, jy, 4),
-      Ae(
-        i,
-        [L[0] - l[0] * 0.6, v + 63.2, L[1] - l[1] * 0.6],
-        [L[0] + l[0] * 0.6, v + 63.2, L[1] + l[1] * 0.6],
-        0.07,
-        jy,
-        4,
-      ));
   }
-  {
-    let P = w,
-      I = d + _,
-      L = p - _;
-    S(P - 5, P - 1.5, I, L, x - 0.6, v + 24, vu);
-    {
-      let H = m(P - 1.48, (I + L) / 2),
-        O = [];
-      for (let D = 0; D <= 10; D++) {
-        let U = (Math.PI * D) / 10;
-        O.push([
-          H[0] - l[0] * 2.6 * Math.cos(U),
-          v + 21 + 2.6 * Math.sin(U),
-          H[1] - l[1] * 2.6 * Math.cos(U),
-        ]);
+  for (let [u, d] of [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ]) {
+    let p = [l + u * f, c + d * f];
+    (Ce(o, [p[0], s.gmin, p[1]], [p[0], h + 12, p[1]], 0.45, Px, 4),
+      Ce(o, [p[0], h + 12, p[1]], [p[0], h + 15.5, p[1]], [0.45, 0.05], Px, 4));
+  }
+  qe(
+    o,
+    l,
+    c,
+    [
+      [f - 0.4, h + 12],
+      [f - 0.4, h + 18],
+      [f - 0.1, h + 18],
+      [f - 0.1, h + 18.8],
+    ],
+    8,
+    Px,
+  );
+  for (let u = 0; u < 8; u++) {
+    let d = ((u + 0.5) / 8) * Math.PI * 2,
+      p = [l + Math.cos(d) * (f - 0.38), c - Math.sin(d) * (f - 0.38)];
+    cn(
+      o,
+      p,
+      [Math.sin(d), Math.cos(d)],
+      [Math.cos(d), -Math.sin(d)],
+      0.7,
+      0.06,
+      h + 13,
+      h + 17,
+      gh,
+    );
+    let m = [
+      l + Math.cos((u / 8) * Math.PI * 2) * (f - 0.1),
+      c - Math.sin((u / 8) * Math.PI * 2) * (f - 0.1),
+    ];
+    Ce(o, [m[0], h + 18.8, m[1]], [m[0], h + 21, m[1]], [0.25, 0.03], Px, 4);
+  }
+  (qe(
+    o,
+    l,
+    c,
+    [
+      [f - 0.2, h + 18.8],
+      [f * 0.55, h + 21.5],
+      [0.4, h + 23.2],
+    ],
+    8,
+    CL,
+  ),
+    qe(
+      o,
+      l,
+      c,
+      [
+        [0.4, h + 23.2],
+        [0.3, h + 24],
+      ],
+      6,
+      PL,
+    ),
+    Ce(o, [l, h + 24, c], [l, h + 27.5, c], 0.1, PL, 4),
+    Ce(o, [l - 0.9, h + 26.4, c], [l + 0.9, h + 26.4, c], 0.08, PL, 4),
+    t.colliders.push({
+      t: "obb",
+      x: l,
+      z: c,
+      hx: f,
+      hz: f,
+      c: 1,
+      s: 0,
+      y0: s.gmin - 3,
+      y1: h + 25,
+    }));
+}
+var FL = [];
+function gY(o, t, e) {
+  for (let [i, a, r] of nxt) {
+    let l = e.L.terrainAt(i, a);
+    (e.inst.push({
+      kind: "palm",
+      x: i,
+      y: l,
+      z: a,
+      rot: (i * 7.1 + a) % 6.28,
+      scale: r,
+    }),
+      e.colliders.push({
+        t: "circ",
+        x: i,
+        z: a,
+        r: 0.45,
+        y0: l - 1.5,
+        y1: l + 6,
+      }));
+  }
+  let s = [
+      ["conservatory", axt],
+      ["stignatius", lxt],
+      ["lonemountain", uxt],
+    ],
+    n = (i, a) => {
+      let r = new Be();
+      try {
+        a(r, e);
+      } catch (l) {
+        console.error("r20b:", i, l);
       }
-      ne(
-        i,
-        [
-          [H[0] - l[0] * 2.6, v + 18.5, H[1] - l[1] * 2.6],
-          ...O,
-          [H[0] + l[0] * 2.6, v + 18.5, H[1] + l[1] * 2.6],
-        ],
-        Dc,
-        [r[0], 0, r[1]],
-      );
-      for (let D of [-1, 1])
-        for (let U of [4.2, 8.5])
-          S(
-            P - 1.6,
-            P - 1,
-            (I + L) / 2 + D * U - 0.5,
-            (I + L) / 2 + D * U + 0.5,
-            v + 17.7,
-            v + 24,
-            Za,
-            !1,
-          );
-      S(P - 1.9, P - 0.9, I, L, v + 24, v + 25.2, Za);
-    }
-    for (let H = 0; H <= 4; H++) {
-      let O = I + ((L - I) * (H + 0.5)) / 5.5 + 0.6,
-        D = m(P - 4.96, O);
-      ne(
-        i,
-        [
-          [D[0] - l[0] * 1.5, v + 0.6, D[1] - l[1] * 1.5],
-          [D[0] + l[0] * 1.5, v + 0.6, D[1] + l[1] * 1.5],
-          [D[0] + l[0] * 1.5, v + 7.5, D[1] + l[1] * 1.5],
-          [D[0], v + 9, D[1]],
-          [D[0] - l[0] * 1.5, v + 7.5, D[1] - l[1] * 1.5],
-        ],
-        Dc,
-        [r[0], 0, r[1]],
-      );
-    }
-    for (let H = 0; H < 8; H++) {
-      let O = I + 0.8 + ((L - I - 1.6) * H) / 7,
-        D = m(P - 0.2, O);
-      Oe(
-        i,
-        D[0],
-        D[1],
-        [
-          [0.8, v],
-          [0.75, v + 13.5],
-          [1, v + 14],
-          [1, v + 14.4],
-        ],
-        10,
-        Za,
-      );
-    }
-    S(P - 1.6, P + 0.9, I - 0.4, L + 0.4, v + 14.4, v + 16.4, Za);
-    for (let H = I; H < L; H += 0.7)
-      S(P + 0.1, P + 0.6, H - 0.12, H + 0.12, v + 16.4, v + 17.4, Za, !1);
-    S(P - 1.6, P + 0.8, I - 0.4, L + 0.4, v + 17.4, v + 17.7, Za);
-    for (let H = 0; H < 6; H++)
-      S(
-        P - 0.6 + H * 0.33,
-        P - 0.3 + H * 0.33,
-        I - 0.3,
-        L + 0.3,
-        x + H * 0.18 - 0.6,
-        v - 0.05 - (5 - H) * 0.18 + 0.18,
-        Hmt,
-      );
-    let F = m(P - 1.5, I),
-      N = m(P - 1.5, L),
-      B = m(P - 1.5, (I + L) / 2);
-    ne(
-      i,
-      [
-        [F[0], v + 25.2, F[1]],
-        [N[0], v + 25.2, N[1]],
-        [B[0], v + 29, B[1]],
-      ],
-      vu,
-      [r[0], 0, r[1]],
-    );
+      return r;
+    };
+  if (typeof window > "u" || typeof document > "u" || !document.body) {
+    for (let [i, a] of s) vn(o.group, n(i, a), t.lm, "R20B_" + i);
+    return;
   }
-  nC(t, o, x - 3, v + 45);
+  for (let [i, a] of s)
+    FL.push(() => {
+      let r = e.colliders,
+        l = [];
+      e.colliders = l;
+      let c;
+      try {
+        c = n(i, a);
+      } finally {
+        e.colliders = r;
+      }
+      return (vn(o.rc?.group || o.group, c, t.lm, "R20B_" + i), l);
+    });
+}
+es();
+var vh = {
+  at: [-87.64, 89.99],
+  face: [-0.7, 0.715],
+  plinthR: 3.5,
+  plinthH: 0.55,
+  name: "R-Evolution",
+};
+function bY(o) {
+  let [t, e] = vh.at,
+    s = 24,
+    n = vh.plinthR + 2.5;
+  o.claim({
+    name: "revolution",
+    buildings: !1,
+    poly: Array.from({ length: s }, (i, a) => [
+      t + Math.cos((a / s) * 2 * Math.PI) * n,
+      e + Math.sin((a / s) * 2 * Math.PI) * n,
+    ]),
+  });
+}
+var BL = (o) => (o + 0.5) / 8,
+  dxt = (o) => `
+var<private> RV_LED: array<vec3f, 6> = array<vec3f, 6>(vec3f(0.06, 0.2, 1.0), vec3f(0.4, 0.1, 1.0), vec3f(1.0, 0.08, 0.62), vec3f(1.0, 0.05, 0.08), vec3f(0.62, 0.7, 1.0), vec3f(0.12, 0.42, 1.0));
+fn rvLed(p: f32) -> vec3f { let k = fract(p) * 6.0; let i = u32(floor(k)); let f = smoothstep(0.15, 0.85, fract(k)); return mix(RV_LED[i], RV_LED[(i + 1u) % 6u], f); }
+fn rvH(p: vec2f) -> f32 { return fract(sin(dot(p, vec2f(12.9898, 78.233))) * 43758.5453); }
+fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
+  let kind = floor(col.a * 8.0); let h = col.r;
+  let night = bc.b; let wet = bc.g;
+  let led = rvLed(bc.r);
+  // the uplights from the plinth: brightest at the feet, still strong at the head
+  let up = mix(1.35, 0.7, clamp(h, 0.0, 1.0));
+  // the mesh skin: wire in a triangular lattice (world metres on the face's dominant axis; derivatives in uniform flow)
+  let n = abs(gNw);
+  var q = wp.xz;
+  if (n.x > n.y && n.x > n.z) { q = wp.zy; } else if (n.z > n.y) { q = wp.xy; }
+  let P = 0.07; let wire = 0.45;
+  var m = 0.0; var fwm = 0.0;
+  for (var k = 0; k < 3; k++) {
+    let ang = f32(k) * 2.0943951 + 0.3;
+    let s = dot(q, vec2f(cos(ang), sin(ang))) / P;
+    let fw = max(fwidth(s), 1e-4);
+    let d = abs(fract(s + 0.5) - 0.5);
+    m = max(m, 1.0 - smoothstep(wire * 0.5 - fw, wire * 0.5 + fw, d));
+    fwm = max(fwm, fw);
+  }
+  var c = vec3f(0.6, 0.61, 0.62); var rough = 0.36; var metal = 1.0; var emit = vec3f(0.0); var a = 1.0;
+  if (kind < 0.5) {
+    // beyond where the lattice resolves: its coverage, dithered per pixel and per TAA frame (the TAA averages a veil)
+    let far = smoothstep(0.18, 0.4, fwm);
+    let cover = 0.85;
+    var dith = 1.0;
+    ${
+      o
+        ? ""
+        : `if (F.sunB.w > 0.5) {
+      let cp = F.viewProj * vec4f(wp, 1.0); let sp = (cp.xy / cp.w * 0.5 + 0.5) / F.screen.xy;
+      dith = select(0.0, 1.0, rvH(floor(sp) + vec2f(F.sunB.w * 7.13, F.sunB.w * 3.71)) < cover);
+    }`
+    }
+    a = mix(m, dith, far);
+    ${o ? "a = 1.0;" : ""}
+    c = vec3f(0.56, 0.565, 0.57) * mix(1.0, 0.88, far); rough = 0.48; metal = 0.75;
+    emit = led * night * 0.12 * up;
+  } else if (kind < 1.5) {
+    // the tubes: brighter, smoother steel; the LEDs' light along them
+    c = vec3f(0.44, 0.445, 0.45); rough = 0.4; metal = 0.9;
+    emit = led * night * 0.2 * up;
+  } else if (kind < 2.5) {
+    // the hair: a darker woven steel, bronzed
+    c = vec3f(0.3, 0.27, 0.23); rough = 0.5; metal = 0.85;
+    emit = led * night * 0.07;
+  } else if (kind < 3.5) {
+    // the plinth's polished rim, the LEDs round its foot
+    c = vec3f(0.5, 0.505, 0.51); rough = 0.28; metal = 0.85;
+    emit = led * night * 0.25 * smoothstep(0.75, 0.0, h);
+  } else {
+    c = vec3f(0.36, 0.365, 0.37); rough = 0.5; metal = 0.6;
+    emit = led * night * 0.1;
+  }
+  c *= 1.0 - 0.15 * wet;
+  gHE = emit;
+  gHK = vec4f(rough, metal, 0.0, 1.0);
+  return vec4f(c, a);
+}
+`,
+  Cx = null;
+function pxt(o) {
+  if (Cx) return Cx;
+  let t = !!globalThis.SF_LITE,
+    e = (n) => {
+      let i = new me({
+        color: 16777215,
+        roughness: 0.4,
+        metalness: 1,
+        vertexColors: !0,
+        side: n ? ls : $a,
+        alphaTest: n && !t ? 0.5 : 0,
+      });
+      return (
+        (i.userData.mbAlbedo = dxt(t)),
+        (i.userData.dayGlow = 0),
+        (i.name = n ? "revo_skin" : "revo_steel"),
+        o.night.push(i),
+        i
+      );
+    };
+  Cx = { skin: e(!0), steel: e(!1) };
+  let s = 0;
+  return (
+    o.onUpdate.push((n, i, a) => {
+      s += a;
+      let r = (s / 96) % 1;
+      ((Cx.skin.color.r = r), (Cx.steel.color.r = r));
+    }),
+    Cx
+  );
 }

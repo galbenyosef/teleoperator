@@ -1,6 +1,6 @@
 // app 25 — math
-// Lines 44173-45849 of readable/app.pretty.js (statement-aligned).
-var $lt = `
+// Lines 44354-46056 of readable/app.pretty.js (statement-aligned).
+var dut = `
 fn acesThree(c0: vec3f, exposure: f32) -> vec3f {
   var c = c0 * (exposure / 0.6);
   c = mat3x3f(vec3f(0.59719, 0.07600, 0.02840), vec3f(0.35458, 0.90834, 0.13383), vec3f(0.04823, 0.01566, 0.83777)) * c;
@@ -27,12 +27,12 @@ fn toneMap(c: vec3f) -> vec3f {
 struct FOut { @location(0) color: vec4f, @location(1) lin: vec4f };
 fn outMain(c: vec3f) -> FOut { let l = max(c, vec3f(0.0)); return FOut(vec4f(srgbOETF(toneMap(l)), 1.0), vec4f(l, 1.0)); }
 `,
-  G6 = (i) => `
+  WS = (o) => `
 const PI = 3.14159265358979;
 const RG = 6360.0;          // planet radius (km)
 const RT = 6460.0;          // top of the atmosphere (km)
 const RGM = 6360000.0;      // planet radius (m)
-const NN = ${i.N}u;         // FFT size
+const NN = ${o.N}u;         // FFT size
 const NC = 3u;              // cascades
 const DOME_EMIN = -0.035;   // dome elevation range (rad): a little below the horizon .. zenith
 const DOME_EMAX = 1.5707963;
@@ -102,7 +102,7 @@ fn transUV(r: f32, mu: f32) -> vec2f {   // Bruneton's parameterisation of trans
 }
 fn planetShadow(p: vec3f, l: vec3f) -> f32 { return select(1.0, 0.0, raySphere(p, l, RG).x > 0.0); }
 `,
-  iU = `
+  rV = `
 @group(0) @binding(1) var tTrans: texture_2d<f32>;
 @group(0) @binding(2) var tMs: texture_2d<f32>;
 @group(0) @binding(3) var tSky: texture_2d<f32>;
@@ -134,8 +134,8 @@ fn sunRadiance(d: vec3f) -> vec3f {   // the sun's disc (0.53 deg), limb darkene
   return trans(r, S.sun.y) * planetShadow(p, S.sun.xyz) * limb * (S.sun.w / 6.8e-5);
 }
 `,
-  Xlt = (i) =>
-    G6(i) +
+  put = (o) =>
+    WS(o) +
     `
 @group(0) @binding(1) var tTrans: texture_2d<f32>;
 @group(0) @binding(2) var tMs: texture_2d<f32>;
@@ -216,7 +216,7 @@ fn skyUVtoDir(uv: vec2f, r: f32) -> vec3f {
   textureStore(oSky, g.xy, vec4f(L, 1.0));
 }
 `,
-  GA = `
+  b7 = `
 fn pcg3(v0: vec3u) -> vec3u {
   var v = v0 * 1664525u + 1013904223u;
   v.x += v.y * v.z; v.y += v.z * v.x; v.z += v.x * v.y;
@@ -285,7 +285,7 @@ fn wfbm(p: vec3f, per: i32, seed: u32) -> f32 {
   textureStore(oFoam, g.xy, vec4f(sat(bubbles * 1.3 + n * 0.35 - 0.1), n, 0.0, 1.0));
 }
 `,
-  Klt = `
+  mut = `
 @group(0) @binding(5) var tBase: texture_3d<f32>;
 @group(0) @binding(6) var tDetail: texture_3d<f32>;
 @group(0) @binding(7) var tWeather: texture_2d<f32>;
@@ -330,10 +330,10 @@ fn domeDir(uv: vec2f) -> vec3f {
   return vec3f(cos(az) * cos(e), sin(e), sin(az) * cos(e));
 }
 `,
-  Ylt = (i) =>
-    G6(i) +
-    iU +
-    Klt +
+  gut = (o) =>
+    WS(o) +
+    rV +
+    mut +
     `
 @group(0) @binding(9) var<storage, read_write> AMB: Amb;
 @group(0) @binding(10) var oDome: texture_storage_2d<rgba16float, write>;
@@ -476,7 +476,7 @@ fn seaFar(d: vec3f) -> vec3f {
   textureStore(oEnv, g.xy, vec4f(c, 1.0));
 }
 `,
-  Jlt = `
+  but = `
 @group(0) @binding(0) var src: texture_2d_array<f32>;
 @group(0) @binding(1) var dst: texture_storage_2d_array<rgba16float, write>;
 @group(0) @binding(2) var src2: texture_2d_array<f32>;
@@ -493,8 +493,8 @@ fn seaFar(d: vec3f) -> vec3f {
   textureStore(dst2, g.xy, g.z, 0.25 * (textureLoad(src2, p, l, 0) + textureLoad(src2, p + vec2i(1, 0), l, 0) + textureLoad(src2, p + vec2i(0, 1), l, 0) + textureLoad(src2, p + vec2i(1, 1), l, 0)));
 }
 `,
-  Zlt = (i) =>
-    G6(i) +
+  xut = (o) =>
+    WS(o) +
     `
 @group(0) @binding(1) var<storage, read_write> H0: array<vec2f>;        // h0(k) per cascade
 @group(0) @binding(2) var<storage, read_write> FB: array<vec4f>;        // 4 complex fields per texel (2 x vec4)
@@ -567,11 +567,11 @@ fn pack(a: vec2f, b: vec2f) -> vec2f { return vec2f(a.x - b.y, a.y + b.x); }   /
 // inverse FFT of one row (or column) of one cascade, all four fields, in workgroup memory (radix 2, in place)
 var<workgroup> SA: array<vec4f, NN>;
 var<workgroup> SB: array<vec4f, NN>;
-fn rev(i: u32) -> u32 { return reverseBits(i) >> (32u - ${Math.log2(i.N)}u); }
+fn rev(i: u32) -> u32 { return reverseBits(i) >> (32u - ${Math.log2(o.N)}u); }
 fn fftLine(tid: u32, base: u32, stride: u32) {
   for (var e = tid; e < NN; e += NN / 2u) { let j = rev(e); let s = base + e * stride; SA[j] = FB[s * 2u]; SB[j] = FB[s * 2u + 1u]; }
   workgroupBarrier();
-  for (var s = 0u; s < ${Math.log2(i.N)}u; s++) {
+  for (var s = 0u; s < ${Math.log2(o.N)}u; s++) {
     let h = 1u << s; let grp = tid >> s; let pos = tid & (h - 1u);
     let i = grp * 2u * h + pos; let j = i + h;
     let ang = PI * f32(pos) / f32(h);
@@ -584,10 +584,10 @@ fn fftLine(tid: u32, base: u32, stride: u32) {
   }
   for (var e = tid; e < NN; e += NN / 2u) { let s = base + e * stride; FB[s * 2u] = SA[e]; FB[s * 2u + 1u] = SB[e]; }
 }
-@compute @workgroup_size(${i.N / 2}) fn fftRows(@builtin(local_invocation_id) l: vec3u, @builtin(workgroup_id) w: vec3u) {
+@compute @workgroup_size(${o.N / 2}) fn fftRows(@builtin(local_invocation_id) l: vec3u, @builtin(workgroup_id) w: vec3u) {
   fftLine(l.x, (w.y * NN + w.x) * NN, 1u);
 }
-@compute @workgroup_size(${i.N / 2}) fn fftCols(@builtin(local_invocation_id) l: vec3u, @builtin(workgroup_id) w: vec3u) {
+@compute @workgroup_size(${o.N / 2}) fn fftCols(@builtin(local_invocation_id) l: vec3u, @builtin(workgroup_id) w: vec3u) {
   fftLine(l.x, w.y * NN * NN + w.x, NN);
 }
 @compute @workgroup_size(8, 8, 1) fn assemble(@builtin(global_invocation_id) g: vec3u) {
@@ -607,10 +607,10 @@ fn fftLine(tid: u32, base: u32, stride: u32) {
   textureStore(oSlope, g.xy, c, vec4f(sx, sz, sx * sx, sz * sz));
 }
 `,
-  Qlt = (i) =>
-    G6(i) +
-    iU +
-    $lt +
+  vut = (o) =>
+    WS(o) +
+    rV +
+    dut +
     `
 @group(0) @binding(5) var tDisp: texture_2d_array<f32>;
 @group(0) @binding(6) var tSlope: texture_2d_array<f32>;
@@ -641,7 +641,7 @@ fn sceneFog(disp: vec3f, p: vec3f, d: f32) -> vec3f {
   if (S.fogC.w < 1.5) { return disp; }
   let dq = select(d * d, 2250000.0 + 1050.0 * (d - 1500.0), d > 1500.0);
   var od = S.fogP.z * S.fogP.z * dq + S.fogH.w * min(d, 1300.0);   // (as fogged())
-  if (S.fogP.y > S.fogP.x + 1.0) { let bay = max(smoothstep(-1500.0, -2300.0, p.z), smoothstep(600.0, 1400.0, p.x));   // (renderer fogged(): high ground, the bay)
+  if (S.fogP.y > S.fogP.x + 1.0) { let bay = ${globalThis.MB_BAY_FOG || "max(smoothstep(-1500.0, -2300.0, p.z), smoothstep(600.0, 1400.0, p.x))"};   // (renderer fogged(): high ground, the bay)
     od *= min(mix(1.0, 0.12, smoothstep(S.fogP.x, S.fogP.y, S.cam.y)), mix(1.0, 0.16, bay)); }   // (round 17: as the renderer's fogged)
   var fc = S.fogC.rgb;
   if (S.fogS.w > 0.0) {
@@ -860,7 +860,7 @@ struct SV { @builtin(position) pos: vec4f, @location(0) ndc: vec2f };
   return outMain(col);
 }
 `,
-  U6 = class {
+  VS = class {
     constructor(t, { quality: e } = {}) {
       ((this.r = t), (this.d = t.device));
       let s = e === "mobile";
@@ -904,18 +904,20 @@ struct SV { @builtin(position) pos: vec4f, @location(0) ndc: vec2f };
         (this._frame = 0),
         (this._windOff = [0, 0]),
         (this._lastT = null),
-        (this.ready = this._init()));
+        (this.ready = this._init().catch((n) => {
+          ((this.failed = n), console.warn("SkyOcean: not compiled", n));
+        })));
     }
     async _init() {
       let t = this.d,
         e = this.Q,
         s = GPUTextureUsage,
-        n = (T, E, A = {}) =>
+        n = (C, I, L = {}) =>
           t.createTexture({
-            size: T,
-            format: E,
+            size: C,
+            format: I,
             usage: s.TEXTURE_BINDING | s.STORAGE_BINDING,
-            ...A,
+            ...L,
           });
       ((this.ubuf = t.createBuffer({
         size: 768,
@@ -948,10 +950,10 @@ struct SV { @builtin(position) pos: vec4f, @location(0) ndc: vec2f };
         (this.tEnv = n([512, 256], "rgba16float", {
           mipLevelCount: this.envLevels,
         })));
-      let o = Math.log2(e.N) + 1;
-      ((this.fftLevels = o),
-        (this.tDisp = n([e.N, e.N, 3], "rgba16float", { mipLevelCount: o })),
-        (this.tSlope = n([e.N, e.N, 3], "rgba16float", { mipLevelCount: o })));
+      let i = Math.log2(e.N) + 1;
+      ((this.fftLevels = i),
+        (this.tDisp = n([e.N, e.N, 3], "rgba16float", { mipLevelCount: i })),
+        (this.tSlope = n([e.N, e.N, 3], "rgba16float", { mipLevelCount: i })));
       let a = e.N * e.N * 3;
       ((this.h0 = t.createBuffer({
         size: a * 8,
@@ -993,41 +995,69 @@ struct SV { @builtin(position) pos: vec4f, @location(0) ndc: vec2f };
           addressModeU: "repeat",
           addressModeV: "clamp-to-edge",
         })));
-      let r = (T, E) => t.createShaderModule({ code: T, label: E }),
-        l = (T, E) =>
-          t.createComputePipelineAsync({
-            layout: "auto",
-            compute: { module: T, entryPoint: E },
+      let r = new Tm(),
+        l = new Map(),
+        c = (C, I) => {
+          let L = t.createShaderModule({ code: C, label: I });
+          return (l.set(L, { code: C, label: I }), L);
+        },
+        h = (C, I) =>
+          I
+            ? t.createShaderModule({
+                ...l.get(C),
+                code:
+                  l.get(C).code +
+                  `
+// retry ${I}`,
+              })
+            : C,
+        f = (C, I) =>
+          r.run((L) =>
+            t.createComputePipelineAsync({
+              label: `so-${I}`,
+              layout: "auto",
+              compute: { module: h(C, L), entryPoint: I },
+            }),
+          ),
+        u = (C, { targets: I, ...L }) =>
+          r.run((F) => {
+            let O = h(v, F);
+            return t.createRenderPipelineAsync({
+              ...L,
+              label: `so-${C}`,
+              vertex: { module: O, entryPoint: "vs" + C },
+              fragment: { module: O, entryPoint: "fs" + C, targets: I },
+            });
           }),
-        c = r(
-          GA +
+        d = c(
+          b7 +
             `fn sat(x: f32) -> f32 { return clamp(x, 0.0, 1.0); }
 fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v - lo) * (nhi - nlo) / (hi - lo); }`,
           "so-noise",
         ),
-        h = r(Xlt(e), "so-lut"),
-        f = r(Ylt(e), "so-frame"),
-        u = r(Jlt, "so-mip"),
-        d = r(Zlt(e), "so-fft"),
-        p = r(Qlt(e), "so-draw"),
-        m = await Promise.all([
-          l(c, "base"),
-          l(c, "detail"),
-          l(c, "weather"),
-          l(c, "foamTex"),
-          l(h, "transLut"),
-          l(h, "msLut"),
-          l(h, "skyLut"),
-          l(f, "ambient"),
-          l(f, "clouds"),
-          l(f, "env"),
-          l(u, "mip"),
-          l(u, "mip2"),
-          l(d, "initSpectrum"),
-          l(d, "spectrum"),
-          l(d, "fftRows"),
-          l(d, "fftCols"),
-          l(d, "assemble"),
+        p = c(put(e), "so-lut"),
+        m = c(gut(e), "so-frame"),
+        g = c(but, "so-mip"),
+        b = c(xut(e), "so-fft"),
+        v = c(vut(e), "so-draw"),
+        x = await Promise.all([
+          f(d, "base"),
+          f(d, "detail"),
+          f(d, "weather"),
+          f(d, "foamTex"),
+          f(p, "transLut"),
+          f(p, "msLut"),
+          f(p, "skyLut"),
+          f(m, "ambient"),
+          f(m, "clouds"),
+          f(m, "env"),
+          f(g, "mip"),
+          f(g, "mip2"),
+          f(b, "initSpectrum"),
+          f(b, "spectrum"),
+          f(b, "fftRows"),
+          f(b, "fftCols"),
+          f(b, "assemble"),
         ]);
       [
         this.pBase,
@@ -1047,15 +1077,15 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         this.pRows,
         this.pCols,
         this.pAsm,
-      ] = m;
-      let g = this.r,
-        b = { count: g.samples },
-        x = [{ format: g.format }, { format: "rgba16float" }],
-        v = t.createBindGroupLayout({
+      ] = x;
+      let y = this.r,
+        M = { count: y.samples },
+        S = [{ format: y.format }, { format: "rgba16float" }],
+        w = t.createBindGroupLayout({
           entries: [
             { binding: 0, visibility: 3, buffer: { type: "uniform" } },
-            ...[1, 2, 3].map((T) => ({
-              binding: T,
+            ...[1, 2, 3].map((C) => ({
+              binding: C,
               visibility: 3,
               texture: {},
             })),
@@ -1070,13 +1100,13 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
               visibility: 3,
               texture: { viewDimension: "2d-array" },
             },
-            ...[7, 8, 9, 10, 11].map((T) => ({
-              binding: T,
+            ...[7, 8, 9, 10, 11].map((C) => ({
+              binding: C,
               visibility: 3,
               texture: {},
             })),
-            ...[12, 13, 14].map((T) => ({
-              binding: T,
+            ...[12, 13, 14].map((C) => ({
+              binding: C,
               visibility: 3,
               sampler: {},
             })),
@@ -1089,27 +1119,25 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
             { binding: 17, visibility: 3, texture: {} },
           ],
         });
-      this.drawLayout = v;
-      let y = t.createPipelineLayout({ bindGroupLayouts: [v] });
+      this.drawLayout = w;
+      let _ = t.createPipelineLayout({ bindGroupLayouts: [w] });
       [this.pOcean, this.pSky] = await Promise.all([
-        t.createRenderPipelineAsync({
-          layout: y,
-          vertex: { module: p, entryPoint: "vsOcean" },
-          fragment: { module: p, entryPoint: "fsOcean", targets: x },
+        u("Ocean", {
+          layout: _,
+          targets: S,
           primitive: { topology: "triangle-list", cullMode: "none" },
-          multisample: b,
+          multisample: M,
           depthStencil: {
             format: "depth24plus",
             depthWriteEnabled: !0,
             depthCompare: "less",
           },
         }),
-        t.createRenderPipelineAsync({
-          layout: y,
-          vertex: { module: p, entryPoint: "vsSky" },
-          fragment: { module: p, entryPoint: "fsSky", targets: x },
+        u("Sky", {
+          layout: _,
+          targets: S,
           primitive: { topology: "triangle-list" },
-          multisample: b,
+          multisample: M,
           depthStencil: {
             format: "depth24plus",
             depthWriteEnabled: !1,
@@ -1117,63 +1145,61 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           },
         }),
       ]);
-      let M = e.seg + 1,
-        S = new Uint32Array(e.seg * (e.rings - 1) * 6),
-        w = 0;
-      for (let T = 0; T < e.rings - 1; T++)
-        for (let E = 0; E < e.seg; E++) {
-          let A = T * M + E,
-            C = A + 1,
-            P = A + M,
-            I = P + 1;
-          ((S[w++] = A),
-            (S[w++] = P),
-            (S[w++] = C),
-            (S[w++] = C),
-            (S[w++] = P),
-            (S[w++] = I));
+      let z = e.seg + 1,
+        A = new Uint32Array(e.seg * (e.rings - 1) * 6),
+        T = 0;
+      for (let C = 0; C < e.rings - 1; C++)
+        for (let I = 0; I < e.seg; I++) {
+          let L = C * z + I,
+            F = L + 1,
+            O = L + z,
+            B = O + 1;
+          ((A[T++] = L),
+            (A[T++] = O),
+            (A[T++] = F),
+            (A[T++] = F),
+            (A[T++] = O),
+            (A[T++] = B));
         }
       ((this.ibuf = t.createBuffer({
-        size: S.byteLength,
+        size: A.byteLength,
         usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
       })),
-        t.queue.writeBuffer(this.ibuf, 0, S),
-        (this.nIdx = S.length),
+        t.queue.writeBuffer(this.ibuf, 0, A),
+        (this.nIdx = A.length),
         this._groups(),
         this._writeUniforms({ camera: null }));
-      let z = t.createCommandEncoder(),
-        _ = z.beginComputePass(),
-        R = (T, E) =>
+      let E = t.createCommandEncoder(),
+        R = E.beginComputePass(),
+        P = (C, I) =>
           t.createBindGroup({
-            layout: T.getBindGroupLayout(0),
-            entries: E.map(([A, C]) => ({ binding: A, resource: C })),
+            layout: C.getBindGroupLayout(0),
+            entries: I.map(([L, F]) => ({ binding: L, resource: F })),
           });
-      (_.setPipeline(this.pBase),
-        _.setBindGroup(0, R(this.pBase, [[0, this.tBase.createView()]])),
-        _.dispatchWorkgroups(32, 32, 32),
-        _.setPipeline(this.pDetail),
-        _.setBindGroup(0, R(this.pDetail, [[1, this.tDetail.createView()]])),
-        _.dispatchWorkgroups(8, 8, 8),
-        _.setPipeline(this.pWeather),
-        _.setBindGroup(0, R(this.pWeather, [[2, this.tWeather.createView()]])),
-        _.dispatchWorkgroups(64, 64),
-        _.setPipeline(this.pFoamTex),
-        _.setBindGroup(0, R(this.pFoamTex, [[3, this.tFoam.createView()]])),
-        _.dispatchWorkgroups(32, 32),
-        _.end(),
-        z
-          .beginRenderPass({
-            colorAttachments: [
-              {
-                view: this.tDome.createView(),
-                loadOp: "clear",
-                storeOp: "store",
-                clearValue: { r: 0, g: 0, b: 0, a: 1 },
-              },
-            ],
-          })
-          .end(),
-        t.queue.submit([z.finish()]),
+      (R.setPipeline(this.pBase),
+        R.setBindGroup(0, P(this.pBase, [[0, this.tBase.createView()]])),
+        R.dispatchWorkgroups(32, 32, 32),
+        R.setPipeline(this.pDetail),
+        R.setBindGroup(0, P(this.pDetail, [[1, this.tDetail.createView()]])),
+        R.dispatchWorkgroups(8, 8, 8),
+        R.setPipeline(this.pWeather),
+        R.setBindGroup(0, P(this.pWeather, [[2, this.tWeather.createView()]])),
+        R.dispatchWorkgroups(64, 64),
+        R.setPipeline(this.pFoamTex),
+        R.setBindGroup(0, P(this.pFoamTex, [[3, this.tFoam.createView()]])),
+        R.dispatchWorkgroups(32, 32),
+        R.end(),
+        E.beginRenderPass({
+          colorAttachments: [
+            {
+              view: this.tDome.createView(),
+              loadOp: "clear",
+              storeOp: "store",
+              clearValue: { r: 0, g: 0, b: 0, a: 1 },
+            },
+          ],
+        }).end(),
+        t.queue.submit([E.finish()]),
         (this._lutsDirty = !0),
         (this._specKey = ""),
         (this._full = 8),
@@ -1205,13 +1231,13 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           [4, this.sLin],
           [7, this.tSky.createView()],
         ])));
-      let o = [
+      let i = [
         [0, n],
         [1, this.tTrans.createView()],
         [3, this.tSky.createView()],
         [4, this.sLin],
       ];
-      this.gAmb = s(this.pAmb, [...o, [9, { buffer: this.amb }]]);
+      this.gAmb = s(this.pAmb, [...i, [9, { buffer: this.amb }]]);
       let a = [
         [0, n],
         [3, this.tSky.createView()],
@@ -1383,7 +1409,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
       vp: e,
       ivp: s,
       sky: n,
-      water: o,
+      water: i,
       time: a,
       W: r = 1,
       H: l = 1,
@@ -1399,19 +1425,19 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
       let g = t
           ? t.matrixWorld.elements
           : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 1],
-        b = o ? o.position.y : 0;
+        b = i ? i.position.y : 0;
       ((d[32] = g[12]), (d[33] = g[13]), (d[34] = g[14]), (d[35] = a || 0));
-      let x = n?.material?.uniforms?.sunPosition?.value ||
-          o?.material?.uniforms?.sunDirection?.value || {
+      let v = n?.material?.uniforms?.sunPosition?.value ||
+          i?.material?.uniforms?.sunDirection?.value || {
             x: 0.3,
             y: 0.3,
             z: -0.9,
           },
-        v = Math.hypot(x.x, x.y, x.z) || 1;
-      ((d[36] = x.x / v),
-        (d[37] = x.y / v),
-        (d[38] = x.z / v),
-        (d[39] = (p.gain * this._autoGain(x.y / v)) / Math.max(h, 0.001)));
+        x = Math.hypot(v.x, v.y, v.z) || 1;
+      ((d[36] = v.x / x),
+        (d[37] = v.y / x),
+        (d[38] = v.z / x),
+        (d[39] = (p.gain * this._autoGain(v.y / x)) / Math.max(h, 0.001)));
       let y = (p.windDir * Math.PI) / 180;
       ((d[40] = Math.cos(y)),
         (d[41] = Math.sin(y)),
@@ -1448,10 +1474,10 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         (d[71] = m.steps));
       let S = Math.max(g[13] - b, 0.5),
         w = Math.sqrt(2 * 636e4 * S),
-        z = w * 1.25 + 2e3,
-        _ = 0.35;
-      ((d[72] = _),
-        (d[73] = Math.pow(z / _, 1 / (m.rings - 1))),
+        _ = w * 1.25 + 2e3,
+        z = 0.35;
+      ((d[72] = z),
+        (d[73] = Math.pow(_ / z, 1 / (m.rings - 1))),
         (d[74] = m.seg),
         (d[75] = m.rings),
         (d[76] = Math.exp(-(this._dt || 1 / 60) / 2.6)),
@@ -1462,16 +1488,16 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         (d[81] = p.waterColor[1]),
         (d[82] = p.waterColor[2]),
         (d[83] = p.crest));
-      let R = this.shore,
+      let A = this.shore,
         T = this.scene;
-      (R &&
+      (A &&
         this._shoreTex &&
-        ((d[84] = R.x0),
-        (d[85] = R.z0),
-        (d[86] = 1 / (R.w * R.cell)),
-        (d[87] = 1 / (R.h * R.cell)),
+        ((d[84] = A.x0),
+        (d[85] = A.z0),
+        (d[86] = 1 / (A.w * A.cell)),
+        (d[87] = 1 / (A.h * A.cell)),
         (d[88] = 1),
-        (d[89] = R.range),
+        (d[89] = A.range),
         (d[90] = p.shoreFoam ?? 1)),
         (d[91] = p.glitter ?? 1),
         T &&
@@ -1499,7 +1525,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         d.set(E.cable, 128),
         d.set(E.deck, 160)),
         this.d.queue.writeBuffer(this.ubuf, 0, d),
-        (this._sunY = x.y / v),
+        (this._sunY = v.y / x),
         (this._camH = S));
     }
     _autoGain(t) {
@@ -1509,11 +1535,11 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           (Math.max(Math.sin(e), 0) +
             0.15 *
               Math.pow(Math.max(93.885 - (e * 180) / Math.PI, 0.1), -1.253)),
-        o =
+        i =
           Math.exp(-0.12 * Math.min(s, 40)) * Math.max(Math.sin(e), 0) +
           0.08 * Math.max(Math.sin(e + 0.1), 0.002) +
           0.004;
-      return 1.5 / Math.pow(o, 0.68);
+      return 1.5 / Math.pow(i, 0.68);
     }
     update(
       t,
@@ -1521,7 +1547,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
         camera: e,
         vp: s,
         ivp: n,
-        sky: o,
+        sky: i,
         water: a,
         time: r,
         W: l,
@@ -1537,16 +1563,16 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
       let m = this.d,
         g = this.Q,
         b = this.params,
-        x = performance.now() / 1e3;
+        v = performance.now() / 1e3;
       ((this._dt =
         this._lastT === null
           ? 1 / 60
-          : Math.min(Math.max(x - this._lastT, 1 / 240), 0.1)),
-        (this._lastT = x));
-      let v = (b.windDir * Math.PI) / 180,
+          : Math.min(Math.max(v - this._lastT, 1 / 240), 0.1)),
+        (this._lastT = v));
+      let x = (b.windDir * Math.PI) / 180,
         y = b.wind * 0.6 * b.cloudSpeed * this._dt;
-      ((this._windOff[0] += Math.cos(v) * y),
-        (this._windOff[1] += Math.sin(v) * y));
+      ((this._windOff[0] += Math.cos(x) * y),
+        (this._windOff[1] += Math.sin(x) * y));
       let M =
         [
           Math.round(e.matrixWorld.elements[13]),
@@ -1558,9 +1584,9 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           b.haze,
         ].join() +
         "|" +
-        (o?.material?.uniforms?.sunPosition?.value
+        (i?.material?.uniforms?.sunPosition?.value
           ?.toArray?.()
-          .map((R) => R.toFixed(3))
+          .map((A) => A.toFixed(3))
           .join() || "");
       (M !== this._cloudKey &&
         ((this._cloudKey = M), (this._full = Math.max(this._full, 8))),
@@ -1568,7 +1594,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           camera: e,
           vp: s,
           ivp: n,
-          sky: o,
+          sky: i,
           water: a,
           time: r,
           W: l,
@@ -1602,9 +1628,9 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           204,
           new Float32Array([this._frame % g.phases]),
         ));
-      let z = this.skip || {};
+      let _ = this.skip || {};
       ((this._warm = (this._warm || 0) + 1),
-        !z.clouds &&
+        !_.clouds &&
           this._warm > 2 &&
           (S.setPipeline(this.pClouds),
           S.setBindGroup(0, this.gClouds),
@@ -1614,23 +1640,23 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
             w,
           )),
         (this._frame += w),
-        z.env ||
+        _.env ||
           (S.setPipeline(this.pEnv),
           S.setBindGroup(0, this.gEnv),
           S.dispatchWorkgroups(64, 32),
           S.setPipeline(this.pMip),
-          this.gEnvMips.forEach((R, T) => {
-            (S.setBindGroup(0, R),
+          this.gEnvMips.forEach((A, T) => {
+            (S.setBindGroup(0, A),
               S.dispatchWorkgroups(
                 Math.ceil((512 >> (T + 1)) / 8),
                 Math.ceil((256 >> (T + 1)) / 8),
                 1,
               ));
           })));
-      let _ = [b.wind, b.windDir, b.fetch, b.spread].join();
+      let z = [b.wind, b.windDir, b.fetch, b.spread].join();
       return (
-        _ !== this._specKey &&
-          ((this._specKey = _),
+        z !== this._specKey &&
+          ((this._specKey = z),
           m.queue.writeBuffer(
             this.spBuf,
             0,
@@ -1639,7 +1665,7 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           S.setPipeline(this.pInit),
           S.setBindGroup(0, this.gInit),
           S.dispatchWorkgroups(g.N / 8, g.N / 8, 3)),
-        z.fft ||
+        _.fft ||
           (S.setPipeline(this.pSpec),
           S.setBindGroup(0, this.gSpec),
           S.dispatchWorkgroups(g.N / 8, g.N / 8, 3),
@@ -1653,9 +1679,9 @@ fn remap(v: f32, lo: f32, hi: f32, nlo: f32, nhi: f32) -> f32 { return nlo + (v 
           S.setBindGroup(0, this.gAsm),
           S.dispatchWorkgroups(g.N / 8, g.N / 8, 3),
           S.setPipeline(this.pMip2),
-          this.gFftMips.forEach((R, T) => {
+          this.gFftMips.forEach((A, T) => {
             let E = Math.max(1, g.N >> (T + 1));
-            (S.setBindGroup(0, R),
+            (S.setBindGroup(0, A),
               S.dispatchWorkgroups(Math.ceil(E / 8), Math.ceil(E / 8), 3));
           })),
         S.end(),

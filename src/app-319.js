@@ -1,207 +1,307 @@
 // app 319 — math
-// Lines 157342-157546 of readable/app.pretty.js (statement-aligned).
-function Fx(i, t) {
-  return i <= 0 ? 0 : Math.sqrt(2 * t * i) * Math.min(1, 0.45 + i / 6);
+// Lines 152745-153049 of readable/app.pretty.js (statement-aligned).
+es();
+function Xtt(o, t) {
+  let e = [],
+    s = new fe().copy(o.root.matrixWorld).invert(),
+    n = new fe(),
+    i = new dt();
+  return (
+    o.root.updateMatrixWorld(!0),
+    o.body.traverse((a) => {
+      if (
+        !a.isMesh ||
+        !a.geometry?.attributes?.position ||
+        a.name === "Underbody"
+      )
+        return;
+      let r = a.geometry.attributes.position,
+        l = r.count,
+        c = Math.max(1, Math.floor(l / 15e4));
+      for (let h = 0; h < l; h += c)
+        (i.set(r.getX(h), r.getY(h), r.getZ(h)).applyMatrix4(n),
+          i.y < t && e.push([i.x, i.y, i.z]));
+    }),
+    e
+  );
 }
-function FZ(i, t, e) {
-  return i * t < 0 && e > 0.1
-    ? 0
-    : i * t > 0
-      ? 1
-      : $s(1 - (e - 0.12) / 0.28, 0, 1);
+function eE(o, t, e, s) {
+  let n = new dt(...o),
+    i = new dt(...t),
+    a = n.distanceTo(i),
+    r = new Is(e, s, a),
+    l = new tn().setFromUnitVectors(
+      new dt(0, 0, 1),
+      i.clone().sub(n).normalize(),
+    );
+  return (
+    r.applyQuaternion(l),
+    r.translate((n.x + i.x) / 2, (n.y + i.y) / 2, (n.z + i.z) / 2),
+    r
+  );
 }
-function Hw() {
-  return {
-    on: !1,
-    gap: 0,
-    areq: 0,
-    ttc: 99,
-    vo: 0,
-    kind: "",
-    d0: 0,
-    y: 0,
-    alt: 0,
-    c: null,
-    dMin: 0,
+function RO(o, t, e) {
+  let s = new dt(...o),
+    n = new dt(...t),
+    i = new vs(e, e, s.distanceTo(n), 10, 1);
+  return (
+    i.applyQuaternion(
+      new tn().setFromUnitVectors(
+        new dt(0, 1, 0),
+        n.clone().sub(s).normalize(),
+      ),
+    ),
+    i.translate((s.x + n.x) / 2, (s.y + n.y) / 2, (s.z + n.z) / 2),
+    i
+  );
+}
+var bv = (o, t, e, s, n, i) => new Is(s, n, i).translate(o, t, e),
+  AO = (o) => {
+    o = o.index ? o.toNonIndexed() : o;
+    for (let t of Object.keys(o.attributes))
+      t !== "position" && t !== "normal" && o.deleteAttribute(t);
+    return o;
   };
-}
-function Dw(i, t, e, s, n, o, a, r, l, c = 0) {
-  ((i.on = !0),
-    (i.gap = t),
-    (i.areq = e),
-    (i.ttc = s),
-    (i.vo = n),
-    (i.kind = o),
-    (i.d0 = a),
-    (i.y = r),
-    (i.c = l),
-    (i.dMin = c));
-}
-function n3t(i, t, e, s) {
-  return Math.hypot(t - i, s - e);
-}
-var sh = new Float64Array(8);
-function Y_(i, t, e, s, n, o, a) {
-  let r = i.t;
-  if (r === "circ") {
-    let f = i.x - t,
-      u = i.z - e,
-      d = Math.abs(f * -n + u * s) - o,
-      p = Math.abs(f * s + u * n) - a,
-      m = d > 0 ? d : 0,
-      g = p > 0 ? p : 0;
-    return m * m + g * g < i.r * i.r;
+function Ktt(o, { ev: t = !1, rear: e = !0, front: s = !1 } = {}) {
+  if (!o?.root || !o.body) return null;
+  let n = o.body.position.clone(),
+    i = o.body.rotation.clone();
+  (o.body.position.set(0, 0, 0), o.body.rotation.set(0, 0, 0));
+  try {
+    return qwt(o, t, e, s);
+  } finally {
+    (o.body.position.copy(n),
+      o.body.rotation.copy(i),
+      o.root.updateMatrixWorld(!0));
   }
-  let l = sh,
-    c = 4;
-  if (r === "poly") ((l = i.pts), (c = l.length / 2));
-  else if (r === "box")
-    ((sh[0] = i.x0),
-      (sh[1] = i.z0),
-      (sh[2] = i.x1),
-      (sh[3] = i.z0),
-      (sh[4] = i.x1),
-      (sh[5] = i.z1),
-      (sh[6] = i.x0),
-      (sh[7] = i.z1));
+}
+function qwt(o, t, e, s) {
+  o.root.updateMatrixWorld(!0);
+  let n = (o.wheels || []).map((j) => {
+      let K = new dt();
+      return (
+        (j.spin || j.steer).getWorldPosition(K),
+        o.root.worldToLocal(K),
+        K
+      );
+    }),
+    i = Xtt(o, 0.5).filter(
+      (j) =>
+        !n.some(
+          (K) =>
+            Math.hypot(j[0] - K.x, j[2] - K.z) < 0.55 &&
+            Math.abs(j[0]) > Math.abs(K.x) - 0.35,
+        ),
+    );
+  if (i.length < 50) return null;
+  let a = n.map((j) => j.z),
+    r = n.length ? Math.min(...a) + 0.3 : -1 / 0,
+    l = n.length ? Math.max(...a) - 0.3 : 1 / 0,
+    c = i.filter((j) => j[2] > r && j[2] < l),
+    h = (c.length > 30 ? c : i).map((j) => j[1]).sort((j, K) => j - K),
+    f = Math.max(0.04, h[0] - 0.005),
+    u = n.length
+      ? Math.max(
+          0.28,
+          Math.min(0.42, n.reduce((j, K) => j + K.y, 0) / n.length),
+        )
+      : 0.33,
+    d = Xtt(o, 0.9).filter(
+      (j) =>
+        !n.some(
+          (K) =>
+            Math.hypot(j[0] - K.x, j[2] - K.z) < 0.55 &&
+            Math.abs(j[0]) > Math.abs(K.x) - 0.35,
+        ),
+    ),
+    p = 1 / 0,
+    m = -1 / 0;
+  for (let j of d) ((p = Math.min(p, j[2])), (m = Math.max(m, j[2])));
+  let g = 0.08,
+    b = Math.ceil((m - p) / g) + 1,
+    v = Array.from({ length: b }, () => ({ m: 1 / 0, a: 1 / 0, b: -1 / 0 }));
+  for (let j of d) {
+    let K = Math.floor((j[2] - p) / g);
+    v[K].m = Math.min(v[K].m, j[1]);
+  }
+  for (let j of d) {
+    let K = Math.floor((j[2] - p) / g);
+    j[1] < v[K].m + 0.25 &&
+      ((v[K].a = Math.min(v[K].a, j[0])), (v[K].b = Math.max(v[K].b, j[0])));
+  }
+  let x = v.map((j) => j.b - j.a > 0.5),
+    y = x.indexOf(!0),
+    M = x.lastIndexOf(!0);
+  if (y < 0 || M - y < 10) return null;
+  for (let j = y; j <= M; j++)
+    if (!x[j]) {
+      let K = j - 1;
+      for (; !x[K];) K--;
+      let nt = j + 1;
+      for (; !x[nt];) nt++;
+      let Q = (j - K) / (nt - K);
+      for (let et of ["m", "a", "b"])
+        v[j][et] = v[K][et] + (v[nt][et] - v[K][et]) * Q;
+    }
+  let S = [];
+  for (let j = y; j <= M; j++) {
+    let K = v[j];
+    S.push({
+      z: p + (j + 0.5) * g,
+      y: Math.max(f, K.m - 0.005),
+      a: K.a + 0.07,
+      b: K.b - 0.07,
+    });
+  }
+  for (let j = 1; j + 1 < S.length; j++)
+    S[j].y2 = Math.max(f, (S[j - 1].y + S[j].y + S[j + 1].y) / 3);
+  for (let j = 1; j + 1 < S.length; j++) S[j].y = S[j].y2;
+  let w = S[0].z,
+    _ = S.at(-1).z,
+    z = (w + _) / 2,
+    A = (j) =>
+      S[Math.max(0, Math.min(S.length - 1, Math.round((j - w) / g)))].y,
+    T = n.filter((j) => j.z < z),
+    E = n.filter((j) => j.z >= z),
+    R = n.length ? Math.min(...n.map((j) => Math.abs(j.x))) - 0.2 : 0.5,
+    P = T.length ? Math.min(...T.map((j) => j.z)) - u - 0.06 : w,
+    C = T.length ? Math.max(...T.map((j) => j.z)) + u + 0.06 : w,
+    I = E.length ? Math.min(...E.map((j) => j.z)) - u - 0.06 : _,
+    L = E.length ? Math.max(...E.map((j) => j.z)) + u + 0.06 : _,
+    F = n.length ? P - 0.25 : -1 / 0,
+    O = n.length ? L + 0.25 : 1 / 0;
+  for (let j of S)
+    if (
+      j.z < F &&
+      j.y - f < 0.06 &&
+      S.every((K) => K.z < j.z || K.z > F || K.y - f < 0.06)
+    ) {
+      F = j.z;
+      break;
+    }
+  for (let j = S.length - 1; j >= 0; j--) {
+    let K = S[j];
+    if (
+      K.z > O &&
+      K.y - f < 0.06 &&
+      S.every((nt) => nt.z > K.z || nt.z < O || nt.y - f < 0.06)
+    ) {
+      O = K.z;
+      break;
+    }
+  }
+  let B = [];
+  for (let j = 0; j + 1 < S.length; j++) {
+    let K = S[j],
+      nt = S[j + 1],
+      Q = (K.z + nt.z) / 2;
+    if (K.z < F || nt.z > O) continue;
+    let st = (Q > P && Q < C) || (Q > I && Q < L) ? [[-R, R]] : [[-9, 9]];
+    for (let [ot, rt] of st) {
+      let lt = Math.max(K.a, ot),
+        ht = Math.min(K.b, rt),
+        pt = Math.max(nt.a, ot),
+        ut = Math.min(nt.b, rt);
+      ht - lt < 0.05 ||
+        ut - pt < 0.05 ||
+        B.push(
+          lt,
+          K.y,
+          K.z,
+          ht,
+          K.y,
+          K.z,
+          ut,
+          nt.y,
+          nt.z,
+          lt,
+          K.y,
+          K.z,
+          ut,
+          nt.y,
+          nt.z,
+          pt,
+          nt.y,
+          nt.z,
+        );
+    }
+  }
+  let H = new Le();
+  (H.setAttribute("position", new Re(B, 3)), H.computeVertexNormals());
+  let N = f - 0.025,
+    D = n.filter((j) => j.z < (w + _) / 2),
+    U = n.filter((j) => j.z >= (w + _) / 2),
+    G = D.length ? D[0].z : w + 1,
+    W = U.length ? U[0].z : _ - 1,
+    V = 0.42,
+    $ = Math.max(G - 0.35, F + 0.1),
+    J = Math.min(W + 0.35, O - 0.1),
+    X = [
+      eE([-V, N, $], [-V, N, J], 0.09, 0.07),
+      eE([V, N, $], [V, N, J], 0.09, 0.07),
+    ];
+  for (let j of n) {
+    let K = Math.sign(j.x || 1),
+      nt = [j.x - K * 0.12, j.y - 0.08, j.z];
+    (X.push(
+      eE(nt, [K * V, N + 0.02, j.z - 0.28], 0.045, 0.03),
+      eE(nt, [K * V, N + 0.02, j.z + 0.22], 0.045, 0.03),
+    ),
+      (j.z >= (w + _) / 2 && e) || (j.z < (w + _) / 2 && s) || t
+        ? X.push(
+            RO([j.x - K * 0.1, j.y, j.z], [K * 0.16, j.y - 0.04, j.z], 0.035),
+          )
+        : X.push(
+            RO(
+              [j.x - K * 0.1, j.y - 0.02, j.z + 0.12],
+              [K * 0.3, j.y - 0.04, j.z + 0.12],
+              0.018,
+            ),
+          ));
+  }
+  let tt = [];
+  if (t)
+    (X.push(
+      bv(
+        0,
+        f - 0.02,
+        (G + W) / 2,
+        2 * V - 0.1,
+        0.04,
+        Math.max(0.8, W - G - 1.4),
+      ),
+    ),
+      X.push(bv(0, (U[0]?.y ?? u) - 0.05, W, 0.36, 0.3, 0.42)),
+      s && X.push(bv(0, (D[0]?.y ?? u) - 0.05, G, 0.34, 0.28, 0.38)));
   else {
-    let f = i.c,
-      u = -i.s,
-      d = i.s,
-      p = i.c,
-      m = 0;
-    for (let g = -1; g <= 1; g += 2)
-      for (let b = -1; b <= 1; b += 2) {
-        let x = g,
-          v = g * b;
-        ((sh[m++] = i.x + f * i.hx * x + d * i.hz * v),
-          (sh[m++] = i.z + u * i.hx * x + p * i.hz * v));
-      }
+    (X.push(bv(0, f - 0.02, G * 0.3 + W * 0.7 - 0.2, 0.8, 0.04, 0.5)),
+      X.push(bv(0, (U[0]?.y ?? u) - 0.06, W - 0.15, 0.42, 0.3, 0.7)));
+    for (let j of [-1, 1])
+      tt.push(
+        RO([j * 0.24, f - 0.03, G + 0.6], [j * 0.24, f - 0.03, W - 0.1], 0.03),
+      );
+    tt.push(
+      bv(
+        0,
+        A(Math.min(W + 0.45, _ - 0.35)) - 0.02,
+        Math.min(W + 0.45, _ - 0.35),
+        0.8,
+        0.04,
+        0.3,
+      ),
+    );
   }
-  let h = !1;
-  for (let f = 0, u = c - 1; f < c; u = f++) {
-    let d = l[f * 2],
-      p = l[f * 2 + 1],
-      m = l[u * 2],
-      g = l[u * 2 + 1];
-    p > e != g > e && t < ((m - d) * (e - p)) / (g - p) + d && (h = !h);
-    let b = (m - t) * -n + (g - e) * s,
-      x = (m - t) * s + (g - e) * n,
-      v = (d - t) * -n + (p - e) * s,
-      y = (d - t) * s + (p - e) * n;
-    if (i3t(b, x, v, y, o, a)) return !0;
-  }
-  return h;
-}
-function i3t(i, t, e, s, n, o) {
-  let a = 0,
-    r = 1,
-    l,
-    c,
-    h,
-    f = e - i,
-    u = s - t;
-  if (((l = -f), (c = i + n), l === 0)) {
-    if (c < 0) return !1;
-  } else if (((h = c / l), l < 0)) {
-    if (h > r) return !1;
-    h > a && (a = h);
-  } else {
-    if (h < a) return !1;
-    h < r && (r = h);
-  }
-  if (((l = f), (c = n - i), l === 0)) {
-    if (c < 0) return !1;
-  } else if (((h = c / l), l < 0)) {
-    if (h > r) return !1;
-    h > a && (a = h);
-  } else {
-    if (h < a) return !1;
-    h < r && (r = h);
-  }
-  if (((l = -u), (c = t + o), l === 0)) {
-    if (c < 0) return !1;
-  } else if (((h = c / l), l < 0)) {
-    if (h > r) return !1;
-    h > a && (a = h);
-  } else {
-    if (h < a) return !1;
-    h < r && (r = h);
-  }
-  if (((l = u), (c = o - t), l === 0)) {
-    if (c < 0) return !1;
-  } else if (((h = c / l), l < 0)) {
-    if (h > r) return !1;
-    h > a && (a = h);
-  } else {
-    if (h < a) return !1;
-    h < r && (r = h);
-  }
-  return a <= r;
-}
-as();
-var wp = 36,
-  HZ = 1.8,
-  Z_ = 5,
-  o3t = 22,
-  a3t = 75,
-  DZ = 14,
-  r3t = {
-    green: new $t("#1fe07a"),
-    orange: new $t("#ffa12e"),
-    red: new $t("#ff3a3a"),
-    brake: new $t("#ff3a3a"),
-  },
-  eF = 1.2,
-  Q_ = 1.3,
-  Ww = 0.7,
-  tz = 0.6,
-  Bx = (Ww + tz) / 2,
-  l3t = [-Q_, 0, -Q_, 0, Q_, Q_],
-  c3t = [Bx - Ww, Bx, Bx - Ww - tz, Bx - tz, Bx - Ww, Bx - Ww - tz],
-  h3t = [0, 1, 2, 2, 1, 3, 4, 5, 1, 5, 3, 1],
-  f3t = 0.04;
-function u3t(i) {
-  if (typeof document > "u") return null;
-  let t = 128,
-    e = document.createElement("canvas");
-  e.width = e.height = t;
-  let s = e.getContext("2d"),
-    n = t / 2,
-    o = s.createRadialGradient(n, n, t * 0.3, n, n, t * 0.5);
-  (o.addColorStop(0, "rgba(61,255,160,0.85)"),
-    o.addColorStop(0.35, "rgba(61,255,160,0.35)"),
-    o.addColorStop(1, "rgba(61,255,160,0)"),
-    (s.fillStyle = o),
-    s.fillRect(0, 0, t, t),
-    s.beginPath(),
-    s.arc(n, n, t * 0.31, 0, Math.PI * 2),
-    (s.fillStyle = "#ffffff"),
-    s.fill(),
-    (s.lineWidth = t * 0.025),
-    (s.strokeStyle = "rgba(61,255,160,1)"),
-    s.stroke(),
-    s.save(),
-    s.translate(n, n),
-    s.scale(i, 1),
-    (s.strokeStyle = "#163a2a"),
-    (s.fillStyle = "#163a2a"),
-    (s.lineWidth = t * 0.075),
-    (s.lineCap = "round"),
-    (s.lineJoin = "round"),
-    s.beginPath(),
-    s.moveTo(-t * 0.1, t * 0.2),
-    s.lineTo(-t * 0.1, -t * 0.02),
-    s.quadraticCurveTo(-t * 0.1, -t * 0.08, -t * 0.04, -t * 0.08),
-    s.lineTo(t * 0.06, -t * 0.08),
-    s.stroke(),
-    s.beginPath(),
-    s.moveTo(t * 0.17, -t * 0.08),
-    s.lineTo(t * 0.04, -t * 0.19),
-    s.lineTo(t * 0.04, t * 0.03),
-    s.closePath(),
-    s.fill(),
-    s.restore());
-  let a = new Sn(e);
-  return ((a.colorSpace = is), a);
+  let Z = new le();
+  Z.name = "Underbody";
+  let q = (j, K, nt, Q) => {
+    let et = new ye(j, new me({ color: K, roughness: nt, metalness: Q }));
+    return ((et.name = "Underbody"), (et.frustumCulled = !1), Z.add(et), et);
+  };
+  return (
+    (q(AO(H), 723724, 1, 0).material.side = ls),
+    q(wi(X.map(AO)), 855310, 0.9, 0),
+    tt.length && q(wi(tt.map(AO)), 1973791, 0.6, 0.5),
+    o.body.add(Z),
+    Z
+  );
 }

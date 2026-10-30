@@ -1,327 +1,338 @@
 // app 99 — math
-// Lines 78196-78520 of readable/app.pretty.js (statement-aligned).
-var bft = [
-    {
-      key: "broadway",
-      name: "Broadway",
-      a: [-1565, -188],
-      b: [-2142, -94],
-      twin: !0,
-      shape: "arch",
-      col: [0.8, 0.7, 0.44],
-      glow: [1, 0.86, 0.6],
-      portals: !0,
-    },
-    {
-      key: "stockton",
-      name: "Stockton Street",
-      a: [-1200.9, 582.7],
-      b: [-1244.8, 308.9],
-      mid: [[-1230.1, 400.9]],
-      twin: !1,
-      shape: "arch",
-      spring: 3,
-      rise: 1.5,
-      col: [0.8, 0.77, 0.7],
-      glow: [1, 0.62, 0.3],
-      portals: !0,
-    },
-    {
-      key: "gearyMasonic",
-      name: "Geary Boulevard",
-      a: [-4757, 1455],
-      b: [-4594, 1444],
-      twin: !0,
-      shape: "box",
-      col: [0.56, 0.55, 0.52],
-      glow: [0.95, 0.95, 0.9],
-      portals: !0,
-    },
-    {
-      key: "macarthurN",
-      name: "Veterans Boulevard",
-      a: [-6694, 327],
-      b: [-6688, -70],
-      oneway: !0,
-      left: 3.3,
-      shape: "box",
-      box: 6,
-      col: [0.74, 0.64, 0.44],
-      glow: [1, 0.78, 0.45],
-      portals: !0,
-    },
-    {
-      key: "macarthurS",
-      name: "Veterans Boulevard",
-      a: [-6695, -70],
-      b: [-6701, 327],
-      oneway: !0,
-      left: 3.3,
-      shape: "box",
-      box: 6,
-      col: [0.74, 0.64, 0.44],
-      glow: [1, 0.78, 0.45],
-      portals: !0,
-    },
-    {
-      key: "waldoN",
-      name: "Redwood Highway",
-      a: [-8100, -5299],
-      b: [-8162, -5600],
-      oneway: !0,
-      shape: "arch",
-      col: [0.78, 0.76, 0.7],
-      glow: [1, 0.86, 0.62],
-      portals: !0,
-      rainbow: !0,
-    },
-    {
-      key: "waldoS",
-      name: "Redwood Highway",
-      a: [-8194, -5593],
-      b: [-8132, -5293],
-      oneway: !0,
-      shape: "arch",
-      col: [0.78, 0.76, 0.7],
-      glow: [1, 0.86, 0.62],
-      portals: !0,
-      rainbow: !0,
-    },
-    {
-      key: "gearyFillmoreW",
-      name: "Geary Boulevard",
-      a: [-3458.4, 1231.4],
-      b: [-3483.9, 1235.5],
-      oneway: !0,
-      open: !0,
-    },
-    {
-      key: "gearyFillmoreE",
-      name: "Geary Boulevard",
-      a: [-3481.8, 1248.3],
-      b: [-3456.3, 1244.3],
-      oneway: !0,
-      open: !0,
-    },
-  ],
-  xft = 3.9,
-  vft = 2,
-  yft = 5,
-  lo = 1,
-  Ic = (i) => i.spring ?? xft,
-  Wl = (i) => i.rise ?? vft,
-  IS = [0.5, 0.47, 0.42, 0],
-  ib = [0.6, 0.57, 0.51, 0],
-  au = (i) => i.box || yft,
-  FS = (i) => (i.shape === "box" ? au(i) : Ic(i) + Wl(i)) + 0.5,
-  Lc = 14,
-  FW = (i, t, e, s) => {
-    let n = null,
-      o = s;
-    for (let a of i.juns) {
-      let r = Math.hypot(a.x - t, a.z - e);
-      r < o && ((o = r), (n = a));
+// Lines 78757-79092 of readable/app.pretty.js (statement-aligned).
+function Vq(o) {
+  let t = [],
+    e = o.terrain;
+  for (let s of Hpt) {
+    let n = Bq(o, s.a[0], s.a[1], 6),
+      i = Bq(o, s.b[0], s.b[1], 6);
+    if (!n || !i || n === i) {
+      console.warn("tunnels: ends not found", s.key);
+      continue;
     }
-    return n;
-  };
-function wft(i, t) {
-  let e = 1e9,
-    s = -1e9,
-    n = 1e9,
-    o = -1e9;
-  for (let f = 0; f < t.n; f++)
-    ((e = Math.min(e, t.P[f * 3])),
-      (s = Math.max(s, t.P[f * 3])),
-      (n = Math.min(n, t.P[f * 3 + 1])),
-      (o = Math.max(o, t.P[f * 3 + 1])));
-  let a = i.edges.filter(
-    (f) =>
-      f !== t &&
-      f.elev &&
-      f.layered &&
-      !f.tunnel &&
-      !f.inner &&
-      (() => {
-        for (let u = 0; u < f.n; u++) {
-          let d = f.P[u * 3],
-            p = f.P[u * 3 + 1];
-          if (d > e - 20 && d < s + 20 && p > n - 20 && p < o + 20) return !0;
-        }
-        return !1;
-      })(),
-  );
-  if (!a.length) return 0;
-  for (let f of a)
-    for (let u of [0, 1]) {
-      let d = i.juns[u ? f.jb : f.ja];
-      if (!d) continue;
-      let p = u ? f.n - 1 : 0,
-        m = d.y - f.P[p * 3 + 2];
-      if (!(Math.abs(m) < 0.05 || Math.abs(m) > 1))
-        for (let g = 0; g < f.n; g++) {
-          let b = u ? f.L - f.S[g] : f.S[g];
-          b < 8 &&
-            (f.P[g * 3 + 2] +=
-              m * (1 - b / 8) * (1 - b / 8) * (3 - 2 * (1 - b / 8)));
-        }
-    }
-  let r = {},
-    l = [];
-  for (let f = 1; f + 1 < t.n; f++) {
-    let u = t.P[f * 3],
-      d = t.P[f * 3 + 1],
-      p = t.P[f * 3 + 2];
-    for (let m of a)
-      (vs(m, u, d, r),
-        r.d <= r.w + t.W[f] &&
-          r.s > 0.01 &&
-          r.s < m.L - 0.01 &&
-          r.y > p - 0.5 &&
-          r.y - p < 4.6 &&
-          l.push([t.S[f], r.y - 4.8]));
-  }
-  if (!l.length) return 0;
-  let c = 0,
-    h = new Float32Array(t.n);
-  for (let f = 1; f + 1 < t.n; f++) {
-    let u = t.P[f * 3 + 2];
-    for (let [d, p] of l) u = Math.min(u, p + 0.08 * Math.abs(t.S[f] - d));
-    u < t.P[f * 3 + 2] - 0.01 &&
-      ((h[f] = t.P[f * 3 + 2] - u), (t.P[f * 3 + 2] = u), c++);
-  }
-  return (c && ((t.drop = h), (i.dropped ||= []).push(t)), c);
-}
-function Mft(i, t) {
-  let e = 1e9,
-    s = -1e9,
-    n = 1e9,
-    o = -1e9;
-  for (let h = 0; h < t.n; h++)
-    ((e = Math.min(e, t.P[h * 3])),
-      (s = Math.max(s, t.P[h * 3])),
-      (n = Math.min(n, t.P[h * 3 + 1])),
-      (o = Math.max(o, t.P[h * 3 + 1])));
-  let a = i.edges.filter(
-      (h) =>
-        h !== t &&
-        !h.tunnel &&
-        !h.inner &&
-        !h.elev &&
-        h.n > 1 &&
-        (() => {
-          for (let f = 0; f < h.n; f++) {
-            let u = h.P[f * 3],
-              d = h.P[f * 3 + 1];
-            if (u > e - 25 && u < s + 25 && d > n - 25 && d < o + 25) return !0;
-          }
-          return !1;
-        })(),
-    ),
-    r = {},
-    l = Array.from(t.W),
-    c = 0;
-  for (let h = 0; h < t.n; h++) {
-    let f = t.P[h * 3],
-      u = t.P[h * 3 + 1],
-      d = t.P[h * 3 + 2],
-      p = t.D[Math.min(h, t.n - 2) * 2],
-      m = t.D[Math.min(h, t.n - 2) * 2 + 1];
-    for (let g of a) {
-      if (
-        (vs(g, f, u, r),
-        r.s < 0.5 ||
-          r.s > g.L - 0.5 ||
-          r.y - d < 1.5 ||
-          r.d > t.W[h] + r.w + 3 ||
-          Math.abs(r.dx * p + r.dz * m) < 0.85)
-      )
-        continue;
-      let b = Math.max(4, r.d - r.w - 0.4);
-      b < l[h] && ((l[h] = b), c++);
-    }
-  }
-  if (!c) return 0;
-  for (let h = 0; h < 2; h++)
-    for (let f = 1; f < t.n; f++) {
-      let u = t.S[f] - t.S[f - 1];
-      l[f] = Math.min(l[f], l[f - 1] + u / 6);
-    }
-  for (let h = t.n - 2; h >= 0; h--) {
-    let f = t.S[h + 1] - t.S[h];
-    l[h] = Math.min(l[h], l[h + 1] + f / 6);
-  }
-  t.W0 = Float32Array.from(t.W);
-  for (let h = 0; h < t.n; h++) t.W[h] = l[h];
-  return ((t.split = !0), c);
-}
-function NW(i, t, e, s, n) {
-  let o = [];
-  for (let x = 0; x < t.n; x++) {
-    let v = e ? t.L - t.S[x] : t.S[x];
-    v <= 70 && o.push([-v, t, x]);
-  }
-  let a = s.ja === n.id;
-  for (let x = 0; x < s.n; x++) {
-    let v = a ? s.S[x] : s.L - s.S[x];
-    v <= 110 && v > 0.01 && o.push([v, s, x]);
-  }
-  if ((o.sort((x, v) => x[0] - v[0]), o.length < 6)) return 0;
-  let r = ([, x, v]) => x.P[v * 3 + 2],
-    l = o[0][0],
-    c = o[o.length - 1][0],
-    h = Math.floor(c - l) + 1,
-    f = new Float64Array(h);
-  {
-    let x = 0;
-    for (let v = 0; v < h; v++) {
-      let y = l + v;
-      for (; x + 2 < o.length && o[x + 1][0] < y;) x++;
-      let M = o[x],
-        S = o[x + 1],
-        w =
-          S[0] > M[0]
-            ? Math.min(1, Math.max(0, (y - M[0]) / (S[0] - M[0])))
-            : 0;
-      f[v] = r(M) + (r(S) - r(M)) * w;
-    }
-  }
-  let u = 9,
-    d = Math.ceil(u * 2.5),
-    p = [];
-  for (let x = -d; x <= d; x++) p.push(Math.exp((-x * x) / (2 * u * u)));
-  let m = Float64Array.from(f);
-  for (let x = 0; x < 12; x++) {
-    let v = new Float64Array(h);
-    for (let y = 0; y < h; y++) {
-      let M = 0,
-        S = 0;
-      for (let w = -d; w <= d; w++) {
-        let z = Math.min(h - 1, Math.max(0, y + w));
-        ((M += m[z] * p[w + d]), (S += p[w + d]));
+    let a = (C) =>
+        o.edges.find((I) => (I.ja === C.id || I.jb === C.id) && !I.synthetic),
+      r = a(n),
+      l = a(i),
+      c = (C, I) => (C ? C.W[C.ja === I.id ? 0 : C.n - 1] : 5);
+    for (let [C, I] of [
+      [r, n],
+      [l, i],
+    ])
+      C &&
+        (C.ja === I.id ? ((C.ta = 0), (C.s0 = 0)) : ((C.tb = 0), (C.s1 = C.L)));
+    for (let C of [r, l]) C && (Vpt(o, C), s.open || Wpt(o, C));
+    let h = [[n.x, n.z], ...(s.mid || []), [i.x, i.z]],
+      f = [0];
+    for (let C = 1; C < h.length; C++)
+      f.push(
+        f[C - 1] + Math.hypot(h[C][0] - h[C - 1][0], h[C][1] - h[C - 1][1]),
+      );
+    let u = f[f.length - 1],
+      d = [],
+      p = [],
+      m = [],
+      g = c(r, n),
+      b = c(l, i);
+    for (let C = 0; C + 1 < h.length; C++) {
+      let I = Math.max(1, Math.ceil((f[C + 1] - f[C]) / 6));
+      for (let L = 0; L < I; L++) {
+        let F = L / I,
+          O = f[C] + (f[C + 1] - f[C]) * F;
+        (d.push([
+          h[C][0] + (h[C + 1][0] - h[C][0]) * F,
+          h[C][1] + (h[C + 1][1] - h[C][1]) * F,
+        ]),
+          p.push(O));
       }
-      v[y] = M / S;
     }
-    for (let y = 0; y < h; y++) m[y] = Math.min(m[y], v[y]);
+    (d.push(h[h.length - 1]), p.push(u));
+    let v = d.length,
+      x = new Float32Array(v * 3),
+      y = new Float32Array(v),
+      M = (r || l)?.lanes ?? 2,
+      S = s.open
+        ? null
+        : Math.min(
+            Math.max(g, b),
+            Math.max(1, M) * 3.4 * ((r || l)?.oneway ? 0.5 : 1) +
+              (s.twin ? 1.6 : 0.3),
+          ),
+      w = (C, I) => (C ? C.P[(C.ja === I.id ? 0 : C.n - 1) * 3 + 2] : I.y),
+      _ = w(r, n),
+      z = w(l, i);
+    if (
+      (d.forEach((C, I) => {
+        let L = p[I] / u;
+        ((x[I * 3] = C[0]),
+          (x[I * 3 + 1] = C[1]),
+          (x[I * 3 + 2] = _ + (z - _) * L),
+          (y[I] =
+            S === null
+              ? g + (b - g) * L
+              : S +
+                (g - S) * Math.max(0, 1 - p[I] / 12) +
+                (b - S) * Math.max(0, 1 - (u - p[I]) / 12)));
+      }),
+      !s.open)
+    ) {
+      let C = Ok(s) + 0.4,
+        I = (S ?? Math.max(g, b)) + wo + 0.5,
+        L = {},
+        F = [],
+        O = (i.x - n.x) / u,
+        B = (i.z - n.z) / u,
+        H = (o._edgeBox ||= o.edges.map((N) => {
+          let D = 1e9,
+            U = -1e9,
+            G = 1e9,
+            W = -1e9;
+          for (let V = 0; V < N.n; V++)
+            ((D = Math.min(D, N.P[V * 3])),
+              (U = Math.max(U, N.P[V * 3])),
+              (G = Math.min(G, N.P[V * 3 + 1])),
+              (W = Math.max(W, N.P[V * 3 + 1])));
+          return [D, U, G, W];
+        }));
+      for (let N of o.edges) {
+        if (N.layered || N.inner || N.synthetic || N === r || N === l) continue;
+        let [D, U, G, W] = H[N.id] || [1e9, -1e9, 1e9, -1e9];
+        if (!(
+          U < Math.min(n.x, i.x) - 20 ||
+          D > Math.max(n.x, i.x) + 20 ||
+          W < Math.min(n.z, i.z) - 20 ||
+          G > Math.max(n.z, i.z) + 20
+        ))
+          for (let V = 0; V <= N.L; V += 2) {
+            Ot(N, V, L);
+            for (let $ = -1; $ <= 1; $ += 0.5) {
+              let J = L.x + L.nx * L.w * $,
+                X = L.z + L.nz * L.w * $,
+                tt = J - n.x,
+                Z = X - n.z,
+                q = tt * O + Z * B,
+                j = -tt * B + Z * O;
+              q > 4 &&
+                q < u - 4 &&
+                Math.abs(j) < I + 2 &&
+                F.push([q, L.y - C, N.name || N.cls, N.id]);
+            }
+          }
+      }
+      if (globalThis.SF_TUNDBG) {
+        let N = {};
+        for (let D of F) {
+          let U = D[2] + "#" + D[3];
+          N[U] = N[U]
+            ? [
+                Math.min(N[U][0], D[0]),
+                Math.max(N[U][1], D[0]),
+                Math.min(N[U][2], D[1]),
+              ]
+            : [D[0], D[0], D[1]];
+        }
+        console.log("tunnel caps", s.key, JSON.stringify(N));
+      }
+      for (let N = 0; N < v; N++) {
+        let D = x[N * 3 + 2];
+        for (let [U, G] of F) D = Math.min(D, G + 0.09 * Math.abs(p[N] - U));
+        x[N * 3 + 2] = Math.max(D, _ - 0.09 * p[N], z - 0.09 * (u - p[N]));
+      }
+    }
+    let A = Tr({ id: o.edges.length, P: x, W: y }),
+      T = r || l;
+    (Object.assign(A, {
+      ta: 0,
+      tb: 0,
+      sw: 0,
+      laneW: T?.laneW ?? 3.3,
+      maxspeed: T?.maxspeed ?? 15,
+      ja: n.id,
+      jb: i.id,
+      name: s.name,
+      way: 0,
+      dist: T?.dist ?? "",
+      rank: T?.rank ?? 5,
+      lanes: T?.lanes ?? 2,
+      flags: (T ? T.flags & 8 : 0) | (s.oneway ? 8 : 0) | 1 | 2 | 4,
+      cls: T?.cls ?? "primary",
+      median: s.twin ? 1 : 0,
+      trolley: !1,
+      stops: 0,
+      layer: -1,
+      elev: !1,
+      inner: !1,
+      sunk: !0,
+      layered: !0,
+      hwy: !1,
+      synthetic: !0,
+      tunnel: s.key,
+      tcode: 0,
+    }),
+      (A.oneway = !!(A.flags & 8)),
+      (A.s0 = 0),
+      (A.s1 = A.L),
+      o.edges.push(A),
+      s.key === "broadway" && (r && Nq(o, A, 0, r, n), l && Nq(o, A, 1, l, i)));
+    for (let C of [n, i]) C.type === "end" && (C.type = "j");
+    let E = (i.x - n.x) / u,
+      R = (i.z - n.z) / u,
+      P = {
+        tn: s,
+        E: A,
+        Ja: n,
+        Jb: i,
+        L: A.L,
+        ux: E,
+        uz: R,
+        W: S ?? A.W[0],
+        roof: Ok(s),
+      };
+    ((A.tunnelR = P),
+      (P.bores = s.open
+        ? []
+        : s.twin
+          ? [
+              { v0: 0.6, v1: P.W + wo },
+              { v0: -P.W - wo, v1: -0.6 },
+            ]
+          : [{ v0: s.left ? -s.left : -P.W - wo, v1: P.W + wo }]),
+      s.open || Dq(o, P),
+      t.push(P));
   }
-  let g = (x) => {
-      let v = Math.max(0, Math.min(h - 1, x - l)),
-        y = Math.min(h - 2, Math.floor(v)),
-        M = v - y;
-      return [f[y] + (f[y + 1] - f[y]) * M, m[y] + (m[y + 1] - m[y]) * M];
-    },
-    b = 0;
-  for (let x of o) {
-    let [v, y] = g(x[0]),
-      M = Math.min(1, (x[0] - l) / 15, (c - x[0]) / 15),
-      S = v + (Math.min(v, y) - v) * Math.max(0, M),
-      w = x[2] * 3 + 2;
-    ((b = Math.max(b, v - S)), (x[1].P[w] += S - v));
+  for (let s of o.highways?.presidio || []) {
+    let n = s.tunnel === "n1" ? [30, 0] : s.tunnel === "s2" ? [0, 30] : [0, 0],
+      i = {},
+      a = [],
+      r = [];
+    for (
+      let m = n[0];
+      Ot(s, m, i), a.push(i.x, i.z, i.y), r.push(i.w), !(m >= s.L - n[1]);
+      m = Math.min(m + 6, s.L - n[1])
+    );
+    let l = Tr({ id: -1, P: new Float32Array(a), W: new Float32Array(r) });
+    ((l.s0 = 0), (l.s1 = l.L));
+    let c = { x: l.P[0], z: l.P[1], y: l.P[2] },
+      h = {
+        x: l.P[(l.n - 1) * 3],
+        z: l.P[(l.n - 1) * 3 + 1],
+        y: l.P[(l.n - 1) * 3 + 2],
+      },
+      f = l.L,
+      u = Math.max(...s.W),
+      d = Math.hypot(h.x - c.x, h.z - c.z),
+      p = {
+        tn: Hq,
+        E: l,
+        Ja: c,
+        Jb: h,
+        L: f,
+        ux: (h.x - c.x) / d,
+        uz: (h.z - c.z) / d,
+        W: u,
+        roof: Ok(Hq),
+        noClip: !0,
+      };
+    ((p.bores = [{ v0: -u - wo, v1: u + wo }]),
+      (s.tunnelR = p),
+      Dq(o, p),
+      t.push(p));
   }
-  {
-    let x = e ? t.n - 1 : 0,
-      [v, y] = g(0),
-      M = Math.min(v, y);
-    ((t.P[x * 3 + 2] = M), (s.P[(a ? 0 : s.n - 1) * 3 + 2] = M), (n.y = M));
+  return ((o.tunnels = t), $q(o), Iq(o), $pt(o), qpt(o), t);
+}
+var Hq = {
+    key: "presidio",
+    name: "Presidio Parkway",
+    twin: !1,
+    shape: "box",
+    box: 6.4,
+    col: [0.74, 0.64, 0.44],
+    glow: [1, 0.78, 0.45],
+    portals: "hood",
+    lampRows: [-0.45, 0.45],
+    lampStep: 4,
+  },
+  yp = (o, t, e) => {
+    let s = t - o.Ja.x,
+      n = e - o.Ja.z;
+    return [s * o.ux + n * o.uz, s * -o.uz + n * o.ux];
+  },
+  $b = {};
+function wp(o, t, e) {
+  let s = o.E;
+  if ((ys(s, t, e, $b), $b.s > 0.01 && $b.s < s.L - 0.01)) return [$b.s, $b.v];
+  let n = $b.s >= s.L - 0.01,
+    i = n ? s.n - 2 : 0,
+    a = s.D[i * 2],
+    r = s.D[i * 2 + 1],
+    l = s.P[(n ? s.n - 1 : 0) * 3],
+    c = s.P[(n ? s.n - 1 : 0) * 3 + 1];
+  return [
+    (n ? s.L : 0) + (t - l) * a + (e - c) * r,
+    (t - l) * -r + (e - c) * a,
+  ];
+}
+function rh(o, t, e) {
+  if (!o.lim) return t;
+  let s = Math.min(o.lim[0].length - 1, Math.max(0, Math.round(e / 2)));
+  return {
+    v0: t.v0 < -0.7 ? Math.max(t.v0, -o.lim[0][s]) : t.v0,
+    v1: t.v1 > 0.7 ? Math.min(t.v1, o.lim[1][s]) : t.v1,
+  };
+}
+function hw(o, t, e, s, n = 0.05) {
+  if (o.tn.open) return !1;
+  let [i, a] = wp(o, t, s);
+  if (i < 0.5 || i > o.L - 0.5) return !1;
+  let r = sl(o, i);
+  if (e < r - 0.06 + n) return !1;
+  for (let l of o.bores) {
+    let c = rh(o, l, i);
+    if (a < c.v0 + n || a > c.v1 - n) continue;
+    if (o.tn.shape === "box") return e < r + Gu(o.tn) - n;
+    let h = (c.v0 + c.v1) / 2,
+      f = (c.v1 - c.v0) / 2,
+      u = (a - h) / f;
+    return e < r + ch(o.tn) + hc(o.tn) * Math.sqrt(Math.max(0, 1 - u * u)) - n;
   }
-  return ((t.crest = (t.crest || 0) + b), b);
+  return !1;
+}
+var sl = (o, t) => {
+    let e = o.E,
+      s = Math.min(e.L, Math.max(0, t)),
+      n = 0;
+    for (; n + 2 < e.n && e.S[n + 1] < s;) n++;
+    let i = e.S[n],
+      a = e.S[n + 1],
+      r = a > i ? (s - i) / (a - i) : 0;
+    return e.P[n * 3 + 2] + (e.P[n * 3 + 5] - e.P[n * 3 + 2]) * r;
+  },
+  OP = (o) => (o.tn.shape === "box" ? Gu(o.tn) : ch(o.tn) + hc(o.tn)),
+  Xb = {};
+function Wq(o, t, e, s, n = null) {
+  if (!o?.tubes || !o.inTube?.(t, e)) return null;
+  for (let i of o.tubes) {
+    if (i.tn.open) continue;
+    let a = i.box;
+    if (a && (t < a[0] || t > a[2] || e < a[1] || e > a[3])) continue;
+    let [r, l] = wp(i, t, e);
+    if (r < 0 || r > i.L) continue;
+    ys(i.E, t, e, Xb);
+    let c = Xb.y;
+    if (!(s < c - 1.5 || s > c + OP(i) - 0.3))
+      for (let h of i.bores) {
+        let f = rh(i, h, r);
+        if (l < f.v0 - 0.05 || l > f.v1 + 0.05) continue;
+        let u = h.v0 + wo,
+          d = h.v1 - wo,
+          p =
+            (l < u && !(Math.abs((f.v0 + u) / 2) < 1.5 || u - f.v0 < 0.2)) ||
+            (l > d && !(Math.abs((d + f.v1) / 2) < 1.5 || f.v1 - d < 0.2));
+        return (
+          n && ((n.dx = Xb.gy * Xb.dx), (n.dz = Xb.gy * Xb.dz)),
+          c + (p ? 0.25 : 0)
+        );
+      }
+  }
+  return null;
 }

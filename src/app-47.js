@@ -1,291 +1,334 @@
 // app 47 — math
-// Lines 60119-60407 of readable/app.pretty.js (statement-aligned).
-function Gct({ B: i, A: t }, e = {}) {
-  let s = i.R("p39"),
-    n = s.solid,
-    o = X1("n", (ae[8] + ae[9]) / 2 + 4),
-    a = 86,
-    r = a / 2,
-    l = 320,
-    c = 3;
-  o.box(n, -(e.a0 || 0), -r, l, r, 1.8, c, dR, { bottom: !0 });
-  for (let m = 4; m < l; m += 7)
-    for (let g of [-r + 0.5, r - 0.5, -14, 14]) {
-      let b = o.L(m, g);
-      es(n, b[0], b[1], 0.3, -6, 1.8, 6, qg);
-    }
-  for (let m = -r; m <= r; m += 7) {
-    let g = o.L(l - 0.5, m);
-    es(n, g[0], g[1], 0.3, -6, 1.8, 6, qg);
-  }
-  let h = Ha("pier39"),
-    f = At([0.25, 0.22, 0.2], Tt.tar),
-    u = At([0.3, 0.25, 0.2], Tt.planks),
-    d = [
-      [-r + 2, -r + 16, 14, 290],
-      [r - 16, r - 2, 14, 290],
-      [-9, 9, 30, 205],
-    ];
-  for (let [m, g, b, x] of d) {
-    let v = b,
-      y = 0;
-    for (; v < x - 10;) {
-      let M = Math.min(x - v, 30 + ((y * 7) % 3) * 8),
-        S = v + M,
-        w = 8.5 + (y % 3 === 1, 0);
-      (o.wall(s.atlas, v, m, S, m, c, c + w, h, y * 5),
-        o.wall(s.atlas, S, g, v, g, c, c + w, h, y * 5 + 3),
-        o.wall(s.atlas, v, g, v, m, c, c + w, h, 2),
-        o.wall(s.atlas, S, m, S, g, c, c + w, h, 9));
-      let z = o.L(v, m),
-        _ = o.L(S, g),
-        R = Math.min(z[0], _[0]),
-        T = Math.max(z[0], _[0]),
-        E = Math.min(z[1], _[1]),
-        A = Math.max(z[1], _[1]);
-      X5(
-        n,
-        R,
-        E,
-        T,
-        A,
-        c + w,
-        3.4,
-        f,
-        !1,
-        At([0.34, 0.3, 0.26], Tt.planks),
-        0.7,
-      );
-      for (let [C, P] of [
-        [m, -1],
-        [g, 1],
-      ]) {
-        if (Math.abs(C) > r - 3) continue;
-        let I = C + P * 2.4;
-        xs(
-          n,
-          o.P(v, c + 3.6, C),
-          o.P(S, c + 3.6, C),
-          o.P(S, c + 3.2, I),
-          o.P(v, c + 3.2, I),
-          f,
-          o.P((v + S) / 2, c + 40, C + P * 20),
-        );
-        for (let L = v + 2; L < S; L += 5) {
-          let F = o.P(L, c, I - P * 0.2);
-          es(n, F[0], F[2], 0.12, c, c + 3.25, 6, u);
-        }
-      }
-      ((v = S + (y % 2 ? 7 : 10)), y++);
-    }
-  }
+// Lines 60639-60970 of readable/app.pretty.js (statement-aligned).
+function W7({ B: o, A: t, colliders: e }, s = {}) {
+  let n = o.R("wharf"),
+    i = n.solid,
+    a = s.y ?? 3,
+    [r, l] = s.wheel || [he[6], pe[0] - ns[0].hw - ns[0].sw - 5.5],
+    c = t.add("crabwheel", 1024, 1024, fk);
   {
-    let m = At([0.28, 0.2, 0.13], Tt.planks);
-    for (let x of [-1, 1]) {
-      let v = o.P(1.5, c, x * 9);
-      Ms(n, v[0] - 0.5, c, v[2] - 0.5, v[0] + 0.5, c + 9, v[2] + 0.5, m);
+    let m = a + 8.2,
+      g = 3.1,
+      b = Rt([0.05, 0.14, 0.32], Tt.metal);
+    (os(i, r, l, 0.22, a + 0.1, m - 0.5, 8, b),
+      os(i, r, l, 0.45, a + 0.1, a + 0.6, 8, Rt([0.4, 0.4, 0.38], Tt.conc)));
+    for (let x of [1, -1])
+      ri(n.text, t, c, r + x * 0.16, m, l, x, 0, g * 2, g * 2, Za(!0));
+    let v = [];
+    for (let x = 0; x <= 36; x++) {
+      let y = (x / 36) * Math.PI * 2;
+      v.push([r, m + Math.sin(y) * g, l + Math.cos(y) * g]);
     }
-    o.box(n, 1, -10, 2, 10, c + 7.2, c + 9.4, m);
-    let g = t.word("PIER 39", {
-        font: "bold 120px Georgia, serif",
-        h: 140,
-        spacing: 8,
-      }),
-      b = o.P(0.95, c + 8.3, 0);
-    si(s.text, t, g, b[0], b[1], b[2], 0, 1, 7, null, oo([0.97, 0.9, 0.7], !0));
+    Qi(i, v, 0.14, 6, Rt([0.8, 0.75, 0.6], Tt.metal));
+    for (let x = 0; x < 8; x++) {
+      let y = (x / 8) * Math.PI * 2 + Math.PI / 8,
+        M = [r, m + Math.sin(y) * g, l + Math.cos(y) * g],
+        S = [r, m + Math.sin(y) * (g + 0.9), l + Math.cos(y) * (g + 0.9)];
+      Qi(
+        i,
+        [M, [(M[0] + S[0]) / 2, (M[1] + S[1]) / 2, (M[2] + S[2]) / 2], S],
+        [0.1, 0.16, 0.12],
+        6,
+        Rt([0.45, 0.27, 0.12], Tt.planks),
+      );
+    }
+    e.push({ t: "circ", x: r, z: l, r: 0.6 });
   }
-  {
-    let m = o.P(245, c, 0),
-      g = m[0],
-      b = m[2],
-      x = At([0.55, 0.06, 0.05], Tt.paint),
-      v = At([0.75, 0.55, 0.2], Tt.metal),
-      y = At([0.85, 0.82, 0.75], Tt.paint),
-      M = At([1, 0.85, 0.55], Tt.lamp);
-    Gs(
-      n,
-      g,
-      b,
-      [
-        [9.5, c],
-        [9.5, c + 0.6],
-        [9.2, c + 0.6],
-      ],
-      24,
-      y,
-    );
-    for (let [S, w] of [
-      [c + 0.6, 9.2],
-      [c + 4.2, 9],
-    ]) {
-      Gs(
-        n,
-        g,
-        b,
-        [
-          [w, S],
-          [w, S + 0.35],
-        ],
-        24,
-        v,
-      );
-      for (let z = 0; z < 24; z++) {
-        let _ = (z / 24) * Math.PI * 2,
-          R = g + Math.cos(_) * (w - 0.4),
-          T = b + Math.sin(_) * (w - 0.4);
-        es(n, R, T, 0.08, S, S + 3.5, 5, v);
-      }
-      for (let z = 0; z < 18; z++) {
-        let _ = (z / 18) * Math.PI * 2 + (S > c + 1 ? 0.17 : 0),
-          R = g + Math.cos(_) * (w - 1.8),
-          T = b + Math.sin(_) * (w - 1.8);
-        (Us(
-          n,
-          R,
-          T,
-          -Math.sin(_),
-          Math.cos(_),
-          0.8,
-          0.22,
-          S + 1,
-          S + 1.8,
-          z % 3 ? y : At([0.35, 0.2, 0.1], Tt.paint),
-        ),
-          Us(
-            n,
-            R - Math.sin(_) * 0.75,
-            T + Math.cos(_) * 0.75,
-            -Math.sin(_),
-            Math.cos(_),
-            0.2,
-            0.18,
-            S + 1.6,
-            S + 2.3,
-            z % 3 ? y : At([0.35, 0.2, 0.1], Tt.paint),
-          ),
-          es(n, R, T, 0.05, S + 0.35, S + 3.5, 4, v));
-      }
-      Gs(
-        n,
-        g,
-        b,
-        [
-          [w + 0.15, S + 3.5],
-          [w + 0.15, S + 3.65],
-        ],
-        24,
-        M,
-      );
-    }
-    (es(n, g, b, 2.6, c + 0.6, c + 8.6, 12, At([0.7, 0.62, 0.45], Tt.paint)),
-      Gs(
-        n,
-        g,
-        b,
-        [
-          [9.3, c + 7.8],
-          [9.6, c + 8.4],
-          [9.6, c + 9.2],
-          [7.5, c + 10.6],
-          [3, c + 12.2],
-          [0.6, c + 12.8],
-          [0.5, c + 13.8],
-          [0.05, c + 14.3],
-        ],
-        24,
-        x,
+  let h = [
+      [he[6] - 58, 0],
+      [he[6] - 34, 1],
+      [he[6] + 26, 2],
+      [he[6] + 50, 3],
+    ],
+    f = ["FRESH CRAB", "CRAB \xB7 SHRIMP", "CHOWDER", "COCKTAILS \xB7 CRAB"];
+  for (let [m, g] of h) {
+    let b = Ye.z + (s.real ? 0.2 : 1.2),
+      v = b + 3.2,
+      x = m - 3.5,
+      y = m + 3.5;
+    if (s.real && [x - 0.2, m, y + 0.2].some((S) => m0(S, v + 0.3) === "road"))
+      continue;
+    (zs(i, x, a, b, y, a + 1, v, Rt([0.7, 0.7, 0.68], Tt.metal)),
+      zs(
+        i,
+        x + 0.1,
+        a + 1,
+        b + 0.2,
+        y - 0.1,
+        a + 1.12,
+        v - 0.3,
+        Rt([0.85, 0.9, 0.95], Tt.paint),
       ));
-    for (let S = 0; S < 12; S++) {
-      let w = (S / 12) * Math.PI * 2 + 0.13;
-      ss(
-        n,
-        [g + Math.cos(w) * 9.62, c + 9.25, b + Math.sin(w) * 9.62],
-        [g + Math.cos(w) * 1, c + 12.9, b + Math.sin(w) * 1],
-        0.9,
-        0.05,
-        y,
+    for (let S = 0; S < 9; S++) {
+      let w = x + 0.6 + S * 0.7,
+        _ = b + 0.8 + (S % 2) * 1.2;
+      Vs(
+        i,
+        w,
+        _,
+        1,
+        0,
+        0.22,
+        0.17,
+        a + 1.12,
+        a + 1.28,
+        Rt([0.6, 0.1, 0.04], Tt.paint),
       );
     }
-    Gs(
-      n,
-      g,
-      b,
-      [
-        [9.7, c + 8.9],
-        [9.7, c + 9.1],
-      ],
-      24,
+    for (let S of [x + 0.8, y - 0.8])
+      os(
+        i,
+        S,
+        b + 2.4,
+        0.45,
+        a + 1,
+        a + 1.9,
+        10,
+        Rt([0.55, 0.55, 0.55], Tt.metal),
+      );
+    for (let [S, w] of [
+      [x, b],
+      [y, b],
+      [x, v + 0.6],
+      [y, v + 0.6],
+    ])
+      os(i, S, w, 0.06, a, a + 3.3, 5, Rt([0.7, 0.7, 0.7], Tt.metal));
+    for (let S = 0; S < 10; S++) {
+      let w = x - 0.3 + S * 0.76,
+        _ = w + 0.76;
+      Ms(
+        i,
+        [w, a + 3.3, b - 0.3],
+        [_, a + 3.3, b - 0.3],
+        [_, a + 2.8, v + 1.4],
+        [w, a + 2.8, v + 1.4],
+        Rt(
+          S % 2
+            ? [0.8, 0.8, 0.78]
+            : g % 2
+              ? [0.5, 0.05, 0.04]
+              : [0.05, 0.2, 0.08],
+          Tt.paint,
+        ),
+        [m, a + 30, v + 20],
+      );
+    }
+    let M = t.word(f[g], {
+      font: "bold 110px Arial, Helvetica, sans-serif",
+      h: 130,
+    });
+    (ri(
+      n.text,
+      t,
       M,
+      m,
+      a + 3.7,
+      v + 1.45,
+      0,
+      1,
+      6.2,
+      null,
+      xo(g % 2 ? [1, 0.25, 0.15] : [1, 0.85, 0.3], !0),
+    ),
+      zs(
+        i,
+        m - 3.3,
+        a + 3.3,
+        v + 1.3,
+        m + 3.3,
+        a + 4.1,
+        v + 1.42,
+        Rt([0.08, 0.08, 0.08], Tt.paint),
+      ),
+      e.push({ t: "box", x0: x - 0.2, z0: b - 0.2, x1: y + 0.2, z1: v + 0.2 }));
+  }
+  if (s.real) return;
+  let u = ["SEAFOOD", "CRAB HOUSE", "FISH GROTTO", "CHOWDER", "OYSTERS"],
+    d = 0;
+  for (let m = he[6] + 10; m < he[7] - 2; m += 22, d++) {
+    let g = m + 20,
+      b = Ye.z - 1.5,
+      v = b - 18,
+      x = 9 + (d % 2) * 1.5,
+      y = [
+        [1, 1, 1],
+        [0.95, 1, 1.05],
+        [1.05, 1, 0.95],
+      ][d % 3];
+    zs(i, m - 1, 1.6, v - 1, g + 1, a, Ye.z, V7, { bottom: !0 });
+    for (let z = m; z <= g; z += 5)
+      for (let A of [v - 0.5, (v + b) / 2]) os(i, z, A, 0.3, -6, 1.6, 6, Lb);
+    let M = Ja("wharf", y);
+    (n.atlas.wall(m, b, g, b, a, a, a + x, a + x, M, d * 7, a),
+      n.atlas.wall(g, v, m, v, a, a, a + x, a + x, M, d * 3, a),
+      n.atlas.wall(m, v, m, b, a, a, a + x, a + x, M, 5, a),
+      n.atlas.wall(g, b, g, v, a, a, a + x, a + x, M, 11, a),
+      zs(
+        i,
+        m - 0.4,
+        a + x,
+        v - 0.4,
+        g + 0.4,
+        a + x + 1,
+        b + 0.4,
+        Rt([0.72, 0.7, 0.64], Tt.paint),
+      ));
+    let S = t.word(u[d % u.length], {
+        font: 'bold 120px "Arial Black", Arial, sans-serif',
+        h: 140,
+      }),
+      w = 11,
+      _ = (m + g) / 2;
+    for (let [z, A] of [
+      [_ - w / 2 + 0.5, b - 3],
+      [_ + w / 2 - 0.5, b - 3],
+    ])
+      rs(i, [z, a + x + 1, A], [z, a + x + 3.6, A], 0.12, 0.12, Cb);
+    ri(
+      n.text,
+      t,
+      S,
+      _,
+      a + x + 2.6,
+      b - 2.9,
+      0,
+      1,
+      w,
+      null,
+      xo(d % 2 ? [1, 0.3, 0.15] : [0.95, 0.9, 0.75], !0),
     );
   }
-  for (let m = 20; m < 300; m += 24)
-    for (let g of [-1, 1])
-      if ((Ac(n, o, m, g * (r - 1.2), -g), (m / 24) % 2 < 1)) {
-        let b = o.P(m + 12, c, g * (r - 0.7));
-        (es(n, b[0], b[2], 0.09, c, c + 4.5, 6, Wg, 0.07),
-          es(
-            n,
-            b[0],
-            b[2],
-            0.25,
-            c + 4.4,
-            c + 5,
-            6,
-            At([1, 0.85, 0.6], Tt.lamp),
-            0.3,
-          ));
-      }
-  (Nr(n, o.L(0, -r), o.L(l, -r), c, Wg),
-    Nr(n, o.L(0, r), o.L(l, r), c, Wg),
-    Nr(n, o.L(l, -r), o.L(l, r), c, Wg));
-  let p = At([0.38, 0.38, 0.35], Tt.conc);
-  for (let m = 0; m < 7; m++) {
-    let g = 150 + m * 17,
-      b = -r - 6 - (m % 2) * 16,
-      x = 14,
-      v = 6;
-    o.box(n, g, b - v / 2, g + x, b + v / 2, -0.4, 0.35, p);
-    let y = lS(m + 3);
-    for (let M = 0; M < 6 + (m % 3); M++)
-      Wct(
-        n,
-        o,
-        g + 1.5 + y() * (x - 3),
-        b + (y() - 0.5) * (v - 1.5),
-        0.35,
-        y() * 6.28,
-        y,
-      );
+  let p = hk(77);
+  for (let m = 0; m < 10; m++) {
+    let g = he[6] - 20 + (m % 5) * 26 + p() * 6,
+      b = Ye.z - 32 - Math.floor(m / 5) * 14 - p() * 4;
+    q7(i, g, b, Math.PI / 2 + (p() - 0.5) * 0.2, p);
   }
+  for (let m = 0; m < 2; m++)
+    zs(
+      i,
+      he[6] - 30,
+      -0.3,
+      Ye.z - 38 - m * 14,
+      he[6] + 110,
+      0.4,
+      Ye.z - 36 - m * 14,
+      Rt([0.4, 0.37, 0.33], Tt.planks),
+    );
 }
-var lS = (i) => () => (i = (i * 16807) % 2147483647) / 2147483647;
-function Wct(i, t, e, s, n, o, a) {
-  let r = 1.8 + a() * 0.6,
-    l = a() < 0.4,
-    c = At([0.23 + a() * 0.08, 0.16 + a() * 0.05, 0.1], Tt.paint),
-    h = Math.cos(o),
-    f = Math.sin(o),
-    u = [],
-    d = [],
-    p = [
-      [0, 0.1, 0.12],
-      [0.2, 0.28, 0.24],
-      [0.45, 0.33, 0.3],
-      [0.7, 0.3, 0.26],
-      [0.85, l ? 0.55 : 0.28, 0.17],
-      [0.95, l ? 0.8 : 0.26, 0.13],
-      [1, l ? 0.85 : 0.25, 0.09],
-    ];
-  for (let [m, g, b] of p) {
-    let x = (m - 0.5) * r,
-      v = t.P(e + h * x, n + g, s + f * x);
-    (u.push(v), d.push(b * (r / 2.1)));
+function q7(o, t, e, s, n) {
+  let i = Math.cos(s),
+    a = Math.sin(s),
+    r = 11 + n() * 4,
+    l = 3.4,
+    c = Rt(
+      [
+        [0.8, 0.8, 0.78],
+        [0.2, 0.35, 0.5],
+        [0.55, 0.15, 0.1],
+        [0.15, 0.3, 0.2],
+      ][Math.floor(n() * 4)],
+      Tt.paint,
+    ),
+    h = Rt([0.85, 0.85, 0.82], Tt.paint);
+  Vs(o, t, e, i, a, r / 2, l / 2, -0.6, 1.2, c, { bottom: !0 });
+  let f = t + (i * r) / 2,
+    u = e + (a * r) / 2;
+  (Ms(
+    o,
+    [t + i * (r / 2) - (a * l) / 2, -0.6, e + a * (r / 2) + (i * l) / 2],
+    [f + i * 2.2, 1.3, u + a * 2.2],
+    [f + i * 2.2, 1.3, u + a * 2.2],
+    [t + i * (r / 2) - (a * l) / 2, 1.2, e + a * (r / 2) + (i * l) / 2],
+    c,
+    [f - a * 10, 1, u + i * 10],
+  ),
+    Ms(
+      o,
+      [t + i * (r / 2) + (a * l) / 2, -0.6, e + a * (r / 2) - (i * l) / 2],
+      [f + i * 2.2, 1.3, u + a * 2.2],
+      [f + i * 2.2, 1.3, u + a * 2.2],
+      [t + i * (r / 2) + (a * l) / 2, 1.2, e + a * (r / 2) - (i * l) / 2],
+      c,
+      [f + a * 10, 1, u - i * 10],
+    ),
+    Vs(o, t + i * r * 0.12, e + a * r * 0.12, i, a, 1.6, 1.2, 1.2, 3.2, h, {
+      sides: [1, 0, 1, 1],
+    }));
+  let d = (g, b) => [
+    t + i * (r * 0.12 + 1.6) - a * g,
+    b,
+    e + a * (r * 0.12 + 1.6) + i * g,
+  ];
+  for (let [g, b, v, x, y] of [
+    [-1.2, 1.2, 1.2, 2.2, h],
+    [-1.2, 1.2, 3, 3.2, h],
+    [-1.2, -1, 2.2, 3, h],
+    [1, 1.2, 2.2, 3, h],
+    [-1, 1, 2.2, 3, Rt([0.05, 0.06, 0.07], Tt.glass)],
+  ])
+    Ms(o, d(g, v), d(b, v), d(b, x), d(g, x), y, [t + i * 100, 3, e + a * 100]);
+  let p = t + i * r * 0.3,
+    m = e + a * r * 0.3;
+  (os(o, p, m, 0.07, 1.2, 8 + n() * 3, 5, h),
+    rs(o, [p, 6, m], [t - i * r * 0.45, 2, e - a * r * 0.45], 0.06, 0.06, h));
+}
+function fk(o, t, e, s, n, i = {}) {
+  let a = t + s / 2,
+    r = e + n / 2,
+    l = s / 2 - 6;
+  ((o.fillStyle = "#0f3b7a"),
+    o.beginPath(),
+    o.arc(a, r, l, 0, Math.PI * 2),
+    o.fill(),
+    (o.strokeStyle = "#f4ede0"),
+    (o.lineWidth = 14),
+    o.beginPath(),
+    o.arc(a, r, l - 8, 0, Math.PI * 2),
+    o.stroke(),
+    (o.fillStyle = "#eaf2f8"),
+    o.beginPath(),
+    o.arc(a, r, l * 0.6, 0, Math.PI * 2),
+    o.fill(),
+    (o.strokeStyle = "#f4ede0"),
+    (o.lineWidth = 8),
+    o.beginPath(),
+    o.arc(a, r, l * 0.6, 0, Math.PI * 2),
+    o.stroke());
+  let c = "FISHERMAN'S  WHARF",
+    h = 92;
+  ((o.font = `bold ${h}px Georgia, "Times New Roman", serif`),
+    (o.fillStyle = "#ffffff"),
+    (o.textAlign = "center"),
+    (o.textBaseline = "middle"));
+  let f = l * 0.8,
+    u = Math.PI * 1.55,
+    d = -Math.PI / 2 - u / 2,
+    p = [...c].map((b) => o.measureText(b).width),
+    m = p.reduce((b, v) => b + v, 0),
+    g = 0;
+  for (let b = 0; b < c.length; b++) {
+    let v = d + ((g + p[b] / 2) / m) * u;
+    ((g += p[b]),
+      o.save(),
+      o.translate(a + Math.cos(v) * f, r + Math.sin(v) * f),
+      o.rotate(v + Math.PI / 2),
+      o.fillText(c[b], 0, 0),
+      o.restore());
   }
-  Wi(i, u, d, 6, c);
-  for (let m of [-1, 1]) {
-    let g = 0.12 * r,
-      b = t.P(e + h * g - f * m * 0.2, n + 0.12, s + f * g + h * m * 0.2),
-      x = t.P(e + h * g - f * m * 0.6, n + 0.02, s + f * g + h * m * 0.6);
-    ss(i, b, x, 0.25, 0.05, c);
+  ((o.fillStyle = "#e8b03a"), o.beginPath());
+  for (let b = 0; b < 10; b++) {
+    let v = Math.PI / 2 + (b / 10) * Math.PI * 2,
+      x = b % 2 ? 18 : 44;
+    o.lineTo(a + Math.cos(v) * x, r + l * 0.8 + Math.sin(v) * x - 4);
   }
+  if ((o.fill(), i.crab)) {
+    let b = l * 1.05;
+    o.drawImage(i.crab, a - b / 2, r - b / 2, b, b);
+  } else
+    ((o.fillStyle = "#c8301c"),
+      o.beginPath(),
+      o.ellipse(a, r, l * 0.35, l * 0.25, 0, 0, Math.PI * 2),
+      o.fill());
+  o.textAlign = "start";
 }

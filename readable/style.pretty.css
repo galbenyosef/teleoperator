@@ -758,7 +758,7 @@ body {
 #titleBg i {
   position: absolute;
   inset: 0;
-  background: url(assets/title_sf.webp) center 40% / cover no-repeat;
+  background: url(assets/teleop_title.webp) center 40% / cover no-repeat;
   animation: sfDrift 40s ease-out forwards;
 }
 #titleBg::after {
@@ -5522,6 +5522,76 @@ body.cine #stHud,
 body.cine #skHud,
 body.cine #radar {
   visibility: hidden !important;
+}
+/* (crash82) the player's wreck (car/wreck.js): the cinema's bars, the HUD and the cards away while it plays */
+body.wrecking::before,
+body.wrecking::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 9vh;
+  background: #000;
+  z-index: 4;
+  pointer-events: none;
+}
+body.wrecking::before {
+  top: 0;
+}
+body.wrecking::after {
+  bottom: 0;
+}
+body.wrecking > *:not(#view):not(.wreckfx) {
+  visibility: hidden !important;
+}
+/* (roadster65) the Roadster's lift on the phones: held, its thrusters fly it (the whole screen still drives round it) */
+#tLift {
+  display: none;
+  position: absolute;
+  right: calc(var(--sr) + 14px);
+  top: 44%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  pointer-events: auto;
+  touch-action: none;
+  background: rgba(10, 12, 16, 0.42);
+  border: 1px solid rgba(190, 215, 255, 0.6);
+  color: #eaf2ff;
+  font: 800 11px var(--disp);
+  letter-spacing: 0.12em;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+body[data-car="roadster"] #tLift {
+  display: block;
+}
+#tLift:active {
+  background: rgba(150, 190, 255, 0.45);
+}
+#tFlip {
+  display: none;
+  position: absolute;
+  right: calc(var(--sr) + 14px);
+  top: calc(44% + 76px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  pointer-events: auto;
+  touch-action: none;
+  background: rgba(10, 12, 16, 0.42);
+  border: 1px solid rgba(190, 215, 255, 0.6);
+  color: #eaf2ff;
+  font: 800 10px var(--disp);
+  letter-spacing: 0.1em;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+body[data-car="roadster"] #tFlip {
+  display: block;
+}
+#tFlip:active {
+  background: rgba(150, 190, 255, 0.45);
 }
 #tRw {
   position: absolute;

@@ -1,390 +1,266 @@
-// app 61 — push
-// Lines 64468-64855 of readable/app.pretty.js (statement-aligned).
-function oht(i) {
-  let t = Z5(i),
-    e = i.Yd,
-    s = i.colliders,
-    n = (i.f = {
-      fronts: [],
-      balconies: [],
-      stairs: [],
-      lamps: [],
-      seats: [],
-      oldSign: null,
+// app 61 — math
+// Lines 65087-65350 of readable/app.pretty.js (statement-aligned).
+function Im(o, t, e) {
+  let s = 1e9;
+  for (let n = 0, i = o.length - 2; n < o.length; i = n, n += 2) {
+    let a = o[i],
+      r = o[i + 1],
+      l = o[n],
+      c = o[n + 1],
+      h = l - a,
+      f = c - r,
+      u = h * h + f * f || 1e-9,
+      d = Math.max(0, Math.min(1, ((t - a) * h + (e - r) * f) / u));
+    s = Math.min(s, Math.hypot(t - a - h * d, e - r - f * d));
+  }
+  return s;
+}
+function $5(o) {
+  if (o.free) return o.free;
+  let [t, e, s, n] = o.bb,
+    i = Math.ceil(s - t) + 1,
+    a = Math.ceil(n - e) + 1,
+    r = new Float32Array(i * a),
+    l = o.carousel;
+  for (let f = 0; f < a; f++)
+    for (let u = 0; u < i; u++) {
+      let d = t + u + 0.5,
+        p = e + f + 0.5;
+      !rn(o.flat, d, p) ||
+        o.inHouse(d, p) ||
+        (l && Math.hypot(d - l.x, p - l.z) < l.r + 1.4) ||
+        (r[f * i + u] = 1);
+    }
+  let c = new Float32Array(i * a);
+  for (let f = 0; f < c.length; f++) c[f] = r[f] ? 1e6 : 0;
+  let h = Math.SQRT2;
+  for (let f = 0; f < a; f++)
+    for (let u = 0; u < i; u++) {
+      let d = f * i + u;
+      if (!c[d]) continue;
+      let p = c[d];
+      (u > 0 && (p = Math.min(p, c[d - 1] + 1)),
+        f > 0 &&
+          ((p = Math.min(p, c[d - i] + 1)),
+          u > 0 && (p = Math.min(p, c[d - i - 1] + h)),
+          u < i - 1 && (p = Math.min(p, c[d - i + 1] + h))),
+        (c[d] = p));
+    }
+  for (let f = a - 1; f >= 0; f--)
+    for (let u = i - 1; u >= 0; u--) {
+      let d = f * i + u;
+      if (!c[d]) continue;
+      let p = c[d];
+      (u < i - 1 && (p = Math.min(p, c[d + 1] + 1)),
+        f < a - 1 &&
+          ((p = Math.min(p, c[d + i] + 1)),
+          u < i - 1 && (p = Math.min(p, c[d + i + 1] + h)),
+          u > 0 && (p = Math.min(p, c[d + i - 1] + h))),
+        (c[d] = p));
+    }
+  return (
+    (o.free = {
+      x0: t,
+      z0: e,
+      nx: i,
+      nz: a,
+      D: c,
+      at: (f, u) => {
+        let d = Math.floor(f - t),
+          p = Math.floor(u - e);
+        return d < 0 || p < 0 || d >= i || p >= a ? 0 : c[p * i + d];
+      },
     }),
-    o = new Set([zR]);
-  for (let c of i.houses) {
-    let h = Xg(c.ring);
-    for (let f = 0; f < h.length; f++) {
-      let u = h[f],
-        d = h[(f + 1) % h.length],
-        p = Math.hypot(d[0] - u[0], d[1] - u[1]);
-      if (p < 4.5) continue;
-      let m = Hl(c.ring, u, d),
-        g = (u[0] + d[0]) / 2,
-        b = (u[1] + d[1]) / 2;
-      if (t.at(g + m[0] * 3, b + m[1] * 3) < 1.5) continue;
-      let v = (d[0] - u[0]) / p,
-        y = (d[1] - u[1]) / p,
-        M =
-          p >= 7 &&
-          !o.has(c.id) &&
-          [0.25, 0.5, 0.75].every(
-            (w) =>
-              t.at(u[0] + v * p * w + m[0] * 6, u[1] + y * p * w + m[1] * 6) >=
-                2.2 &&
-              t.at(
-                u[0] + v * p * w + m[0] * 2.6,
-                u[1] + y * p * w + m[1] * 2.6,
-              ) >= 2.4,
-          ),
-        S = { q: c, a: u, b: d, n: m, L: p, ux: v, uz: y, wide: M };
-      (n.fronts.push(S), M && n.balconies.push(S));
+    o.free
+  );
+}
+es();
+await oc();
+var kW = {
+    wood: [12.5, 8.2],
+    grey: [12.5, 8.2],
+    cream: [12.5, 8.2],
+    tan: [12.5, 8.2],
+    mural: [24, 8.2],
+    crown: [5.08, 1.27],
+    drum: [9.11, 2.28],
+  },
+  zW = Object.fromEntries(Object.keys(kW).map((o, t) => [o, t])),
+  Edt = `
+fn pH(p: vec2f) -> f32 { return fract(sin(dot(p, vec2f(127.1, 311.7))) * 43758.5453); }
+`,
+  _W =
+    Edt +
+    `
+const PCELL = array<vec2f, 7>(${Object.values(kW)
+      .map(([o, t]) => `vec2f(${o.toFixed(2)}, ${t.toFixed(2)})`)
+      .join(", ")});
+fn mbAlbedo(uv: vec2f, wp: vec3f, col: vec4f, bc: vec4f) -> vec4f {
+  let k0 = u32(clamp(floor(col.a * 16.0), 0.0, 6.0));
+  let cs = PCELL[k0];
+  let q = uv / cs;
+  // the crown's strips (one after another round the band) and the drum's (the cell's last quarter): rows of a quarter cell
+  var k = k0; var rows = 1.0; var row = 0.0;
+  if (k0 == 5u) { rows = 4.0; row = floor(q.x) - 3.0 * floor(q.x / 3.0); }
+  if (k0 == 6u) { k = 5u; rows = 4.0; row = 3.0; }
+  let f2 = vec2f(clamp(fract(q.x), 0.002, 0.998), (row + 1.0 - clamp(fract(q.y), 0.01, 0.99)) / rows);
+  let a = (vec2f(f32(k % 3u), f32(k / 3u)) + f2) / vec2f(3.0, 2.0);
+  let gdx = dpdx(q) / vec2f(3.0, -2.0 * rows); let gdy = dpdy(q) / vec2f(3.0, -2.0 * rows);
+  let photo = textureDimensions(matMap).x > 8u;
+  var c = col.rgb * 0.45;
+  var win = 0.0;
+  if (photo) {
+    c = textureSampleGrad(matMap, matSamp, a, gdx, gdy).rgb * col.rgb;
+    win = textureSampleGrad(matExtra, matSamp, a, gdx, gdy).r;
+  }
+  let night = bc.b; let wet = bc.g;
+  // shop windows and rooms lit at night: the shops all (they trade into the evening), the rooms upstairs by a hash
+  let wid = floor(uv / vec2f(3.0, 4.0));
+  let shop = 1.0 - step(3.6, uv.y);
+  let on = max(shop, step(0.4, pH(wid + vec2f(f32(k) * 7.0, 3.0)))) * (1.0 - step(7.0, uv.y));   // (nothing over the upper windows: the cornices' dark dentils read as glass)
+  let wm = smoothstep(0.35, 0.85, win);
+  gHE = vec3f(1.0, 0.76, 0.48) * wm * on * night * mix(0.45 + 0.35 * pH(wid), 0.22 + 0.12 * pH(wid), shop);   // (the shop windows big: dimmer a pixel)
+  // the carousel's crown: its bulbs (the bright dots of the painting) glow at night
+  if (k == 5u) { let l = max(c.r, max(c.g, c.b)); gHE += c * smoothstep(0.75, 0.95, l) * (night * 6.0 + 0.15); }
+  c = mix(c, c * 0.6, wm * on * night);
+  c *= 1.0 - 0.12 * wet;
+  gHK = vec4f(mix(0.82, 0.12, win), 0.0, 0.0, 1.0);
+  return vec4f(c, 1.0);
+}
+`;
+await Pb();
+var cP = (o, t = [1, 1, 1]) => [t[0], t[1], t[2], (zW[o] + 0.5) / 16],
+  lP = (o) => () => (o = (o * 16807) % 2147483647) / 2147483647,
+  X5 = 8.2,
+  ge = {
+    plank: Rt([0.43, 0.4, 0.36], Tt.planks),
+    plankDk: Rt([0.33, 0.27, 0.22], Tt.planks),
+    shingle: Rt([0.23, 0.21, 0.2], Tt.planks),
+    fascia: Rt([0.3, 0.24, 0.19], Tt.planks),
+    cap: Rt([0.45, 0.4, 0.34], Tt.planks),
+    railPost: Rt([0.36, 0.32, 0.27], Tt.planks),
+    pipe: Rt([0.6, 0.61, 0.62], Tt.metal),
+    pile: Rt([0.2, 0.17, 0.14], Tt.pile),
+    rail: Rt([0.4, 0.31, 0.23], Tt.paint),
+    post: Rt([0.3, 0.23, 0.17], Tt.paint),
+    blue: Rt([0.04, 0.16, 0.42], Tt.paint),
+    white: Rt([0.86, 0.85, 0.8], Tt.paint),
+    trim: Rt([0.82, 0.8, 0.74], Tt.paint),
+    globe: Rt([1, 0.93, 0.8], Tt.lamp),
+    gold: Rt([0.78, 0.56, 0.2], Tt.metal),
+    red: Rt([0.62, 0.07, 0.06], Tt.paint),
+    cblue: Rt([0.12, 0.35, 0.72], Tt.paint),
+    cream: Rt([0.92, 0.86, 0.74], Tt.paint),
+    bulb: Rt([1, 0.86, 0.55], Tt.lamp),
+    float: Rt([0.47, 0.42, 0.36], Tt.planks),
+    floatSide: Rt([0.32, 0.31, 0.29], Tt.conc),
+    hull: Rt([0.9, 0.9, 0.88], Tt.paint),
+    mast: Rt([0.75, 0.76, 0.78], Tt.metal),
+    dock: Rt([0.55, 0.5, 0.44], Tt.planks),
+    dark: Rt([0.08, 0.08, 0.08], Tt.paint),
+    barrel: Rt([0.4, 0.27, 0.15], Tt.planks),
+    brass: Rt([0.85, 0.66, 0.3], Tt.metal),
+    drape: Rt([0.8, 0.8, 0.79], Tt.paint),
+    redDk: Rt([0.42, 0.04, 0.04], Tt.paint),
+    valance: Rt([0.88, 0.72, 0.38], Tt.paint),
+    syellow: Rt([0.95, 0.78, 0.16], Tt.paint),
+    ypanel: Rt([0.98, 0.88, 0.45], Tt.paint),
+    stageFloor: Rt([0.62, 0.46, 0.3], Tt.planks),
+    curtain: Rt([0.55, 0.04, 0.05], Tt.paint),
+    awnRed: Rt([0.72, 0.08, 0.07], Tt.paint),
+    binGreen: Rt([0.05, 0.36, 0.2], Tt.paint),
+    aquaRoof: Rt([0.12, 0.3, 0.62], Tt.metal),
+    benchWood: Rt([0.45, 0.3, 0.17], Tt.planks),
+    shield: Rt([0.82, 0.62, 0.22], Tt.metal),
+    green: Rt([0.1, 0.45, 0.2], Tt.paint),
+    leaf: Rt([0.16, 0.3, 0.1], Tt.lawn),
+    soil: Rt([0.2, 0.14, 0.09], Tt.paint),
+  },
+  EW = [
+    [0.05, 0.18, 0.5],
+    [0.62, 0.08, 0.06],
+    [0.06, 0.32, 0.16],
+    [0.45, 0.12, 0.45],
+    [0.75, 0.55, 0.08],
+    [0.05, 0.4, 0.5],
+  ],
+  TW = [
+    "CHOCOLATE",
+    "SOURDOUGH",
+    "GIFTS",
+    "FUDGE",
+    "MAGIC SHOP",
+    "SEAFOOD",
+    "CANDY",
+    "T-SHIRTS",
+    "CRAB HOUSE",
+    "SWEATSHIRTS",
+    "ICE CREAM",
+    "SOUVENIRS",
+    "CHOWDER",
+    "HATS",
+    "TOYS",
+    "KITES",
+    "CAFE",
+    "COFFEE",
+    "CRYSTALS",
+    "LEFTIES",
+    "MUSIC BOX",
+    "PRETZELS",
+    "GAMES",
+    "SOCKS",
+    "BAKERY",
+    "GALLERY",
+  ];
+function K5(o, t, e, s, n, i, a, r = 0, l = n) {
+  let c = e[0] - t[0],
+    h = e[1] - t[1];
+  if (-h * s[0] + c * s[1] >= 0)
+    o.wall(t[0], t[1], e[0], e[1], n, n, i, i, a, r, l);
+  else {
+    let f = Math.hypot(c, h);
+    o.wall(e[0], e[1], t[0], t[1], n, n, i, i, a, -r - f, l);
+  }
+}
+function CW(o) {
+  let t = null;
+  for (let s = 0; s < o.length; s++) {
+    let n = o[s],
+      i = o[(s + 1) % o.length],
+      a = Math.hypot(i[0] - n[0], i[1] - n[1]);
+    if (a < 0.5) continue;
+    let r = (i[0] - n[0]) / a,
+      l = (i[1] - n[1]) / a,
+      c = 1e9,
+      h = -1e9,
+      f = 1e9,
+      u = -1e9;
+    for (let p of o) {
+      let m = p[0] * r + p[1] * l,
+        g = -p[0] * l + p[1] * r;
+      ((c = Math.min(c, m)),
+        (h = Math.max(h, m)),
+        (f = Math.min(f, g)),
+        (u = Math.max(u, g)));
+    }
+    let d = (h - c) * (u - f);
+    if (!t || d < t.A) {
+      let p = (c + h) / 2,
+        m = (f + u) / 2;
+      t = {
+        A: d,
+        c: [p * r - m * l, p * l + m * r],
+        u: [r, l],
+        hu: (h - c) / 2,
+        hv: (u - f) / 2,
+      };
     }
   }
-  let a = 2.3,
-    r = e + 3.6;
-  for (let c of n.balconies) {
-    let { a: h, n: f, L: u, ux: d, uz: p } = c,
-      m = (b, x) => [h[0] + d * b + f[0] * x, h[1] + p * b + f[1] * x],
-      g = Math.max(1, Math.round((u - 0.4) / 4.2));
-    c.posts = [];
-    for (let b = 0; b <= g; b++) {
-      let x = m(0.2 + ((u - 0.4) * b) / g, a - 0.12);
-      (c.posts.push(x),
-        s.push({
-          t: "circ",
-          x: x[0],
-          z: x[1],
-          r: 0.2,
-          y0: e - 1,
-          y1: r,
-          p39: !0,
-        }));
-    }
-    if (
-      n.stairs.length < 10 &&
-      u > 9 &&
-      [0.2, 3.2, 6.4].every((b) => t.at(...m(u + b, a * 0.5)) > 2.4)
-    ) {
-      ((c.stair = !0), n.stairs.push(c));
-      let b = m(u + 2.8, a * 0.5);
-      s.push({
-        t: "obb",
-        x: b[0],
-        z: b[1],
-        hx: 3.1,
-        hz: a / 2,
-        c: d,
-        s: p,
-        y0: e - 1,
-        y1: r + 1,
-        p39: !0,
-      });
-    }
-  }
-  let l = (c, h, f) =>
-    n.balconies.some((u) =>
-      u.posts.some((d) => Math.hypot(d[0] - c, d[1] - h) < f),
-    );
-  for (let c = 0; c < t.nz; c++)
-    for (let h = 0; h < t.nx; h++) {
-      let f = t.D[c * t.nx + h];
-      if (!f) continue;
-      let u = t.x0 + h + 0.5,
-        d = t.z0 + c + 0.5,
-        p = () => {
-          let m = t.at(u + 1, d) - t.at(u - 1, d),
-            g = t.at(u, d + 1) - t.at(u, d - 1),
-            b = Math.hypot(m, g) || 1;
-          return t.at(u + (m / b) * 2.5, d + (g / b) * 2.5) >= 5;
-        };
-      f >= 3.1 &&
-      f < 3.6 &&
-      !n.lamps.some((m) => Math.hypot(m[0] - u, m[1] - d) < 21) &&
-      !l(u, d, 2.5) &&
-      p()
-        ? n.lamps.push([u, d])
-        : f >= 1.4 &&
-          f < 1.8 &&
-          !n.seats.some((m) => Math.hypot(m[0] - u, m[1] - d) < 26) &&
-          !n.lamps.some((m) => Math.hypot(m[0] - u, m[1] - d) < 4) &&
-          !l(u, d, 2.5) &&
-          n.seats.push([u, d]);
-    }
-  for (let [c, h] of n.lamps)
-    s.push({ t: "circ", x: c, z: h, r: 0.22, y0: e - 1, y1: e + 5, p39: !0 });
-  if (
-    ((n.seats = n.seats.map(([c, h], f) => {
-      let u = t.at(c + 1, h) - t.at(c - 1, h),
-        d = t.at(c, h + 1) - t.at(c, h - 1),
-        p = Math.hypot(u, d) || 1,
-        m = u / p,
-        g = d / p,
-        b = { x: c, z: h, nx: m, nz: g, barrel: f % 3 === 2 };
-      return (
-        s.push(
-          b.barrel
-            ? { t: "circ", x: c, z: h, r: 0.6, y0: e - 1, y1: e + 2, p39: !0 }
-            : {
-                t: "obb",
-                x: c,
-                z: h,
-                hx: 0.95,
-                hz: 0.3,
-                c: -g,
-                s: m,
-                y0: e - 1,
-                y1: e + 1.5,
-                p39: !0,
-              },
-        ),
-        b
-      );
-    })),
-    i.carousel)
-  ) {
-    let { x: c, z: h } = i.carousel,
-      f = [-1515.2, -1695.6],
-      u = Math.hypot(f[0] - c, f[1] - h),
-      d = (f[0] - c) / u,
-      p = (f[1] - h) / u,
-      m = (n.stage = {
-        x: f[0],
-        z: f[1],
-        nx: d,
-        nz: p,
-        ux: -p,
-        uz: d,
-        w: 3.6,
-        d: 2.3,
-        h: 0.9,
-      }),
-      g = (b, x) => [m.x + m.ux * b + m.nx * x, m.z + m.uz * b + m.nz * x];
-    s.push({
-      t: "obb",
-      x: m.x - m.nx * 0.35,
-      z: m.z - m.nz * 0.35,
-      hx: m.w + 0.25,
-      hz: m.d + 0.35,
-      c: -m.nz,
-      s: -m.nx,
-      y0: e - 1,
-      y1: e + 6,
-      p39: !0,
-    });
-    {
-      let [b, x] = g(m.w + 0.75, m.d - 0.55);
-      ((m.steps = [b, x]),
-        s.push({
-          t: "obb",
-          x: b,
-          z: x,
-          hx: 0.55,
-          hz: 0.6,
-          c: -m.nz,
-          s: -m.nx,
-          y0: e - 1,
-          y1: e + 1.2,
-          p39: !0,
-        }));
-    }
-    {
-      let [b, x] = g(-m.w - 1.2, -m.d + 0.9);
-      ((m.booth = [b, x]),
-        s.push({
-          t: "obb",
-          x: b,
-          z: x,
-          hx: 0.95,
-          hz: 0.95,
-          c: -m.nz,
-          s: -m.nx,
-          y0: e - 1,
-          y1: e + 5,
-          p39: !0,
-        }));
-    }
-    {
-      let b = n.lamps.filter(([x, v]) => {
-        let y = x - m.x,
-          M = v - m.z,
-          S = y * m.ux + M * m.uz,
-          w = y * m.nx + M * m.nz;
-        return Math.abs(S) < 7.5 && w > -4 && w < 16;
-      });
-      for (let [x, v] of b) {
-        let y = s.findIndex((M) => M.t === "circ" && M.x === x && M.z === v);
-        y >= 0 && s.splice(y, 1);
-      }
-      n.lamps = n.lamps.filter((x) => !b.includes(x));
-    }
-    m.benches = [];
-    for (let b = 0; b < 6; b++)
-      for (let x of [-1, 1]) {
-        let v = m.d + 2.6 + b * 1.55,
-          y = x * (0.6 + 1.1),
-          [M, S] = g(y, v);
-        if (
-          t.at(M, S) < 1.2 ||
-          t.at(...g(y + 1.1, v)) < 0.8 ||
-          t.at(...g(y - 1.1, v)) < 0.8
-        )
-          continue;
-        let [w, z] = g(y, v - 0.1);
-        (m.benches.push({ x: M, z: S, a: y, b: v, L: 1.1 }),
-          s.push({
-            t: "obb",
-            x: w,
-            z,
-            hx: 1.15,
-            hz: 0.5,
-            c: -m.nz,
-            s: -m.nx,
-            y0: e - 1,
-            y1: e + 1.2,
-            p39: !0,
-          }));
-      }
-    ((n.booths = []), (n.bins = []));
-    {
-      let [b, x] = g(-(m.w + 0.7), m.d + 1);
-      t.at(b, x) >= 1.4 && n.bins.push([b, x]);
-    }
-  }
-  if (((n.kiosks = []), i.carousel)) {
-    let { x: c, z: h } = i.carousel,
-      f = n.stage,
-      u = [];
-    for (let d = 0; d < t.nz; d++)
-      for (let p = 0; p < t.nx; p++) {
-        let m = t.D[d * t.nx + p];
-        if (m < 2 || m > 3.2) continue;
-        let g = t.x0 + p + 0.5,
-          b = t.z0 + d + 0.5,
-          x = Math.hypot(g - c, b - h);
-        if (x < 16 || x > 34 || (f && Math.hypot(g - f.x, b - f.z) < 15))
-          continue;
-        let v = t.at(g + 1, b) - t.at(g - 1, b),
-          y = t.at(g, b + 1) - t.at(g, b - 1),
-          M = Math.hypot(v, y) || 1,
-          S = v / M,
-          w = y / M,
-          z = t.at(g + S * 5, b + w * 5);
-        z < 6.5 ||
-          s.some(
-            (_) =>
-              _.t !== "poly" &&
-              Math.hypot(_.x - g, _.z - b) <
-                (_.t === "circ" ? _.r : Math.hypot(_.hx, _.hz)) + 1.9,
-          ) ||
-          u.push({ x: g, z: b, nx: S, nz: w, w: z });
-      }
-    u.sort((d, p) => p.w - d.w);
-    for (let d of u) {
-      if (n.kiosks.length >= 3) break;
-      n.kiosks.some((p) => Math.hypot(p.x - d.x, p.z - d.z) < 14) ||
-        (n.kiosks.push({
-          x: d.x,
-          z: d.z,
-          nx: d.nx,
-          nz: d.nz,
-          k: n.kiosks.length,
-        }),
-        s.push({
-          t: "obb",
-          x: d.x,
-          z: d.z,
-          hx: 0.85,
-          hz: 0.85,
-          c: 1,
-          s: 0,
-          y0: e - 1,
-          y1: e + 4,
-          p39: !0,
-        }));
-    }
-  }
-  {
-    let c = null,
-      h = n.stage;
-    if (h)
-      for (let f of n.fronts) {
-        if (f.q.id !== 128240131) continue;
-        let u = (f.a[0] + f.b[0]) / 2,
-          d = (f.a[1] + f.b[1]) / 2,
-          p = Math.hypot(h.x - u, h.z - d) || 1,
-          m =
-            ((f.n[0] * (h.x - u) + f.n[1] * (h.z - d)) / p) * Math.min(f.L, 14);
-        (!c || m > c.sc) && (c = { E: f, sc: m });
-      }
-    c && ((c.E.arcade = !0), (n.arcade = c.E));
-  }
-  for (let c of n.seats) {
-    if (c.barrel) continue;
-    let h = c.x - c.nz * 1.45,
-      f = c.z + c.nx * 1.45;
-    t.at(h, f) < 1 ||
-      t.at(h + c.nx * 4, f + c.nz * 4) < 5.5 ||
-      (n.bins ||= []).push([h, f]);
-  }
-  for (let [c, h] of n.bins || [])
-    s.push({ t: "circ", x: c, z: h, r: 0.38, y0: e - 1, y1: e + 1.3, p39: !0 });
-  n.boards = [];
-  for (let c of [288396171, 466623895, zR]) {
-    let h = i.houses.find((p) => p.id === c);
-    if (!h) continue;
-    let f = Xg(h.ring),
-      u = null;
-    for (let p = 0; p < f.length; p++) {
-      let m = f[p],
-        g = f[(p + 1) % f.length],
-        b = Hl(h.ring, m, g),
-        x = Math.hypot(g[0] - m[0], g[1] - m[1]),
-        v = b[1] * x;
-      b[1] > 0.6 && (!u || v > u.sc) && (u = { a: m, b: g, n: b, L: x, sc: v });
-    }
-    if (!u) continue;
-    let d = {
-      q: h,
-      ...u,
-      ux: (u.b[0] - u.a[0]) / u.L,
-      uz: (u.b[1] - u.a[1]) / u.L,
-      m: [(u.a[0] + u.b[0]) / 2, (u.a[1] + u.b[1]) / 2],
-    };
-    if ((n.boards.push(d), c === zR)) {
-      d.vault = [
-        d.m[0] - d.ux * 3.5 + d.n[0] * 0.1,
-        d.m[1] - d.uz * 3.5 + d.n[1] * 0.1,
-      ];
-      for (let p of [-1, 1])
-        s.push({
-          t: "circ",
-          x: d.vault[0] + d.ux * p * 1.6 + d.n[0] * 3.3,
-          z: d.vault[1] + d.uz * p * 1.6 + d.n[1] * 3.3,
-          r: 0.15,
-          y0: e - 1,
-          y1: e + 4,
-          p39: !0,
-        });
-    }
-  }
-  {
-    let c = i.edge,
-      h = Math.max(
-        0,
-        c.findIndex((f) => f[0] > -1483),
-      );
-    n.oldSign = [c[h][0], c[h][1] - 6];
-    for (let f of [-2.7, 2.7])
-      s.push({
-        t: "circ",
-        x: n.oldSign[0] + f,
-        z: n.oldSign[1],
-        r: 0.25,
-        y0: e - 1,
-        y1: e + 4,
-        p39: !0,
-      });
-  }
+  let e = t.hu >= t.hv;
+  return {
+    c: t.c,
+    d: e ? t.u : [-t.u[1], t.u[0]],
+    hl: e ? t.hu : t.hv,
+    hw: e ? t.hv : t.hu,
+  };
 }

@@ -1,7 +1,7 @@
 // app 26 — math
-// Lines 45850-46168 of readable/app.pretty.js (statement-aligned).
-as();
-var WA = `
+// Lines 46057-46375 of readable/app.pretty.js (statement-aligned).
+es();
+var x7 = `
 struct VG {
   time: vec4f,     // seconds, dt, frame, _
   screen: vec4f,   // main target W, H, 1/W, 1/H
@@ -51,7 +51,7 @@ fn ambientDir(d: vec3f) -> vec3f {   // sky / ground radiance for a direction (i
   return mix(VLt.groundIrr.rgb, VLt.skyIrr.rgb, d.y * 0.5 + 0.5) / PI;
 }
 `,
-  oU = `
+  lV = `
 struct Amb { skyIrr: vec4f, sunIrr: vec4f, horizon: vec4f, sunCloud: vec4f, zenith: vec4f };
 @group(1) @binding(0) var<storage, read> AMB: Amb;
 @group(1) @binding(1) var<storage, read_write> OUT: VL;
@@ -93,7 +93,7 @@ var<workgroup> acc: array<vec4f, 64>;
   OUT = o;
 }
 `;
-function aU(i = 256) {
+function cV(o = 256) {
   let t = (c, h, f, u) => {
       let d = (c - h) / (c < h ? f : u);
       return Math.exp(-0.5 * d * d);
@@ -105,7 +105,7 @@ function aU(i = 256) {
     s = (c) =>
       0.821 * t(c, 568.8, 46.9, 40.5) + 0.286 * t(c, 530.9, 16.3, 31.1),
     n = (c) => 1.217 * t(c, 437, 11.8, 36) + 0.681 * t(c, 459, 26, 13.8),
-    o = (c, h) => {
+    i = (c, h) => {
       let f = c * 1e-9;
       return 1 / (Math.pow(f, 5) * (Math.exp(0.014388 / (f * h)) - 1));
     },
@@ -114,15 +114,15 @@ function aU(i = 256) {
         f = 0,
         u = 0;
       for (let d = 380; d <= 780; d += 5) {
-        let p = o(d, c);
+        let p = i(d, c);
         ((h += p * e(d)), (f += p * s(d)), (u += p * n(d)));
       }
       return [h, f, u];
     },
     r = a(1500)[1],
-    l = new Float32Array(i * 4);
-  for (let c = 0; c < i; c++) {
-    let h = 600 + (2400 * c) / (i - 1),
+    l = new Float32Array(o * 4);
+  for (let c = 0; c < o; c++) {
+    let h = 600 + (2400 * c) / (o - 1),
       [f, u, d] = a(h),
       p = 3.2406 * f - 1.5372 * u - 0.4986 * d,
       m = -0.9689 * f + 1.8758 * u + 0.0415 * d,
@@ -136,16 +136,16 @@ function aU(i = 256) {
   }
   return l;
 }
-function rU(i) {
-  let t = new Uint16Array(i.length),
+function hV(o) {
+  let t = new Uint16Array(o.length),
     e = new Float32Array(1),
     s = new Uint32Array(e.buffer);
-  for (let n = 0; n < i.length; n++) {
-    e[0] = i[n];
-    let o = s[0],
-      a = (o >>> 16) & 32768,
-      r = ((o >>> 23) & 255) - 127 + 15,
-      l = o & 8388607;
+  for (let n = 0; n < o.length; n++) {
+    e[0] = o[n];
+    let i = s[0],
+      a = (i >>> 16) & 32768,
+      r = ((i >>> 23) & 255) - 127 + 15,
+      l = i & 8388607;
     r <= 0
       ? (t[n] = a)
       : r >= 31
@@ -154,7 +154,7 @@ function rU(i) {
   }
   return t;
 }
-var z0 = {
+var K0 = {
     UNIFORM: 64,
     STORAGE: 128,
     COPY_DST: 8,
@@ -163,19 +163,19 @@ var z0 = {
     VERTEX: 32,
     INDEX: 16,
   },
-  ma = { TB: 4, SB: 8, RA: 16, CD: 2, CS: 1 };
-function Jf(i, t, e, s) {
-  return i.createBuffer({
+  za = { TB: 4, SB: 8, RA: 16, CD: 2, CS: 1 };
+function Cu(o, t, e, s) {
+  return o.createBuffer({
     size: Math.max(16, Math.ceil(t / 16) * 16),
     usage: e,
     label: s,
   });
 }
-function tl(i, t, e, s, n = {}) {
-  return i.createTexture({ size: t, format: e, usage: s, ...n });
+function Sl(o, t, e, s, n = {}) {
+  return o.createTexture({ size: t, format: e, usage: s, ...n });
 }
-function c0(i, t, e) {
-  return i.createBindGroup({
+function k0(o, t, e) {
+  return o.createBindGroup({
     layout: t,
     entries: e.map(([s, n]) => ({
       binding: s,
@@ -183,7 +183,7 @@ function c0(i, t, e) {
     })),
   });
 }
-var W6 = `
+var qS = `
 @group(1) @binding(0) var ioRG: texture_storage_2d<r32uint, read_write>;
 @group(1) @binding(1) var ioBA: texture_storage_2d<r32uint, read_write>;
 @group(1) @binding(2) var ioD: texture_2d<f32>;
@@ -201,8 +201,8 @@ fn volWrite(q: vec2i, v: vec4f) {
 // half-resolution texel -> main-target pixel position of its centre
 fn halfPx(q: vec2i) -> vec2f { return (vec2f(q) + 0.5) * 2.0; }
 `;
-var M4t =
-  W6 +
+var xzt =
+  qS +
   `
 struct FRU {
   w2g: mat4x4f,     // world -> grid uvw

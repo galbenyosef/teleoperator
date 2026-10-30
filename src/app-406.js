@@ -1,268 +1,90 @@
 // app 406 — math
-// Lines 197986-198251 of readable/app.pretty.js (statement-aligned).
-function lst(i, t, e, s) {
-  let n = s * 2.6;
-  (i.beginPath(),
-    i.arc(t, e, n, 0, Math.PI * 2),
-    (i.fillStyle = "#ff3b3b"),
-    i.fill(),
-    (i.lineWidth = Math.max(1, s * 0.7)),
-    (i.strokeStyle = "#ffffff"),
-    i.stroke(),
-    i.beginPath(),
-    i.moveTo(t - n * 1.5, e - n * 1.5),
-    i.lineTo(t + n * 1.5, e + n * 1.5),
-    i.moveTo(t + n * 1.5, e - n * 1.5),
-    i.lineTo(t - n * 1.5, e + n * 1.5),
-    i.stroke());
-}
-as();
-function GMt(i) {
-  let t = (i.sunEl * Math.PI) / 180,
-    e = (i.sunAz * Math.PI) / 180;
-  return [Math.sin(e) * Math.cos(t), Math.sin(t), -Math.cos(e) * Math.cos(t)];
-}
-function RN(i, t = 1024) {
-  let e = t / 2,
-    s = new Float32Array(t * e * 4),
-    [n, o, a] = GMt(i),
-    r = i.zen,
-    l = i.hor,
-    c = i.ground,
-    h = t >= 2048 ? 7 : t >= 1024 ? 6 : 4,
-    f = Math.hypot(n, a) || 1,
-    u = (n / f) * 0.1,
-    d = (a / f) * 0.1,
-    p = i.sunI / 3.2,
-    m = [
-      r[0] * 0.5 + l[0] * 0.5,
-      r[1] * 0.5 + l[1] * 0.5,
-      r[2] * 0.5 + l[2] * 0.5,
-    ];
-  for (let x = 0; x < e; x++) {
-    let v = ((x + 0.5) / e) * Math.PI,
-      y = Math.cos(v),
-      M = Math.sin(v);
-    for (let S = 0; S < t; S++) {
-      let w = ((S + 0.5) / t - 0.5) * 2 * Math.PI,
-        z = Math.cos(w) * M,
-        _ = Math.sin(w) * M,
-        R = z * n + y * o + _ * a,
-        T,
-        E,
-        A;
-      if (y >= 0) {
-        let P = Math.pow(1 - y, 3.2 - i.haze * 1.6);
-        ((T = r[0] + (l[0] - r[0]) * P),
-          (E = r[1] + (l[1] - r[1]) * P),
-          (A = r[2] + (l[2] - r[2]) * P));
-        let I = Math.max(0, R),
-          L =
-            (Math.pow(I, 8) * (0.6 + i.haze) * 0.8 + Math.pow(I, 64) * 1.8) *
-              (i.glow ?? 1) +
-            (R > 0.99985 ? 60 : 0) * (1 - i.haze * 0.9) * (i.disc ?? 1);
-        if (
-          ((T += i.sun[0] * L * p),
-          (E += i.sun[1] * L * p),
-          (A += i.sun[2] * L * p),
-          i.twi)
-        ) {
-          let H = Math.max(0, (z * n + _ * a) / f),
-            O = Math.exp(-y * 7),
-            D = Math.exp(-y * (i.twiHi ?? 2.2)),
-            U = i.twiK ?? 1,
-            G = Math.pow(H, 3) * O * U,
-            q = Math.pow(H, 2) * D * 0.35 * (i.twiPink ?? 1) * U,
-            W =
-              Math.pow(Math.max(0, -(z * n + _ * a)), 2) *
-              Math.exp(-y * 9) *
-              0.1;
-          ((T += i.twi[0] * G + 0.5 * q + 0.35 * W),
-            (E += i.twi[1] * G + 0.2 * q + 0.2 * W),
-            (A += i.twi[2] * G + 0.32 * q + 0.28 * W));
-        }
-        if (i.lp) {
-          let H = Math.exp(-y * 5.5);
-          ((T += i.lp[0] * H), (E += i.lp[1] * H), (A += i.lp[2] * H));
-        }
-        if (i.stars && t >= 2048) {
-          let H = Math.floor(((S + 0.5) / t) * 4096),
-            O = Math.floor(((x + 0.5) / e) * 2048);
-          if (r2(H * 0.7311 + 0.17, O * 1.3717 - 0.41) < 0.0035 * M) {
-            let D = r2(H + 3.1, O - 7.7),
-              U = Math.min(1, Math.max(0, (y - 0.06) / 0.3)),
-              G = i.stars * (0.15 + 3 * D ** 7) * U * U * Math.min(1, t / 3072),
-              q = r2(H - 1.3, O + 2.9);
-            ((T += G * (0.85 + 0.25 * q)),
-              (E += G * 0.92),
-              (A += G * (1.1 - 0.2 * q)));
-          }
-        }
-        if (i.moon) {
-          let [H, O, D] = i.moon,
-            U = (O * Math.PI) / 180,
-            G = (H * Math.PI) / 180,
-            q = Math.sin(G) * Math.cos(U),
-            W = Math.sin(U),
-            V = -Math.cos(G) * Math.cos(U),
-            Y = Math.max(-1, Math.min(1, z * q + y * W + _ * V)),
-            $ = Math.acos(Y),
-            st = 0.0105,
-            Q = D * (0.006 * Math.exp(-$ / 0.06) + 0.002 * Math.exp(-$ / 0.3));
-          if (
-            ((T += Q * 0.8), (E += Q * 0.88), (A += Q * 1.05), $ < st * 1.15)
-          ) {
-            let j = Math.min(1, (st * 1.15 - $) / (st * 0.15)),
-              X =
-                0.72 +
-                0.28 *
-                  Up(z * 900 + 3, (y + _) * 900) *
-                  (0.6 + 0.4 * Up(z * 2400, _ * 2400 + 7)),
-              K = 0.8 + 0.2 * Math.sqrt(Math.max(0, 1 - ($ / st) ** 2)),
-              nt = D * j * X * K;
-            ((T += (nt * 1 - T) * j),
-              (E += (nt * 0.97 - E) * j),
-              (A += (nt * 0.9 - A) * j));
-          }
-        }
-        let F = Math.exp(-y * 18) * (0.25 + 0.6 * i.haze);
-        ((T += i.fog[0] * F), (E += i.fog[1] * F), (A += i.fog[2] * F));
-        let N =
-            WMt(z / (y + 0.08), _ / (y + 0.08)) *
-            Math.min(1, y * 5) *
-            (1 - i.haze * 0.7) *
-            (i.streaks ?? 1),
-          B = 0.55 + 0.9 * I;
-        if (
-          ((T += N * (l[0] * B)),
-          (E += N * (l[1] * B * 0.95)),
-          (A += N * (l[2] * B * 0.92)),
-          i.cumulus && y > 0.012)
-        ) {
-          let H = i.cloudScale ?? 1,
-            O = (z / (y + 0.1)) * H,
-            D = (_ / (y + 0.1)) * H,
-            U = cst(O, D, i.cumulus, h);
-          if (U > 0) {
-            let G = cst(O + u, D + d, i.cumulus, Math.min(h, 4)),
-              q = i.cloudEdge ?? 0.22,
-              W =
-                Math.min(1, U / q) ** 0.8 *
-                Math.min(1, y * 12) *
-                (1 - i.haze * 0.5),
-              V = Math.exp(-G * 3.2),
-              Y = Math.min(1, U * 1.6),
-              $ = Math.pow(I, 5) * (1 - Math.min(1, U * 2.5)) * 2.2,
-              st = 0.62 + 0.25 * (1 - Y),
-              Q = (0.5 + 0.5 * V) * p,
-              j =
-                m[0] * st * 1.25 +
-                (i.sun[0] * 0.95 * V + $ * i.sun[0]) *
-                  p *
-                  0.95 *
-                  (1 - 0.3 * Y) +
-                0.05 * Q,
-              X =
-                m[1] * st * 1.18 +
-                (i.sun[1] * 0.95 * V + $ * i.sun[1]) *
-                  p *
-                  0.95 *
-                  (1 - 0.3 * Y) +
-                0.05 * Q,
-              K =
-                m[2] * st * 1.08 +
-                (i.sun[2] * 0.95 * V + $ * i.sun[2]) *
-                  p *
-                  0.93 *
-                  (1 - 0.3 * Y) +
-                0.05 * Q,
-              nt =
-                i.cloudLp && i.lp
-                  ? i.cloudLp *
-                    (0.45 + 0.55 * Y) *
-                    (0.5 + 0.5 * Math.exp(-y * 2.5))
-                  : 0,
-              Z = i.lp || [0, 0, 0],
-              et = i.cloudK ?? 1;
-            ((j *= et),
-              (X *= et),
-              (K *= et),
-              (T += (j + Z[0] * nt - T) * W),
-              (E += (X + Z[1] * nt - E) * W),
-              (A += (K + Z[2] * nt - A) * W));
-          }
-        }
-      } else {
-        let P = Math.exp(y * 7);
-        ((T = c[0] + (i.fog[0] * 0.8 - c[0]) * P),
-          (E = c[1] + (i.fog[1] * 0.8 - c[1]) * P),
-          (A = c[2] + (i.fog[2] * 0.8 - c[2]) * P));
-        let I = ((Math.max(0, R) * i.sunI) / 3) * 0.04;
-        ((T += i.sun[0] * I), (E += i.sun[1] * I), (A += i.sun[2] * I));
-      }
-      let C = (x * t + S) * 4;
-      ((s[C] = T), (s[C + 1] = E), (s[C + 2] = A), (s[C + 3] = 1));
-    }
-  }
-  let g = Math.floor(e / 2) - Math.max(1, Math.round(e / 90)),
-    b = new Float32Array(t * 3);
-  for (let x = 0; x < t; x++) {
-    let v = (g * t + x) * 4;
-    ((b[x * 3] = s[v]), (b[x * 3 + 1] = s[v + 1]), (b[x * 3 + 2] = s[v + 2]));
-  }
-  return { data: s, hz: b };
-}
-var r2 = (i, t) => {
-  let e = Math.sin(i * 12.9898 + t * 78.233) * 43758.5453;
-  return e - Math.floor(e);
-};
-function Up(i, t) {
-  let e = Math.floor(i),
-    s = Math.floor(t),
-    n = i - e,
-    o = t - s,
-    a = n * n * (3 - 2 * n),
-    r = o * o * (3 - 2 * o);
+// Lines 199923-200010 of readable/app.pretty.js (statement-aligned).
+var USt = `
+:root { --ch-bg: rgba(8,10,14,.8); --ch-line: rgba(255,255,255,.14); --ch-gold: #ffd23f; --ch-cash: #7dffb0; --ch-tok: #b98cff; }
+#chWallet { position: fixed; z-index: 9; right: max(16px, 2.5vw); top: calc(max(14px, 2.5vh) + 40px); display: none; flex-direction: column; align-items: flex-end; pointer-events: none; font-family: var(--disp, sans-serif); color: #f3f4f1; }
+body.play #chWallet.on { display: flex; }
+#chWallet .w { display: flex; align-items: baseline; gap: 8px; padding: 6px 12px 7px; border-radius: 10px; background: var(--ch-bg); border: 1px solid var(--ch-line); box-shadow: 0 6px 22px rgba(0,0,0,.35); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: border-color .3s, box-shadow .3s; }
+#chWallet .w small { font: 700 9px var(--mono, monospace); letter-spacing: .22em; color: rgba(243,244,241,.6); }
+#chWallet .w b { font: 800 22px/1 var(--disp, sans-serif); font-stretch: 112%; letter-spacing: .02em; font-variant-numeric: tabular-nums; color: #fff; }
+#chWallet.up .w { border-color: var(--ch-cash); box-shadow: 0 0 0 1px var(--ch-cash), 0 6px 26px rgba(125,255,176,.25); } #chWallet.up .w b { color: var(--ch-cash); }
+#chWallet.dn .w { border-color: #ff6b6b; } #chWallet.dn .w b { color: #ff9a9a; }
+#chWallet .pop { margin-top: 6px; padding: 4px 10px; border-radius: 8px; background: rgba(8,10,14,.72); font: 800 13px var(--disp, sans-serif); letter-spacing: .04em; color: var(--ch-cash); opacity: 0; transform: translateY(-4px); transition: opacity .3s, transform .3s; white-space: nowrap; }
+#chWallet .pop.on { opacity: 1; transform: none; } #chWallet .pop.neg { color: #ff9a9a; } #chWallet .pop small { font: 600 10px var(--mono, monospace); letter-spacing: .14em; color: rgba(243,244,241,.75); margin-left: 6px; text-transform: uppercase; }
+body.chgarage #chWallet { display: none !important; }   /* (the garage shows the wallet and the tokens apart itself: gen64) */
+body.hud-off #chWallet, body.photo #chWallet, body.cine #chWallet { visibility: hidden; }
+body.touch #chWallet { top: calc(var(--st, 0px) + 48px); right: calc(var(--sr, 0px) + 10px); } body.touch #chWallet .w b { font-size: 16px; }
+body.chwallet #taxiTotal b { display: none; }
+#chPrompt { gap: 12px; padding: 6px 6px 6px 8px; max-width: calc(100vw - 32px); border-radius: var(--r-md, 12px); }
+#chPrompt .ds-icon { width: 36px; height: 36px; }
+#chPrompt .tx { min-width: 0; } #chPrompt .k { font: 800 10px var(--disp, sans-serif); letter-spacing: .2em; text-transform: uppercase; }
+#chPrompt .n { font: 800 16px var(--disp, sans-serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } #chPrompt .s { font: 600 11px var(--mono, monospace); letter-spacing: .06em; color: rgba(243,244,241,.72); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#chPrompt .s b { color: var(--ch-cash); } #chPrompt .s i { font-style: normal; color: var(--ch-gold); } #chPrompt .s em { font-style: normal; color: #ff9a9a; }
+#chPrompt button { all: unset; cursor: pointer; flex: none; padding: 9px 14px; border-radius: 10px; color: #0b0c0e; font: 800 12px var(--disp, sans-serif); letter-spacing: .14em; text-transform: uppercase; }
+#chPrompt button[disabled] { opacity: .45; cursor: default; }
+#chPrompt kbd { font: 800 11px var(--mono, monospace); padding: 1px 5px; border: 1px solid rgba(0,0,0,.5); border-radius: 4px; margin-right: 6px; }
+#chObj { min-width: 300px; max-width: calc(100vw - 32px); padding: 8px 14px 9px 16px; pointer-events: none; }
+#chObj .top { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; }
+#chObj .k { font: 800 10px var(--font, sans-serif); letter-spacing: .22em; text-transform: uppercase; color: var(--c); }
+#chObj .clk { font: 800 26px/1 var(--disp, sans-serif); font-stretch: 112%; font-variant-numeric: tabular-nums; } #chObj .clk.low { color: #ff7070; }
+#chObj .o { font: 700 14px var(--disp, sans-serif); margin-top: 3px; } #chObj .o small { font: 600 11px var(--mono, monospace); color: rgba(243,244,241,.7); margin-left: 6px; letter-spacing: .06em; }
+#chObj .m { display: flex; gap: 10px; margin-top: 6px; } #chObj .m div { flex: 1; font: 700 9px var(--mono, monospace); letter-spacing: .16em; color: rgba(243,244,241,.7); text-transform: uppercase; }
+#chObj .m i { display: block; height: 4px; margin-top: 3px; border-radius: 2px; background: rgba(255,255,255,.14); overflow: hidden; } #chObj .m i u { display: block; height: 100%; background: var(--mc, #7dffb0); transition: width .2s; }
+#chObj .st { margin-top: 5px; font: 600 10px var(--mono, monospace); letter-spacing: .12em; color: rgba(243,244,241,.7); } #chObj .st b { color: var(--ch-gold); font-weight: 800; }
+#chObj .ab { font: 600 9px var(--mono, monospace); letter-spacing: .14em; color: rgba(243,244,241,.45); margin-top: 4px; text-transform: uppercase; }
+body.racing #chObj { display: none !important; }
+#chRes { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -46%); z-index: 12; width: min(420px, calc(100vw - 32px)); padding: 18px 22px 16px; border-radius: 16px; background: linear-gradient(180deg, rgba(12,14,20,.94), rgba(10,12,16,.9)); border-top: 5px solid var(--c); color: #f3f4f1; font-family: var(--disp, sans-serif); box-shadow: 0 20px 60px rgba(0,0,0,.55); opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; }
+#chRes.on { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
+#chRes .k { font: 800 11px var(--disp, sans-serif); letter-spacing: .24em; text-transform: uppercase; color: var(--c); } #chRes h3 { margin: 4px 0 0; font: 800 22px var(--disp, sans-serif); }
+#chRes .v { display: flex; align-items: baseline; gap: 14px; margin-top: 10px; } #chRes .v b { font: 800 40px/1 var(--disp, sans-serif); font-stretch: 112%; font-variant-numeric: tabular-nums; } #chRes .v small { font: 600 11px var(--mono, monospace); letter-spacing: .14em; color: rgba(243,244,241,.7); text-transform: uppercase; }
+#chRes .stars { font-size: 30px; letter-spacing: .12em; margin-top: 4px; } #chRes .stars i { font-style: normal; color: rgba(255,255,255,.22); transition: color .25s, text-shadow .25s; } #chRes .stars i.y { color: var(--ch-gold); text-shadow: 0 0 16px rgba(255,210,63,.8); }
+#chRes table { width: 100%; border-collapse: collapse; margin-top: 10px; font: 600 12px var(--mono, monospace); } #chRes td { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.08); color: rgba(243,244,241,.82); } #chRes td:last-child { text-align: right; color: var(--ch-cash); font-variant-numeric: tabular-nums; } #chRes td.neg { color: #ff9a9a !important; }
+#chRes tr.tot td { border-bottom: 0; padding-top: 8px; font: 800 18px var(--disp, sans-serif); color: #fff; } #chRes tr.tot td:last-child { color: var(--ch-cash); }
+#chRes .xp { margin-top: 4px; font: 600 11px var(--mono, monospace); letter-spacing: .12em; color: rgba(243,244,241,.75); text-transform: uppercase; } #chRes .xp b { color: #8fd3ff; }
+#chRes .w { margin-top: 10px; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.05); font: 600 11px var(--mono, monospace); letter-spacing: .08em; color: rgba(243,244,241,.8); } #chRes .w b { color: #fff; font: 800 14px var(--disp, sans-serif); }
+#chRes .w em { display: block; margin-top: 3px; font-style: normal; font-size: 10px; color: rgba(243,244,241,.55); }
+#chRes .why { margin-top: 10px; font: 600 13px var(--disp, sans-serif); color: rgba(243,244,241,.85); }
+#chRes .row { display: flex; gap: 8px; margin-top: 14px; } #chRes button { all: unset; cursor: pointer; flex: 1; text-align: center; padding: 10px 0; border-radius: 10px; font: 800 12px var(--disp, sans-serif); letter-spacing: .14em; text-transform: uppercase; background: rgba(255,255,255,.1); color: #f3f4f1; } #chRes button.go { background: var(--c); color: var(--ink2, #0b0c0e); }
+#chRes kbd { font: 800 10px var(--mono, monospace); padding: 1px 5px; border: 1px solid currentColor; border-radius: 4px; margin-left: 6px; opacity: .7; }
+#chFilter { position: fixed; z-index: 15; left: max(16px, 2.5vw); top: calc(max(14px, 2vh) + 62px); display: none; flex-direction: column; gap: 4px; max-height: calc(100vh - 160px); overflow-y: auto; padding: 8px; border-radius: 12px; background: rgba(8,10,12,.78); border: 1px solid var(--ch-line); font-family: var(--disp, sans-serif); color: #f3f4f1; scrollbar-width: thin; }
+body.bigmap #chFilter { display: flex; }
+#chFilter h5 { margin: 0 2px 4px; font: 700 9px var(--mono, monospace); letter-spacing: .2em; color: rgba(243,244,241,.6); text-transform: uppercase; display: flex; justify-content: space-between; gap: 10px; }
+#chFilter button { all: unset; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; border-radius: 8px; font: 700 12px var(--disp, sans-serif); white-space: nowrap; }
+#chFilter button:hover { background: rgba(255,255,255,.08); } #chFilter button[aria-pressed="false"] { opacity: .38; }
+#chFilter button canvas { width: 22px; height: 22px; flex: none; } #chFilter button span { flex: 1; } #chFilter button small { font: 600 10px var(--mono, monospace); color: rgba(243,244,241,.65); }
+#chFilter .feat { color: var(--ch-gold); } #chFilter .all { justify-content: center; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; background: rgba(255,255,255,.06); margin-top: 4px; }
+@media (max-width: 720px) { #chFilter { top: auto; bottom: 86px; left: 8px; right: 8px; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; max-height: none; } #chFilter h5 { display: none; } #chFilter button small { display: none; } }
+`,
+  b1 = (o) =>
+    (o < 0 ? "\u2212$" : "$") + Math.abs(Math.round(o)).toLocaleString("en-US"),
+  wr = (o) =>
+    String(o ?? "").replace(
+      /[&<>"']/g,
+      (t) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[t],
+    );
+function GSt(o, t, e = 40) {
+  let s = Math.min(2, globalThis.devicePixelRatio || 1),
+    n = document.createElement("canvas");
+  n.width = n.height = Math.round(e * s);
+  let i = n.getContext("2d"),
+    a = n.width / 2;
   return (
-    (r2(e, s) * (1 - a) + r2(e + 1, s) * a) * (1 - r) +
-    (r2(e, s + 1) * (1 - a) + r2(e + 1, s + 1) * a) * r
+    i.translate(a, a),
+    i.beginPath(),
+    i.arc(0, 0, a * 0.92, 0, 7),
+    (i.fillStyle = Li[o].col),
+    i.fill(),
+    (i.lineWidth = a * 0.08),
+    (i.strokeStyle = "rgba(255,255,255,.85)"),
+    i.stroke(),
+    hN(i, o, a * 0.62, cN(o), t),
+    n
   );
-}
-function cst(i, t, e, s = 5) {
-  let n = i + 0.35 * Up(i * 0.7 + 5.2, t * 0.7 - 1.3),
-    o = t + 0.35 * Up(i * 0.7 - 7.7, t * 0.7 + 2.9),
-    a = 0,
-    r = 0.5,
-    l = 1.1;
-  for (let c = 0; c < s; c++) {
-    let h = Up(n * l + c * 7.1, o * l - c * 3.7);
-    ((a += (c < 2 ? h : 1 - Math.abs(2 * h - 1)) * r), (r *= 0.5), (l *= 2.13));
-  }
-  return Math.max(0, a - (0.8 - e * 0.45)) * 2.4;
-}
-function WMt(i, t) {
-  let e =
-    Up(i * 0.6, t * 2.2) * 0.6 +
-    Up(i * 1.7, t * 5.1) * 0.3 +
-    Up(i * 4, t * 11) * 0.1;
-  return Math.max(0, e - 0.52) * 1.6;
-}
-var hst = new Float32Array(1),
-  qMt = new Uint32Array(hst.buffer);
-function jMt(i) {
-  hst[0] = i;
-  let t = qMt[0],
-    e = (t >>> 16) & 32768,
-    s = ((t >>> 23) & 255) - 112,
-    n = t & 8388607;
-  return s <= 0
-    ? e
-    : s >= 31
-      ? e | 31743
-      : e | Math.min(31743, (s << 10) + ((n + 4096) >>> 13));
-}
-function fst(i, t = 6e4) {
-  let e = new Uint16Array(i.length);
-  for (let s = 0; s < i.length; s++) e[s] = jMt(Math.min(i[s], t));
-  return e;
 }

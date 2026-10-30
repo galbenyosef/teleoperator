@@ -1,895 +1,282 @@
-// app 373 — math
-// Lines 186276-187168 of readable/app.pretty.js (statement-aligned).
-var fE = class {
-  constructor(t, { rain: e = 4200, skids: s = 3200 } = {}) {
-    ((this.N = 220), (this.p = []));
-    let n = (c) => {
-      let h = new De();
-      (h.setAttribute("position", new Te(new Float32Array(this.N * 3), 3)),
-        h.setAttribute("color", new Te(new Float32Array(this.N * 4), 4)),
-        h.setDrawRange(0, 0));
-      let f = new n0({
-          size: c,
-          map: rwt(),
-          transparent: !0,
-          depthWrite: !1,
-          vertexColors: !0,
-          sizeAttenuation: !0,
-          color: 16777215,
-        }),
-        u = new S0(h, f);
-      return (
-        (u.frustumCulled = !1),
-        (u.name = "Smoke"),
-        (u.renderOrder = 2),
-        t.add(u),
-        u
-      );
+// app 373 — wind
+// Lines 180362-180641 of readable/app.pretty.js (statement-aligned).
+function qv() {
+  try {
+    let o = JSON.parse(localStorage.getItem(f1) || "{}") || {};
+    return {
+      on: o.music !== !1,
+      vol: typeof o.musicVol == "number" ? o.musicVol : 0.7,
+      station: o.station >= 0 && o.station < zd.length ? o.station | 0 : 0,
     };
-    ((this.small = n(1.8)),
-      (this.mid = n(3.4)),
-      (this.big = n(5.6)),
-      (this.sp = []),
-      (this.NS = 160));
-    {
-      let c = new De();
-      (c.setAttribute("position", new Te(new Float32Array(this.NS * 3), 3)),
-        c.setAttribute("color", new Te(new Float32Array(this.NS * 4), 4)),
-        c.setDrawRange(0, 0));
-      let h = new n0({
-        size: 0.16,
-        map: eN(32, [
-          [0, "rgba(255,255,255,1)"],
-          [0.4, "rgba(255,190,90,0.9)"],
-          [1, "rgba(255,90,0,0)"],
-        ]),
-        transparent: !0,
-        depthWrite: !1,
-        vertexColors: !0,
-        blending: da,
-        sizeAttenuation: !0,
-      });
-      ((this.sparks = new S0(c, h)),
-        (this.sparks.frustumCulled = !1),
-        (this.sparks.name = "Sparks"),
-        (this.sparks.renderOrder = 3),
-        t.add(this.sparks));
-    }
-    ((this._hitSeen = 0), (this.NR = e));
-    {
-      let c = new De(),
-        h = this.NR * 4;
-      (c.setAttribute("position", new Te(new Float32Array(h * 3), 3)),
-        c.setAttribute("color", new Te(new Float32Array(h * 4), 4)));
-      let f = new Uint32Array(this.NR * 6);
-      for (let u = 0; u < this.NR; u++)
-        f.set(
-          [u * 4, u * 4 + 1, u * 4 + 2, u * 4 + 1, u * 4 + 3, u * 4 + 2],
-          u * 6,
-        );
-      (c.setIndex(new Te(f, 1)),
-        c.setDrawRange(0, 0),
-        (this.rain = new _e(
-          c,
-          new ln({
-            vertexColors: !0,
-            transparent: !0,
-            depthWrite: !1,
-            side: Ss,
-          }),
-        )),
-        (this.rain.frustumCulled = !1),
-        (this.rain.name = "Rain"),
-        (this.rain.renderOrder = 5),
-        t.add(this.rain),
-        (this.drops = Array.from({ length: this.NR }, () =>
-          this._drop([0, 0, 0], Math.random() * 20),
-        )));
-    }
-    ((this.NSP = 260), (this.spl = []), (this._splT = 0));
-    {
-      let c = new De(),
-        h = this.NSP * 8;
-      (c.setAttribute("position", new Te(new Float32Array(h * 3), 3)),
-        c.setAttribute("uv", new Te(new Float32Array(h * 2), 2)),
-        c.setAttribute("color", new Te(new Float32Array(h * 4), 4)));
-      let f = new Uint32Array(this.NSP * 12);
-      for (let g = 0; g < this.NSP * 2; g++)
-        f.set(
-          [g * 4, g * 4 + 1, g * 4 + 2, g * 4 + 1, g * 4 + 3, g * 4 + 2],
-          g * 6,
-        );
-      (c.setIndex(new Te(f, 1)), c.setDrawRange(0, 0));
-      let u = document.createElement("canvas");
-      u.width = u.height = 64;
-      let d = u.getContext("2d"),
-        p = d.createRadialGradient(32, 32, 0, 32, 32, 32);
-      (p.addColorStop(0, "rgba(255,255,255,0.0)"),
-        p.addColorStop(0.5, "rgba(255,255,255,0.04)"),
-        p.addColorStop(0.78, "rgba(255,255,255,0.55)"),
-        p.addColorStop(0.9, "rgba(255,255,255,0.2)"),
-        p.addColorStop(1, "rgba(255,255,255,0)"),
-        (d.fillStyle = p),
-        d.fillRect(0, 0, 64, 64),
-        (d.fillStyle = "rgba(255,255,255,0.9)"));
-      for (let g = 0; g < 7; g++) {
-        let b = (g / 7) * 6.283;
-        (d.beginPath(),
-          d.arc(
-            32 + Math.cos(b) * 9,
-            14 + Math.abs(Math.sin(b)) * 4,
-            2.2,
-            0,
-            6.283,
-          ),
-          d.fill());
-      }
-      let m = new Sn(u);
-      ((m.colorSpace = is),
-        (this.splash = new _e(
-          c,
-          new ln({
-            map: m,
-            vertexColors: !0,
-            transparent: !0,
-            depthWrite: !1,
-            side: Ss,
-            polygonOffset: !0,
-            polygonOffsetFactor: -2,
-          }),
-        )),
-        (this.splash.frustumCulled = !1),
-        (this.splash.name = "RainSplash"),
-        (this.splash.renderOrder = 4),
-        t.add(this.splash));
-    }
-    ((this.NW = 90), (this.ws = []));
-    {
-      let c = new De();
-      (c.setAttribute("position", new Te(new Float32Array(this.NW * 2 * 3), 3)),
-        c.setAttribute("color", new Te(new Float32Array(this.NW * 2 * 4), 4)),
-        (this.streaks = new hr(
-          c,
-          new na({
-            vertexColors: !0,
-            transparent: !0,
-            depthWrite: !1,
-            blending: da,
-          }),
-        )),
-        (this.streaks.frustumCulled = !1),
-        (this.streaks.name = "Streaks"),
-        (this.streaks.renderOrder = 4),
-        t.add(this.streaks));
-    }
-    ((this.SK = s),
-      (this.skIdx = 0),
-      (this.last = [null, null, null, null]),
-      (this.skA = new Float32Array(this.SK * 2)),
-      (this.skV = [0, 0, 0, 0]));
-    let o = new De();
-    (o.setAttribute("position", new Te(new Float32Array(this.SK * 4 * 3), 3)),
-      o.setAttribute(
-        "normal",
-        new Te(
-          new Float32Array(this.SK * 4 * 3).map((c, h) =>
-            h % 3 === 1 ? 1 : 0,
-          ),
-          3,
-        ),
-      ),
-      o.setAttribute("uv", new Te(new Float32Array(this.SK * 4 * 2), 2)),
-      o.setAttribute("color", new Te(new Float32Array(this.SK * 4 * 4), 4)));
-    let a = new Uint32Array(this.SK * 12);
-    for (let c = 0; c < this.SK; c++)
-      a.set(
-        [
-          c * 4,
-          c * 4 + 2,
-          c * 4 + 1,
-          c * 4 + 1,
-          c * 4 + 2,
-          c * 4 + 3,
-          c * 4,
-          c * 4 + 1,
-          c * 4 + 2,
-          c * 4 + 1,
-          c * 4 + 3,
-          c * 4 + 2,
-        ],
-        c * 12,
-      );
-    (o.setIndex(new Te(a, 1)),
-      (this.skid = new _e(
-        o,
-        new ln({
-          color: 394758,
-          map: lwt(),
-          transparent: !0,
-          opacity: 0.82,
-          depthWrite: !1,
-          vertexColors: !0,
-          polygonOffset: !0,
-          polygonOffsetFactor: -2,
-        }),
-      )),
-      (this.skid.frustumCulled = !1),
-      (this.skid.name = "Skids"),
-      (this.skid.renderOrder = 1),
-      t.add(this.skid));
-    let r = eN(64, [
-      [0, "rgba(255,255,255,1)"],
-      [0.25, "rgba(120,190,255,0.9)"],
-      [0.6, "rgba(60,90,255,0.35)"],
-      [1, "rgba(0,0,80,0)"],
-    ]);
-    this.flames = [];
-    for (let c of [-0.13, 0, 0.13]) {
-      let h = new K0(
-        new M0({
-          map: r,
-          color: 16777215,
-          blending: da,
-          transparent: !0,
-          depthWrite: !1,
-        }),
-      );
-      (h.position.set(c, 0.42, 2.3),
-        (h.visible = !1),
-        (h.name = "Flame"),
-        this.flames.push(h));
-    }
-    let l = eN(64, [
-      [0, "rgba(255,255,230,1)"],
-      [0.22, "rgba(255,200,90,0.95)"],
-      [0.5, "rgba(255,110,20,0.55)"],
-      [0.78, "rgba(120,60,255,0.18)"],
-      [1, "rgba(0,0,0,0)"],
-    ]);
-    ((this.fire = []), (this.fireT = 0), (this.fireK = 0), (this._gear = 1));
-    for (let c of [-0.13, 0, 0.13]) {
-      let h = new K0(
-        new M0({
-          map: l,
-          color: 16777215,
-          blending: da,
-          transparent: !0,
-          depthWrite: !1,
-        }),
-      );
-      (h.position.set(c, 0.42, 2.34),
-        (h.visible = !1),
-        (h.name = "Backfire"),
-        this.fire.push(h));
-    }
-    ((this.NT = 40), (this.trail = [[], []]));
-    {
-      let c = new De(),
-        h = 2 * this.NT * 2;
-      (c.setAttribute("position", new Te(new Float32Array(h * 3), 3)),
-        c.setAttribute("color", new Te(new Float32Array(h * 4), 4)));
-      let f = [];
-      for (let u = 0; u < 2; u++)
-        for (let d = 0; d < this.NT - 1; d++) {
-          let p = (u * this.NT + d) * 2;
-          f.push(p, p + 1, p + 2, p + 1, p + 3, p + 2);
-        }
-      (c.setIndex(f),
-        c.setDrawRange(0, 0),
-        (this.trails = new _e(
-          c,
-          new ln({
-            vertexColors: !0,
-            transparent: !0,
-            depthWrite: !1,
-            blending: da,
-            side: Ss,
-          }),
-        )),
-        (this.trails.frustumCulled = !1),
-        (this.trails.name = "TailTrails"),
-        (this.trails.renderOrder = 3),
-        t.add(this.trails));
-    }
-    ((this.tailP = [new xt(-0.62, 0.8, 2.2), new xt(0.62, 0.8, 2.2)]),
-      (this.contact = new _e(VL(), jL().clone())),
-      (this.contact.name = "ContactShadow"),
-      (this.contact.renderOrder = 1),
-      (this.contact.matrixAutoUpdate = !1),
-      (this.contact.frustumCulled = !1),
-      (this.contact.castShadow = !1),
-      (this.contact.receiveShadow = !1),
-      t.add(this.contact),
-      (this._cp = new xt()),
-      (this.contact2 = this.contact.clone()),
-      (this.contact2.material = this.contact.material),
-      (this.contact2.name = "ContactShadow2"),
-      (this.contact2.matrix = new ye()),
-      t.add(this.contact2),
-      (this.contact3 = this.contact.clone()),
-      (this.contact3.material = this.contact.material),
-      (this.contact3.name = "ContactShadow3"),
-      (this.contact3.matrix = new ye()),
-      t.add(this.contact3));
+  } catch {
+    return { on: !0, vol: 0.7, station: 0 };
   }
-  attach(t) {
-    if (!t.dims?.tail || t.dims.pipes)
-      for (let n of [...this.flames, ...this.fire]) t.body.add(n);
-    if (
-      (t.dims?.pipes
-        ? (this.flames.forEach((n, o) => n.position.set(...t.dims.pipes[o])),
-          this.fire.forEach((n, o) =>
-            n.position.set(
-              t.dims.pipes[o][0],
-              t.dims.pipes[o][1],
-              t.dims.pipes[o][2] + 0.04,
-            ),
-          ))
-        : [-0.13, 0, 0.13].forEach((n, o) => {
-            (this.flames[o].position.set(n, 0.42, 2.3),
-              this.fire[o].position.set(n, 0.42, 2.34));
-          }),
-      t.dims?.tail)
-    ) {
-      t.dims.tail.forEach((n, o) => this.tailP[o].set(...n));
-      return;
-    }
-    let e = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
+}
+function H2(o, t) {
+  try {
+    let e = JSON.parse(localStorage.getItem(f1) || "{}") || {};
+    ((e.music = o),
+      (e.musicVol = t),
+      localStorage.setItem(f1, JSON.stringify(e)));
+  } catch {}
+}
+var zd = [
+  { id: "mix", name: "Horizon Mix", energy: null },
+  { id: "cruise", name: "Bay Cruise FM", energy: ["cruise"] },
+  { id: "drive", name: "Redline Radio", energy: ["drive", "high"] },
+];
+function p4(o) {
+  try {
+    let t = JSON.parse(localStorage.getItem(f1) || "{}") || {};
+    ((t.station = o), localStorage.setItem(f1, JSON.stringify(t)));
+  } catch {}
+}
+var W8t = {
+    pole: { g: 0.42, r: 1.45 },
+    tree: { g: 0.5, r: 1.15 },
+    car: { g: 0.62, r: 0.95 },
+    rail: { g: 0.3, r: 1.6 },
+  },
+  FB = 0.6,
+  Gv = { engine: 0.8, sfx: 0.85, world: 0.6, amb: 0.42, ui: 0.45, rev: 0.9 },
+  q8t = new Set(["boxtruck", "stepvan", "garbage", "semi", "bus", "cablecar"]),
+  h1 = 343,
+  j8t = 0.6,
+  $8t = { ferrari: 0.36, ev: 0.8 };
+function DB() {
+  try {
+    let o = JSON.parse(localStorage.getItem(f1) || "{}") || {};
+    return typeof o.masterVol == "number" ? o.masterVol : 1;
+  } catch {
+    return 1;
+  }
+}
+function UB(o) {
+  try {
+    let t = JSON.parse(localStorage.getItem(f1) || "{}") || {};
+    ((t.masterVol = o), localStorage.setItem(f1, JSON.stringify(t)));
+  } catch {}
+}
+var sn = (o, t, e) => Math.min(e, Math.max(t, o)),
+  Vv = { top: [0, 55, 95, 135, 178, 225, 275], red: 7e3, idle: 950 };
+function Ant(o, t, e, s) {
+  let n = (l) => Math.max(Vv.idle, (Vv.red * t) / Vv.top[l]),
+    i = 3e3 + 3400 * e,
+    a = 1600 + 1400 * e;
+  ((o.shiftT = Math.max(0, (o.shiftT || 0) - s)),
+    o.g < 6 && n(o.g) > i
+      ? (o.g++, (o.shiftT = 0.12), (o.dir = 1))
+      : o.g > 1 && n(o.g) < a && (o.g--, (o.shiftT = 0.06), (o.dir = -1)));
+  let r = n(o.g);
+  return (
+    o.g === 1 && t < 18 && (r = Math.max(r, Vv.idle + 2400 * e * (1 - t / 36))),
+    Math.min(r, Vv.red)
+  );
+}
+var eo = (o, t, e) => {
+    let s = sn((e - o) / (t - o), 0, 1);
+    return s * s * (3 - 2 * s);
+  },
+  X8t = [
+    [1e3, "eng_idle"],
+    [2e3, "eng_2000"],
+    [3500, "eng_3500"],
+    [5500, "eng_5500"],
+    [8e3, "eng_8000"],
+  ],
+  Vl = {
+    ferrari: { loops: X8t, coast: "eng_coast" },
+    corvette: {
+      loops: [
+        [1e3, "zr_idle"],
+        [2e3, "zr_2000"],
+        [3500, "zr_3500"],
+        [5500, "zr_5500"],
+        [7500, "zr_7500"],
       ],
-      s = new xt();
-    for (let n of t.lamps?.tail || []) {
-      let o = n.geometry?.attributes?.position;
-      if (o) {
-        n.updateMatrix();
-        for (let a = 0; a < o.count; a += 3) {
-          s.fromBufferAttribute(o, a).applyMatrix4(n.matrix);
-          let r = e[s.x < 0 ? 0 : 1];
-          ((r[0] += s.x), (r[1] += s.y), (r[2] += s.z), r[3]++);
-        }
-      }
-    }
-    e.forEach((n, o) => {
-      n[3] > 10 &&
-        this.tailP[o].set(n[0] / n[3], n[1] / n[3], n[2] / n[3] + 0.04);
+      coast: "zr_coast",
+    },
+    flat6: {
+      loops: [
+        [1100, "f6_idle"],
+        [4e3, "f6_3500"],
+        [5600, "f6_5000"],
+      ],
+      coast: "f6_coast",
+    },
+    v12: {
+      loops: [
+        [1e3, "v12_idle"],
+        [1700, "v12_mid"],
+        [2e3, "v12_high"],
+      ],
+      coast: "v12_coast",
+    },
+    dsl: {
+      loops: [
+        [750, "dsl_idle"],
+        [1500, "dsl_mid"],
+        [3800, "dsl_high"],
+      ],
+      coast: "dsl_coast",
+    },
+    sml: {
+      loops: [
+        [1e3, "sml_idle"],
+        [2e3, "sml_mid"],
+        [2900, "sml_high"],
+      ],
+      coast: "sml_coast",
+    },
+  },
+  d4 = (o) => [...o.loops.map((t) => t[1]), o.coast],
+  K8t = new Set(Object.values(Vl).flatMap(d4)),
+  N2 = {
+    ferrari: { pops: !0, sub: 1.1, wind: 1 },
+    corvette: { pops: !0, sub: 1.2, wind: 0.45 },
+    flat6: { pops: !0, sub: 0.9, wind: 0.5 },
+    v12: { pops: !0, sub: 1.1, wind: 0.5 },
+    dsl: { pops: !1, sub: 1.3, wind: 0.4 },
+    sml: { pops: !1, sub: 0.5, wind: 0.6 },
+    ev: { pops: !1, sub: 0, wind: 0 },
+  },
+  Y8t = 22,
+  OB = 1.25,
+  J8t = 1,
+  Wl = {
+    waymo: {
+      mot: [
+        [15, "ev_mot_lo"],
+        [50, "ev_mot_mid"],
+        [100, "ev_mot_hi"],
+      ],
+      tyre: [
+        [20, "ev_tyre_lo"],
+        [50, "ev_tyre_mid"],
+        [110, "ev_tyre_hi"],
+      ],
+      avas: "ev_avas",
+      wind: "ev_wind2",
+      regen: "ev_regen2",
+      bump: "ev_bump",
+      mix: { mot: 1, tyre: 1, wind: 1, avas: 1, regen: 1 },
+    },
+    cybercab: {
+      mot: [
+        [15, "cc_mot_lo"],
+        [50, "cc_mot_mid"],
+        [100, "cc_mot_hi"],
+      ],
+      tyre: [
+        [20, "cc_tyre_lo"],
+        [50, "cc_tyre_mid"],
+        [110, "cc_tyre_hi"],
+      ],
+      avas: "cc_avas",
+      wind: "cc_wind",
+      regen: "cc_regen",
+      bump: "cc_bump",
+      mix: { mot: 1.2, tyre: 0.9, wind: 0.85, avas: 0.9, regen: 1.1 },
+    },
+    cybertruck: {
+      mot: [
+        [15, "ct_mot_lo"],
+        [50, "ct_mot_mid"],
+        [100, "ct_mot_hi"],
+      ],
+      tyre: [
+        [20, "ct_tyre_lo"],
+        [50, "ct_tyre_mid"],
+        [110, "ct_tyre_hi"],
+      ],
+      avas: "ct_avas",
+      wind: "ct_wind",
+      regen: "ct_regen",
+      bump: "ct_bump",
+      mix: { mot: 0.75, tyre: 1, wind: 0.9, avas: 0.9, regen: 1 },
+    },
+    roadster: {
+      mot: [
+        [15, "rd_mot_lo"],
+        [50, "rd_mot_mid"],
+        [100, "rd_mot_hi"],
+      ],
+      tyre: [
+        [20, "rd_tyre_lo"],
+        [50, "rd_tyre_mid"],
+        [110, "rd_tyre_hi"],
+      ],
+      avas: "rd_avas",
+      wind: "rd_wind",
+      regen: "rd_regen",
+      bump: "rd_bump",
+      mix: { mot: 0.6, tyre: 0.95, wind: 0.95, avas: 0.9, regen: 1 },
+      spacex: {
+        fan: "rd_fan",
+        thrust: "rd_thrust",
+        start: "rd_thrust_start",
+        land: "rd_land",
+        mix: { fan: 1, thrust: 1, start: 1, land: 1 },
+      },
+    },
+  };
+Wl.roadster_ev = { ...Wl.roadster, spacex: null };
+var Z8t = !1,
+  Wv = (o) => [
+    ...o.mot.map((t) => t[1]),
+    ...o.tyre.map((t) => t[1]),
+    o.avas,
+    o.wind,
+    o.regen,
+    o.bump,
+  ],
+  BB = {
+    ferrari: { impact: "impact", scrape: "scrape", skid: "skid", ir: "ir_" },
+    ev: {
+      impact: "ev_crash",
+      scrape: "ev_scrape",
+      skid: "ev_squeal",
+      ir: "irr_",
+    },
+  },
+  NB = new Set(Object.values(Wl).flatMap(Wv)),
+  HB = (o) => (o ? [o.fan, o.thrust, o.start, o.land] : []),
+  Q8t = new Set(Object.values(Wl).flatMap((o) => HB(o.spacex))),
+  Pnt = {
+    body: { rate: 1.13, lp: 2600, dur: 0.42 },
+    heavy: { rate: 0.82, lp: 6500, dur: 1.4 },
+    prop: { rate: 1.3, lp: 3600, dur: 0.2 },
+    wood: { rate: 0.72, lp: 1300, dur: 0.32 },
+    ground: { rate: 0.9, lp: 900, dur: 0.5 },
+    scrape: { rate: 1, lp: 4800, dur: 0.3 },
+  },
+  Cnt = !1;
+function t6t() {
+  let o = globalThis.AudioParam?.prototype;
+  if (Cnt || !o) return;
+  Cnt = !0;
+  for (let e of [
+    "setValueAtTime",
+    "linearRampToValueAtTime",
+    "exponentialRampToValueAtTime",
+    "setTargetAtTime",
+  ]) {
+    let s = o[e];
+    typeof s == "function" &&
+      (o[e] = function (n, i, a) {
+        return Number.isFinite(n) &&
+          Number.isFinite(i) &&
+          (a === void 0 || Number.isFinite(a))
+          ? s.call(this, n, i, a)
+          : this;
+      });
+  }
+  let t = Object.getOwnPropertyDescriptor(o, "value");
+  t?.set &&
+    Object.defineProperty(o, "value", {
+      ...t,
+      set(e) {
+        Number.isFinite(e) && t.set.call(this, e);
+      },
     });
-  }
-  pop(t = 1) {
-    ((this.fireT = Math.max(this.fireT, 0.06 + 0.07 * t)),
-      (this.fireK = Math.max(this.fireK, 0.6 + 0.6 * t)));
-  }
-  _drop(t, e) {
-    let s = Math.random() * 6.2832,
-      n = 0.6 + 21 * Math.random() ** 2.2;
-    return [Math.cos(s) * n, e, Math.sin(s) * n];
-  }
-  _rain(t, e, s, n, o) {
-    let a = n > 0,
-      r = this.rain.geometry.attributes.position.array,
-      l = this.rain.geometry.attributes.color.array;
-    if (!a) {
-      this.rain.geometry.drawRange.count &&
-        (this.rain.geometry.setDrawRange(0, 0),
-        this.splash.geometry.setDrawRange(0, 0),
-        (this.spl.length = 0));
-      return;
-    }
-    let c = s.position,
-      h = c.x,
-      f = c.y,
-      u = c.z,
-      d = 14,
-      p = -7,
-      m = this._rcx === void 0 ? 0 : h - this._rcx,
-      g = this._rcx === void 0 ? 0 : u - this._rcz;
-    ((this._rcx = h), (this._rcz = u));
-    let b = [1.4, -9.5, 0.7],
-      x = 1 / 28,
-      v = e.vel.x,
-      y = e.vel.z,
-      M = 0.8 + 0.6 * o,
-      S = 0.7 * M,
-      w = 0.74 * M,
-      z = 0.8 * M,
-      _ = 0;
-    for (let B = 0; B < this.NR; B++) {
-      let H = this.drops[B];
-      if (
-        ((H[0] += b[0] * t - m),
-        (H[1] += b[1] * t),
-        (H[2] += b[2] * t - g),
-        H[1] < p || H[0] * H[0] + H[2] * H[2] > 529)
-      ) {
-        let it = this._drop(null, d);
-        ((H[0] = it[0]),
-          (H[1] =
-            H[1] < p ? d - Math.random() * 2 : p + Math.random() * (d - p)),
-          (H[2] = it[2]));
-      }
-      let O = h + H[0],
-        D = f + H[1],
-        U = u + H[2],
-        G = Math.hypot(H[0], H[1], H[2]),
-        q = (b[0] - v) * x,
-        W = b[1] * x,
-        V = (b[2] - y) * x,
-        Y = O + q,
-        $ = D + W,
-        st = U + V,
-        Q = Math.max(0.005, G * 0.0026),
-        j = W * (U - u) - V * (D - f),
-        X = V * (O - h) - q * (U - u),
-        K = q * (D - f) - W * (O - h),
-        nt = Math.hypot(j, X, K) || 1;
-      ((j *= Q / nt), (X *= Q / nt), (K *= Q / nt));
-      let Z =
-          n *
-          0.5 *
-          Math.min(1, Math.max(0, (G - 1) / 3)) *
-          Math.max(0, 1 - G / 24),
-        et = _ * 12;
-      ((r[et] = O - j),
-        (r[et + 1] = D - X),
-        (r[et + 2] = U - K),
-        (r[et + 3] = O + j),
-        (r[et + 4] = D + X),
-        (r[et + 5] = U + K),
-        (r[et + 6] = Y - j),
-        (r[et + 7] = $ - X),
-        (r[et + 8] = st - K),
-        (r[et + 9] = Y + j),
-        (r[et + 10] = $ + X),
-        (r[et + 11] = st + K));
-      let tt = _ * 16;
-      ((l[tt] = S),
-        (l[tt + 1] = w),
-        (l[tt + 2] = z),
-        (l[tt + 3] = Z * 0.35),
-        (l[tt + 4] = S),
-        (l[tt + 5] = w),
-        (l[tt + 6] = z),
-        (l[tt + 7] = Z * 0.35),
-        (l[tt + 8] = S),
-        (l[tt + 9] = w),
-        (l[tt + 10] = z),
-        (l[tt + 11] = Z),
-        (l[tt + 12] = S),
-        (l[tt + 13] = w),
-        (l[tt + 14] = z),
-        (l[tt + 15] = Z),
-        _++);
-    }
-    (this.rain.geometry.setDrawRange(0, _ * 6),
-      (this.rain.geometry.attributes.position.needsUpdate = !0),
-      (this.rain.geometry.attributes.color.needsUpdate = !0));
-    let R = new xt();
-    s.getWorldDirection(R);
-    let T = Math.hypot(R.x, R.z) || 1,
-      E = R.x / T,
-      A = R.z / T;
-    for (this._splT += t * 240 * n; this._splT >= 1;) {
-      this._splT -= 1;
-      let B = (Math.random() - 0.5) * 1.9,
-        H = 1.5 + 15 * Math.random() ** 1.3,
-        O = Math.cos(B),
-        D = Math.sin(B),
-        U = h + (E * O - A * D) * H,
-        G = u + (A * O + E * D) * H,
-        q = eo(U, G);
-      !Number.isFinite(q) ||
-        Math.abs(q - f) > 12 ||
-        this.spl.push({
-          x: U,
-          y: q + 0.02,
-          z: G,
-          age: 0,
-          life: 0.22 + Math.random() * 0.12,
-          s: 0.7 + Math.random() * 0.6,
-        });
-    }
-    this.spl.length > this.NSP &&
-      this.spl.splice(0, this.spl.length - this.NSP);
-    let C = this.splash.geometry.attributes.position.array,
-      P = this.splash.geometry.attributes.uv.array,
-      I = this.splash.geometry.attributes.color.array,
-      L = 0,
-      F = -A,
-      N = E;
-    for (let B = this.spl.length - 1; B >= 0; B--) {
-      let H = this.spl[B];
-      if (((H.age += t), H.age > H.life)) {
-        this.spl.splice(B, 1);
-        continue;
-      }
-      let O = H.age / H.life,
-        D = (0.03 + 0.16 * Math.sqrt(O)) * H.s,
-        U = (1 - O) * n * 0.3,
-        G = L * 24,
-        q = L * 16,
-        W = L * 32;
-      (C.set(
-        [
-          H.x - D,
-          H.y,
-          H.z - D,
-          H.x + D,
-          H.y,
-          H.z - D,
-          H.x - D,
-          H.y,
-          H.z + D,
-          H.x + D,
-          H.y,
-          H.z + D,
-        ],
-        G,
-      ),
-        P.set([0, 0, 1, 0, 0, 1, 1, 1], q));
-      let V = (0.03 + 0.09 * Math.sin(Math.PI * Math.min(1, O * 1.4))) * H.s,
-        Y = D * 0.9;
-      (C.set(
-        [
-          H.x - F * Y,
-          H.y,
-          H.z - N * Y,
-          H.x + F * Y,
-          H.y,
-          H.z + N * Y,
-          H.x - F * Y,
-          H.y + V,
-          H.z - N * Y,
-          H.x + F * Y,
-          H.y + V,
-          H.z + N * Y,
-        ],
-        G + 12,
-      ),
-        P.set([0, 0.42, 1, 0.42, 0, 0.98, 1, 0.98], q + 8));
-      for (let $ = 0; $ < 8; $++)
-        I.set([S * 1.3, w * 1.3, z * 1.3, $ < 4 ? U : U * (1 - O)], W + $ * 4);
-      L++;
-    }
-    this.splash.geometry.setDrawRange(0, L * 12);
-    for (let B of ["position", "uv", "color"])
-      this.splash.geometry.attributes[B].needsUpdate = !0;
-  }
-  update(t, e, s, n = 1, o = null, a = null, r = 0) {
-    s.root.updateMatrixWorld(!0);
-    let l = s.dims,
-      c = (
-        l?.wheels || [
-          [-0.86, -1.16],
-          [0.85, -1.16],
-          [-0.85, 1.49],
-          [0.85, 1.49],
-        ]
-      ).map(([E, A]) => new xt(E, 0, A).applyMatrix4(s.model.matrixWorld)),
-      h = e.speed,
-      f = this._dh || (this._dh = (E, A) => eo(E, A, null, this._hy));
-    this._hy = e.pos.y;
-    {
-      let E = this._cp
-          .set(0, 0, l ? l.cz : 0.165)
-          .applyMatrix4(s.model.matrixWorld),
-        A = f(E.x, E.z),
-        C = Math.max(0, s.model.matrixWorld.elements[13] - A),
-        P = l ? l.w : 1.94,
-        I = l ? l.l : 4.53;
-      (nf(this.contact.matrix, E.x, E.z, e.psi, P, I, f),
-        this.contact.matrixWorld.copy(this.contact.matrix),
-        (this.contact.material.opacity = Math.max(0, 1 - C / 2.2) ** 1.5),
-        (this.contact.visible = C < 2.2),
-        nf(this.contact2.matrix, E.x, E.z, e.psi, P * 0.835, I * 0.894, f),
-        (this.contact2.matrix.elements[13] += 0.004),
-        this.contact2.matrixWorld.copy(this.contact2.matrix),
-        (this.contact2.visible = this.contact.visible),
-        nf(this.contact3.matrix, E.x, E.z, e.psi, P * 0.7, I * 0.82, f),
-        (this.contact3.matrix.elements[13] += 0.008),
-        this.contact3.matrixWorld.copy(this.contact3.matrix),
-        (this.contact3.visible = this.contact.visible));
-    }
-    for (let E = 0; E < 4; E++) {
-      let A = e.slip[E];
-      if (A < 0.25 || !e.onGround) continue;
-      let C =
-          E >= 2
-            ? Math.max(0, Math.min(1, ((e.kappa?.[E] ?? 0) - 0.3) * 2)) *
-              Math.max(0, 1 - h / 8.5)
-            : 0,
-        P =
-          (E >= 2 ? 1 : 0.45) *
-          A *
-          38 *
-          t *
-          Math.max(Math.min(1, 0.35 + h / 12), C * 1.6);
-      for (let I = 0; I < P; I++)
-        Math.random() < P - I &&
-          this.p.push({
-            x: c[E].x + (Math.random() - 0.5) * (0.3 + 0.9 * C),
-            y: c[E].y + 0.25,
-            z: c[E].z + (Math.random() - 0.5) * (0.3 + 0.9 * C),
-            vx: e.vel.x * 0.25 * (1 - C) + (Math.random() - 0.5) * (1 + C),
-            vy: 0.5 + Math.random() * 0.6,
-            vz: e.vel.z * 0.25 * (1 - C) + (Math.random() - 0.5) * (1 + C),
-            age: 0,
-            life: 1.4 + Math.random() * 1.3 + C * 1.4,
-            a: 0.1 + 0.16 * A,
-          });
-    }
-    this.p.length > this.N * 3 && this.p.splice(0, this.p.length - this.N * 3);
-    let u = 0,
-      d = 0,
-      p = 0,
-      m = this.small.geometry.attributes.position.array,
-      g = this.small.geometry.attributes.color.array,
-      b = this.big.geometry.attributes.position.array,
-      x = this.big.geometry.attributes.color.array,
-      v = this.mid.geometry.attributes.position.array,
-      y = this.mid.geometry.attributes.color.array,
-      M = 0.56 + 0.34 * n;
-    for (let E = this.p.length - 1; E >= 0; E--) {
-      let A = this.p[E];
-      if (((A.age += t), A.age > A.life)) {
-        this.p.splice(E, 1);
-        continue;
-      }
-      let C = Math.exp(-t * 1.2);
-      ((A.vx *= C),
-        (A.vz *= C),
-        (A.vy *= Math.exp(-t * 0.5)),
-        (A.x += A.vx * t),
-        (A.y += A.vy * t),
-        (A.z += A.vz * t));
-      let P = A.age / A.life,
-        I = A.a * Math.sin(Math.PI * Math.min(1, P * 1.3)) * (1 - P);
-      P < 0.22 && u < this.N
-        ? (m.set([A.x, A.y, A.z], u * 3),
-          g.set([M, M, M * 1.02, I * 0.55], u * 4),
-          u++)
-        : P < 0.55 && d < this.N
-          ? (v.set([A.x, A.y, A.z], d * 3),
-            y.set([M, M, M * 1.02, I * 0.8], d * 4),
-            d++)
-          : p < this.N &&
-            (b.set([A.x, A.y, A.z], p * 3),
-            x.set([M, M, M * 1.02, I * 0.62], p * 4),
-            p++);
-    }
-    for (let [E, A] of [
-      [this.small, u],
-      [this.mid, d],
-      [this.big, p],
-    ])
-      sN(E.geometry, A);
-    let S = this.skid.geometry.attributes.position.array,
-      w = this.skid.geometry.attributes.color.array,
-      z = this.skid.geometry.attributes.uv.array,
-      _ = !1,
-      R = new xt(Math.cos(e.psi), 0, -Math.sin(e.psi)).multiplyScalar(0.14);
-    for (let E = 0; E < 4; E++) {
-      let A = e.slip[E],
-        C = c[E];
-      if (A < 0.35 || !e.onGround || h < 0.6) {
-        this.last[E] = null;
-        continue;
-      }
-      let P = f(C.x, C.z) + 0.025,
-        I = {
-          l: [C.x - R.x, P, C.z - R.z],
-          r: [C.x + R.x, P, C.z + R.z],
-          a: Math.min(1, (A - 0.3) * 1.6),
-        },
-        L = this.last[E],
-        F = L
-          ? Math.hypot(C.x - (L.l[0] + L.r[0]) / 2, C.z - (L.l[2] + L.r[2]) / 2)
-          : 0;
-      if (
-        (L &&
-          (F > Math.max(2.5, h * t * 2.5) || Math.abs(P - L.l[1]) > 1.5) &&
-          (this.last[E] = L = null),
-        L && F > 0.35)
-      ) {
-        let N = this.skIdx++ % this.SK,
-          B = this.skV[E],
-          H = B + F / 1.2;
-        if (
-          ((this.skV[E] = H % 64),
-          S.set([...L.l, ...L.r, ...I.l, ...I.r], N * 12),
-          z.set([0, B, 1, B, 0, H, 1, H], N * 8),
-          (this.skA[N * 2] = L.a),
-          (this.skA[N * 2 + 1] = I.a),
-          w.set(
-            [1, 1, 1, L.a, 1, 1, 1, L.a, 1, 1, 1, I.a, 1, 1, 1, I.a],
-            N * 16,
-          ),
-          this.skIdx > this.SK - 96)
-        )
-          for (let O = 1; O <= 96; O++) {
-            let D = (N + O) % this.SK,
-              U = (O - 1) / 96;
-            ((w[D * 16 + 3] = w[D * 16 + 7] = this.skA[D * 2] * U),
-              (w[D * 16 + 11] = w[D * 16 + 15] = this.skA[D * 2 + 1] * U));
-          }
-        ((this.last[E] = I), (_ = !0));
-      } else L || ((this.last[E] = I), (this.skV[E] = 0));
-    }
-    if (_) {
-      let E = this.skid.geometry.attributes;
-      ((E.position.needsUpdate = !0),
-        (E.color.needsUpdate = !0),
-        (E.uv.needsUpdate = !0));
-    }
-    if (o)
-      for (let E of o) {
-        if (
-          E.t <= this._hitSeen ||
-          ((this._hitSeen = E.t), E.s < 0.03 || h < 5)
-        )
-          continue;
-        let A = Math.min(40, 8 + E.s * 60),
-          C = f(E.x, E.z) + 0.4;
-        for (let P = 0; P < A; P++)
-          this.sp.push({
-            x: E.x,
-            y: C,
-            z: E.z,
-            vx: e.vel.x * 0.6 + (Math.random() - 0.5) * 6,
-            vy: 1 + Math.random() * 3.5,
-            vz: e.vel.z * 0.6 + (Math.random() - 0.5) * 6,
-            age: 0,
-            life: 0.25 + Math.random() * 0.35,
-          });
-      }
-    this.sp.length > this.NS && this.sp.splice(0, this.sp.length - this.NS);
-    {
-      let E = this.sparks.geometry.attributes.position.array,
-        A = this.sparks.geometry.attributes.color.array,
-        C = 0;
-      for (let P = this.sp.length - 1; P >= 0; P--) {
-        let I = this.sp[P];
-        if (((I.age += t), I.age > I.life)) {
-          this.sp.splice(P, 1);
-          continue;
-        }
-        ((I.vy -= 9.8 * t),
-          (I.x += I.vx * t),
-          (I.y += I.vy * t),
-          (I.z += I.vz * t));
-        let L = 1 - I.age / I.life;
-        (E.set([I.x, I.y, I.z], C * 3),
-          A.set([4 * L, 2.4 * L, 1 * L, L], C * 4),
-          C++);
-      }
-      sN(this.sparks.geometry, C);
-    }
-    if (a) {
-      let E =
-          Math.max(0, Math.min(1, (e.kmh - 160) / 120)) + (e.nitroOn ? 0.7 : 0),
-        A = this.streaks.geometry.attributes.position.array,
-        C = this.streaks.geometry.attributes.color.array,
-        P = e.vel.x,
-        I = e.vel.z,
-        L = Math.hypot(P, I) || 1,
-        F = P / L,
-        N = I / L;
-      for (; this.ws.length < this.NW * Math.min(1, E);) {
-        let H = Math.random() * Math.PI * 2,
-          O = 2.5 + Math.random() * 6;
-        this.ws.push({
-          x: a.position.x + F * (25 + Math.random() * 30) + Math.cos(H) * O * N,
-          y: a.position.y + Math.sin(H) * O * 0.6,
-          z: a.position.z + N * (25 + Math.random() * 30) - Math.cos(H) * O * F,
-          age: 0,
-          life: 0.6,
-        });
-      }
-      let B = 0;
-      for (let H = this.ws.length - 1; H >= 0; H--) {
-        let O = this.ws[H];
-        O.age += t;
-        let D = (O.x - a.position.x) * F + (O.z - a.position.z) * N;
-        if (O.age > O.life || D < -2 || E <= 0) {
-          this.ws.splice(H, 1);
-          continue;
-        }
-        let U = 0.06 * L,
-          G = Math.sin((Math.PI * O.age) / O.life) * 0.35 * Math.min(1, E);
-        (A.set([O.x, O.y, O.z, O.x - F * U, O.y, O.z - N * U], B * 6),
-          C.set([G, G, G * 1.05, 1, 0, 0, 0, 0], B * 8),
-          B++);
-      }
-      sN(this.streaks.geometry, B * 2);
-    }
-    a && this._rain(t, e, a, r, n);
-    let T = e.nitroOn;
-    for (let E of this.flames)
-      if (((E.visible = T), T)) {
-        let A = 0.35 + Math.random() * 0.3;
-        E.scale.set(A, A, A);
-      }
-    (e.gear > this._gear &&
-      !e.reverse &&
-      e.speed > 8 &&
-      e.rpm > 5200 &&
-      this.pop(0.7 + 0.3 * Math.min(1, (e.rpm - 5200) / 3500)),
-      (this._gear = e.gear),
-      (this.fireT -= t));
-    for (let E of this.fire) {
-      let A = this.fireT > 0 && !T;
-      if (((E.visible = A), A)) {
-        let C = (0.22 + Math.random() * 0.3) * this.fireK;
-        (E.scale.set(C, C * (0.8 + Math.random() * 0.4), C),
-          (E.material.opacity = 0.7 + 0.3 * Math.random()));
-      }
-    }
-    if (a) {
-      let E = Math.max(0, Math.min(1, (e.kmh - 130) / 140)),
-        A = e.brake > 0.1 ? 1 : 0,
-        C = E * (0.2 + 0.8 * A),
-        P = 0.16,
-        I = this.trails.geometry.attributes.position.array,
-        L = this.trails.geometry.attributes.color.array,
-        F = s.body.matrixWorld,
-        N = a.position,
-        B = new xt(),
-        H = new xt(),
-        O = new xt(),
-        D = 0;
-      for (let U = 0; U < 2; U++) {
-        let G = this.trail[U];
-        for (let V of G) V.age += t;
-        for (; G.length && G[0].age > P;) G.shift();
-        if (C > 0.01 && e.onGround !== !1) {
-          let V = this.tailP[U].clone().applyMatrix4(F);
-          G.push({ x: V.x, y: V.y, z: V.z, age: 0 });
-        } else G.length = 0;
-        G.length > this.NT && G.splice(0, G.length - this.NT);
-        let q = G.length,
-          W = U * this.NT * 2;
-        for (let V = 0; V < q; V++) {
-          let Y = G[V],
-            $ = G[Math.min(q - 1, V + 1)],
-            st = G[Math.max(0, V - 1)];
-          (H.set($.x - st.x, $.y - st.y, $.z - st.z),
-            B.set(N.x - Y.x, N.y - Y.y, N.z - Y.z),
-            O.crossVectors(H, B));
-          let Q = O.length() || 1,
-            j = 1 - Y.age / P,
-            X = 0.03 * (0.3 + 0.7 * j);
-          (O.multiplyScalar(X / Q),
-            I.set(
-              [
-                Y.x + O.x,
-                Y.y + O.y,
-                Y.z + O.z,
-                Y.x - O.x,
-                Y.y - O.y,
-                Y.z - O.z,
-              ],
-              (W + V * 2) * 3,
-            ));
-          let K = C * j * j * j * (V === q - 1 ? 0.4 : 1);
-          L.set(
-            [2.6 * K, 0.12 * K, 0.06 * K, 1, 2.6 * K, 0.12 * K, 0.06 * K, 1],
-            (W + V * 2) * 4,
-          );
-        }
-        for (let V = q; V < this.NT; V++)
-          (q
-            ? I.copyWithin(
-                (W + V * 2) * 3,
-                (W + (q - 1) * 2) * 3,
-                (W + q * 2) * 3,
-              )
-            : I.fill(0, (W + V * 2) * 3, (W + V * 2 + 2) * 3),
-            L.fill(0, (W + V * 2) * 4, (W + V * 2 + 2) * 4));
-        D = Math.max(D, q);
-      }
-      ((this.trails.visible = D > 1),
-        this.trails.geometry.setDrawRange(0, 2 * (this.NT - 1) * 6),
-        (this.trails.geometry.attributes.position.needsUpdate = !0),
-        (this.trails.geometry.attributes.color.needsUpdate = !0));
-    }
-  }
-};
+}

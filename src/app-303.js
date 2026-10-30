@@ -1,301 +1,193 @@
-// app 303 — key
-// Lines 146710-147008 of readable/app.pretty.js (statement-aligned).
-var xp = {
-    trap: "#ff8a1f",
-    zone: "#ffb81f",
-    drift: "#c45bff",
-    jump: "#ffd21f",
-    xp: "#ffb000",
-    travel: "#2f8cff",
-    race: "#ff5a1f",
-    meet: "#ff2fa0",
-    taxi: "#3fd6c6",
-    cop: "#ff3b3b",
-    skill: "#ffd23f",
-    level: "#3fd6c6",
-    info: "#38c8ff",
-  },
-  TI = {
-    trap: "Speed Trap",
-    zone: "Speed Zone",
-    drift: "Drift Zone",
-    jump: "Danger Sign",
-    xp: "XP Board",
-    travel: "Fast-Travel Board",
-    race: "Road Race",
-    meet: "Car Meet",
-  },
-  xl = {
-    trap: [
-      { d: "M4.2 16.8a8.2 8.2 0 1 1 15.6 0" },
-      { d: "M12 15.6l4.6-5.4" },
-      { d: "M12 13.7a1.9 1.9 0 1 1 0 3.8a1.9 1.9 0 1 1 0-3.8z", f: 1 },
-      { d: "M6.2 9.4l1.2 1M12 5.6v1.6M17.8 9.4l-1.2 1" },
-    ],
-    zone: [
-      { d: "M5.5 6.5l5.5 5.5-5.5 5.5" },
-      { d: "M12.5 6.5l5.5 5.5-5.5 5.5" },
-    ],
-    drift: [
-      { d: "M5 19.5c.6-6.4 5-11 13.6-12" },
-      { d: "M15.2 4.4l3.6 3.1-3.6 3" },
-      { d: "M9.6 20c.7-3.4 2.8-6 6.6-7.2", o: 0.55 },
-    ],
-    jump: [
-      { d: "M12 2.6l9.4 9.4-9.4 9.4L2.6 12z" },
-      { d: "M7.6 15.2c1.4-4.4 7.4-4.4 8.8 0" },
-      { d: "M14.2 14.6l2.3.8.6-2.4" },
-    ],
-    xp: [
-      { d: "M6.5 12.5l5.5-5.5 5.5 5.5" },
-      { d: "M6.5 17.5l5.5-5.5 5.5 5.5" },
-    ],
-    travel: [
-      {
-        d: "M12 21s-6.2-5.6-6.2-10.6a6.2 6.2 0 0 1 12.4 0C18.2 15.4 12 21 12 21z",
-      },
-      { d: "M9.3 10.4h5.2M12.6 8.3l2.1 2.1-2.1 2.1" },
-    ],
-    race: [
-      { d: "M6 21.2V3.6" },
-      { d: "M6 4h11.6l-2.2 4.4 2.2 4.4H6" },
-      {
-        d: "M8.9 4h2.9v4.4H8.9zM11.8 8.4h2.9v4.4h-2.9zM6 8.4h2.9v4.4H6z",
-        f: 1,
-      },
-    ],
-    meet: [
-      {
-        d: "M4.5 17.5v-4.2l1.9-5.1a2 2 0 0 1 1.9-1.3h7.4a2 2 0 0 1 1.9 1.3l1.9 5.1v4.2z",
-      },
-      { d: "M4.5 17.5v2M19.5 17.5v2M4.8 13h14.4" },
-      { d: "M7.6 15.2h1.6M14.8 15.2h1.6" },
-    ],
-    cop: [
-      {
-        d: "M12 3.2l2.5 5.3 5.7.7-4.2 4 1.1 5.7L12 16.1 6.9 18.9 8 13.2l-4.2-4 5.7-.7z",
-      },
-    ],
-    skill: [
-      {
-        d: "M12 3v5M12 16v5M3 12h5M16 12h5M5.6 5.6l3.2 3.2M15.2 15.2l3.2 3.2M18.4 5.6l-3.2 3.2M8.8 15.2l-3.2 3.2",
-      },
-    ],
-    level: [
-      { d: "M12 3.5a8.5 8.5 0 1 1 0 17a8.5 8.5 0 1 1 0-17z" },
-      { d: "M8 13.6l4-4 4 4" },
-    ],
-    taxi: [
-      { d: "M12 4a3.3 3.3 0 1 1 0 6.6A3.3 3.3 0 0 1 12 4z" },
-      { d: "M5.5 20.5c.8-4 3.4-6.2 6.5-6.2s5.7 2.2 6.5 6.2" },
-    ],
-    rewind: [{ d: "M11 6.5L4.5 12l6.5 5.5zM19.5 6.5L13 12l6.5 5.5z", f: 1 }],
-    info: [
-      { d: "M12 3.5a8.5 8.5 0 1 1 0 17a8.5 8.5 0 1 1 0-17z" },
-      { d: "M12 11v5.5M12 7.6v.2" },
-    ],
-  };
-xl.flag = xl.race;
-xl.xpboard = xl.xp;
-xl.star = xl.cop;
-function R_(i, t = "ds-glyph") {
-  let e = xl[i] || xl.info;
-  return `<svg class="${t}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${e.map((s) => `<path d="${s.d}"${s.f ? ' fill="currentColor" stroke="none"' : ""}${s.o ? ` opacity="${s.o}"` : ""}/>`).join("")}</svg>`;
-}
-function wr(i, t = "") {
-  return `<span class="ds-icon ${t}" style="--c:${xp[i] || xp.info}">${R_(i, "")}</span>`;
-}
-function Rm(i, t, e, s, n, o = "#fff", a = 2) {
-  let r = xl[t] || xl.info;
-  (i.save(),
-    i.translate(e - n / 2, s - n / 2),
-    i.scale(n / 24, n / 24),
-    (i.strokeStyle = i.fillStyle = o),
-    (i.lineWidth = a),
-    (i.lineCap = "round"),
-    (i.lineJoin = "round"));
-  for (let l of r) {
-    let c = new Path2D(l.d);
-    ((i.globalAlpha = l.o ?? 1), l.f ? i.fill(c) : i.stroke(c));
-  }
-  i.restore();
-}
-var yr = (i) =>
-  String(i ?? "").replace(
-    /[&<>"']/g,
-    (t) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        t
-      ],
-  );
-function ivt(i, t = "", e = "") {
-  let s = document.createElement(i);
-  return (t && (s.className = t), e && (s.innerHTML = e), s);
-}
-function Ex(i, t = 3, e = "") {
-  let s = "";
-  for (let n = 0; n < t; n++) s += `<i class="${n < i ? "on" : ""}"></i>`;
-  return `<span class="ds-stars ${e}">${s}</span>`;
-}
-function Zc(i, t) {
-  if (typeof document > "u" || document.getElementById(i)) return;
-  let e = document.createElement("style");
-  ((e.id = i), (e.textContent = t), document.head.appendChild(e));
-}
-var ovt = {
-  tc: "dsTC",
-  lane: "dsLane",
-  bc: "dsBC",
-  tl: "dsTL",
-  tr: "dsTR",
-  bl: "dsBL",
-  br: "dsBR",
-};
-function AI(i) {
-  if (typeof document.getElementById != "function") return document.body;
-  let t = ovt[i] || i,
-    e = document.getElementById(t);
-  return (
-    e ||
-      ((e = document.createElement("div")),
-      (e.id = t),
-      (e.className = "ds-zone"),
-      document.body.appendChild(e)),
-    e
-  );
-}
-function Jo(i, t, e = 0) {
-  return (t.style && (t.style.order = e), AI(i).appendChild(t), t);
-}
-var avt = 0.9,
-  rvt = 0.14,
-  T_ = class {
-    constructor(t, { show: e, hide: s, max: n = 4 } = {}) {
-      ((this.name = t),
-        (this.q = []),
-        (this.cur = null),
-        (this.max = n),
-        (this.show = e),
-        (this.hide = s),
-        (this.t = null),
-        (this.n = 0));
+// app 303 — math
+// Lines 147699-147889 of readable/app.pretty.js (statement-aligned).
+var F5t = 8.5,
+  RM = 10.5,
+  lO = 0,
+  rl = 6,
+  ltt = 36,
+  Nf = 720,
+  O5t = Math.PI,
+  AM = 18,
+  T_ = 72,
+  B5t = (o) => o * o * (3 - 2 * o),
+  R_ = class {
+    constructor({ x: t, z: e, y: s, psi: n }) {
+      ((this.x = t),
+        (this.z = e),
+        (this.y = s),
+        (this.psi = n),
+        (this.W = rl),
+        (this.U = lO),
+        (this.RY = RM),
+        (this.d = { x: -Math.sin(n), z: -Math.cos(n) }),
+        (this.r = { x: Math.cos(n), z: -Math.sin(n) }));
+      let i = (this.T = new Float64Array((Nf + T_ + 1) * 4)),
+        a = 0;
+      for (let r = 0; r <= Nf + T_; r++) {
+        let l = (Math.min(r, Nf) / Nf) * O5t,
+          c = F5t * Math.sin(l) - (r > Nf ? (AM * (r - Nf)) / T_ : 0),
+          h = RM * (1 - Math.cos(l)),
+          f = lO * B5t(Math.min(r, Nf) / Nf);
+        if (r) {
+          let u = (r - 1) * 4;
+          a += Math.hypot(c - i[u], h - i[u + 1], f - i[u + 2]);
+        }
+        i.set([c, h, f, a], r * 4);
+      }
+      ((this.Lc = i[Nf * 4 + 3]), (this.L = a));
     }
-    now() {
-      return performance.now() / 1e3;
+    at(t, e = [0, 0, 0]) {
+      if (t <= 0) return ((e[0] = t), (e[1] = 0), (e[2] = 0), e);
+      t >= this.L && (t = this.L);
+      let s = this.T,
+        n = 0,
+        i = Nf + T_;
+      for (; i - n > 1;) {
+        let c = (n + i) >> 1;
+        s[c * 4 + 3] < t ? (n = c) : (i = c);
+      }
+      let a = n * 4,
+        r = i * 4,
+        l = (t - s[a + 3]) / (s[r + 3] - s[a + 3] || 1);
+      return (
+        (e[0] = s[a] + (s[r] - s[a]) * l),
+        (e[1] = s[a + 1] + (s[r + 1] - s[a + 1]) * l),
+        (e[2] = s[a + 2] + (s[r + 2] - s[a + 2]) * l),
+        e
+      );
     }
-    push(t) {
-      t = { pri: 1, dur: 2.2, min: avt, ...t, seq: this.n++ };
-      let e = this.cur;
-      if (e && t.key && e.key === t.key) return (this._show(t), t);
-      if ((t.key && (this.q = this.q.filter((s) => s.key !== t.key)), !e))
-        return (this._show(t), t);
-      if (t.pri > e.pri && !e.hold) return (this._yield(!0), this._show(t), t);
-      for (
-        this.q.push(t), this.q.sort((s, n) => n.pri - s.pri || s.seq - n.seq);
-        this.q.length > this.max;
-      )
-        this.q.splice(
-          this.q.findLastIndex(
-            (s) => s.pri === Math.min(...this.q.map((n) => n.pri)),
-          ),
-          1,
+    world(t, e, s, n = { x: 0, y: 0, z: 0 }) {
+      return (
+        (n.x = this.x + this.d.x * t + this.r.x * s),
+        (n.z = this.z + this.d.z * t + this.r.z * s),
+        (n.y = this.y + e),
+        n
+      );
+    }
+    local(t, e) {
+      let s = t - this.x,
+        n = e - this.z;
+      return [s * this.d.x + n * this.d.z, s * this.r.x + n * this.r.z];
+    }
+    onApron(t, e) {
+      let [s, n] = this.local(t, e);
+      return s > -ltt && s < 0.5 && Math.abs(n) < rl / 2 + 0.5;
+    }
+    build() {
+      let t = new le();
+      t.name = "RevealLoop";
+      let e = new me({
+          name: "LoopConcrete",
+          color: new It(0.36, 0.36, 0.355),
+          roughness: 0.85,
+          metalness: 0,
+          side: ls,
+        }),
+        s = new Ys({
+          name: "LoopLED",
+          color: new It(1.5, 0.02, 0.03),
+          toneMapped: !0,
+          side: ls,
+        });
+      s.userData.mbNoReflect = !0;
+      let n = new me({
+          name: "LoopLine",
+          color: new It(0.86, 0.86, 0.84),
+          roughness: 0.6,
+          metalness: 0,
+        }),
+        i = new me({
+          name: "LoopSteel",
+          color: new It(0.08, 0.085, 0.09),
+          roughness: 0.45,
+          metalness: 0.85,
+        }),
+        a = [],
+        r = [];
+      for (let g = -ltt; g <= this.L + 1e-6; g += g < -1 ? 2 : this.L / 600)
+        r.push(g);
+      let l = [0, 0, 0],
+        c = [0, 0, 0];
+      for (let g of r) {
+        (this.at(g, l), this.at(g + 0.05, c));
+        let b = c[0] - l[0],
+          v = c[1] - l[1],
+          x = Math.hypot(b, v) || 1;
+        a.push([l[0], l[1], l[2], -v / x, b / x]);
+      }
+      let h = (g, b, v, x, y, M) => {
+        let S = [],
+          w = [],
+          _ = (T, E, R) => {
+            let P = this.world(T, E, R);
+            S.push(P.x - this.x, P.y - this.y, P.z - this.z);
+          };
+        for (let [T, E, R, P, C] of a)
+          for (let [I, L] of [
+            [g, v],
+            [b, v],
+            [g, v - x],
+            [b, v - x],
+          ])
+            _(T + P * L, E + C * L, R + I);
+        for (let T = 0; T + 1 < a.length; T++) {
+          let E = T * 4,
+            R = E + 4;
+          for (let [P, C] of [
+            [0, 1],
+            [3, 2],
+            [2, 0],
+            [1, 3],
+          ])
+            w.push(E + P, R + P, E + C, E + C, R + P, R + C);
+        }
+        let z = new Le();
+        (z.setAttribute("position", new Re(S, 3)),
+          z.setIndex(w),
+          z.computeVertexNormals());
+        let A = new ye(z, y);
+        return (
+          (A.name = M),
+          (A.castShadow = y !== s),
+          (A.receiveShadow = y !== s),
+          t.add(A),
+          A
         );
-      return (
-        this._arm(Math.max(0, e.t0 + (e.hold ? e.dur : e.min) - this.now())),
-        t
-      );
+      };
+      (h(-rl / 2, rl / 2, 0.02, 0.5, e, "LoopTrack"),
+        h(-rl / 2 - 0.02, -rl / 2 + 0.06, 0.16, 0.16, s, "LoopLEDLeft"),
+        h(rl / 2 - 0.06, rl / 2 + 0.02, 0.16, 0.16, s, "LoopLEDRight"),
+        h(-0.09, 0.09, 0.035, 0.02, n, "LoopLine"));
+      let f = 2 * RM + 1.6,
+        u = -rl / 2 - 2,
+        d = lO + rl / 2 + 2,
+        p = (g, b, v, x, y, M, S = i) => {
+          let w = new ye(new Is(g, b, v), S),
+            _ = this.world(x, y, M);
+          return (
+            w.position.set(_.x - this.x, _.y - this.y, _.z - this.z),
+            (w.rotation.y = this.psi),
+            (w.castShadow = w.receiveShadow = !0),
+            t.add(w),
+            w
+          );
+        };
+      for (let g of [u, d])
+        for (let b of [-1.6, 1.6]) p(0.5, f, 0.5, b, f / 2, g);
+      for (let g of [-1.6, 1.6]) p(0.4, 0.6, d - u + 0.5, g, f, (u + d) / 2);
+      let m = [];
+      for (let g = -7.6; g > -AM; g -= 6) m.push(g);
+      m.push(-AM + 0.3);
+      for (let g of m) {
+        for (let b of [u, d]) p(0.5, f, 0.5, g, f / 2, b);
+        p(d - u + 0.5, 0.6, 0.4, g, f, (u + d) / 2);
+        for (let b of [-rl * 0.3, rl * 0.3])
+          p(0.18, 1.3, 0.18, g, 2 * RM + 0.8, b);
+      }
+      for (let g of [u, d]) p(0.4, 0.4, AM + 1.3, (1.9 - AM) / 2, f, g);
+      for (let g of [-rl * 0.3, rl * 0.3])
+        p(0.18, 1.3, 0.18, 0, 2 * RM + 0.8, g);
+      return (t.position.set(this.x, this.y, this.z), (this.group = t), t);
     }
-    _show(t) {
-      (clearTimeout(this.t),
-        (this.cur = t),
-        (t.t0 = this.now()),
-        this.show(t),
-        this._arm(t.dur));
-    }
-    _arm(t) {
-      (clearTimeout(this.t),
-        (this.t = setTimeout(() => this._next(), t * 1e3)));
-    }
-    _yield(t) {
-      let e = this.cur;
-      if (!e) return;
-      let s = e.dur - (this.now() - e.t0);
-      t &&
-        s > 0.6 &&
-        e.pri >= 2 &&
-        !e.once &&
-        this.q.unshift({ ...e, dur: Math.max(s, e.min), seq: -1 });
-    }
-    _next() {
-      let t = this.cur;
-      ((this.cur = null), t && this.hide(t));
-      let e = this.q.shift();
-      e && (this.t = setTimeout(() => this._show(e), t ? rvt * 1e3 : 0));
-    }
-    drop(t) {
-      ((this.q = t ? this.q.filter((e) => e.key !== t) : []),
-        this.cur &&
-          (!t || this.cur.key === t) &&
-          (clearTimeout(this.t), this._next()));
-    }
-    get busy() {
-      return !!this.cur || this.q.length > 0;
-    }
-  },
-  A_ = class {
-    constructor() {
-      ((this.toastEl = null),
-        (this.ready = !1),
-        (this.toast = new T_("toast", {
-          show: (t) => {
-            let e = this._toastEl();
-            ((e.innerHTML = `${yr(t.title)}${t.sub ? `<small>${yr(t.sub)}</small>` : ""}`),
-              e.style.setProperty("--c", t.col || ""),
-              e.classList.toggle("music", t.cls === "music"),
-              e.classList.add("on"),
-              t.onShow?.(e));
-          },
-          hide: () => this._toastEl().classList.remove("on"),
-        })),
-        (this.card = new T_("card", {
-          max: 6,
-          show: (t) => {
-            (t.el.classList.add("on"), t.onShow?.(t.el));
-          },
-          hide: (t) => {
-            (t.el.classList.remove("on"), t.onHide?.(t.el));
-          },
-        })));
-    }
-    _toastEl() {
-      if (this.toastEl) return this.toastEl;
-      let t = document.getElementById("toast");
-      return (
-        t || ((t = document.createElement("div")), (t.id = "toast")),
-        (t.className = "ds-toast ds-pop"),
-        t.setAttribute("aria-live", "polite"),
-        Jo("lane", t, 0),
-        (this.toastEl = t)
-      );
-    }
-    say(t, e = "", s = {}) {
-      return (
-        typeof s == "string" && (s = { cls: s, key: s || void 0 }),
-        this.toast.push({
-          title: t,
-          sub: e,
-          key: s.key ?? s.cls ?? void 0,
-          ...s,
-        })
-      );
-    }
-    show(t, e = {}) {
-      let s = AI("lane");
-      return (
-        s.contains && !s.contains(t) && Jo("lane", t, 1),
-        t.classList.add("ds-pop"),
-        this.card.push({ el: t, ...e })
-      );
-    }
-  },
-  Cu = new A_();
+  };
+es();

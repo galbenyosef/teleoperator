@@ -1,520 +1,597 @@
-// app 366 — items
-// Lines 182564-183081 of readable/app.pretty.js (statement-aligned).
-var qyt = "https://www.openstreetmap.org/copyright",
-  Ym = {
-    "CC BY 2.0": "https://creativecommons.org/licenses/by/2.0/",
-    "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
-    "CC BY-SA 2.0": "https://creativecommons.org/licenses/by-sa/2.0/",
-    "CC BY-SA 2.5": "https://creativecommons.org/licenses/by-sa/2.5/",
-    "CC BY-SA 3.0": "https://creativecommons.org/licenses/by-sa/3.0/",
-    "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
-    CC0: "https://creativecommons.org/publicdomain/zero/1.0/",
-    ODbL: "https://opendatacommons.org/licenses/odbl/1-0/",
-    PDDL: "https://opendatacommons.org/licenses/pddl/1-0/",
-    OFL: "https://openfontlicense.org/",
-    MIT: "https://opensource.org/license/mit",
-    "Apache-2.0": "https://www.apache.org/licenses/LICENSE-2.0",
-    ISC: "https://opensource.org/license/isc-license-txt",
-    "BSL-1.0": "https://www.boost.org/LICENSE_1_0.txt",
-    "Public domain":
-      "https://www.usgs.gov/information-policy-and-instructions/copyrights-and-credits",
-  },
-  Xr = (i) => "https://commons.wikimedia.org/wiki/File:" + i,
-  Kr = (i, t) => `https://freesound.org/people/${i}/sounds/${t}/`,
-  jyt = [
-    {
-      h: "Made by",
-      items: [
-        [
-          "mindblown games",
-          "Design, code, art direction, cars, city and sound",
-          [["mindblown.ai", "https://mindblown.ai"]],
-        ],
-        [
-          "Built with Claude Code",
-          "Written together with Anthropic's Claude Code",
-          [["claude.com/claude-code", "https://claude.com/claude-code"]],
-        ],
-        [
-          "Played on mindblown.ai",
-          "Rooms, accounts, the garage's inventory cars and the leaderboard run on the mindblown platform",
-          [["mindblown.ai", "https://mindblown.ai"]],
-        ],
-      ],
-    },
-    {
-      h: "Inspiration",
-      items: [
-        ["Shikhar", "Spider-Man inspiration", []],
-        [
-          "APEX Heat City",
-          "The sister game across the bay, and the engine and road sounds it shared",
-          [["apex-city.mindblown.ai", "https://apex-city.mindblown.ai"]],
-        ],
-      ],
-    },
-    {
-      h: "Map data",
-      items: [
-        [
-          "\xA9 OpenStreetMap contributors",
-          "Streets, buildings, parks, coastline, rail lines, piers (via the Overpass API). The data is available under the Open Database License (ODbL) 1.0; the game's baked map is a derived database under the same licence.",
-          [
-            ["openstreetmap.org/copyright", qyt],
-            ["ODbL", Ym.ODbL],
-          ],
-        ],
-        [
-          "U.S. Geological Survey (USGS), 3D Elevation Program (3DEP)",
-          "The terrain: 1/3 arc-second bare-earth elevation from The National Map. Public domain.",
-          [
-            [
-              "The National Map",
-              "https://www.usgs.gov/programs/national-geospatial-program/national-map",
-            ],
-            ["3DEP", "https://www.usgs.gov/3d-elevation-program"],
-          ],
-        ],
-        [
-          "DataSF: Street Tree List",
-          "Every street tree's place, species and size (San Francisco Public Works' inventory). Open Data Commons PDDL.",
-          [
-            [
-              "data.sfgov.org",
-              "https://data.sfgov.org/City-Infrastructure/Street-Tree-List/tkzw-k3nq",
-            ],
-            ["PDDL", Ym.PDDL],
-          ],
-        ],
-      ],
-    },
-    {
-      h: "Reference photography",
-      note: "From Wikimedia Commons; used as modelling references for the freeways, tunnels and the cable-car turnaround (not shipped in the game).",
-      items: [
-        [
-          "SF Cable Car 22 at Market Street turnaround",
-          "Evan0512",
-          [
-            [
-              "Commons",
-              Xr("SF_Cable_Car_22_at_Market_Street_turnaround_20250920.jpg"),
-            ],
-            ["CC BY 4.0"],
-          ],
-        ],
-        [
-          "Stockton Street Tunnel, San Francisco",
-          "Ilkka Simomaa (KFP)",
-          [
-            [
-              "Commons",
-              Xr("Stockton_Street_Tunnel,_San_Francisco_2021-11-16.jpg"),
-            ],
-            ["CC BY 4.0"],
-          ],
-        ],
-        [
-          "South portal of the Stockton Tunnel at night",
-          "Dllu",
-          [
-            [
-              "Commons",
-              Xr(
-                "South_portal_of_the_Stockton_Tunnel,_San_Francisco_at_night_dllu.jpg",
-              ),
-            ],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-        [
-          "Central Freeway, San Francisco",
-          "Kitchen (Flickr)",
-          [
-            ["Commons", Xr("Central_Freeway,_San_Francisco.jpg")],
-            ["CC BY 2.0"],
-          ],
-        ],
-        [
-          "Interstate 80 western end",
-          "Coolcaesar",
-          [["Commons", Xr("Interstate80westernend.jpg")], ["CC BY-SA 3.0"]],
-        ],
-        [
-          "San Francisco: Octavia Boulevard",
-          "Octoferret",
-          [
-            ["Commons", Xr("San_Francisco-Octavia_Boulevard.jpg")],
-            ["CC BY-SA 2.5"],
-          ],
-        ],
-        [
-          "I-80 Bay Bridge approach",
-          "Mark (Flickr)",
-          [["Commons", Xr("I-80_Bay_Bridge_approach.jpg")], ["CC BY-SA 2.0"]],
-        ],
-        [
-          "Bay Bridge: Rincon Hill Anchorage",
-          "Cindysu8",
-          [
-            [
-              "Commons",
-              Xr(
-                "San_Francisco--Oakland_Bay_Bridge_-_Rincon_Hill_Anchorage.jpg",
-              ),
-            ],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-        [
-          "Bay Bridge: Rincon Hill Abutment Looking West",
-          "Cindysu8",
-          [
-            [
-              "Commons",
-              Xr(
-                "San_Francisco--Oakland_Bay_Bridge_-_Rincon_Hill_Abutment_Looking_West.jpg",
-              ),
-            ],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-        [
-          "Caltrain tracks under the I-280 viaduct in Mission Bay",
-          "Pi.1415926535",
-          [
-            [
-              "Commons",
-              Xr(
-                "Caltrain_tracks_under_I-280_viaduct_in_Mission_Bay,_September_2018.JPG",
-              ),
-            ],
-            ["CC BY-SA 3.0"],
-          ],
-        ],
-        [
-          "I-280 ramp over Mariposa Street",
-          "Pi.1415926535",
-          [
-            [
-              "Commons",
-              Xr("I-280_ramp_over_Mariposa_Street,_February_2021.jpg"),
-            ],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-        [
-          "Stub of westbound King Street",
-          "Pi.1415926535",
-          [
-            ["Commons", Xr("Stub_of_westbound_King_Street,_April_2018.JPG")],
-            ["CC BY-SA 3.0"],
-          ],
-        ],
-        [
-          "Selby Street under I-280",
-          "Pi.1415926535",
-          [
-            ["Commons", Xr("Selby_Street_under_I-280_(2),_April_2021.jpg")],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-        [
-          "I-280 viaduct over Islais Creek Division",
-          "Pi.1415926535",
-          [
-            [
-              "Commons",
-              Xr("I-280_viaduct_over_Islais_Creek_Division,_June_2018.JPG"),
-            ],
-            ["CC BY-SA 3.0"],
-          ],
-        ],
-        [
-          "The Hairball from the west",
-          "Pi.1415926535",
-          [
-            ["Commons", Xr("The_Hairball_from_the_west,_August_2020.JPG")],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-        [
-          "San Francisco Bayshore Freeway, Route 101",
-          "Tony Webster",
-          [
-            [
-              "Commons",
-              Xr("San_Francisco_Bayshore_Freeway_Route_101_6015052908.jpg"),
-            ],
-            ["CC BY-SA 4.0"],
-          ],
-        ],
-      ],
-    },
-    {
-      h: "Sound",
-      items: [
-        [
-          'Siren wail: "SS2000_wail_seamless"',
-          "ThePeasantJoe on Freesound",
-          [["Freesound", Kr("ThePeasantJoe", 800708)], ["CC0"]],
-        ],
-        [
-          'Siren yelp and chirp: "Whelen Yelp.wav"',
-          "Jefflix on Freesound",
-          [["Freesound", Kr("Jefflix", 157866)], ["CC0"]],
-        ],
-        [
-          'Air horn: "Whelen Horn.wav"',
-          "Jefflix on Freesound",
-          [["Freesound", Kr("Jefflix", 157869)], ["CC0"]],
-        ],
-        [
-          'Police PA: "MISC_Police_PA_Officer_Speaking_001.wav"',
-          "conleec on Freesound",
-          [["Freesound", Kr("conleec", 159749)], ["CC0"]],
-        ],
-        [
-          'Radio chirp: "Police Radio Chirp"',
-          "jimmefer on Freesound",
-          [["Freesound", Kr("jimmefer", 825989)], ["CC0"]],
-        ],
-        [
-          'Helicopter overhead: "Helicopter overhead pass pretty good"',
-          "TRP on Freesound",
-          [["Freesound", Kr("TRP", 573941)], ["CC0"]],
-        ],
-        [
-          'Helicopter close by: "Small Helicopter Takes Off"',
-          "senorstudy on Freesound",
-          [["Freesound", Kr("senorstudy", 172649)], ["CC0"]],
-        ],
-        [
-          'Flat-six idle: "S07-11 1972 Porsche in fast; idle; stop"',
-          "craigsmith on Freesound",
-          [["Freesound", Kr("craigsmith", 675268)], ["CC0"]],
-        ],
-        [
-          'Flat-six pull: "porsche_911.wav"',
-          "mharo on Freesound",
-          [["Freesound", Kr("mharo", 55727)], ["CC0"]],
-        ],
-        [
-          'Flat-six overrun: "Porsche.MP3"',
-          "mmplisskin on Freesound",
-          [["Freesound", Kr("mmplisskin", 90404)], ["CC0"]],
-        ],
-        [
-          'V12: "Lambo idle and rev.mp3"',
-          "cheesepuff on Freesound",
-          [["Freesound", Kr("cheesepuff", 112075)], ["CC0"]],
-        ],
-        [
-          'Diesel: "4WD Engine & Rev.wav"',
-          "Alex_hears_things on Freesound",
-          [["Freesound", Kr("Alex_hears_things", 379914)], ["CC0"]],
-        ],
-        [
-          'Diesel, top end: "3008gtrevving.wav"',
-          "Mihacappy on Freesound",
-          [["Freesound", Kr("Mihacappy", 865222)], ["CC0"]],
-        ],
-        [
-          'Small engine: "2CV 1.aif", "2CV 2.aif"',
-          "beskhu on Freesound",
-          [
-            ["Freesound", Kr("beskhu", 273899)],
-            ["Freesound", Kr("beskhu", 273898)],
-            ["CC0"],
-          ],
-        ],
-        [
-          'Small engine pulling: "2CV.wav"',
-          "svenne2000 on Freesound",
-          [["Freesound", Kr("svenne2000", 395840)], ["CC0"]],
-        ],
-        [
-          "Engine, tyre, road and impact sounds",
-          "From APEX Heat City's sound set",
-          [["apex-city.mindblown.ai", "https://apex-city.mindblown.ai"]],
-        ],
-        [
-          "City ambience, effects, voices, reverbs and the radio's music",
-          "Generated with ElevenLabs",
-          [["elevenlabs.io", "https://elevenlabs.io"]],
-        ],
-      ],
-    },
-    {
-      h: "Cars and 3D",
-      items: [
-        [
-          "Ferrari 458 model",
-          "By vicent091036 on Sketchfab, via the three.js examples (webgl_materials_car)",
-          [
-            ["Sketchfab", "https://sketchfab.com/vicent091036"],
-            [
-              "three.js example",
-              "https://threejs.org/examples/#webgl_materials_car",
-            ],
-          ],
-        ],
-        [
-          "Waymo (Jaguar I-PACE) and Tesla Cybercab",
-          "Modelled against reference views made with OpenAI gpt-image from players' photos; the Cybercab's mesh by Hunyuan3D on fal.ai, refit in Blender",
-          [["fal.ai", "https://fal.ai"]],
-        ],
-        [
-          "Tesla Cybertruck and Corvette ZR1X",
-          "Scripted in Blender from published dimensions, with Wikimedia Commons photos as references",
-          [["Blender", "https://www.blender.org"]],
-        ],
-        [
-          "Traffic, parked cars, buses and cable cars",
-          "Generated with Hunyuan3D (fal.ai), simplified with meshoptimizer",
-          [],
-        ],
-        [
-          "Textures: facades, ground, foliage, landmarks, street furniture, billboards and murals",
-          "Generated with OpenAI gpt-image (directly and on fal.ai); every billboard brand is invented",
-          [["openai.com", "https://openai.com"]],
-        ],
-        ["R-Evolution", "A tribute to Marco Cochrane's sculpture (2015)", []],
-        [
-          "Licence-plate emoji",
-          "Twemoji 1f92f. Copyright 2020 Twitter, Inc and other contributors; graphics licensed under CC BY 4.0",
-          [["Twemoji", "https://github.com/jdecked/twemoji"], ["CC BY 4.0"]],
-        ],
-      ],
-    },
-    {
-      h: "Software",
-      items: [
-        [
-          "three.js",
-          "The renderer's foundation; the sky (Preetham) and water shaders ported from its examples. MIT.",
-          [["threejs.org", "https://threejs.org"], ["MIT"]],
-        ],
-        [
-          "meshoptimizer",
-          "Arseny Kapoulkine. Mesh simplification for the reflection and car LODs. MIT.",
-          [["GitHub", "https://github.com/zeux/meshoptimizer"], ["MIT"]],
-        ],
-        [
-          "esbuild",
-          "Evan Wallace. The bundler. MIT.",
-          [["esbuild.github.io", "https://esbuild.github.io"], ["MIT"]],
-        ],
-        [
-          "glTF Transform",
-          "Don McCurdy. The car models' processing. MIT.",
-          [["gltf-transform.dev", "https://gltf-transform.dev"], ["MIT"]],
-        ],
-        [
-          "sharp",
-          "Image processing in the asset tools. Apache 2.0.",
-          [
-            ["sharp.pixelplumbing.com", "https://sharp.pixelplumbing.com"],
-            ["Apache-2.0"],
-          ],
-        ],
-        [
-          "Clipper (clipper-lib) and earcut",
-          "Polygon clipping and triangulation in the city bake. Boost Software License; ISC (Mapbox).",
-          [
-            ["clipper-lib", "https://www.npmjs.com/package/clipper-lib"],
-            ["earcut", "https://github.com/mapbox/earcut"],
-          ],
-        ],
-        [
-          "Blender",
-          "Modelling and baking. GPL.",
-          [["blender.org", "https://www.blender.org"]],
-        ],
-        [
-          "Playwright",
-          "Microsoft. The browser tests. Apache 2.0.",
-          [["playwright.dev", "https://playwright.dev"], ["Apache-2.0"]],
-        ],
-        [
-          "Remotion",
-          "The trailer. Remotion License.",
-          [["remotion.dev", "https://www.remotion.dev"]],
-        ],
-      ],
-    },
-    {
-      h: "Fonts",
-      note: "All four under the SIL Open Font License 1.1.",
-      items: [
-        [
-          "Archivo",
-          "Omnibus-Type. Copyright The Archivo Project Authors",
-          [
-            ["GitHub", "https://github.com/Omnibus-Type/Archivo"],
-            ["OFL", Ym.OFL],
-          ],
-        ],
-        [
-          "JetBrains Mono",
-          "Copyright 2020 The JetBrains Mono Project Authors",
-          [
-            ["GitHub", "https://github.com/JetBrains/JetBrainsMono"],
-            ["OFL", Ym.OFL],
-          ],
-        ],
-        [
-          "Dancing Script",
-          "Pablo Impallari. Copyright 2016 The Dancing Script Project Authors (licence plates)",
-          [
-            ["GitHub", "https://github.com/googlefonts/DancingScript"],
-            ["OFL", Ym.OFL],
-          ],
-        ],
-        [
-          "Oswald",
-          "Vernon Adams. Copyright 2016 The Oswald Project Authors (licence plates)",
-          [
-            ["GitHub", "https://github.com/googlefonts/OswaldFont"],
-            ["OFL", Ym.OFL],
-          ],
-        ],
-      ],
-    },
-  ],
-  Vyt =
-    "All trademarks, vehicle names, liveries, landmark and business names are the property of their respective owners. This game is not affiliated with, sponsored or endorsed by any of them. San Francisco's street layout comes from OpenStreetMap; the city itself is rebuilt, not photographed.",
-  $yt = `
-.cr { font-family: var(--font); color: var(--ink); }
-.cr-hero { margin: 4px 0 14px; padding: 18px 18px 16px; border-radius: var(--r-md); background: linear-gradient(135deg, rgba(63,214,198,.14), rgba(255,90,31,.08)); border: 1px solid var(--line); }
-.cr-hero b { display: block; font: var(--fw-black) var(--fs-xl)/1.1 var(--font); font-stretch: var(--wide); letter-spacing: .02em; }
-.cr-hero span { display: block; margin-top: 6px; font: var(--fw-reg) 13px/1.45 var(--font); color: var(--ink-2); }
-.cr h3, #pause .cr h3 { margin: 22px 0 8px; font: var(--fw-black) var(--fs-xs)/1.2 var(--font); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--c-level); }
-.cr .cr-note { margin: -2px 0 8px; font: 400 12px/1.45 var(--font); color: var(--ink-3); }
-.cr ul { list-style: none; margin: 0; padding: 0; border-radius: var(--r-md); background: rgba(255,255,255,.04); overflow: hidden; }
-.cr li { padding: 10px 14px; } .cr li + li { border-top: 1px solid var(--line); }
-.cr li b { display: block; font: var(--fw-semi) 14px/1.3 var(--font); color: var(--ink); overflow-wrap: anywhere; }
-.cr li span { display: block; margin-top: 2px; font: 400 12.5px/1.4 var(--font); color: var(--ink-2); }
-.cr li .ln { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
-.cr a { color: var(--c-level); font: var(--fw-semi) 12px/1.4 var(--font-mono); text-decoration: none; overflow-wrap: anywhere; }
-.cr a:hover, .cr a:focus-visible { text-decoration: underline; }
-.cr .cr-disc { margin: 22px 0 4px; padding: 12px 14px; border-radius: var(--r-md); border: 1px solid var(--line); font: 400 12px/1.5 var(--font); color: var(--ink-3); }
-#credits { position: fixed; inset: 0; z-index: 40; display: none; place-items: center; background: rgba(0,0,0,.62); pointer-events: auto; }
-#credits.on { display: grid; }
-#credits .cr-card { display: flex; flex-direction: column; width: min(720px, calc(100vw - 32px)); height: min(680px, calc(100vh - 32px)); background: #16181b; border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-lg); box-shadow: 0 24px 80px rgba(0,0,0,.6); overflow: hidden; text-align: left; }
-#credits .cr-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
-#credits .cr-head h2 { margin: 0; font: var(--fw-bold) var(--fs-xl) var(--font); letter-spacing: .005em; text-transform: none; }
-#credits .cr-x { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.08); color: var(--ink); font: 400 20px/1 var(--font); cursor: pointer; }
-#credits .cr-x:hover { background: rgba(255,255,255,.16); }
-#credits .cr-body { flex: 1 1 auto; overflow-y: auto; padding: 8px 20px 24px; overscroll-behavior: contain; }
-#creditsLink { position: absolute; right: calc(var(--sr) + 18px); bottom: calc(var(--sb) + 14px); z-index: 2; padding: 6px 10px; border: 0; border-radius: var(--r-pill); background: rgba(9,11,15,.42); color: rgba(243,244,241,.78); font: var(--fw-semi) 11px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-#creditsLink:hover, #creditsLink:focus-visible { color: #fff; background: rgba(9,11,15,.7); outline: none; }
-@media (max-width: 520px), (max-height: 460px) { #credits .cr-head { padding: 12px 16px 10px; } #credits .cr-body { padding: 6px 16px 20px; } .cr-hero b { font-size: var(--fs-lg); } }
-`,
-  Ap = (i) =>
-    String(i).replace(
-      /[&<>"]/g,
-      (t) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[t],
-    ),
-  Xyt = ([i, t]) =>
-    `<a href="${Ap(t || Ym[i])}" target="_blank" rel="noopener noreferrer">${Ap(i)}</a>`;
+// app 366 — math
+// Lines 176839-177433 of readable/app.pretty.js (statement-aligned).
+var nT = class {
+  constructor(t) {
+    (Object.assign(this, t),
+      (this.mb = window.mindblown),
+      (this.p = eT()),
+      (this.savedAt = 0),
+      (this.scope = "browser"),
+      (this.ready = !1),
+      (this._last = { x: 0, z: 0 }),
+      (this._bucket = Ua.CAP),
+      (this._w = 0),
+      (this._dr = 0),
+      (this.fails = 0),
+      (this.pending = !1),
+      (this.held = 0),
+      addEventListener("visibilitychange", () => {
+        document.visibilityState === "hidden" && this.save(!0);
+      }),
+      addEventListener("pagehide", () => this.save(!0)),
+      addEventListener("online", () => {
+        (this.pending || this.needLoad) && this.save(!0);
+      }),
+      (this._cashL = []),
+      (this._seq = 0),
+      (this._dev = int().replace(/[^\w]/g, "").slice(0, 8)),
+      this.police &&
+        (this.police.onCash = (s, n) => this.credit(s, n, "police")));
+    let e = this.rides;
+    if (e?.emit) {
+      let s = e.emit.bind(e);
+      e.emit = (n, i = {}) => {
+        s(n, i);
+        try {
+          this.rideEvent(n, i);
+        } catch (a) {
+          console.warn("profile", a);
+        }
+      };
+    }
+  }
+  get signedIn() {
+    return this.scope === "account" && (this.mb?.viewer?.signedIn ?? !0);
+  }
+  rideEvent(t, e) {
+    if (
+      (t === "bank" &&
+        ((this.p.best.bounty = Math.min(
+          Ua.BOUNTY,
+          Math.max(this.p.best.bounty, e.pts || 0),
+        )),
+        e.cash > 0 && this.credit(e.cash, "Street bounty banked", "fare")),
+      t === "dropoff")
+    ) {
+      let s = e.summary || {};
+      ((this.p.best.bounty = Math.min(
+        Ua.BOUNTY,
+        Math.max(this.p.best.bounty, s.bounty || 0),
+      )),
+        s.total > 0 &&
+          this.credit(
+            s.total,
+            (s.style === "street" ? "Street ride" : "Fare") +
+              (s.name ? " \xB7 " + s.name : "") +
+              (s.stars ? " " + "\u2605".repeat(s.stars) : ""),
+            "fare",
+          ),
+        this.save(!0),
+        this.board?.submit(!0));
+    }
+  }
+  async load() {
+    if (
+      (await new Promise((t) => setTimeout(t)),
+      await this._load(),
+      !this._sub &&
+        this.mb?.viewer?.onchange &&
+        ((this._sub = !0),
+        this.mb.viewer.onchange((t) => {
+          let e = t?.signedIn ? "a:" + t.id : "g";
+          if (this._who === void 0) {
+            this._who = e;
+            return;
+          }
+          e !== this._who && ((this._who = e), this.rescope());
+        })),
+      this._arrive)
+    ) {
+      let t = this._arrive;
+      ((this._arrive = null), this.arrive(t));
+    }
+    return this.p;
+  }
+  async _load() {
+    let t = null,
+      e = "browser",
+      s = !1;
+    if (this.mb?.load)
+      try {
+        let a = await this.mb.load(Hv);
+        ((this.rev = a), (e = a?.scope || "account"), (t = a?.value));
+      } catch (a) {
+        (console.warn("profile load", a?.reason || a),
+          (s = !0),
+          (e = this.mb.viewer?.signedIn ? "account" : "browser"));
+      }
+    else t = B2(snt);
+    let n = Oh(t),
+      i = null;
+    if (s && e === "account") {
+      n = Oh(B2(l4 + this.who())) || eT();
+      let a = Oh(B2(yB + this.who()));
+      a && l1(n, a);
+    }
+    if (((n ||= eT()), (this.needLoad = s), e === "account")) {
+      let a = Oh(B2(l4 + this.who()));
+      a && !s && (l1(n, a), (this.pending = !0));
+      let r = Oh(B2(O2));
+      r && !s && ((i = rnt(n, r)), i && Md(O2, r));
+    } else {
+      let a = this.mb ? Oh(B2(O2)) : null;
+      (a &&
+        (!t || !n.gid || a.gid === n.gid) &&
+        (t ? ((n.gid ||= a.gid), l1(n, a)) : (n = a)),
+        (n.gid ||= int()));
+    }
+    return (
+      (this.p = n),
+      (this.scope = e),
+      (this._key = null),
+      e === "account" && !s && Md(yB + this.who(), n),
+      this.apply(),
+      (this.ready = !0),
+      i &&
+        (i.cash > 0 || i["taxi.rides"] > 0) &&
+        this.toast?.(
+          "Guest progress added to your account",
+          "+$" +
+            Math.round(i.cash || 0).toLocaleString() +
+            " \xB7 " +
+            i["taxi.rides"] +
+            " ride" +
+            (i["taxi.rides"] === 1 ? "" : "s"),
+        ),
+      i?.cash > 0 && this.emitCash({ a: i.cash, why: "Guest progress added" }),
+      (i || this.pending) && this.save(!0),
+      this.board?.submit(!0),
+      n
+    );
+  }
+  who() {
+    return (this.mb?.viewer?.id || "account")
+      .replace(/[^\w:-]/g, "")
+      .slice(0, 64);
+  }
+  async rescope() {
+    if (!this._rescoping) {
+      this._rescoping = !0;
+      try {
+        let t = null,
+          e = this.scope + "/" + this.who();
+        (this.ready &&
+          ((t = JSON.parse(JSON.stringify(this.snapshot()))),
+          (t.updated = Date.now()),
+          this.scope === "browser" && this.mb
+            ? Md(O2, t)
+            : this.scope === "account" &&
+              this.pending &&
+              Md(l4 + this.who(), t)),
+          (this.ready = !1),
+          await this._load(),
+          this.board?.reset(),
+          t &&
+            this.scope + "/" + this.who() === e &&
+            (l1(this.p, t), this.apply(), this.save(!0)));
+      } finally {
+        this._rescoping = !1;
+      }
+    }
+  }
+  apply() {
+    let t = this.p;
+    (this.rides &&
+      ((this.rides.total = t.taxi.total),
+      (this.rides.rides = t.taxi.rides),
+      (this.rides.stars = t.taxi.stars.slice(-200))),
+      this.police &&
+        ((this.police.bounty = t.police.bounty),
+        (this.police.escapes = t.police.escapes),
+        (this.police.busts = t.police.busts)));
+    let e = this.taxi?.();
+    (e &&
+      ((e.wallet = () => this.wallet()),
+      (e.lbHint = () => this.board?.hint() || ""),
+      e.total?.()),
+      (this._w = this.wallet()));
+    let s = t.settings;
+    if (s && Object.keys(s).length) {
+      for (let n of nnt)
+        if (typeof s.store?.[n] == "string")
+          try {
+            localStorage.getItem(n) !== s.store[n] &&
+              localStorage.setItem(n, s.store[n]);
+          } catch {}
+      this.onSettings?.(s);
+    }
+    this.onCustom?.(t.custom);
+  }
+  custom(t) {
+    let e = this.p.custom?.[t];
+    return e ? (e.paint ?? null) : void 0;
+  }
+  setCustom(t, e) {
+    let s = (this.p.custom ||= {}),
+      n = s[t]?.tune;
+    ((s[t] = { paint: e || null, t: Date.now() }),
+      n && (s[t].tune = n),
+      this.save(!0));
+  }
+  tune(t) {
+    let e = this.p.custom?.[t];
+    return e ? (e.tune ?? null) : void 0;
+  }
+  setTune(t, e) {
+    let s = (this.p.custom ||= {}),
+      n = pnt(e);
+    ((s[t] = { paint: s[t]?.paint ?? null, t: Date.now() }),
+      n && (s[t].tune = n),
+      this.save(!0));
+  }
+  spend(t, e = "Garage") {
+    return t > 0
+      ? !Number.isFinite(t) || this.wallet() + 1e-6 < t
+        ? !1
+        : (this.post(-t, e, "spend"), this.save(!0), !0)
+      : !0;
+  }
+  ride() {
+    return this.p.ride || null;
+  }
+  cars() {
+    return this.p.cars || [];
+  }
+  setCars(t, e) {
+    ((this.p.cars = h4(t)),
+      e !== void 0 && (this.p.mine = e),
+      (this.p.updated = Date.now()),
+      this.save(!0));
+  }
+  setRide(t) {
+    ((this.p.ride = Ul(t)),
+      this.p.ride && (this.p.car = "custom"),
+      (this.p.updated = Date.now()),
+      this.save(!0));
+  }
+  addXP(t) {
+    if (!(t > 0) || !Number.isFinite(t)) return this.p.xp;
+    let e = performance.now();
+    ((this._xb = Math.min(
+      Ua.XPCAP,
+      (this._xb ?? Ua.XPCAP) +
+        (Ua.XPRATE * Math.max(0, e - (this._xbT ?? e))) / 1e3,
+    )),
+      (this._xbT = e));
+    let s = Math.min(t, this._xb);
+    return (
+      (this._xb -= s),
+      t - s > 0.5 &&
+        ((this.xpHeld = (this.xpHeld || 0) + t - s),
+        console.warn(
+          "profile: " +
+            Math.round(t - s) +
+            " XP over the plausible rate held back",
+        )),
+      (this.p.xp = Zo((this.p.xp || 0) + s)),
+      this.p.xp
+    );
+  }
+  prize(t, e = "Level-up wheelspin") {
+    return !(t > 0) || !Number.isFinite(t)
+      ? 0
+      : ((t = Math.min(t, 2e4)),
+        (this.p.race.money = Go(this.p.race.money + t)),
+        (this.p.earned = Go(this.p.earned + t)),
+        this.post(t, e, "prize"),
+        this.save(!0),
+        t);
+  }
+  setRoads(t) {
+    this.p.roads = kB(this.p.roads, gnt(t));
+  }
+  addBoard(t) {
+    ((this.p.boards = zB(this.p.boards, bnt([t]))), this.save(!0));
+  }
+  chRec(t) {
+    return this.p.ch?.best?.[t] || null;
+  }
+  chResult(t, e, s = 0, n = "Challenge") {
+    let i = (this.p.ch ||= { cash: 0, runs: 0, best: {} });
+    i.best ||= {};
+    let a = xnt({ [t]: e })[t];
+    a && (i.best[t] = a);
+    let r = 0;
+    return (
+      s > 0 &&
+        Number.isFinite(s) &&
+        ((r = Go(Math.min(s, Ua.CAP))),
+        (this.p.race.money = Go(this.p.race.money + r)),
+        this.credit(r, n, "challenge"),
+        (i.cash = Go((i.cash || 0) + r))),
+      (i.runs = (i.runs || 0) + 1),
+      this.save(!0),
+      this.board?.submit(!0),
+      r
+    );
+  }
+  fine(t, e = "Busted \xB7 police fine") {
+    let s = Go(Math.max(0, Math.min(t, this.wallet())));
+    return (s > 0 && this.post(-s, e, "fine"), this.save(!0), s);
+  }
+  ledger() {
+    return this.p.cash?.log || [];
+  }
+  onCash(t) {
+    return (
+      this._cashL.push(t),
+      () => {
+        this._cashL = this._cashL.filter((e) => e !== t);
+      }
+    );
+  }
+  emitCash(t) {
+    for (let e of this._cashL)
+      try {
+        e(t);
+      } catch (s) {
+        console.warn("cash", s);
+      }
+    this.taxi?.()?.total?.();
+  }
+  post(t, e, s = "", n = null) {
+    let i = (this.p.cash ||= { base: 0, baseT: 0, moves: 0, log: [] }),
+      a = Date.now(),
+      r = {
+        id: this._dev + "." + a.toString(36) + "." + (this._seq++).toString(36),
+        t: a,
+        a: Go(t),
+        why: String(e || "").slice(0, 60),
+        k: s,
+      };
+    return (
+      n && ((r.pend = 1), (r.held = n)),
+      i.log.push(r),
+      c4(i),
+      this.emitCash({ ...r, bal: this.wallet() }),
+      r
+    );
+  }
+  credit(t, e, s = "") {
+    if (((t = Go(+t)), !(t > 0) || !Number.isFinite(t))) return 0;
+    let n = Go(Math.min(t, this._bucket));
+    return (
+      (this._bucket -= n),
+      n > 0 && ((this.p.earned = Go(this.p.earned + n)), this.post(n, e, s)),
+      t - n > 0.004 &&
+        ((this.held = Go(this.held + t - n)),
+        console.warn(
+          "profile: $" +
+            Math.round(t - n) +
+            " pending (over the plausible rate)",
+        ),
+        this.post(
+          t - n,
+          e,
+          s,
+          "Over $" +
+            Ua.CAP.toLocaleString() +
+            " in a short time - released as the limit refills",
+        )),
+      t
+    );
+  }
+  wallet() {
+    return wnt(this.p.cash);
+  }
+  pendingCash() {
+    return F8t(this.p.cash);
+  }
+  guard(t) {
+    this._bucket = Math.min(Ua.CAP, this._bucket + Ua.RATE * t);
+    for (let e of this.p.cash?.log || [])
+      if (e.pend) {
+        if (e.a > this._bucket + 0.004) {
+          if (e.a > Ua.CAP) continue;
+          break;
+        }
+        ((this._bucket -= e.a),
+          delete e.pend,
+          delete e.held,
+          (e.rel = Date.now()),
+          (this.held = Math.max(0, Go(this.held - e.a))),
+          (this.p.earned = Go(this.p.earned + e.a)),
+          this.emitCash({ ...e, released: !0, bal: this.wallet() }),
+          this.save(!0));
+      }
+  }
+  arrive({ skipPlace: t = !1, skipCar: e = !1 } = {}) {
+    if (!this.ready) {
+      this._arrive = { skipPlace: t, skipCar: e };
+      return;
+    }
+    let s = this.p;
+    (e ||
+      (s.car === "custom" && s.ride && this.onRide?.(s.ride),
+      s.car && s.car !== this.carId() && this.swapCar?.(s.car)),
+      !t &&
+        s.pos &&
+        Number.isFinite(s.pos.x) &&
+        this.place?.({ x: s.pos.x, z: s.pos.z, psi: s.pos.psi }),
+      s.updated &&
+        this.toast?.(
+          "Welcome back",
+          "$" +
+            Math.round(this.wallet()).toLocaleString() +
+            (this.scope === "account"
+              ? " \xB7 saved to your account"
+              : " \xB7 saved in this browser"),
+        ));
+  }
+  raceResult({ place: t, of: e, net: s, ms: n, id: i }) {
+    let a = this.p.race,
+      r = (e > 1 && _8t[s ? "net" : "solo"][t - 1]) || 0;
+    return (
+      a.played++,
+      t === 1 && e > 1 && a.wins++,
+      t <= 3 && e > 2 && a.podiums++,
+      (a.money += r),
+      i &&
+        n > 0 &&
+        (!a.best[i] || n < a.best[i]) &&
+        (a.best[i] = Math.round(n)),
+      r > 0 &&
+        this.credit(
+          r,
+          "Race \xB7 " +
+            (["1st", "2nd", "3rd"][t - 1] || t + "th") +
+            " of " +
+            e,
+          "race",
+        ),
+      this.save(!0),
+      this.board?.submit(!0),
+      r
+    );
+  }
+  update(t, e) {
+    if (!this.ready) return;
+    let s = this.v,
+      n = Math.hypot(s.pos.x - this._last.x, s.pos.z - this._last.z),
+      i = this.p.best;
+    if (
+      (n > 0.5 && n < 50 && (this.p.km += n / 1e3),
+      (this._last.x = s.pos.x),
+      (this._last.z = s.pos.z),
+      this.guard(Math.min(t, 1)),
+      e && !this.noPos?.())
+    ) {
+      let a = s.kmh || 0;
+      (a > i.kmh && a < Ua.KMH && n < 50 && (i.kmh = Math.round(a * 10) / 10),
+        (s.drift || 0) > 0.45 && a > 25
+          ? (this._dr += t)
+          : (this._dr > i.drift &&
+              (i.drift = Math.min(Ua.DRIFT, Math.round(this._dr * 10) / 10)),
+            (this._dr = 0)));
+    }
+    e &&
+      performance.now() - this.savedAt > z8t &&
+      (this.save(), this.board?.submit());
+  }
+  snapshot() {
+    let t = this.p,
+      e = this.v;
+    (this.rides &&
+      (t.taxi = {
+        total: Go(this.rides.total),
+        rides: this.rides.rides,
+        stars: (this.rides.stars || []).slice(-200),
+      }),
+      this.police &&
+        (t.police = {
+          bounty: this.police.bounty,
+          escapes: this.police.escapes,
+          busts: this.police.busts,
+        }),
+      this.noPos?.() ||
+        (t.pos = {
+          x: Math.round(e.pos.x * 10) / 10,
+          z: Math.round(e.pos.z * 10) / 10,
+          psi: Math.round(e.psi * 1e3) / 1e3,
+        }),
+      (t.car = this.carId()),
+      (t.km = Math.round(t.km * 100) / 100));
+    let s = {};
+    for (let i of nnt)
+      try {
+        let a = localStorage.getItem(i);
+        a !== null && a.length < 4e3 && (s[i] = a);
+      } catch {}
+    t.settings = { ...t.settings, store: s };
+    let n = this.mph?.();
+    return (typeof n == "boolean" && (t.settings.mph = n), t);
+  }
+  async save(t = !1) {
+    if (!this.ready) return;
+    if (this._saving) {
+      t && (this._again = !0);
+      return;
+    }
+    if (!t && performance.now() - this.savedAt < 1e4) return;
+    let e = this.snapshot(),
+      s = JSON.stringify({ ...e, updated: 0 });
+    if (s === this._key && !this.pending && !this.needLoad) {
+      this.savedAt = performance.now();
+      return;
+    }
+    if (
+      ((this._key = s),
+      (this.savedAt = performance.now()),
+      (e.updated = Date.now()),
+      this.scope === "browser" && this.mb && Md(O2, e),
+      !this.mb?.save)
+    ) {
+      Md(snt, e);
+      return;
+    }
+    ((this._saving = !0), clearTimeout(this._retryT));
+    try {
+      (await this.put(),
+        this.pending && R8t(l4 + this.who()),
+        (this.pending = !1),
+        (this.fails = 0),
+        this.scope === "account" && Md(yB + this.who(), this.p));
+    } catch (n) {
+      (console.warn("profile save", n?.reason || n),
+        this.scope === "account" &&
+          (Md(l4 + this.who(), this.p), (this.pending = !0)),
+        (this._key = null),
+        this.fails++,
+        n?.reason !== "QUOTA_EXCEEDED" &&
+          (this._retryT = setTimeout(
+            () => this.save(!0),
+            Math.min(6e4, 4e3 * 2 ** Math.min(4, this.fails - 1)),
+          )));
+    } finally {
+      ((this._saving = !1), this._again && ((this._again = !1), this.save(!0)));
+    }
+  }
+  async put() {
+    let t = this.mb;
+    if (this.needLoad) {
+      let e = await t.load(Hv);
+      if ((e?.scope || "account") !== this.scope) {
+        setTimeout(() => this.rescope());
+        return;
+      }
+      ((this.needLoad = !1), l1(this.p, Oh(e?.value)));
+      let s = this.scope === "account" ? Oh(B2(O2)) : null;
+      (s && rnt(this.p, s) && Md(O2, s), this.apply());
+    }
+    try {
+      this.rev = await t.save(Hv, this.snapshot());
+    } catch (e) {
+      if (e?.reason === "REVISION_CONFLICT" && e.current)
+        (l1(
+          this.p,
+          Oh(e.current.value !== void 0 ? e.current.value : e.current),
+        ),
+          this.apply(),
+          (this.rev = await t.save(Hv, this.snapshot())));
+      else if (e?.reason === "LOAD_FIRST") {
+        let s = await t.load(Hv);
+        if ((s?.scope || "account") !== this.scope) {
+          setTimeout(() => this.rescope());
+          return;
+        }
+        (l1(this.p, Oh(s?.value)),
+          this.apply(),
+          (this.rev = await t.save(Hv, this.snapshot())));
+      } else if (e?.reason === "AUTH_CHANGED") setTimeout(() => this.rescope());
+      else throw e;
+    }
+  }
+  merge(t) {
+    (l1(this.p, Oh(t)), this.apply());
+  }
+};

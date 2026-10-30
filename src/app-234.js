@@ -1,187 +1,344 @@
 // app 234 — math
-// Lines 121755-121939 of readable/app.pretty.js (statement-aligned).
-function JX(i = 0) {
-  let t = (T) => T.map((E) => Math.pow(E, 2.2)),
-    e = [
-      [
-        [0.2, 0.42, 0.28],
-        [0.86, 0.82, 0.68],
-        [0.86, 0.82, 0.68],
-      ],
-      [
-        [0.86, 0.45, 0.12],
-        [0.88, 0.84, 0.7],
-        [0.3, 0.12, 0.06],
-      ],
-      [
-        [0.9, 0.7, 0.16],
-        [0.18, 0.36, 0.22],
-        [0.9, 0.7, 0.16],
-      ],
-      [
-        [0.62, 0.12, 0.1],
-        [0.88, 0.84, 0.7],
-        [0.88, 0.84, 0.7],
-      ],
-    ][i % 4].map(t),
-    [s, n, o] = e,
-    a = [0.025, 0.03, 0.035],
-    r = t([0.5, 0.48, 0.42]).map((T, E) => T * 0.35 + s[E] * 0.65),
-    l = t([0.5, 0.5, 0.5]),
-    c = [0.02, 0.02, 0.02],
-    h = vC.L,
-    f = 2.62 / 2,
-    u = 1.5,
-    d = [],
-    p = h / 2 - u,
-    m = Math.ceil((2 * p) / 0.45);
-  for (let T = 0; T <= m; T++) d.push([f, -p + (2 * p * T) / m, 1]);
-  for (let T = 1; T < 10; T++) {
-    let E = (Math.PI * T) / 10;
-    d.push([f * Math.cos(E), p + u * Math.sin(E), 0]);
+// Lines 122196-122537 of readable/app.pretty.js (statement-aligned).
+function Kw(o, t, e = null) {
+  let s = e ? e.x : he[3],
+    n = e ? e.zN : pe[0] - ns[0].hw - ns[0].sw,
+    i = e ? e.zS : Ye.z + 1.5,
+    a = e ? e.tz : (n + i) / 2,
+    r = 4.2,
+    l = $t(s, a) + Ze,
+    c = e ? e.wW : 16,
+    h = e ? e.wE : 16,
+    f = t.G("hyde", "wall"),
+    u = t.G("hyde", "ground"),
+    d = t.G("hyde", "paint"),
+    p = t.G("hyde", "metal");
+  Da(
+    u,
+    s - c,
+    i,
+    s + h,
+    n,
+    0.5,
+    (v, x) =>
+      Math.min(Math.hypot(v - s, x - a) - r - 0.3, v - s + c, s + h - v),
+    (v, x) => (e ? $t(v, x) + Ze + 0.03 : l + 0.03),
+    (v) =>
+      Math.abs(v - s) > 9
+        ? [0.52, 0.6, 0.44, Ho.lawn]
+        : [0.8, 0.75, 0.75, Ho.pavers],
+  );
+  let m = [0.35, 0.24, 0.15, 0.85],
+    g = [0.32, 0.32, 0.33, 0.35];
+  for (let v = 0; v < 40; v++) {
+    let x = (v / 40) * Math.PI * 2,
+      y = ((v + 1) / 40) * Math.PI * 2,
+      M = 0.85 + 0.3 * ((v * 0.618) % 1);
+    $s(
+      d,
+      [s, l + 0.04, a],
+      [s + Math.cos(y) * r, l + 0.04, a + Math.sin(y) * r],
+      [s + Math.cos(y) * r, l + 0.04, a + Math.sin(y) * r],
+      [s + Math.cos(x) * r, l + 0.04, a + Math.sin(x) * r],
+      [0, 0],
+      [1, 0],
+      [1, 1],
+      [0, 1],
+      m.map((S, w) => (w < 3 ? S * M : S)),
+      [0, 1, 0],
+    );
   }
-  for (let T = 0; T <= m; T++) d.push([-f, p - (2 * p * T) / m, 1]);
-  for (let T = 1; T < 10; T++) {
-    let E = (Math.PI * T) / 10;
-    d.push([-f * Math.cos(E), -p - u * Math.sin(E), 0]);
-  }
-  let g = [],
-    b = [],
-    x = [],
-    v = (T, E, A, C, P) => {
-      for (let I of [T, E, A, T, A, C])
-        (g.push(...I), b.push(P[0], P[1], P[2], 1));
-    },
-    y = d.length,
-    S = [
-      [0.42, 1.25, 0, () => s],
-      [1.25, 1.38, 0, () => n],
-      [1.38, 1.5, 0, () => o],
-      [
-        1.5,
-        2.3,
-        0.04,
-        (T, E, A) =>
-          A
-            ? ((E + 20) / 1.12) % 1 < 0.16
-              ? r
-              : a
-            : (Math.abs(E) > h / 2 - 0.5, a),
-      ],
-      [2.3, 2.62, 0.08, () => o],
-      [2.62, 2.85, 0.28, () => l],
+  To(
+    p,
+    s,
+    a,
+    [
+      [r, l - 0.1],
+      [r, l + 0.06],
+      [r + 0.3, l + 0.06],
+      [r + 0.3, l - 0.1],
     ],
-    w = 0;
-  for (let [T, E, A, C] of S) {
-    for (let P = 0; P < y; P++) {
-      let I = d[P],
-        L = d[(P + 1) % y],
-        F = (I[1] + L[1]) / 2,
-        N = I[2] && L[2],
-        B = (G, q) => {
-          let W = Math.hypot(G[0] / f, G[1] / (h / 2)) || 1;
-          return [
-            G[0] * (1 - q / f),
-            G[1] -
-              Math.sign(G[1]) * q * Math.abs(G[1] / (h / 2)) * (G[2] ? 0 : 1),
-          ];
-        },
-        H = B(I, w),
-        O = B(L, w),
-        D = B(L, A),
-        U = B(I, A);
-      v(
-        [H[0], T, H[1]],
-        [O[0], T, O[1]],
-        [D[0], E, D[1]],
-        [U[0], E, U[1]],
-        C(P, F, N),
+    40,
+    g,
+  );
+  for (let v of [-0.72, 0.72])
+    (ci(
+      p,
+      [s + v, l + 0.07, a - r + 0.1],
+      [s + v, l + 0.07, a + r - 0.1],
+      0.08,
+      0.05,
+      [0.5, 0.5, 0.5, 0.3],
+    ),
+      e ||
+        ci(
+          p,
+          [s + v, $t(s, n) + 0.03, n - 0.2],
+          [s + v, $t(s, pe[0] - ns[0].hw) + 0.03, pe[0] - ns[0].hw],
+          0.08,
+          0.04,
+          [0.5, 0.5, 0.5, 0.3],
+        ),
+      e ||
+        ci(
+          p,
+          [s + v, l + 0.05, a + r + 0.3],
+          [s + v, l + 0.05, n],
+          0.08,
+          0.05,
+          [0.5, 0.5, 0.5, 0.3],
+        ));
+  if (!e)
+    ci(
+      p,
+      [s, l + 0.05, a + r + 0.3],
+      [s, $t(s, pe[0] - ns[0].hw) + 0.03, pe[0] - ns[0].hw],
+      0.05,
+      0.03,
+      [0.2, 0.2, 0.2, 0.3],
+    );
+  else {
+    let v = [[s, a + r + 0.3], [s, n], ...e.rails];
+    for (let x = 0; x + 1 < v.length; x++) {
+      let [y, M] = v[x],
+        [S, w] = v[x + 1],
+        _ = Math.hypot(S - y, w - M),
+        z = -(w - M) / _,
+        A = (S - y) / _;
+      for (let T of [-0.72, 0.72, 0])
+        ci(
+          p,
+          [y + z * T, $t(y, M) + (x ? 0.03 : Ze + 0.05), M + A * T],
+          [S + z * T, $t(S, w) + 0.03, w + A * T],
+          T ? 0.08 : 0.05,
+          T ? 0.05 : 0.03,
+          T ? [0.5, 0.5, 0.5, 0.3] : [0.2, 0.2, 0.2, 0.3],
+        );
+    }
+  }
+  let b = Gz();
+  (b &&
+    t.inst("hydecar", b, "paint", [
+      [new fe().makeTranslation(s, l + 0.02, a), [1, 1, 1]],
+    ]),
+    o.colliders.push({ t: "obb", x: s, z: a, hx: 1.45, hz: 4.4, c: 1, s: 0 }));
+  {
+    let v = e ? s - 6 : s + 10.5,
+      x = e ? a - 8 : a + 2.5;
+    (Ge(f, v, x, 1, 0, 1.6, 1.3, l, l + 2.6, [0.55, 0.7, 0.55, yi.stone]),
+      Ge(
+        d,
+        v,
+        x,
+        1,
+        0,
+        1.68,
+        1.4,
+        l + 1.1,
+        l + 2.2,
+        [0.04, 0.05, 0.06, 0.1],
+        [1, 1, 1, 1, 0, 0],
+      ),
+      Ge(
+        d,
+        v,
+        x,
+        1,
+        0,
+        1.95,
+        1.65,
+        l + 2.6,
+        l + 2.9,
+        [0.06, 0.25, 0.14, 0.6],
+        [1, 1, 1, 1, 1, 1],
+      ),
+      o.colliders.push({ t: "obb", x: v, z: x, hx: 1.6, hz: 1.3, c: 1, s: 0 }));
+  }
+  for (let v of e ? [s - 7] : [s - 7.5, s + 7.5])
+    for (let x of [a - 3.5, a + 3.5]) {
+      Ge(
+        d,
+        v,
+        x,
+        0,
+        1,
+        0.9,
+        0.22,
+        l + 0.42,
+        l + 0.48,
+        [0.2, 0.13, 0.08, 0.6],
+        [1, 1, 1, 1, 1, 1],
+      );
+      for (let y of [-0.75, 0.75])
+        Ge(
+          p,
+          v,
+          x + y,
+          0,
+          1,
+          0.04,
+          0.2,
+          l,
+          l + 0.42,
+          [0.1, 0.1, 0.1, 0.5],
+          [1, 1, 1, 1, 0, 0],
+        );
+    }
+  for (let v of e ? [s - 8] : [s - 12, s + 12])
+    (o.inst.push({
+      kind: "lamp",
+      x: v,
+      y: l,
+      z: a - 3,
+      rot: (Math.PI / 2) * Math.sign(s - v),
+    }),
+      o.colliders.push({ t: "circ", x: v, z: a - 3, r: 0.18 }));
+  if (!e)
+    for (let v of [-1, 1])
+      Ge(f, s + v * 9.2, a, 1, 0, 0.15, (n - i) / 2 - 0.4, l - 0.1, l + 0.25, [
+        0.75,
+        0.73,
+        0.7,
+        yi.granite,
+      ]);
+}
+es();
+Pn();
+es();
+await _0();
+Ya();
+es();
+var Js = (o = 0, t = 0, e = 0) => new dt(o, t, e),
+  hi = Js(0, 1, 0);
+function Sh(o) {
+  let t = (o >>> 0) % 2147483647 || 1;
+  return () => (t = (t * 16807) % 2147483647) / 2147483647;
+}
+var Il = (o, t, e) => {
+    let s = Math.min(1, Math.max(0, (e - o) / (t - o)));
+    return s * s * (3 - 2 * s);
+  },
+  xa = class {
+    constructor() {
+      ((this.p = []),
+        (this.n = []),
+        (this.uv = []),
+        (this.c = []),
+        (this.i = []));
+    }
+    v(t, e, s, n, i) {
+      return (
+        this.p.push(t.x, t.y, t.z),
+        this.n.push(e.x, e.y, e.z),
+        this.uv.push(s, n),
+        this.c.push(i[0], i[1], i[2], i[3] ?? 1),
+        this.p.length / 3 - 1
       );
     }
-    w = A;
-  }
-  let z = d.map((T) => [
-    T[0] * (1 - 0.28 / f),
-    2.85,
-    T[1] - Math.sign(T[1]) * (T[2] ? 0 : 0.28),
-  ]);
-  for (let T = 0; T < y; T++) {
-    let E = z[T],
-      A = z[(T + 1) % y];
-    for (let C of [[0, 2.92, 0], A, E])
-      (g.push(...C), b.push(l[0], l[1], l[2], 1));
-  }
-  let _ = (T, E, A, C, P, I, L) => {
-    let F = new qs(E - T, C - A, I - P).toNonIndexed();
-    F.translate((T + E) / 2, (A + C) / 2, (P + I) / 2);
-    let N = F.attributes.position.array;
-    for (let B = 0; B < N.length; B += 3)
-      (g.push(N[B], N[B + 1], N[B + 2]), b.push(L[0], L[1], L[2], 1));
+    t(t, e, s) {
+      this.i.push(t, e, s);
+    }
+    q(t, e, s, n) {
+      this.i.push(t, e, s, t, s, n);
+    }
+    get count() {
+      return this.p.length / 3;
+    }
+    geo() {
+      let t = new Le();
+      return (
+        t.setAttribute("position", new Re(this.p, 3)),
+        t.setAttribute("normal", new Re(this.n, 3)),
+        t.setAttribute("uv", new Re(this.uv, 2)),
+        t.setAttribute("color", new Re(this.c, 4)),
+        tI(this.p, this.n, this.i),
+        t.setIndex(this.i),
+        t.computeBoundingSphere(),
+        t
+      );
+    }
   };
-  _(-0.35, 0.35, 2.9, 3.02, -4.5, 4.5, l);
-  for (let T of [-4.3, 4.3]) {
-    _(-1.1, 1.1, 0.12, 0.42, T - 1.1, T + 1.1, c);
-    for (let E of [-0.8, 0.8])
-      for (let A of [-1, 1]) {
-        let C = new ks(0.33, 0.33, 0.12, 12).toNonIndexed();
-        (C.rotateZ(Math.PI / 2), C.translate(A * 0.78, 0.33, T + E));
-        let P = C.attributes.position.array;
-        for (let I = 0; I < P.length; I += 3)
-          (g.push(P[I], P[I + 1], P[I + 2]), b.push(0.03, 0.03, 0.03, 1));
-      }
+function tI(o, t, e) {
+  for (let s = 0; s + 2 < e.length; s += 3) {
+    let n = e[s] * 3,
+      i = e[s + 1] * 3,
+      a = e[s + 2] * 3,
+      r = o[i] - o[n],
+      l = o[i + 1] - o[n + 1],
+      c = o[i + 2] - o[n + 2],
+      h = o[a] - o[n],
+      f = o[a + 1] - o[n + 1],
+      u = o[a + 2] - o[n + 2];
+    if (
+      (l * u - c * f) * (t[n] + t[i] + t[a]) +
+        (c * h - r * u) * (t[n + 1] + t[i + 1] + t[a + 1]) +
+        (r * f - l * h) * (t[n + 2] + t[i + 2] + t[a + 2]) <
+      0
+    ) {
+      let p = e[s + 1];
+      ((e[s + 1] = e[s + 2]), (e[s + 2] = p));
+    }
   }
-  for (let T of [-1, 1]) {
-    let E = T * (h / 2 + 0.01);
-    (_(
-      -0.17,
-      0.17,
-      0.95,
-      1.2,
-      E - (T > 0 ? 0.06 : -0.02),
-      E + (T > 0 ? 0.02 : 0.06),
-      t([1, 0.95, 0.78]),
-    ),
-      _(
-        -0.55,
-        0.55,
-        2.38,
-        2.56,
-        E - (T > 0 ? 0.05 : -0.02),
-        E + (T > 0 ? 0.02 : 0.05),
-        [0.01, 0.01, 0.01],
-      ),
-      _(
-        -0.45,
-        0.45,
-        2.42,
-        2.52,
-        E - (T > 0 ? 0.035 : -0.07),
-        E + (T > 0 ? 0.07 : 0.035),
-        t([1, 0.62, 0.12]),
-      ));
-  }
-  {
-    let T = new xt(0, 3, -2.2),
-      E = new xt(0, 5.55, -7.6),
-      A = E.clone().sub(T),
-      C = new ks(0.035, 0.05, A.length(), 6).toNonIndexed();
-    (C.translate(0, A.length() / 2, 0),
-      C.applyQuaternion(
-        new wn().setFromUnitVectors(new xt(0, 1, 0), A.clone().normalize()),
-      ),
-      C.translate(T.x, T.y, T.z));
-    let P = C.attributes.position.array;
-    for (let I = 0; I < P.length; I += 3)
-      (g.push(P[I], P[I + 1], P[I + 2]), b.push(0.02, 0.02, 0.02, 1));
-    _(-0.25, 0.25, 2.92, 3.08, -2.6, -1.8, c);
-  }
-  let R = new De();
-  return (
-    R.setAttribute("position", new ze(g, 3)),
-    R.setAttribute("color", new ze(b, 4)),
-    R.computeVertexNormals(),
-    R.setAttribute("uv", new ze(new Float32Array((g.length / 3) * 2), 2)),
-    R.computeBoundingSphere(),
-    R
+  return e;
+}
+function od(
+  o,
+  t,
+  e,
+  s,
+  { texW: n = 1, texH: i = 1.3, ao: a = () => 1, cap: r = !1, v0: l = 0 } = {},
+) {
+  let c = t.length;
+  if (c < 2) return;
+  let h = t.map((m, g) =>
+    (g + 1 < c ? t[g + 1].clone().sub(m) : m.clone().sub(t[g - 1])).normalize(),
   );
+  for (let m = 1; m + 1 < c; m++)
+    h[m] = t[m + 1]
+      .clone()
+      .sub(t[m - 1])
+      .normalize();
+  let f =
+      Math.abs(h[0].y) < 0.9
+        ? Js(0, 1, 0).cross(h[0]).normalize()
+        : Js(1, 0, 0).cross(h[0]).normalize(),
+    u = Math.max(1, Math.round((2 * Math.PI * e[0]) / n)),
+    d = l,
+    p = o.count;
+  for (let m = 0; m < c; m++) {
+    if (m) {
+      let v = h[m - 1].clone().cross(h[m]),
+        x = v.length();
+      (x > 1e-6 &&
+        f.applyAxisAngle(v.divideScalar(x), Math.asin(Math.min(1, x))),
+        (d += t[m].distanceTo(t[m - 1])));
+    }
+    let g = h[m].clone().cross(f).normalize(),
+      b = a(m);
+    for (let v = 0; v <= s; v++) {
+      let x = (v / s) * Math.PI * 2,
+        y = f
+          .clone()
+          .multiplyScalar(Math.cos(x))
+          .addScaledVector(g, Math.sin(x));
+      o.v(t[m].clone().addScaledVector(y, e[m]), y, (v / s) * u, d / i, [
+        b,
+        b,
+        b,
+        1,
+      ]);
+    }
+  }
+  for (let m = 0; m + 1 < c; m++)
+    for (let g = 0; g < s; g++) {
+      let b = p + m * (s + 1) + g,
+        v = b + s + 1;
+      o.q(b, v, v + 1, b + 1);
+    }
+  if (r) {
+    let m = o.v(t[c - 1], h[c - 1], 0.5, d / i, [0.8, 0.8, 0.8, 1]),
+      g = p + (c - 1) * (s + 1);
+    for (let b = 0; b < s; b++) o.t(g + b, g + b + 1, m);
+  }
+  return d;
 }

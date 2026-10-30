@@ -1,33 +1,33 @@
 // app 19 — level
-// Lines 42258-42596 of readable/app.pretty.js (statement-aligned).
-function TL(i) {
-  typeof i == "string" && (i = { u: i });
-  let t = sY(i);
+// Lines 42342-42682 of readable/app.pretty.js (statement-aligned).
+function iF(o) {
+  typeof o == "string" && (o = { u: o });
+  let t = oZ(o);
   if (!t) return { failed: !0, ready: !1, p: Promise.resolve(null) };
-  let e = vm.get(t);
+  let e = l2.get(t);
   return (
     e ||
     ((e = { tex: null, ready: !1, failed: !1, src: null }),
     (e.p = (async () => {
       let s = null;
-      if (i.u)
+      if (o.u)
         try {
-          ((s = await Ygt(i.u)), (e.src = "file"));
+          ((s = await y3t(o.u)), (e.src = "file"));
         } catch (l) {
-          QK(
-            i,
+          sZ(
+            o,
             "the picture's file did not load (" +
               (l.message || l) +
               ")" +
-              (i.c ? " - its public copy instead" : ""),
+              (o.c ? " - its public copy instead" : ""),
           );
         }
-      if (!s && i.c)
+      if (!s && o.c)
         try {
-          ((s = await Jgt(i.c)), (e.src = "copy"));
+          ((s = await w3t(o.c)), (e.src = "copy"));
         } catch (l) {
-          QK(
-            i,
+          sZ(
+            o,
             "the public copy did not load (" +
               (l.reason || l.message || l) +
               ")",
@@ -35,8 +35,8 @@ function TL(i) {
         }
       if (!s) throw new Error("no source");
       let n = await createImageBitmap(s),
-        o = Kgt(),
-        a = Math.min(1, o / Math.max(n.width, n.height));
+        i = v3t(),
+        a = Math.min(1, i / Math.max(n.width, n.height));
       if (a < 1) {
         let l = await createImageBitmap(n, {
           resizeWidth: Math.round(n.width * a),
@@ -45,9 +45,9 @@ function TL(i) {
         });
         (n.close?.(), (n = l));
       }
-      let r = new ei(n);
+      let r = new ai(n);
       return (
-        (r.colorSpace = is),
+        (r.colorSpace = Je),
         (r.flipY = !1),
         (r.anisotropy = 8),
         (r.needsUpdate = !0),
@@ -60,35 +60,35 @@ function TL(i) {
       () => (
         (e.failed = !0),
         setTimeout(() => {
-          vm.get(t) === e && vm.delete(t);
+          l2.get(t) === e && l2.delete(t);
         }, 3e4),
         null
       ),
     )),
-    vm.set(t, e),
+    l2.set(t, e),
     e)
   );
 }
-function Zgt(i, t) {
-  let e = vm.get(i);
-  e && t && !vm.has(t) && vm.set(t, e);
+function M3t(o, t) {
+  let e = l2.get(o);
+  e && t && !l2.has(t) && l2.set(t, e);
 }
-function i_(i) {
-  let t = i?.paintKit;
+function i_(o) {
+  let t = o?.paintKit;
   if (!t) return null;
-  if (SL(t.box)) return t.box;
+  if (QI(t.box)) return t.box;
   t.box = null;
-  let e = new Ti(),
+  let e = new xi(),
     s = null;
   if (
-    ((i.body || i.root).traverse((o) => {
-      if (o.isMesh && o.material === t.mat && o.geometry) {
-        let a = o.geometry;
-        !a.boundingBox && ML(a.attributes.position) && a.computeBoundingBox();
+    ((o.body || o.root).traverse((i) => {
+      if (i.isMesh && i.material === t.mat && i.geometry) {
+        let a = i.geometry;
+        !a.boundingBox && ZI(a.attributes.position) && a.computeBoundingBox();
         let r = a.boundingBox;
         r &&
-          SL([...r.min.toArray(), ...r.max.toArray()]) &&
-          (e.union(r), (s ||= o));
+          QI([...r.min.toArray(), ...r.max.toArray()]) &&
+          (e.union(r), (s ||= i));
       }
     }),
     !s)
@@ -96,12 +96,12 @@ function i_(i) {
     return null;
   let n = t.belt ?? null;
   if (n == null) {
-    i.root.updateMatrixWorld(!0);
-    let o = new ye().copy(s.matrixWorld).invert(),
-      a = new xt(),
-      r = new xt(),
+    o.root.updateMatrixWorld(!0);
+    let i = new fe().copy(s.matrixWorld).invert(),
+      a = new dt(),
+      r = new dt(),
       l = [];
-    (i.root.traverse((c) => {
+    (o.root.traverse((c) => {
       let h = [c.material].flat()[0];
       if (
         !c.isMesh ||
@@ -116,9 +116,9 @@ function i_(i) {
         return;
       let f = c.geometry.attributes.position,
         u = c.geometry.attributes.normal;
-      if (!ML(f) || !ML(u)) return;
-      let d = new ye().multiplyMatrices(o, c.matrixWorld),
-        p = new Mn().getNormalMatrix(d);
+      if (!ZI(f) || !ZI(u)) return;
+      let d = new fe().multiplyMatrices(i, c.matrixWorld),
+        p = new yn().getNormalMatrix(d);
       for (let m = 0; m < f.count; m += Math.max(1, Math.floor(f.count / 4e3)))
         (r.fromBufferAttribute(u, m).applyMatrix3(p).normalize(),
           !(Math.abs(r.x) < 0.45) &&
@@ -132,97 +132,97 @@ function i_(i) {
     (n > e.min.y + (e.max.y - e.min.y) * 0.3 && n < e.max.y) ||
       (n = e.min.y + (e.max.y - e.min.y) * 0.58),
     (t.box = [e.min.x, e.min.y, e.min.z, e.max.x, e.max.y, e.max.z, n].map(
-      (o) => Math.round(o * 1e3) / 1e3,
+      (i) => Math.round(i * 1e3) / 1e3,
     ))
   );
 }
-function ML(i) {
+function ZI(o) {
   return (
-    !!i &&
-    (i.isInterleavedBufferAttribute
-      ? i.data.array.length >= i.count * i.data.stride
-      : i.array.length >= i.count * i.itemSize) &&
-    i.count > 0
+    !!o &&
+    (o.isInterleavedBufferAttribute
+      ? o.data.array.length >= o.count * o.data.stride
+      : o.array.length >= o.count * o.itemSize) &&
+    o.count > 0
   );
 }
-function SL(i) {
+function QI(o) {
   return (
-    Array.isArray(i) &&
-    i.length >= 6 &&
-    i.slice(0, 6).every(Number.isFinite) &&
-    i[3] > i[0] &&
-    i[4] > i[1] &&
-    i[5] > i[2] &&
-    (i[6] === void 0 || Number.isFinite(i[6]))
+    Array.isArray(o) &&
+    o.length >= 6 &&
+    o.slice(0, 6).every(Number.isFinite) &&
+    o[3] > o[0] &&
+    o[4] > o[1] &&
+    o[5] > o[2] &&
+    (o[6] === void 0 || Number.isFinite(o[6]))
   );
 }
-var p0,
-  Eu,
-  Vgt,
+var A0,
+  ld,
+  g3t,
   s_,
   n_,
-  $gt,
-  Xgt,
-  EL,
-  vm,
-  Kgt,
-  fw,
-  QK,
-  eY,
-  sY,
-  wm = Vi(() => {
-    as();
-    ((p0 = (i) => (+i).toFixed(4)), (Eu = { f: "Artwork", t: "Pattern" }));
-    Vgt = /^[0-9a-f]{64}$/;
-    ((s_ = (i) => "/__mb/items/" + i + ".png"),
-      (n_ = (i) => {
-        let t = /^\/__mb\/items\/([0-9a-f]{64})\.png$/.exec(i || "");
+  b3t,
+  x3t,
+  nF,
+  l2,
+  v3t,
+  aM,
+  sZ,
+  iZ,
+  oZ,
+  h2 = Ki(() => {
+    es();
+    ((A0 = (o) => (+o).toFixed(4)), (ld = { f: "Artwork", t: "Pattern" }));
+    g3t = /^[0-9a-f]{64}$/;
+    ((s_ = (o) => "/__mb/items/" + o + ".png"),
+      (n_ = (o) => {
+        let t = /^\/__mb\/items\/([0-9a-f]{64})\.png$/.exec(o || "");
         return t ? t[1] : null;
       }),
-      ($gt = /^[A-Za-z0-9_-]{4,64}$/),
-      (Xgt = /^#[0-9a-f]{6}$/));
-    ((EL = (i) => {
-      let t = /^([0-9a-f]{64})\.([ft])$/.exec(i || "");
+      (b3t = /^[A-Za-z0-9_-]{4,64}$/),
+      (x3t = /^#[0-9a-f]{6}$/));
+    ((nF = (o) => {
+      let t = /^([0-9a-f]{64})\.([ft])$/.exec(o || "");
       return t ? { u: s_(t[1]), m: t[2], n: "" } : null;
     }),
-      (vm = new Map()),
-      (Kgt = () =>
+      (l2 = new Map()),
+      (v3t = () =>
         globalThis.SF_TIER === "mobile" || globalThis.SF_LITE ? 1024 : 2048),
-      (fw = []),
-      (QK = (i, t) => {
+      (aM = []),
+      (sZ = (o, t) => {
         let e = {
           t: Math.round(performance.now()),
-          u: i.u,
-          c: i.c || null,
+          u: o.u,
+          c: o.c || null,
           msg: t,
         };
-        (fw.push(e),
-          fw.length > 50 && fw.shift(),
-          console.warn("wrap:", t, i.u || "", i.c || ""),
-          globalThis.window && ((window.__sf ||= {}).wrapLog = fw));
+        (aM.push(e),
+          aM.length > 50 && aM.shift(),
+          console.warn("wrap:", t, o.u || "", o.c || ""),
+          globalThis.window && ((window.__sf ||= {}).wrapLog = aM));
       }),
-      (eY = (i) => new Promise((t) => setTimeout(t, i))));
-    sY = (i) => i?.u || (i?.c ? "c:" + i.c : null);
+      (iZ = (o) => new Promise((t) => setTimeout(t, o))));
+    oZ = (o) => o?.u || (o?.c ? "c:" + o.c : null);
   });
-function lY(i, t = Math.random) {
-  let e = RL.reduce((o, a) => o + a[1], 0) * t(),
-    s = RL[0][0];
-  for (let [o, a] of RL)
+function fZ(o, t = Math.random) {
+  let e = aF.reduce((i, a) => i + a[1], 0) * t(),
+    s = aF[0][0];
+  for (let [i, a] of aF)
     if ((e -= a) <= 0) {
-      s = o;
+      s = i;
       break;
     }
-  let n = sbt(i);
-  return { level: i, cash: n ? Math.min(s, 1e3) : s, unlock: n };
+  let n = _3t(o);
+  return { level: o, cash: n ? Math.min(s, 1e3) : s, unlock: n };
 }
-var cp,
-  Sm,
-  R9t,
-  sbt,
-  rY,
-  RL,
-  uw = Vi(() => {
-    ((cp = [
+var Up,
+  f2,
+  LCt,
+  _3t,
+  hZ,
+  aF,
+  lM = Ki(() => {
+    ((Up = [
       { level: 2, kind: "colour", hex: "#ff2fa0", name: "Festival Pink" },
       { level: 3, kind: "colour", hex: "#35d0ff", name: "Horizon Cyan" },
       { level: 4, kind: "finish", id: "candy", name: "Candy" },
@@ -234,15 +234,17 @@ var cp,
       { level: 15, kind: "colour", hex: "#00d69a", name: "Mint Rush" },
       { level: 20, kind: "colour", hex: "#2a2aff", name: "Ultramarine" },
     ]),
-      (Sm = cp
-        .filter((i) => i.kind === "colour")
-        .map((i) => [i.hex, i.name, i.level])),
-      (R9t = Object.fromEntries(
-        cp.filter((i) => i.kind === "finish").map((i) => [i.id, i.level]),
+      (f2 = Up.filter((o) => o.kind === "colour").map((o) => [
+        o.hex,
+        o.name,
+        o.level,
+      ])),
+      (LCt = Object.fromEntries(
+        Up.filter((o) => o.kind === "finish").map((o) => [o.id, o.level]),
       )),
-      (sbt = (i) => cp.find((t) => t.level === i) || null),
-      (rY = (i) => cp.find((t) => t.level > i) || null),
-      (RL = [
+      (_3t = (o) => Up.find((t) => t.level === o) || null),
+      (hZ = (o) => Up.find((t) => t.level > o) || null),
+      (aF = [
         [500, 30],
         [750, 25],
         [1e3, 20],
@@ -252,65 +254,65 @@ var cp,
         [1e4, 1],
       ]));
   });
-var pY = {};
-wh(pY, {
-  BODY: () => hp,
-  BODY_X: () => Sm,
-  CALIPERS: () => ax,
-  FINISHES: () => fp,
-  RIMS: () => ef,
-  applyPaint: () => $r,
-  canPaint: () => rx,
-  clean: () => qa,
-  decode: () => dw,
-  encode: () => LL,
+var bZ = {};
+Kh(bZ, {
+  BODY: () => Gp,
+  BODY_X: () => f2,
+  CALIPERS: () => qx,
+  FINISHES: () => Vp,
+  RIMS: () => If,
+  applyPaint: () => c0,
+  canPaint: () => jx,
+  clean: () => or,
+  decode: () => cM,
+  encode: () => cF,
   factoryHex: () => c_,
-  finishOf: () => tf,
-  makeKit: () => pl,
-  nameOf: () => sf,
-  prewarm: () => mw,
-  same: () => pw,
-  setHookReady: () => IL,
+  finishOf: () => Lf,
+  makeKit: () => Ir,
+  nameOf: () => Ff,
+  prewarm: () => fM,
+  same: () => hM,
+  setHookReady: () => hF,
 });
-function qa(i) {
-  if (!i || typeof i != "object") return null;
+function or(o) {
+  if (!o || typeof o != "object") return null;
   let t = (n) =>
-      typeof n == "string" && ibt.test(n.toLowerCase())
+      typeof n == "string" && T3t.test(n.toLowerCase())
         ? n.toLowerCase()
         : null,
-    e = { c: t(i.c), f: tf(i.f) ? i.f : null, cal: t(i.cal), rim: t(i.rim) },
-    s = ym(i.w);
+    e = { c: t(o.c), f: Lf(o.f) ? o.f : null, cal: t(o.cal), rim: t(o.rim) },
+    s = c2(o.w);
   return (s && (e.w = s), e.c || e.f || e.cal || e.rim || e.w ? e : null);
 }
-function LL(i) {
-  if (((i = qa(i)), !i)) return "";
+function cF(o) {
+  if (((o = or(o)), !o)) return "";
   let t = [
-    i.c ? i.c.slice(1) : "-",
-    i.f ? tf(i.f).key : "-",
-    i.cal ? i.cal.slice(1) : "-",
-    i.rim ? i.rim.slice(1) : "-",
+    o.c ? o.c.slice(1) : "-",
+    o.f ? Lf(o.f).key : "-",
+    o.cal ? o.cal.slice(1) : "-",
+    o.rim ? o.rim.slice(1) : "-",
   ];
   for (; t.length && t[t.length - 1] === "-";) t.pop();
-  let e = _L(i.w);
+  let e = eF(o.w);
   return t.join(".") + (e ? "~" + e : "");
 }
-function dw(i) {
-  if (typeof i != "string" || !i || i.length > 220) return null;
-  let t = i.indexOf("~"),
-    e = t < 0 ? i : i.slice(0, t),
-    s = t < 0 ? "" : i.slice(t + 1),
-    [n, o, a, r] = e.split("."),
+function cM(o) {
+  if (typeof o != "string" || !o || o.length > 220) return null;
+  let t = o.indexOf("~"),
+    e = t < 0 ? o : o.slice(0, t),
+    s = t < 0 ? "" : o.slice(t + 1),
+    [n, i, a, r] = e.split("."),
     l = (c) => (c && c !== "-" ? "#" + c : null);
-  return qa({
+  return or({
     c: l(n),
-    f: fp.find((c) => c.key === o)?.id || null,
+    f: Vp.find((c) => c.key === i)?.id || null,
     cal: l(a),
     rim: l(r),
-    w: zL(s) || EL(s),
+    w: sF(s) || nF(s),
   });
 }
-function rx(i) {
-  let t = i?.paintKit;
+function jx(o) {
+  let t = o?.paintKit;
   return t
     ? {
         body: !0,
@@ -318,24 +320,24 @@ function rx(i) {
         calipers: !!t.calipers?.length,
         rims: !!t.rims?.length,
         wrap: !!t.wrap,
-        picture: !!i_(i),
+        picture: !!i_(o),
       }
     : null;
 }
-function fY(i, t, e = null) {
+function pZ(o, t, e = null) {
   let s =
-      i.kind + ":" + t + (e ? ":w" + e + ":" + (i.box || []).join(",") : ""),
-    n = hY.get(s);
+      o.kind + ":" + t + (e ? ":w" + e + ":" + (o.box || []).join(",") : ""),
+    n = dZ.get(s);
   if (!n) {
-    let { coat: o, coatRough: a, ...r } = PL[t];
-    ((n = i.hook(
-      { g: 1, b: 1, ...r, ...(e ? { wrap: { mode: e, box: i.box } } : {}) },
-      { coat: o, coatRough: a },
+    let { coat: i, coatRough: a, ...r } = rF[t];
+    ((n = o.hook(
+      { g: 1, b: 1, ...r, ...(e ? { wrap: { mode: e, box: o.box } } : {}) },
+      { coat: i, coatRough: a },
     )),
-      hY.set(s, n));
+      dZ.set(s, n));
   }
   return n;
 }
-function mw(i, t) {
-  t?.root && i?.prewarm?.(t.root, { priority: 1 });
+function fM(o, t) {
+  t?.root && o?.prewarm?.(t.root, { priority: 1 });
 }

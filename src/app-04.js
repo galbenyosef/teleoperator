@@ -1,303 +1,303 @@
 // app 04 — math
-// Lines 777-1126 of readable/app.pretty.js (statement-aligned).
-function ont(i) {
-  for (let t = i.length - 1; t >= 0; --t) if (i[t] >= 65535) return !0;
+// Lines 810-1159 of readable/app.pretty.js (statement-aligned).
+function zat(o) {
+  for (let t = o.length - 1; t >= 0; --t) if (o[t] >= 65535) return !0;
   return !1;
 }
-function D2(i, t) {
-  return new ant[i](t);
+function Ag(o, t) {
+  return new _at[o](t);
 }
-function YH(i) {
-  return ArrayBuffer.isView(i) && !(i instanceof DataView);
+function QU(o) {
+  return ArrayBuffer.isView(o) && !(o instanceof DataView);
 }
-function q2(i) {
-  return document.createElementNS("http://www.w3.org/1999/xhtml", i);
+function Ig(o) {
+  return document.createElementNS("http://www.w3.org/1999/xhtml", o);
 }
-function gA() {
-  let i = q2("canvas");
-  return ((i.style.display = "block"), i);
+function VA() {
+  let o = Ig("canvas");
+  return ((o.style.display = "block"), o);
 }
-function JH(i) {
-  vd = i;
+function tG(o) {
+  Zd = o;
 }
-function ZH() {
-  return vd;
+function eG() {
+  return Zd;
 }
-function j2(...i) {
-  let t = "THREE." + i.shift();
-  vd ? vd("log", t, ...i) : console.log(t, ...i);
+function Fg(...o) {
+  let t = "THREE." + o.shift();
+  Zd ? Zd("log", t, ...o) : console.log(t, ...o);
 }
-function QH(i) {
-  let t = i[0];
+function sG(o) {
+  let t = o[0];
   if (typeof t == "string" && t.startsWith("TSL:")) {
-    let e = i[1];
+    let e = o[1];
     e && e.isStackTrace
-      ? (i[0] += " " + e.getLocation())
-      : (i[1] =
+      ? (o[0] += " " + e.getLocation())
+      : (o[1] =
           'Stack trace not available. Enable "THREE.Node.captureStackTrace" to capture stack traces.');
   }
-  return i;
+  return o;
 }
-function As(...i) {
-  i = QH(i);
-  let t = "THREE." + i.shift();
-  if (vd) vd("warn", t, ...i);
+function Cs(...o) {
+  o = sG(o);
+  let t = "THREE." + o.shift();
+  if (Zd) Zd("warn", t, ...o);
   else {
-    let e = i[0];
-    e && e.isStackTrace ? console.warn(e.getError(t)) : console.warn(t, ...i);
+    let e = o[0];
+    e && e.isStackTrace ? console.warn(e.getError(t)) : console.warn(t, ...o);
   }
 }
-function fn(...i) {
-  i = QH(i);
-  let t = "THREE." + i.shift();
-  if (vd) vd("error", t, ...i);
+function pn(...o) {
+  o = sG(o);
+  let t = "THREE." + o.shift();
+  if (Zd) Zd("error", t, ...o);
   else {
-    let e = i[0];
-    e && e.isStackTrace ? console.error(e.getError(t)) : console.error(t, ...i);
+    let e = o[0];
+    e && e.isStackTrace ? console.error(e.getError(t)) : console.error(t, ...o);
   }
 }
-function Sh(...i) {
-  let t = i.join(" ");
-  t in KB || ((KB[t] = !0), As(...i));
+function Jh(...o) {
+  let t = o.join(" ");
+  t in ZH || ((ZH[t] = !0), Cs(...o));
 }
-function tD(i, t, e) {
+function nG(o, t, e) {
   return new Promise(function (s, n) {
-    function o() {
-      switch (i.clientWaitSync(t, i.SYNC_FLUSH_COMMANDS_BIT, 0)) {
-        case i.WAIT_FAILED:
+    function i() {
+      switch (o.clientWaitSync(t, o.SYNC_FLUSH_COMMANDS_BIT, 0)) {
+        case o.WAIT_FAILED:
           n();
           break;
-        case i.TIMEOUT_EXPIRED:
-          setTimeout(o, e);
+        case o.TIMEOUT_EXPIRED:
+          setTimeout(i, e);
           break;
         default:
           s();
       }
     }
-    setTimeout(o, e);
+    setTimeout(i, e);
   });
 }
-function X0() {
-  let i = (Math.random() * 4294967295) | 0,
+function vl() {
+  let o = (Math.random() * 4294967295) | 0,
     t = (Math.random() * 4294967295) | 0,
     e = (Math.random() * 4294967295) | 0,
     s = (Math.random() * 4294967295) | 0;
   return (
-    Tr[i & 255] +
-    Tr[(i >> 8) & 255] +
-    Tr[(i >> 16) & 255] +
-    Tr[(i >> 24) & 255] +
+    jr[o & 255] +
+    jr[(o >> 8) & 255] +
+    jr[(o >> 16) & 255] +
+    jr[(o >> 24) & 255] +
     "-" +
-    Tr[t & 255] +
-    Tr[(t >> 8) & 255] +
+    jr[t & 255] +
+    jr[(t >> 8) & 255] +
     "-" +
-    Tr[((t >> 16) & 15) | 64] +
-    Tr[(t >> 24) & 255] +
+    jr[((t >> 16) & 15) | 64] +
+    jr[(t >> 24) & 255] +
     "-" +
-    Tr[(e & 63) | 128] +
-    Tr[(e >> 8) & 255] +
+    jr[(e & 63) | 128] +
+    jr[(e >> 8) & 255] +
     "-" +
-    Tr[(e >> 16) & 255] +
-    Tr[(e >> 24) & 255] +
-    Tr[s & 255] +
-    Tr[(s >> 8) & 255] +
-    Tr[(s >> 16) & 255] +
-    Tr[(s >> 24) & 255]
+    jr[(e >> 16) & 255] +
+    jr[(e >> 24) & 255] +
+    jr[s & 255] +
+    jr[(s >> 8) & 255] +
+    jr[(s >> 16) & 255] +
+    jr[(s >> 24) & 255]
   ).toLowerCase();
 }
-function Tn(i, t, e) {
-  return Math.max(t, Math.min(e, i));
+function Ln(o, t, e) {
+  return Math.max(t, Math.min(e, o));
 }
-function bA(i, t) {
-  return ((i % t) + t) % t;
+function WA(o, t) {
+  return ((o % t) + t) % t;
 }
-function rnt(i, t, e, s, n) {
-  return s + ((i - t) * (n - s)) / (e - t);
+function Eat(o, t, e, s, n) {
+  return s + ((o - t) * (n - s)) / (e - t);
 }
-function lnt(i, t, e) {
-  return i !== t ? (e - i) / (t - i) : 0;
+function Tat(o, t, e) {
+  return o !== t ? (e - o) / (t - o) : 0;
 }
-function jv(i, t, e) {
-  return (1 - e) * i + e * t;
+function U3(o, t, e) {
+  return (1 - e) * o + e * t;
 }
-function cnt(i, t, e, s) {
-  return jv(i, t, 1 - Math.exp(-e * s));
+function Rat(o, t, e, s) {
+  return U3(o, t, 1 - Math.exp(-e * s));
 }
-function hnt(i, t = 1) {
-  return t - Math.abs(bA(i, t * 2) - t);
+function Aat(o, t = 1) {
+  return t - Math.abs(WA(o, t * 2) - t);
 }
-function fnt(i, t, e) {
-  return i <= t
+function Pat(o, t, e) {
+  return o <= t
     ? 0
-    : i >= e
+    : o >= e
       ? 1
-      : ((i = (i - t) / (e - t)), i * i * (3 - 2 * i));
+      : ((o = (o - t) / (e - t)), o * o * (3 - 2 * o));
 }
-function unt(i, t, e) {
-  return i <= t
+function Cat(o, t, e) {
+  return o <= t
     ? 0
-    : i >= e
+    : o >= e
       ? 1
-      : ((i = (i - t) / (e - t)), i * i * i * (i * (i * 6 - 15) + 10));
+      : ((o = (o - t) / (e - t)), o * o * o * (o * (o * 6 - 15) + 10));
 }
-function dnt(i, t) {
-  return i + Math.floor(Math.random() * (t - i + 1));
+function Lat(o, t) {
+  return o + Math.floor(Math.random() * (t - o + 1));
 }
-function pnt(i, t) {
-  return i + Math.random() * (t - i);
+function Iat(o, t) {
+  return o + Math.random() * (t - o);
 }
-function mnt(i) {
-  return i * (0.5 - Math.random());
+function Fat(o) {
+  return o * (0.5 - Math.random());
 }
-function gnt(i) {
-  i !== void 0 && (YB = i);
-  let t = (YB += 1831565813);
+function Oat(o) {
+  o !== void 0 && (QH = o);
+  let t = (QH += 1831565813);
   return (
     (t = Math.imul(t ^ (t >>> 15), t | 1)),
     (t ^= t + Math.imul(t ^ (t >>> 7), t | 61)),
     ((t ^ (t >>> 14)) >>> 0) / 4294967296
   );
 }
-function bnt(i) {
-  return i * f1;
+function Bat(o) {
+  return o * K1;
 }
-function xnt(i) {
-  return i * d1;
+function Nat(o) {
+  return o * J1;
 }
-function vnt(i) {
-  return i > 0 && Number.isInteger(i) && 2 ** Math.round(Math.log2(i)) === i;
+function Hat(o) {
+  return o > 0 && Number.isInteger(o) && 2 ** Math.round(Math.log2(o)) === o;
 }
-function ynt(i) {
-  return Math.pow(2, Math.ceil(Math.log(i) / Math.LN2));
+function Dat(o) {
+  return Math.pow(2, Math.ceil(Math.log(o) / Math.LN2));
 }
-function wnt(i) {
-  return Math.pow(2, Math.floor(Math.log(i) / Math.LN2));
+function Uat(o) {
+  return Math.pow(2, Math.floor(Math.log(o) / Math.LN2));
 }
-function Mnt(i, t, e, s, n) {
-  let o = Math.cos,
+function Gat(o, t, e, s, n) {
+  let i = Math.cos,
     a = Math.sin,
-    r = o(e / 2),
+    r = i(e / 2),
     l = a(e / 2),
-    c = o((t + s) / 2),
+    c = i((t + s) / 2),
     h = a((t + s) / 2),
-    f = o((t - s) / 2),
+    f = i((t - s) / 2),
     u = a((t - s) / 2),
-    d = o((s - t) / 2),
+    d = i((s - t) / 2),
     p = a((s - t) / 2);
   switch (n) {
     case "XYX":
-      i.set(r * h, l * f, l * u, r * c);
+      o.set(r * h, l * f, l * u, r * c);
       break;
     case "YZY":
-      i.set(l * u, r * h, l * f, r * c);
+      o.set(l * u, r * h, l * f, r * c);
       break;
     case "ZXZ":
-      i.set(l * f, l * u, r * h, r * c);
+      o.set(l * f, l * u, r * h, r * c);
       break;
     case "XZX":
-      i.set(r * h, l * p, l * d, r * c);
+      o.set(r * h, l * p, l * d, r * c);
       break;
     case "YXY":
-      i.set(l * d, r * h, l * p, r * c);
+      o.set(l * d, r * h, l * p, r * c);
       break;
     case "ZYZ":
-      i.set(l * p, l * d, r * h, r * c);
+      o.set(l * p, l * d, r * h, r * c);
       break;
     default:
-      As(
+      Cs(
         "MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: " +
           n,
       );
   }
 }
-function e0(i, t) {
+function b0(o, t) {
   switch (t.constructor) {
     case Float32Array:
-      return i;
+      return o;
     case Uint32Array:
-      return i / 4294967295;
+      return o / 4294967295;
     case Uint16Array:
-      return i / 65535;
+      return o / 65535;
     case Uint8Array:
     case Uint8ClampedArray:
-      return i / 255;
+      return o / 255;
     case Int32Array:
-      return Math.max(i / 2147483647, -1);
+      return Math.max(o / 2147483647, -1);
     case Int16Array:
-      return Math.max(i / 32767, -1);
+      return Math.max(o / 32767, -1);
     case Int8Array:
-      return Math.max(i / 127, -1);
+      return Math.max(o / 127, -1);
     default:
       throw new Error("THREE.MathUtils: Invalid component type.");
   }
 }
-function Wn(i, t) {
+function jn(o, t) {
   switch (t.constructor) {
     case Float32Array:
-      return i;
+      return o;
     case Uint32Array:
-      return Math.round(i * 4294967295);
+      return Math.round(o * 4294967295);
     case Uint16Array:
-      return Math.round(i * 65535);
+      return Math.round(o * 65535);
     case Uint8Array:
     case Uint8ClampedArray:
-      return Math.round(i * 255);
+      return Math.round(o * 255);
     case Int32Array:
-      return Math.round(i * 2147483647);
+      return Math.round(o * 2147483647);
     case Int16Array:
-      return Math.round(i * 32767);
+      return Math.round(o * 32767);
     case Int8Array:
-      return Math.round(i * 127);
+      return Math.round(o * 127);
     default:
       throw new Error("THREE.MathUtils: Invalid component type.");
   }
 }
-function Snt() {
-  let i = {
+function Vat() {
+  let o = {
       enabled: !0,
-      workingColorSpace: za,
+      workingColorSpace: Ba,
       spaces: {},
-      convert: function (n, o, a) {
+      convert: function (n, i, a) {
         return (
           this.enabled === !1 ||
-            o === a ||
-            !o ||
+            i === a ||
+            !i ||
             !a ||
-            (this.spaces[o].transfer === Ui &&
-              ((n.r = Of(n.r)), (n.g = Of(n.g)), (n.b = Of(n.b))),
-            this.spaces[o].primaries !== this.spaces[a].primaries &&
-              (n.applyMatrix3(this.spaces[o].toXYZ),
+            (this.spaces[i].transfer === Zi &&
+              ((n.r = xu(n.r)), (n.g = xu(n.g)), (n.b = xu(n.b))),
+            this.spaces[i].primaries !== this.spaces[a].primaries &&
+              (n.applyMatrix3(this.spaces[i].toXYZ),
               n.applyMatrix3(this.spaces[a].fromXYZ)),
-            this.spaces[a].transfer === Ui &&
-              ((n.r = U2(n.r)), (n.g = U2(n.g)), (n.b = U2(n.b)))),
+            this.spaces[a].transfer === Zi &&
+              ((n.r = Pg(n.r)), (n.g = Pg(n.g)), (n.b = Pg(n.b)))),
           n
         );
       },
-      workingToColorSpace: function (n, o) {
-        return this.convert(n, this.workingColorSpace, o);
+      workingToColorSpace: function (n, i) {
+        return this.convert(n, this.workingColorSpace, i);
       },
-      colorSpaceToWorking: function (n, o) {
-        return this.convert(n, o, this.workingColorSpace);
+      colorSpaceToWorking: function (n, i) {
+        return this.convert(n, i, this.workingColorSpace);
       },
       getPrimaries: function (n) {
         return this.spaces[n].primaries;
       },
       getTransfer: function (n) {
-        return n === On ? W2 : this.spaces[n].transfer;
+        return n === Nn ? Lg : this.spaces[n].transfer;
       },
       getToneMappingMode: function (n) {
         return (
           this.spaces[n].outputColorSpaceConfig.toneMappingMode || "standard"
         );
       },
-      getLuminanceCoefficients: function (n, o = this.workingColorSpace) {
-        return n.fromArray(this.spaces[o].luminanceCoefficients);
+      getLuminanceCoefficients: function (n, i = this.workingColorSpace) {
+        return n.fromArray(this.spaces[i].luminanceCoefficients);
       },
       define: function (n) {
         Object.assign(this.spaces, n);
       },
-      _getMatrix: function (n, o, a) {
-        return n.copy(this.spaces[o].toXYZ).multiply(this.spaces[a].fromXYZ);
+      _getMatrix: function (n, i, a) {
+        return n.copy(this.spaces[i].toXYZ).multiply(this.spaces[a].fromXYZ);
       },
       _getDrawingBufferColorSpace: function (n) {
         return this.spaces[n].outputColorSpaceConfig.drawingBufferColorSpace;
@@ -305,20 +305,20 @@ function Snt() {
       _getUnpackColorSpace: function (n = this.workingColorSpace) {
         return this.spaces[n].workingColorSpaceConfig.unpackColorSpace;
       },
-      fromWorkingColorSpace: function (n, o) {
+      fromWorkingColorSpace: function (n, i) {
         return (
-          Sh(
+          Jh(
             "ColorManagement: .fromWorkingColorSpace() has been renamed to .workingToColorSpace().",
           ),
-          i.workingToColorSpace(n, o)
+          o.workingToColorSpace(n, i)
         );
       },
-      toWorkingColorSpace: function (n, o) {
+      toWorkingColorSpace: function (n, i) {
         return (
-          Sh(
+          Jh(
             "ColorManagement: .toWorkingColorSpace() has been renamed to .colorSpaceToWorking().",
           ),
-          i.colorSpaceToWorking(n, o)
+          o.colorSpaceToWorking(n, i)
         );
       },
     },
@@ -326,27 +326,27 @@ function Snt() {
     e = [0.2126, 0.7152, 0.0722],
     s = [0.3127, 0.329];
   return (
-    i.define({
-      [za]: {
+    o.define({
+      [Ba]: {
         primaries: t,
         whitePoint: s,
-        transfer: W2,
-        toXYZ: ZB,
-        fromXYZ: QB,
+        transfer: Lg,
+        toXYZ: eD,
+        fromXYZ: sD,
         luminanceCoefficients: e,
-        workingColorSpaceConfig: { unpackColorSpace: is },
-        outputColorSpaceConfig: { drawingBufferColorSpace: is },
+        workingColorSpaceConfig: { unpackColorSpace: Je },
+        outputColorSpaceConfig: { drawingBufferColorSpace: Je },
       },
-      [is]: {
+      [Je]: {
         primaries: t,
         whitePoint: s,
-        transfer: Ui,
-        toXYZ: ZB,
-        fromXYZ: QB,
+        transfer: Zi,
+        toXYZ: eD,
+        fromXYZ: sD,
         luminanceCoefficients: e,
-        outputColorSpaceConfig: { drawingBufferColorSpace: is },
+        outputColorSpaceConfig: { drawingBufferColorSpace: Je },
       },
     }),
-    i
+    o
   );
 }

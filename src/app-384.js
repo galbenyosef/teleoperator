@@ -1,194 +1,288 @@
-// app 384 — cur
-// Lines 190202-190393 of readable/app.pretty.js (statement-aligned).
-var Rwt = `
-#nextUp { align-items: center; gap: var(--sp-3); padding: 7px 16px 7px 8px; border-radius: var(--r-md); max-width: 100%; }
-#nextUp .ds-stack { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-#nextUp .n { display: flex; align-items: baseline; gap: var(--sp-2); min-width: 0; }
-#nextUp .n .ds-title { font-size: var(--fs-md); }
-#nextUp .d { flex: none; color: var(--ink); }
-body.hud-off #nextUp, body.photo #nextUp, body.cine #nextUp, body.racing #nextUp, body.poi #nextUp { display: none !important; }
-body.touch #nextUp { padding: 5px 12px 5px 6px; } body.touch #nextUp .ds-icon { width: 24px; height: 24px; }
+// app 384 — classlist
+// Lines 191202-191487 of readable/app.pretty.js (statement-aligned).
+function U6t() {
+  return globalThis.SF_VARIANT === "taxi"
+    ? globalThis.SF_MP
+      ? "Teleop2"
+      : "Teleoperator"
+    : "SF Drive";
+}
+function nit() {
+  let o = `<div class="cr"><div class="cr-hero"><b>Thank you</b><span>${u1(U6t())} is San Francisco rebuilt from open data, open-source code and the generosity of everyone below. Thank you for driving it.</span></div>`;
+  for (let t of B6t) {
+    o +=
+      `<h3>${u1(t.h)}</h3>` +
+      (t.note ? `<p class="cr-note">${u1(t.note)}</p>` : "") +
+      "<ul>";
+    for (let [e, s, n] of t.items)
+      o += `<li><b>${u1(e)}</b>${s ? `<span>${u1(s)}</span>` : ""}${n && n.length ? `<div class="ln">${n.map(D6t).join("")}</div>` : ""}</li>`;
+    o += "</ul>";
+  }
+  return (
+    o +
+    `<p class="cr-disc">${u1(N6t)} The full list with the licence texts: <a href="THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener noreferrer">THIRD_PARTY_NOTICES.md</a>.</p></div>`
+  );
+}
+var Ur = null;
+function G6t() {
+  (Ur ||
+    ((Ur = document.createElement("div")),
+    (Ur.id = "credits"),
+    Ur.setAttribute("role", "dialog"),
+    Ur.setAttribute("aria-modal", "true"),
+    Ur.setAttribute("aria-label", "Credits"),
+    (Ur.innerHTML = `<div class="cr-card"><div class="cr-head"><h2>Credits</h2><button class="cr-x" type="button" aria-label="Close (Esc)" title="Close (Esc)">&times;</button></div><div class="cr-body">${nit()}</div></div>`),
+    document.body.appendChild(Ur),
+    Ur.querySelector(".cr-x").addEventListener("click", ZB),
+    Ur.addEventListener("pointerdown", (o) => {
+      (o.stopPropagation(), o.target === Ur && ZB());
+    }),
+    addEventListener(
+      "keydown",
+      (o) => {
+        Ur.classList.contains("on") &&
+          (o.code === "Escape" && ZB(),
+          !/^(Tab|Arrow|Page|Home|End)/.test(o.code) &&
+            !(o.code === "Enter" && o.target?.tagName === "A") &&
+            o.preventDefault(),
+          o.stopImmediatePropagation());
+      },
+      !0,
+    )),
+    Ur.classList.add("on"),
+    (Ur.querySelector(".cr-body").scrollTop = 0),
+    Ur.querySelector(".cr-x").focus({ preventScroll: !0 }));
+}
+function ZB() {
+  (Ur && Ur.classList.remove("on"),
+    document.getElementById("creditsLink")?.focus?.({ preventScroll: !0 }));
+}
+function iit() {
+  if (!document.getElementById("creditsCss")) {
+    let e = document.createElement("style");
+    ((e.id = "creditsCss"),
+      (e.textContent = H6t),
+      document.head.appendChild(e));
+  }
+  let o = document.querySelector('#pause [data-sec="credits"]');
+  o && !o.firstChild && (o.innerHTML = nit());
+  let t = document.getElementById("creditsLink");
+  t &&
+    !t._cr &&
+    ((t._cr = 1),
+    t.addEventListener("pointerdown", (e) => e.stopPropagation()),
+    t.addEventListener("click", (e) => {
+      (e.stopPropagation(), G6t());
+    }));
+}
+var V6t = `
+#poiCard { align-items: center; gap: var(--sp-3); padding: 8px 16px 8px 9px; min-width: 260px; max-width: 100%; border-radius: var(--r-md); }
+#poiCard .ds-stack { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; }
+#poiCard .hd { display: flex; align-items: baseline; gap: var(--sp-2); }
+#poiCard .hd .ds-figure { margin-left: auto; color: var(--ink); }
+#poiCard .ft { display: flex; align-items: center; gap: var(--sp-2); margin-top: 2px; }
+#poiCard .ft .ds-figure { overflow: hidden; text-overflow: ellipsis; }
+#poiCard .ds-icon { width: 36px; height: 36px; }
+body.touch #poiCard { min-width: 0; padding: 6px 12px 6px 7px; gap: var(--sp-2); } body.touch #poiCard .ds-icon { width: 28px; height: 28px; } body.touch #poiCard .ds-title { font-size: var(--fs-md); }
+body.racing #poiCard { display: none !important; }
 `,
-  get = {
-    trap: "\u23F1",
-    zone: "\xBB",
-    drift: "\u2248",
-    jump: "!",
-    xp: "XP",
-    travel: "\u2197",
-  },
-  AE = class {
+  MT = class {
     constructor(t) {
       (Object.assign(this, t),
-        (this.on = !0),
-        (this.cur = null),
-        (this.t = 0),
-        (this.wait = 4),
-        (this.routeT = 0),
-        (this.route = null),
-        (this.done = new Set()),
-        (this.nearT = 0),
-        (this.last = null),
-        Zc("nuCss", Rwt),
+        Th("poiCss", V6t),
         (this.el = document.createElement("div")),
-        (this.el.id = "nextUp"),
+        (this.el.id = "poiCard"),
         (this.el.className = "ds-panel ds-pop"),
         this.el.setAttribute("aria-live", "polite"),
-        Jo("tc", this.el, 1));
-    }
-    list() {
-      let t = [],
-        e = this.stunts,
-        s = this.boards;
-      if (e)
-        for (let n of e.list) {
-          let o = n.gates[0],
-            a = n.kind === "jump" ? 120 : 0;
-          t.push({
-            id: "s:" + n.id,
-            x: o.x - o.dir[0] * a,
-            z: o.z - o.dir[1] * a,
-            kind: n.kind,
-            label: this.KINDS[n.kind].label,
-            name: n.name,
-            col: this.KINDS[n.kind].col,
-            glyph: get[n.kind],
-            isDone: () => !!e.best[n.id],
-          });
-        }
-      if (s)
-        for (let n of s.list)
-          t.push({
-            id: "b:" + n.id,
-            x: n.x,
-            z: n.z,
-            kind: n.kind,
-            label: n.kind === "travel" ? "Fast-travel board" : "XP board",
-            name: n.name,
-            col: this.COLS[n.kind],
-            glyph: get[n.kind],
-            isDone: () => s.got.has(n.id),
-          });
-      for (let n of this.extra?.() || []) t.push(n);
-      return t;
+        aa("tc", this.el, 0),
+        (this.cur = null),
+        (this.key = ""),
+        (this.t = 0));
     }
     pick() {
-      let t = this.v,
-        e = null,
-        s = 1e9;
-      for (let n of this.list()) {
-        if (n.isDone() || this.done.has(n.id)) continue;
-        let o = Math.hypot(n.x - t.pos.x, n.z - t.pos.z);
-        if (o < 60) continue;
-        let a = o / (n.w || 1);
-        a < s && ((s = a), (e = n));
+      let t = this.camera,
+        e = t.position.x,
+        s = t.position.z,
+        n = -Math.sin(this.v.psi),
+        i = -Math.cos(this.v.psi),
+        a = null,
+        r = 1e9;
+      for (let l of this.list()) {
+        let c = l.x - e,
+          h = l.z - s,
+          f = Math.hypot(c, h);
+        f > (l.r || 160) ||
+          f < 1 ||
+          (c * n + h * i) / f < (f < 30 ? -0.2 : 0.55) ||
+          (f < r && ((r = f), (a = l)));
       }
-      return e;
-    }
-    focus(t) {
-      t &&
-        (this.done.delete(t.id),
-        this.clear(),
-        (this.cur = t),
-        (this.routeT = 0),
-        (this.held = t.id),
-        this._card());
-    }
-    clear() {
-      ((this.cur = null),
-        (this.route = null),
-        this.el.classList.remove("on"),
-        this.map && this.map.overlay?.nextUp && (this.map.overlay = null));
-    }
-    skip() {
-      (this.cur && this.done.add(this.cur.id), this.clear(), (this.wait = 0.5));
+      return a ? { p: a, d: r } : null;
     }
     update(t, e = !0) {
-      if (!this.on || !e) {
-        ((this.cur || this.el.classList.contains("on")) && this.clear(),
-          (this.wait = Math.max(this.wait, 2)));
+      if (((this.t -= t), this.t > 0 && e === this._ok)) {
+        this.cur &&
+          this._dist(
+            (this.cur.d = Math.hypot(
+              this.cur.p.x - this.v.pos.x,
+              this.cur.p.z - this.v.pos.z,
+            )),
+          );
         return;
       }
-      let s = this.v,
-        n = this.last,
-        o = n && Math.hypot(s.pos.x - n.x, s.pos.z - n.z) > 300;
-      if (
-        ((this.last = { x: s.pos.x, z: s.pos.z }),
-        o &&
-          this.cur &&
-          this.held !== this.cur.id &&
-          (this.clear(), (this.wait = 1.5)),
-        this.cur && this.held !== this.cur.id && (this.nearT -= t) <= 0)
-      ) {
-        this.nearT = 5;
-        let l = this.pick(),
-          c = Math.hypot(this.cur.x - s.pos.x, this.cur.z - s.pos.z);
-        l &&
-          l.id !== this.cur.id &&
-          Math.hypot(l.x - s.pos.x, l.z - s.pos.z) < c * 0.5 &&
-          (this.clear(), (this.cur = l), (this.routeT = 0), this._card());
-      }
-      if (!this.cur) {
-        if ((this.wait -= t) > 0) return;
-        if (((this.cur = this.pick()), (this.routeT = 0), !this.cur)) {
-          this.wait = 30;
-          return;
-        }
-        this._card();
-      }
-      let a = this.cur,
-        r = Math.hypot(a.x - s.pos.x, a.z - s.pos.z);
-      if (a.isDone() || r < 30) {
-        (this.done.add(a.id), this.clear(), (this.wait = 12));
+      ((this.t = 0.2), (this._ok = e));
+      let s = e ? this.pick() : null;
+      if (((this.cur = s), document.body.classList.toggle("poi", !!s), !s)) {
+        (this.el.classList.remove("on"), (this.key = ""));
         return;
       }
-      ((this.routeT -= t) <= 0 && ((this.routeT = 3), this._route()),
-        this._dist(r));
-    }
-    _card() {
-      let t = this.cur;
-      (this.el.style.setProperty("--c", t.col),
-        (this.el.innerHTML = `${wr(t.kind || "info", "sm")}<div class="ds-stack"><div class="ds-eyebrow" style="color:var(--ink-3)">What's next \xB7 <span style="color:var(--c)">${yr(t.label)}</span></div><div class="n"><span class="ds-title">${yr(t.name)}</span><span class="ds-figure d"></span></div></div>`),
-        this.el.classList.add("on"),
-        (this.dEl = this.el.querySelector(".d")));
+      let n = s.p,
+        i = n.stars?.(),
+        a = n.line?.() || "",
+        r = n.id + "|" + i + "|" + a;
+      if (r !== this.key) {
+        this.key = r;
+        let l = Zp[n.kind] || Zp.info;
+        (this.el.style.setProperty("--c", l),
+          (this.el.innerHTML = `${Br(n.kind)}<div class="ds-stack"><div class="hd"><span class="ds-eyebrow">${Or(n.label || cO[n.kind] || "")}</span><span class="ds-figure d"></span></div><div class="ds-title">${Or(n.name)}</div><div class="ft">${i != null ? pv(i) : ""}<span class="ds-figure">${Or(a)}</span></div></div>`),
+          (this.dEl = this.el.querySelector(".d")));
+      }
+      (this._dist(s.d), this.el.classList.add("on"));
     }
     _dist(t) {
       let e = this.mph?.(),
         s = e
-          ? t / 1609.34 < 0.1
+          ? t < 160
             ? Math.round(t * 3.281) + " ft"
             : (t / 1609.34).toFixed(1) + " mi"
-          : t < 1e3
-            ? Math.round(t) + " m"
-            : (t / 1e3).toFixed(1) + " km";
+          : Math.round(t) + " m";
       this.dEl && this.dEl.textContent !== s && (this.dEl.textContent = s);
     }
-    _route() {
-      let t = this.cur,
-        e = this.router?.();
-      if (!(!e || !this.map) && !(this.map.overlay && !this.map.overlay.nextUp))
-        try {
-          if (!t.spot) {
-            let [o, a] = this.unproject(t.x, t.z);
-            t.spot = e._snap(t.name, t.name, o, a, null) || { x: t.x, z: t.z };
-          }
-          let s = this.v.forward(),
-            n = t.spot.E
-              ? e.routeTo(this.v.pos.x, this.v.pos.z, s.x, s.z, t.spot, !0)
-              : {
-                  pts: [
-                    [this.v.pos.x, this.v.pos.z],
-                    [t.x, t.z],
-                  ],
-                };
-          ((this.route = n),
-            (this.map.overlay = {
-              nextUp: !0,
-              route: n.pts,
-              target: { x: t.x, z: t.z, col: t.col, label: t.name },
+  };
+var W6t = `
+#stLive { align-items: center; gap: var(--sp-3); padding: 7px 16px 8px 9px; border-radius: var(--r-md); }
+#stLive .ds-stack { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+#stLive .v { font-size: var(--fs-xl); }
+#stLive .t { display: flex; align-items: center; gap: var(--sp-2); }
+#stHud { display: none; flex-direction: column; align-items: center; }
+#stHud:has(.card.on) { display: flex; }
+#stHud .card { flex-direction: column; align-items: center; gap: 4px; padding: 14px 30px 12px; text-align: center; border-radius: var(--r-lg); min-width: 260px; }
+#stHud .card .hd { display: flex; align-items: center; gap: var(--sp-2); }
+#stHud .card .v { font-size: var(--fs-3xl); margin-top: 2px; }
+#stHud .card .b { font: var(--fw-bold) var(--fs-xs) var(--font-mono); letter-spacing: .18em; color: var(--ink-2); margin-top: 2px; }
+#stHud .card .b.nb { color: var(--gold); }
+body.touch #stHud .card { padding: 9px 20px 8px; min-width: 0; } body.touch #stHud .card .v { font-size: var(--fs-2xl); } body.touch #stHud .card .ds-stars.lg i { width: 18px; height: 18px; }
+#rwChip { position: fixed; left: 50%; top: calc(var(--tc-top) + 64px); transform: translateX(-50%); z-index: 7; pointer-events: none; display: flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: var(--r-pill); background: var(--c-travel); color: #fff; font: var(--fw-black) var(--fs-sm) var(--font); letter-spacing: .18em; opacity: 0; transition: opacity var(--t-fast); box-shadow: var(--sh-1); }
+#rwChip svg { width: 15px; height: 15px; }
+body.rewinding #rwChip { opacity: 1; }
+body.rewinding #view canvas { filter: saturate(.25) contrast(1.08) brightness(.95) hue-rotate(190deg) saturate(1.4); }
+#view canvas { transition: filter .2s; }
+body.hud-off #stLive, body.cine #stLive { display: none !important; }
+`,
+  ST = (o, t, e = "") => {
+    let s = document.createElement(o);
+    return (t && (s.className = t), (s.textContent = e), s);
+  },
+  kT = class {
+    constructor(t = document.body) {
+      (Th("stHudCss", W6t),
+        (this.el = ST("div")),
+        (this.el.id = "stHud"),
+        this.el.setAttribute("aria-live", "polite"),
+        (this.cardEl = ST("div", "card ds-panel ds-card top ds-pop")),
+        this.el.append(this.cardEl),
+        aa("lane", this.el, 1),
+        (this.liveEl = ST("div", "live ds-panel ds-pop")),
+        (this.liveEl.id = "stLive"),
+        aa("tc", this.liveEl, -1),
+        (this.rw = ST("div")),
+        (this.rw.id = "rwChip"),
+        t.appendChild(this.rw),
+        (this.cardT = 0),
+        (this.liveKey = ""),
+        (this.mph = !1));
+    }
+    _val(t, e) {
+      let s = ql[t.kind];
+      return s.unit === "km/h" && this.mph
+        ? [Math.round(e / 1.609344), "MPH"]
+        : [yT(t, e), s.unit.toUpperCase()];
+    }
+    update(t, e, s = !1) {
+      this.mph = s;
+      for (let a of e.events.splice(0))
+        a.type === "result"
+          ? (this.show(a), this.onResult?.(a))
+          : a.type === "discover" &&
+            this.onDiscover?.(
+              a.s,
+              a.s.stars
+                .map(
+                  (r, l) =>
+                    "\u2605".repeat(l + 1) + " " + this._val(a.s, r).join(" "),
+                )
+                .join("   "),
+            );
+      this.cardT -= t;
+      let n = e.live,
+        i =
+          !!n &&
+          !this.cardEl.classList.contains("on") &&
+          !(n.kind === "jump" && !n.take && !n.best);
+      if (i) {
+        let a = n.s,
+          r = ql[a.kind],
+          [l, c] = this._val(a, n.val),
+          h = Fc(a, n.val),
+          f = a.stars[h];
+        (this.liveKey !== a.id &&
+          ((this.liveKey = a.id),
+          this.liveEl.style.setProperty("--c", r.col),
+          (this.liveEl.innerHTML = `${Br(a.kind)}<div class="ds-stack"><div class="ds-eyebrow">${Or(r.label)} \xB7 <span style="color:var(--ink-2)">${Or(a.name)}</span></div><div class="ds-value v"></div><div class="t"><span class="st"></span><span class="ds-figure nx"></span></div></div>`),
+          (this._lv = this.liveEl.querySelector(".v")),
+          (this._ls = this.liveEl.querySelector(".st")),
+          (this._ln = this.liveEl.querySelector(".nx")),
+          (this._lk = -1)),
+          (this._lv.innerHTML = `${l}<small>${c}</small>`),
+          this._lk !== h && ((this._lk = h), (this._ls.innerHTML = pv(h))),
+          (this._ln.textContent =
+            f !== void 0 ? "NEXT \u2605 " + this._val(a, f).join(" ") : ""));
+      } else this.liveKey = "";
+      (this.liveEl.classList.toggle("on", i),
+        document.body.classList.toggle("stLive", i));
+    }
+    show(t) {
+      let e = t.s,
+        s = ql[e.kind],
+        [n, i] = this._val(e, t.val),
+        [a, r] = this._val(e, t.best);
+      (dd.show(this.cardEl, {
+        key: "stunt",
+        pri: 3,
+        dur: 3.6,
+        hold: !0,
+        onShow: (l) => {
+          (l.style.setProperty("--c", s.col),
+            (l.innerHTML = `<div class="hd">${Br(e.kind, "sm")}<span class="ds-eyebrow">${Or(s.label)}</span></div><div class="ds-title"></div><div class="ds-value v">${n}<small>${i}</small></div>${pv(0, 3, "lg")}<div class="b${t.newBest ? " nb" : ""}">${t.newBest ? (t.old ? "NEW BEST" : "FIRST RUN") : `BEST ${a} ${r}`}</div>`),
+            (l.querySelector(".ds-title").textContent = e.name),
+            l.querySelectorAll(".ds-stars i").forEach((c, h) => {
+              h < t.stars &&
+                setTimeout(
+                  () => {
+                    (c.classList.add("on", "pop"),
+                      setTimeout(() => c.classList.remove("pop"), 200));
+                  },
+                  220 + h * 220,
+                );
             }));
-        } catch (s) {
-          console.warn("next up route", s);
-        }
+        },
+      }),
+        (this.cardT = 3.6),
+        this.liveEl.classList.remove("on"),
+        (this.liveKey = ""));
+    }
+    rewind(t, e) {
+      (document.body.classList.toggle("rewinding", !!t),
+        t &&
+          (this.rw.innerHTML = `${L_("rewind")}REWIND <b>${e.toFixed(1)} s</b>`));
     }
   };

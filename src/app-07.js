@@ -1,58 +1,58 @@
 // app 07 — next
-// Lines 1805-2135 of readable/app.pretty.js (statement-aligned).
-function vit(i, t) {
-  let e = i;
+// Lines 1838-2168 of readable/app.pretty.js (statement-aligned).
+function Hrt(o, t) {
+  let e = o;
   do {
     if (
-      e.i !== i.i &&
-      e.next.i !== i.i &&
+      e.i !== o.i &&
+      e.next.i !== o.i &&
       e.i !== t.i &&
       e.next.i !== t.i &&
-      aD(e, e.next, i, t)
+      cG(e, e.next, o, t)
     )
       return !0;
     e = e.next;
-  } while (e !== i);
+  } while (e !== o);
   return !1;
 }
-function m3(i, t) {
-  return jo(i.prev, i, i.next) < 0
-    ? jo(i, t, i.next) >= 0 && jo(i, i.prev, t) >= 0
-    : jo(i, t, i.prev) < 0 || jo(i, i.next, t) < 0;
+function fy(o, t) {
+  return ea(o.prev, o, o.next) < 0
+    ? ea(o, t, o.next) >= 0 && ea(o, o.prev, t) >= 0
+    : ea(o, t, o.prev) < 0 || ea(o, o.next, t) < 0;
 }
-function yit(i, t) {
-  let e = i,
+function Drt(o, t) {
+  let e = o,
     s = !1,
-    n = (i.x + t.x) / 2,
-    o = (i.y + t.y) / 2;
+    n = (o.x + t.x) / 2,
+    i = (o.y + t.y) / 2;
   do
-    (e.y > o != e.next.y > o &&
+    (e.y > i != e.next.y > i &&
       e.next.y !== e.y &&
-      n < ((e.next.x - e.x) * (o - e.y)) / (e.next.y - e.y) + e.x &&
+      n < ((e.next.x - e.x) * (i - e.y)) / (e.next.y - e.y) + e.x &&
       (s = !s),
       (e = e.next));
-  while (e !== i);
+  while (e !== o);
   return s;
 }
-function rD(i, t) {
-  let e = k9(i.i, i.x, i.y),
-    s = k9(t.i, t.x, t.y),
-    n = i.next,
-    o = t.prev;
+function hG(o, t) {
+  let e = JR(o.i, o.x, o.y),
+    s = JR(t.i, t.x, t.y),
+    n = o.next,
+    i = t.prev;
   return (
-    (i.next = t),
-    (t.prev = i),
+    (o.next = t),
+    (t.prev = o),
     (e.next = n),
     (n.prev = e),
     (s.next = e),
     (e.prev = s),
-    (o.next = s),
-    (s.prev = o),
+    (i.next = s),
+    (s.prev = i),
     s
   );
 }
-function CO(i, t, e, s) {
-  let n = k9(i, t, e);
+function FD(o, t, e, s) {
+  let n = JR(o, t, e);
   return (
     s
       ? ((n.next = s.next), (n.prev = s), (s.next.prev = n), (s.next = n))
@@ -60,15 +60,15 @@ function CO(i, t, e, s) {
     n
   );
 }
-function g3(i) {
-  ((i.next.prev = i.prev),
-    (i.prev.next = i.next),
-    i.prevZ && (i.prevZ.nextZ = i.nextZ),
-    i.nextZ && (i.nextZ.prevZ = i.prevZ));
+function uy(o) {
+  ((o.next.prev = o.prev),
+    (o.prev.next = o.next),
+    o.prevZ && (o.prevZ.nextZ = o.nextZ),
+    o.nextZ && (o.nextZ.prevZ = o.prevZ));
 }
-function k9(i, t, e) {
+function JR(o, t, e) {
   return {
-    i,
+    i: o,
     x: t,
     y: e,
     prev: null,
@@ -79,26 +79,26 @@ function k9(i, t, e) {
     steiner: !1,
   };
 }
-function wit(i, t, e, s) {
+function Urt(o, t, e, s) {
   let n = 0;
-  for (let o = t, a = e - s; o < e; o += s)
-    ((n += (i[a] - i[o]) * (i[o + 1] + i[a + 1])), (a = o));
+  for (let i = t, a = e - s; i < e; i += s)
+    ((n += (o[a] - o[i]) * (o[i + 1] + o[a + 1])), (a = i));
   return n;
 }
-function LO(i) {
-  let t = i.length;
-  t > 2 && i[t - 1].equals(i[0]) && i.pop();
+function OD(o) {
+  let t = o.length;
+  t > 2 && o[t - 1].equals(o[0]) && o.pop();
 }
-function IO(i, t) {
-  for (let e = 0; e < t.length; e++) (i.push(t[e].x), i.push(t[e].y));
+function BD(o, t) {
+  for (let e = 0; e < t.length; e++) (o.push(t[e].x), o.push(t[e].y));
 }
-function Sit(i, t, e) {
-  if (((e.shapes = []), Array.isArray(i)))
-    for (let s = 0, n = i.length; s < n; s++) {
-      let o = i[s];
-      e.shapes.push(o.uuid);
+function Vrt(o, t, e) {
+  if (((e.shapes = []), Array.isArray(o)))
+    for (let s = 0, n = o.length; s < n; s++) {
+      let i = o[s];
+      e.shapes.push(i.uuid);
     }
-  else e.shapes.push(i.uuid);
+  else e.shapes.push(o.uuid);
   return (
     (e.options = Object.assign({}, t)),
     t.extrudePath !== void 0 &&
@@ -106,136 +106,136 @@ function Sit(i, t, e) {
     e
   );
 }
-function kit(i, t) {
-  if (((t.shapes = []), Array.isArray(i)))
-    for (let e = 0, s = i.length; e < s; e++) {
-      let n = i[e];
+function Wrt(o, t) {
+  if (((t.shapes = []), Array.isArray(o)))
+    for (let e = 0, s = o.length; e < s; e++) {
+      let n = o[e];
       t.shapes.push(n.uuid);
     }
-  else t.shapes.push(i.uuid);
+  else t.shapes.push(o.uuid);
   return t;
 }
-function FO(i, t, e) {
-  let s = `${i.x},${i.y},${i.z}-${t.x},${t.y},${t.z}`,
-    n = `${t.x},${t.y},${t.z}-${i.x},${i.y},${i.z}`;
+function ND(o, t, e) {
+  let s = `${o.x},${o.y},${o.z}-${t.x},${t.y},${t.z}`,
+    n = `${t.x},${t.y},${t.z}-${o.x},${o.y},${o.z}`;
   return e.has(s) === !0 || e.has(n) === !0 ? !1 : (e.add(s), e.add(n), !0);
 }
-function G1(i) {
+function zm(o) {
   let t = {};
-  for (let e in i) {
+  for (let e in o) {
     t[e] = {};
-    for (let s in i[e]) {
-      let n = i[e][s];
-      if (BO(n))
+    for (let s in o[e]) {
+      let n = o[e][s];
+      if (DD(n))
         n.isRenderTargetTexture
-          ? (As(
+          ? (Cs(
               "UniformsUtils: Textures of render targets cannot be cloned via cloneUniforms() or mergeUniforms().",
             ),
             (t[e][s] = null))
           : (t[e][s] = n.clone());
       else if (Array.isArray(n))
-        if (BO(n[0])) {
-          let o = [];
-          for (let a = 0, r = n.length; a < r; a++) o[a] = n[a].clone();
-          t[e][s] = o;
+        if (DD(n[0])) {
+          let i = [];
+          for (let a = 0, r = n.length; a < r; a++) i[a] = n[a].clone();
+          t[e][s] = i;
         } else t[e][s] = n.slice();
       else t[e][s] = n;
     }
   }
   return t;
 }
-function Ir(i) {
+function t0(o) {
   let t = {};
-  for (let e = 0; e < i.length; e++) {
-    let s = G1(i[e]);
+  for (let e = 0; e < o.length; e++) {
+    let s = zm(o[e]);
     for (let n in s) t[n] = s[n];
   }
   return t;
 }
-function BO(i) {
+function DD(o) {
   return (
-    i &&
-    (i.isColor ||
-      i.isMatrix3 ||
-      i.isMatrix4 ||
-      i.isVector2 ||
-      i.isVector3 ||
-      i.isVector4 ||
-      i.isTexture ||
-      i.isQuaternion)
+    o &&
+    (o.isColor ||
+      o.isMatrix3 ||
+      o.isMatrix4 ||
+      o.isVector2 ||
+      o.isVector3 ||
+      o.isVector4 ||
+      o.isTexture ||
+      o.isQuaternion)
   );
 }
-function _it(i) {
+function qrt(o) {
   let t = [];
-  for (let e = 0; e < i.length; e++) t.push(i[e].clone());
+  for (let e = 0; e < o.length; e++) t.push(o[e].clone());
   return t;
 }
-function vA(i) {
-  let t = i.getRenderTarget();
+function jA(o) {
+  let t = o.getRenderTarget();
   return t === null
-    ? i.outputColorSpace
+    ? o.outputColorSpace
     : t.isXRRenderTarget === !0
       ? t.texture.colorSpace
-      : jn.workingColorSpace;
+      : Kn.workingColorSpace;
 }
-function mc(i, t) {
-  return !i || i.constructor === t
-    ? i
+function Wc(o, t) {
+  return !o || o.constructor === t
+    ? o
     : typeof t.BYTES_PER_ELEMENT == "number"
-      ? new t(i)
-      : Array.prototype.slice.call(i);
+      ? new t(o)
+      : Array.prototype.slice.call(o);
 }
-function Xv(i) {
-  return i !== void 0 && i.inTangents !== void 0 && i.outTangents !== void 0;
+function W3(o) {
+  return o !== void 0 && o.inTangents !== void 0 && o.outTangents !== void 0;
 }
-function lD(i) {
-  function t(n, o) {
-    return i[n] - i[o];
+function fG(o) {
+  function t(n, i) {
+    return o[n] - o[i];
   }
-  let e = i.length,
+  let e = o.length,
     s = new Array(e);
   for (let n = 0; n !== e; ++n) s[n] = n;
   return (s.sort(t), s);
 }
-function z9(i, t, e) {
-  let s = i.length,
-    n = new i.constructor(s);
-  for (let o = 0, a = 0; a !== s; ++o) {
-    let r = e[o] * t;
-    for (let l = 0; l !== t; ++l) n[a++] = i[r + l];
+function QR(o, t, e) {
+  let s = o.length,
+    n = new o.constructor(s);
+  for (let i = 0, a = 0; a !== s; ++i) {
+    let r = e[i] * t;
+    for (let l = 0; l !== t; ++l) n[a++] = o[r + l];
   }
   return n;
 }
-function cD(i, t, e, s) {
+function uG(o, t, e, s) {
   let n = 1,
-    o = i[0];
-  for (; o !== void 0 && o[s] === void 0;) o = i[n++];
-  if (o === void 0) return;
-  let a = o[s];
+    i = o[0];
+  for (; i !== void 0 && i[s] === void 0;) i = o[n++];
+  if (i === void 0) return;
+  let a = i[s];
   if (a !== void 0)
     if (Array.isArray(a))
       do
-        ((a = o[s]),
-          a !== void 0 && (t.push(o.time), e.push(...a)),
-          (o = i[n++]));
-      while (o !== void 0);
+        ((a = i[s]),
+          a !== void 0 && (t.push(i.time), e.push(...a)),
+          (i = o[n++]));
+      while (i !== void 0);
     else if (a.toArray !== void 0)
       do
-        ((a = o[s]),
-          a !== void 0 && (t.push(o.time), a.toArray(e, e.length)),
-          (o = i[n++]));
-      while (o !== void 0);
+        ((a = i[s]),
+          a !== void 0 && (t.push(i.time), a.toArray(e, e.length)),
+          (i = o[n++]));
+      while (i !== void 0);
     else
       do
-        ((a = o[s]), a !== void 0 && (t.push(o.time), e.push(a)), (o = i[n++]));
-      while (o !== void 0);
+        ((a = i[s]), a !== void 0 && (t.push(i.time), e.push(a)), (i = o[n++]));
+      while (i !== void 0);
 }
-function Tit(i, t, e, s, n = 30) {
-  let o = i.clone();
-  o.name = t;
+function Xrt(o, t, e, s, n = 30) {
+  let i = o.clone();
+  i.name = t;
   let a = [];
-  for (let l = 0; l < o.tracks.length; ++l) {
-    let c = o.tracks[l],
+  for (let l = 0; l < i.tracks.length; ++l) {
+    let c = i.tracks[l],
       h = c.getValueSize(),
       f = [],
       u = [];
@@ -247,26 +247,26 @@ function Tit(i, t, e, s, n = 30) {
       }
     }
     f.length !== 0 &&
-      ((c.times = mc(f, c.times.constructor)),
-      (c.values = mc(u, c.values.constructor)),
+      ((c.times = Wc(f, c.times.constructor)),
+      (c.values = Wc(u, c.values.constructor)),
       a.push(c));
   }
-  o.tracks = a;
+  i.tracks = a;
   let r = 1 / 0;
-  for (let l = 0; l < o.tracks.length; ++l)
-    r > o.tracks[l].times[0] && (r = o.tracks[l].times[0]);
-  for (let l = 0; l < o.tracks.length; ++l) o.tracks[l].shift(-1 * r);
-  return (o.resetDuration(), o);
+  for (let l = 0; l < i.tracks.length; ++l)
+    r > i.tracks[l].times[0] && (r = i.tracks[l].times[0]);
+  for (let l = 0; l < i.tracks.length; ++l) i.tracks[l].shift(-1 * r);
+  return (i.resetDuration(), i);
 }
-function Ait(i, t = 0, e = i, s = 30) {
+function Krt(o, t = 0, e = o, s = 30) {
   s <= 0 && (s = 30);
   let n = e.tracks.length,
-    o = t / s;
+    i = t / s;
   for (let a = 0; a < n; ++a) {
     let r = e.tracks[a],
       l = r.ValueTypeName;
     if (l === "bool" || l === "string") continue;
-    let c = i.tracks.find(function (b) {
+    let c = o.tracks.find(function (b) {
       return b.name === r.name && b.ValueTypeName === l;
     });
     if (c === void 0) continue;
@@ -280,54 +280,54 @@ function Ait(i, t = 0, e = i, s = 30) {
       (u = d / 3);
     let p = r.times.length - 1,
       m;
-    if (o <= r.times[0]) {
+    if (i <= r.times[0]) {
       let b = h,
-        x = f - h;
-      m = r.values.slice(b, x);
-    } else if (o >= r.times[p]) {
+        v = f - h;
+      m = r.values.slice(b, v);
+    } else if (i >= r.times[p]) {
       let b = p * f + h,
-        x = b + f - h;
-      m = r.values.slice(b, x);
+        v = b + f - h;
+      m = r.values.slice(b, v);
     } else {
       let b = r.createInterpolant(),
-        x = h,
-        v = f - h;
-      (b.evaluate(o), (m = b.resultBuffer.slice(x, v)));
+        v = h,
+        x = f - h;
+      (b.evaluate(i), (m = b.resultBuffer.slice(v, x)));
     }
     l === "quaternion" &&
-      new wn().fromArray(m).normalize().conjugate().toArray(m);
+      new tn().fromArray(m).normalize().conjugate().toArray(m);
     let g = c.times.length;
     for (let b = 0; b < g; ++b) {
-      let x = b * d + u;
+      let v = b * d + u;
       if (l === "quaternion")
-        wn.multiplyQuaternionsFlat(c.values, x, m, 0, c.values, x);
+        tn.multiplyQuaternionsFlat(c.values, v, m, 0, c.values, v);
       else {
-        let v = d - u * 2;
-        for (let y = 0; y < v; ++y) c.values[x + y] -= m[y];
+        let x = d - u * 2;
+        for (let y = 0; y < x; ++y) c.values[v + y] -= m[y];
       }
     }
   }
-  return ((i.blendMode = T6), i);
+  return ((o.blendMode = AS), o);
 }
-function hD(i, t, e, s, n) {
-  let o = 1 - i;
-  return o * o * o * t + 3 * o * o * i * e + 3 * o * i * i * s + i * i * i * n;
+function dG(o, t, e, s, n) {
+  let i = 1 - o;
+  return i * i * i * t + 3 * i * i * o * e + 3 * i * o * o * s + o * o * o * n;
 }
-function Rit(i, t, e, s, n) {
-  let o = 1 - i;
-  return 3 * o * o * (e - t) + 6 * o * i * (s - e) + 3 * i * i * (n - s);
+function Yrt(o, t, e, s, n) {
+  let i = 1 - o;
+  return 3 * i * i * (e - t) + 6 * i * o * (s - e) + 3 * o * o * (n - s);
 }
-function Pit(i, t, e, s, n) {
-  let o = (i - t) / (n - t);
+function Jrt(o, t, e, s, n) {
+  let i = (o - t) / (n - t);
   for (let a = 0; a < 8; a++) {
-    let r = hD(o, t, e, s, n) - i;
+    let r = dG(i, t, e, s, n) - o;
     if (Math.abs(r) < 1e-10) break;
-    let l = Rit(o, t, e, s, n);
+    let l = Yrt(i, t, e, s, n);
     if (Math.abs(l) < 1e-10) break;
-    o = Math.max(0, Math.min(1, o - r / l));
+    i = Math.max(0, Math.min(1, i - r / l));
   }
-  return o;
+  return i;
 }
-function OO(i, t) {
-  for (let e = 0, s = i.length; e !== s; e += 2) i[e] *= t;
+function UD(o, t) {
+  for (let e = 0, s = o.length; e !== s; e += 2) o[e] *= t;
 }

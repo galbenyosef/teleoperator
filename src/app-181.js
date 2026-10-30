@@ -1,303 +1,339 @@
 // app 181 — math
-// Lines 104443-104743 of readable/app.pretty.js (statement-aligned).
-function _pt(i, t) {
-  let e = AV.get(i);
-  if (e && e.tex === t && e.n === i.bld.n) return e;
-  let s = i.bld,
-    n = s.n,
-    o = Object.keys(t.fronts),
-    a = Object.fromEntries(o.map((y, M) => [y, M])),
-    r = (y, M = 0) => {
-      let S = new y.constructor(n);
-      return (M && S.fill(M), S.set(y), S);
-    },
-    l = e && e.tex === t ? e.n : 0;
-  if (!l)
-    e = {
-      tex: t,
-      n: 0,
-      st: new Int8Array(n),
-      g: new Int8Array(n).fill(-1),
-      c: new Int16Array(n).fill(-1),
-      m: new Uint8Array(n),
-      tg: new Int32Array(n),
-      shop: new Uint8Array(n),
-      grid: new Map(),
-      X: new Float32Array(n),
-      Z: new Float32Array(n),
-    };
-  else {
-    for (let y of ["st", "m", "tg", "shop", "X", "Z"]) e[y] = r(e[y]);
-    ((e.g = r(e.g, -1)), (e.c = r(e.c, -1)));
-  }
-  let c = e.grid,
-    h = e.X,
-    f = e.Z,
-    u = (y, M) => y * 4096 + M,
-    d = o.length * 64 + 64,
-    p = new Int32Array(d),
-    m = new Int32Array(d),
-    g = new Int8Array(d),
-    b = [],
-    x = (y, M, S) => {
-      let w = y * y + M * M,
-        z = S * S;
-      return w < z * (1 - 1e-9)
-        ? !0
-        : w > z * (1 + 1e-9)
-          ? !1
-          : Math.hypot(y, M) <= S;
-    },
-    v = (y, M, S) => {
-      let w = y * y + M * M,
-        z = S * S;
-      return w < z * (1 - 1e-9)
-        ? !0
-        : w > z * (1 + 1e-9)
-          ? !1
-          : Math.hypot(y, M) < S;
-    };
-  for (let y = l; y < n; y++) {
-    let M = s.bRing[y],
-      S = s.rStart[M],
-      w = s.rStart[M + 1],
-      z = 0,
-      _ = 0,
-      R = 0;
-    for (let X = S; X < w; X++)
-      if (((z += s.pts[X * 2]), (_ += s.pts[X * 2 + 1]), s.front[X] === 1)) {
-        let K = X + 1 < w ? X + 1 : S;
-        R = Math.max(
-          R,
-          Math.hypot(
-            s.pts[K * 2] - s.pts[X * 2],
-            s.pts[K * 2 + 1] - s.pts[X * 2 + 1],
-          ),
-        );
+// Lines 104980-105316 of readable/app.pretty.js (statement-aligned).
+var LX = [
+    [1.14, 0.84, 1.12],
+    [0.82, 1.08, 1.12],
+    [1.14, 1.06, 0.78],
+    [1.12, 0.9, 0.84],
+    [0.9, 1.1, 0.9],
+    [1.1, 0.82, 0.86],
+    [0.84, 0.92, 1.16],
+  ],
+  Z2t = {
+    haight: 0.75,
+    castro: 0.7,
+    mission: 0.65,
+    dolores: 0.55,
+    noe: 0.55,
+    western: 0.7,
+    hayes: 0.7,
+    pacific: 0.6,
+    cowhollow: 0.55,
+    marina: 0.45,
+    russian: 0.55,
+    twinpeaks: 0.55,
+    richmond: 0.5,
+    northbeach: 0.25,
+    telegraph: 0.25,
+    seacliff: 0.85,
+    sausalito: 0.55,
+  },
+  IX = [
+    [1.12, 0.9, 0.82],
+    [1.06, 1.02, 0.86],
+    [1.05, 1.04, 1],
+    [1.1, 0.97, 0.86],
+    [1.14, 0.86, 0.8],
+    [1.02, 0.98, 0.9],
+  ],
+  FX = [
+    [0.74, 0.9, 1.18],
+    [0.7, 0.8, 1],
+    [0.84, 1.04, 0.88],
+    [0.64, 0.84, 1.14],
+    [0.88, 0.94, 1.1],
+    [0.68, 0.94, 1],
+    [0.78, 0.8, 0.92],
+    [0.86, 0.82, 1.06],
+  ],
+  tL = new Set([
+    "western",
+    "hayes",
+    "pacific",
+    "cowhollow",
+    "marina",
+    "russian",
+    "twinpeaks",
+    "haight",
+    "castro",
+    "mission",
+    "dolores",
+    "noe",
+    "richmond",
+  ]);
+function tK(o, t) {
+  let e = o._lk ? o._lk.st : o.st;
+  if (e !== 0 && e !== 1 && e !== 2 && e !== 3) return null;
+  let s = o.cx ?? Ef(o.rings[0])[0],
+    n = o.cz ?? Ef(o.rings[0])[1],
+    i = Di(s, n),
+    a = Z2t[i];
+  return !a || e === 2 || Bn(t, 24) >= a
+    ? tL.has(i)
+      ? [0.94, 0.98, 1.07].map(
+          (r, l) => r * (1 + [0.08, 0.06, 0.08][l] * (Bn(t, 21 + l) - 0.5)),
+        )
+      : null
+    : i === "seacliff"
+      ? IX[Math.floor(Bn(t, 28) * IX.length)]
+      : i !== "haight" && i !== "castro" && i !== "mission" && Bn(t, 26) < 0.7
+        ? FX[Math.floor(Bn(t, 27) * FX.length)]
+        : LX[Math.floor(Bn(t, 25) * LX.length)];
+}
+var Q2t = {
+    vic: 3,
+    edw: 3,
+    mar: 3,
+    mix: 3,
+    nb: 3,
+    chn: 3,
+    apt: 3,
+    pal: 4,
+    bank: 4,
+    brk: 3,
+    jsq: 3,
+    wrf: 4,
+  },
+  tgt = {
+    vic: [1, 1, 1, 2],
+    edw: [1, 1, 1, 2],
+    mar: [1, 1, 2],
+    mix: [1, 1, 2],
+    nb: [1, 1, 2],
+    chn: [1, 1, 2],
+    apt: [1, 2, 2, 3],
+    pal: [2, 2, 3],
+    bank: [2, 3],
+    brk: [1, 2, 2, 3],
+    jsq: [1, 1, 2],
+    wrf: [2, 3],
+  },
+  OX = [
+    [1.08, 0.94, 0.88],
+    [0.82, 0.94, 1.12],
+    [1.04, 1.02, 0.86],
+    [0.88, 1.04, 0.92],
+    [1.06, 0.88, 0.96],
+    [0.9, 0.92, 1.06],
+    [0.74, 0.84, 1],
+  ];
+function egt(o, t, e, s, n, i, a, r) {
+  let l = o.cell,
+    c = l.style,
+    h = (g, b, v) => (v ? (x) => 2 * g + b - 1e-4 - x : (x) => x),
+    f = [
+      { u0: s, n: e, cell: l, mirror: o.mirror, fcol: a, U: h(s, e, o.mirror) },
+    ];
+  if (
+    e < (Q2t[c] ?? 1e9) ||
+    Ku[i.seed] ||
+    sL[i.seed] !== void 0 ||
+    mz.has(i.seed)
+  )
+    return f;
+  let u = t.fronts[o.group].cells.filter(
+    (g) => g.style === c && Math.abs(g.w - l.w) <= l.w * 0.35,
+  );
+  if (u.length < 2) return f;
+  let d = a[3] - (l.cell + 0.5) / 64,
+    p = tgt[c],
+    m = [];
+  for (let g = 0, b = 0; g < e; b++) {
+    let v = Math.min(e - g, p[Math.floor(Bn(n, 300 + b) * p.length)]);
+    e - g - v === 1 && v > 1 && p[0] > 1 && v++;
+    let x, y, M;
+    if (b === 0) ((x = l), (y = o.mirror), (M = a));
+    else {
+      let S = m[b - 1],
+        w = n * 31 + b * 977,
+        _ = 0.92 + 0.16 * Bn(w, 4);
+      if (Bn(w, 320) < 0.22) {
+        ((x = S.cell), (y = 1 - S.mirror));
+        let z = OX[Math.floor(Bn(w, 321) * OX.length)];
+        M = [_ * z[0], _ * z[1], _ * z[2], (x.cell + 0.5) / 64 + d];
+      } else {
+        let z = 0;
+        do x = u[Math.floor(Bn(w, 340 + z) * u.length)];
+        while ((x === S.cell || (b > 1 && x === m[b - 2].cell)) && ++z < 10);
+        y = Bn(w, 360) < 0.5 ? 1 : 0;
+        let A = tK(i, w) || [
+          1 + 0.09 * (Bn(w, 21) - 0.5),
+          1 + 0.07 * (Bn(w, 22) - 0.5),
+          1 + 0.09 * (Bn(w, 23) - 0.5),
+        ];
+        M = [_ * A[0], _ * A[1], _ * A[2], (x.cell + 0.5) / 64 + d];
       }
-    ((z /= w - S), (_ /= w - S), (h[y] = z), (f[y] = _));
-    let T = s.seed[y],
-      E = s.bF[y * 3 + 1] - s.bF[y * 3],
-      A = s.roof && s.roofH[y] > 0.5 ? s.roof[y] : 0,
-      C = Ai(z, _),
-      P = XV(t, T),
-      I = KV(s.bB[y * 5], E, C, P, A, Cn(T, 1));
+    }
+    (m.push({
+      u0: s + g,
+      n: v,
+      cell: x,
+      mirror: y,
+      fcol: M,
+      U: h(s + g, v, y),
+    }),
+      (g += v));
+  }
+  return m;
+}
+var BX = new WeakMap();
+function sgt(o) {
+  let t = BX.get(o);
+  if (t && t.skipN === (o.claims?.list?.length ?? -1) && t.n === o.bld.n)
+    return t;
+  let e = o.bld,
+    s = o.claims?.bSkip,
+    n = new Map(),
+    i = 32,
+    a = new Float32Array(e.n * 4);
+  for (let r = 0; r < e.n; r++) {
+    if (s?.[r]) continue;
+    let l = e.rStart[e.bRing[r]],
+      c = e.rStart[e.bRing[r] + 1],
+      h = 1e9,
+      f = 1e9,
+      u = -1e9,
+      d = -1e9;
+    for (let p = l; p < c; p++) {
+      let m = e.pts[p * 2],
+        g = e.pts[p * 2 + 1];
+      (m < h && (h = m), m > u && (u = m), g < f && (f = g), g > d && (d = g));
+    }
+    a.set([h, f, u, d], r * 4);
+    for (let p = Math.floor(h / i); p <= Math.floor(u / i); p++)
+      for (let m = Math.floor(f / i); m <= Math.floor(d / i); m++) {
+        let g = (p + 4096) * 8192 + m + 4096,
+          b = n.get(g);
+        (b || n.set(g, (b = [])), b.push(r));
+      }
+  }
+  return (
+    (t = {
+      cells: n,
+      box: a,
+      CS: i,
+      skipN: o.claims?.list?.length ?? -1,
+      n: e.n,
+    }),
+    BX.set(o, t),
+    t
+  );
+}
+var NX = new WeakMap();
+function gz(o) {
+  let t = o.bld,
+    e = NX.get(o);
+  if (e && e.n === t.n) return e;
+  let s = t.n,
+    n = e ? e.n : 0,
+    i = 32,
+    a = (p, m, g = 1) => {
+      let b = new m(s * g);
+      return (p && b.set(p), b);
+    },
+    r = a(e?.hide, Uint8Array),
+    l = a(e?.cut, Float32Array),
+    c = a(e?.tcut, Float32Array),
+    h = a(e?.box, Float32Array, 4),
+    f = a(e?.area, Float32Array),
+    u = e ? e.cells : new Map(),
+    d = (p) =>
+      t.pts.subarray(t.rStart[t.bRing[p]] * 2, t.rStart[t.bRing[p] + 1] * 2);
+  for (let p = n; p < s; p++) {
+    let m = d(p),
+      g = 1e9,
+      b = 1e9,
+      v = -1e9,
+      x = -1e9;
+    for (let y = 0; y < m.length; y += 2)
+      ((g = Math.min(g, m[y])),
+        (v = Math.max(v, m[y])),
+        (b = Math.min(b, m[y + 1])),
+        (x = Math.max(x, m[y + 1])));
     if (
-      I === 6 &&
-      (C === "fidi" || C === "jackson") &&
-      E < 40 &&
-      s.bB[y * 5 + 4] !== 2 &&
-      !du[T] &&
-      !MP[T]
-    ) {
-      let X = (P >> 3) & 7;
-      ((X >= 1 && X <= 3) || (X === 0 && Cn(T, 61) < 0.65)) && (I = 2);
-    }
-    if (
-      z > -3490 &&
-      z < -3050 &&
-      _ > 1100 &&
-      _ < 1238 &&
-      E <= 26 &&
-      Math.abs(J5(s.pts.subarray(S * 2, w * 2))) > 1100
-    ) {
-      ((I = 6),
-        mk.add(T),
-        (e.shop[y] = t.fronts.shop?.cells.length ? 1 : 0),
-        (e.st[y] = I),
-        (e.tg[y] = P));
-      continue;
-    }
-    ((e.st[y] = I), (e.tg[y] = P));
-    let L = I === 2 || I === 5 || I === 6;
-    ((e.shop[y] =
-      t.fronts.shop?.cells.length &&
-      L &&
-      E >= 8 &&
-      (P >> 8 > 0 || (I === 6 && TV.has(C) && Cn(T, 31) < 0.35))
-        ? 1
-        : 0),
-      I === 8 &&
-        E >= 4.4 &&
-        E <= 12 &&
-        t.fronts.shop?.cells.length &&
-        (TV.has(C) || P >> 8 > 0) &&
-        (e.shop[y] = 1));
-    let F = _P[T],
-      N =
-        F !== void 0 && I === 0
-          ? t.fronts.vic?.cells.find((X) => X.cell === F)
-          : null,
-      B = du[T],
-      H = B?.g && t.fronts[B.g]?.cells.find((X) => X.cell === B.cell);
-    if (H) {
-      ((e.g[y] = a[B.g]), (e.c[y] = H.cell), (e.m[y] = 0));
-      continue;
-    }
-    if (N) {
-      ((e.g[y] = a.vic), (e.c[y] = N.cell), (e.m[y] = 0));
-      let X = u(Math.floor(z / 50), Math.floor(_ / 50)),
-        K = c.get(X);
-      (K || c.set(X, (K = [])), K.push(y));
-      continue;
-    }
-    let O = kpt(I, C, E, P);
-    if (!O) continue;
-    let D = [];
-    for (let [X, K, nt] of O)
-      for (let Z of t.fronts[X]?.cells || [])
-        Z.style === K && D.push([X, Z, nt]);
-    let U = D.filter(([, X]) => X.w <= Math.max(R, 4) * 2.2);
-    if ((U.length && (D = U), !D.length)) continue;
-    for (let X of b) ((p[X] = 0), (m[X] = 0), (g[X] = 0));
-    b.length = 0;
-    let G = Math.floor(z / 50),
-      q = Math.floor(_ / 50);
-    for (let X = -2; X <= 2; X++)
-      for (let K = -2; K <= 2; K++) {
-        let nt = c.get(u(G + X, q + K));
-        if (nt)
-          for (let Z of nt) {
-            let et = h[Z] - z,
-              tt = f[Z] - _;
-            if (!x(et, tt, 100)) continue;
-            let it = e.g[Z] * 64 + e.c[Z];
-            it < 0 ||
-              (p[it] || b.push(it),
-              p[it]++,
-              v(et, tt, 40) && (m[it]++, (g[it] = e.m[Z] + 1)));
+      ((h[p * 4] = g),
+      (h[p * 4 + 1] = b),
+      (h[p * 4 + 2] = v),
+      (h[p * 4 + 3] = x),
+      (f[p] = Math.abs(j5(m))),
+      v > g)
+    )
+      for (let y = Math.floor(g / i); y <= Math.floor(v / i); y++)
+        for (let M = Math.floor(b / i); M <= Math.floor(x / i); M++) {
+          let S = (y + 4096) * 8192 + M + 4096,
+            w = u.get(S);
+          (w || u.set(S, (w = [])), w.push(p));
+        }
+  }
+  for (let p = n; p < s; p++) {
+    let m = p * 4,
+      g = h[m + 2] - h[m],
+      b = h[m + 3] - h[m + 1];
+    if (!(g > 0 && b > 0) || f[p] < 1) continue;
+    let v = null,
+      x = null;
+    for (let y of u.get(
+      (Math.floor((h[m] + h[m + 2]) / 2 / i) + 4096) * 8192 +
+        Math.floor((h[m + 1] + h[m + 3]) / 2 / i) +
+        4096,
+    ) || []) {
+      if (y === p || f[y] < f[p] || (f[y] === f[p] && y > p)) continue;
+      let M = y * 4,
+        S = Math.min(h[m + 2], h[M + 2]) - Math.max(h[m], h[M]),
+        w = Math.min(h[m + 3], h[M + 3]) - Math.max(h[m + 1], h[M + 1]);
+      if (S <= 0 || w <= 0 || S * w < 0.85 * g * b) continue;
+      let _ = t.bF[p * 3 + 1],
+        z = t.bF[y * 3 + 1],
+        A = t.bF[p * 3 + 2] > 0 ? t.bF[p * 3 + 2] : -1e9,
+        T = t.bF[y * 3 + 2] > 0 ? t.bF[y * 3 + 2] : -1e9;
+      if (A >= z - 0.1 || T >= _ - 0.1) continue;
+      if (!x) {
+        ((v = d(p)), (x = []));
+        let C = Math.max(6, Math.min(24, Math.ceil(Math.sqrt(f[p]))));
+        for (let I = 0; I < C; I++)
+          for (let L = 0; L < C; L++) {
+            let F = h[m] + (g * (I + 0.5)) / C,
+              O = h[m + 1] + (b * (L + 0.5)) / C;
+            rn(v, F, O) && x.push(F, O);
           }
       }
-    let W = null,
-      V = 1e9;
-    for (let [X, K, nt] of D) {
-      let Z = a[X] * 64 + K.cell,
-        et =
-          (p[Z] ? p[Z] + 100 * m[Z] : 0) +
-          3 * (1 - nt) +
-          0.9 * Cn(T, 40 + K.cell);
-      et < V && ((V = et), (W = [X, K, Z]));
+      if (x.length < 6) continue;
+      let E = d(y),
+        R = 0;
+      for (let C = 0; C < x.length; C += 2) rn(E, x[C], x[C + 1]) && R++;
+      if (R < (0.9 * x.length) / 2) continue;
+      let P = !0;
+      for (let C = 0; C < v.length && P; C += 2) {
+        let I = v[C],
+          L = v[C + 1];
+        if (rn(E, I, L)) continue;
+        let F = 1e9;
+        for (let O = 0, B = E.length / 2; O < B; O++) {
+          let H = E[O * 2],
+            N = E[O * 2 + 1],
+            D = E[((O + 1) % B) * 2] - H,
+            U = E[((O + 1) % B) * 2 + 1] - N,
+            G = D * D + U * U || 1,
+            W = Math.max(0, Math.min(1, ((I - H) * D + (L - N) * U) / G));
+          F = Math.min(F, Math.hypot(H + D * W - I, N + U * W - L));
+        }
+        F > 1 && (P = !1);
+      }
+      if (P) {
+        if (T <= A + 1 && _ <= z + 1) {
+          r[p] = 1;
+          break;
+        }
+        T <= A + 1
+          ? (l[p] = Math.max(l[p], z))
+          : _ <= z + 1 && (c[p] = Math.min(c[p] || 1e9, T));
+      }
     }
-    let [Y, $, st] = W;
-    ((e.g[y] = a[Y]),
-      (e.c[y] = $.cell),
-      (e.m[y] = p[st] && g[st] ? 2 - g[st] : Cn(T, 7) < 0.5 ? 1 : 0));
-    let Q = u(G, q),
-      j = c.get(Q);
-    (j || c.set(Q, (j = [])), j.push(y));
   }
-  return ((e.groups = o), (e.n = n), AV.set(i, e), e);
+  return (
+    (e = { n: s, hide: r, cut: l, tcut: c, box: h, area: f, cells: u }),
+    NX.set(o, e),
+    e
+  );
 }
-var zpt = [
-    "#6f9096",
-    "#5a7898",
-    "#8e99a3",
-    "#46505c",
-    "#8a765f",
-    "#6a8a78",
-    "#9fb3ba",
-    "#627e9a",
-    "#3a4450",
-    "#7d9aa6",
-  ].map(Gy),
-  MP = { 24222973: 13 },
-  mk = new Set();
-function Ept(i, t, e, s, n, o) {
-  let a = (n >> 3) & 7,
-    r = Cn(i, 3);
-  if (MP[i] !== void 0) return [MP[i], null];
-  if (du[i]?.office !== void 0) return [du[i].office, null];
-  if (mk.has(i)) return [3, null];
-  let l = !1,
-    c;
-  if (
-    (t === 2
-      ? (l = !0)
-      : t === 1
-        ? (c = [0, 8])
-        : t === 3
-          ? (c = [1, 13, 7])
-          : t === 4
-            ? (c = [2, 6, 11, 12, 14])
-            : a >= 6
-              ? ((l = r < 0.75), (c = [14, 12, 7]))
-              : a === 5
-                ? ((l = r < 0.35), (c = [2, 3, 11, 12, 13]))
-                : a === 4
-                  ? ((l = r < 0.25), (c = [1, 10, 3, 13]))
-                  : a >= 1
-                    ? (c = [0, 6, 8, 9, 15])
-                    : e === "towers"
-                      ? ((l = r < 0.7), (c = [14, 12, 13, 7]))
-                      : s >= 120
-                        ? ((l = r < 0.55), (c = [1, 2, 11, 12, 13, 14, 10]))
-                        : s >= 45
-                          ? ((l = r < 0.35),
-                            (c = [
-                              0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                            ]))
-                          : (c = [0, 6, 8, 9, 15, 2, 7, 1]),
-    l)
-  )
-    return [16 + Math.floor(Cn(i, 12) * 8), lm(zpt, Cn(i, 13))];
-  let h = c[Math.floor(Cn(i, 14) * c.length) % c.length];
-  return (h >= o && (h = [0, 6, 1, 2, 2, 1, 7, 6][h - 8]), [h, null]);
-}
-function YV(i, t) {
-  if (i._lk && i._lk.tex === t) return i._lk;
-  let e = Cn(i.seed, 1),
-    s = i.top - i.base,
-    n = i.cx ?? pu(i.rings[0])[0],
-    o = i.cz ?? pu(i.rings[0])[1],
-    a = Ai(n, o),
-    r = t?.fronts && $l && $l.bld.seed[i.i] === i.seed ? _pt($l, t) : null,
-    l = r ? r.tg[i.i] : XV(t, i.seed),
-    c = r ? r.st[i.i] : KV(i.st, s, a, l, i.rs, e),
-    h = null,
-    f = null,
-    u = 0;
-  r &&
-    r.g[i.i] >= 0 &&
-    ((h = r.groups[r.g[i.i]]),
-    (f = t.fronts[h].cells.find((x) => x.cell === r.c[i.i]) || null),
-    (u = r.m[i.i]));
-  let d = f?.style === "mar",
-    [p, m] = Ept(i.seed, i.mat, a, s, l, t?.office?.length || 8),
-    g = du[i.seed]?.wall
-      ? du[i.seed].wall
-      : mk.has(i.seed)
-        ? [0.78, 0.77, 0.73]
-        : m && c === 6
-          ? m
-          : i.col ||
-            (c === 0
-              ? lm(SV, e)
-              : c === 1
-                ? e < 0.5 && !d
-                  ? lm(SV, e * 2)
-                  : lm(kV, e)
-                : lm(c === 5 ? ypt : c === 6 ? wpt : kV, e)),
-    b = r?.shop[i.i] ? t.fronts.shop.cells : null;
-  if (
-    (c === 0 || c === 1 || c === 2 || c === 3) &&
-    SP.has(a) &&
-    !du[i.seed]?.wall
-  ) {
-    let x = (g[0] + g[1] + g[2]) / 3;
-    g = g.map((v, y) => (v * 0.75 + x * 0.25) * [0.9, 0.96, 1.08][y]);
-  }
-  return (i._lk = {
-    tex: t,
-    st: c,
-    wall: g,
-    cool: SP.has(a),
-    group: h,
-    cell: f,
-    mirror: u,
-    office: p,
-    glass: !!m,
-    shopCells: b,
-    r: e,
-    tg: l,
-  });
-}
+var HX = new WeakMap();

@@ -1,250 +1,248 @@
 // app 285 — math
-// Lines 139213-139460 of readable/app.pretty.js (statement-aligned).
-function Mx(i, t, e = null) {
-  let s = _J(i),
-    n = new Set(),
-    o = (u, d) => Math.round(u * 10) * 1e7 + Math.round(d * 10),
-    a = 1e9,
-    r = 1e9,
-    l = -1e9,
-    c = -1e9;
-  for (let u of t) {
-    if (!s.cells.has(Math.floor(u.x / s.C) * 100003 + Math.floor(u.z / s.C)))
-      continue;
-    let d = wJ.has(u.kind);
-    (!d && !MJ.has(u.kind)) ||
-      (zw(i, u.x, u.z, u.y, d ? 1.5 : 0.8) &&
-        (n.add(o(u.x, u.z)),
-        (a = Math.min(a, u.x)),
-        (l = Math.max(l, u.x)),
-        (r = Math.min(r, u.z)),
-        (c = Math.max(c, u.z))));
-  }
-  if (!n.size) return 0;
-  let h = (u, d) =>
-      u >= a - 0.1 &&
-      u <= l + 0.1 &&
-      d >= r - 0.1 &&
-      d <= c + 0.1 &&
-      n.has(o(u, d)),
-    f = (u, d) => {
-      let p = 0;
-      for (let m = 0; m < u.length; m++) d(u[m]) && (u[p++] = u[m]);
-      u.length = p;
-    };
-  return (
-    f(
-      t,
-      (u) =>
-        !(
-          h(u.x, u.z) &&
-          (wJ.has(u.kind) || MJ.has(u.kind) || u.kind === "well")
-        ),
-    ),
-    e && f(e, (u) => !(u.t === "circ" && u.r < 1 && h(u.x, u.z))),
-    n.size
-  );
-}
-var hxt = new Set(["signal", "stop", "lamp", "hydrant"]),
-  w_ = { moved: 0, dropped: 0, kinds: {} },
-  mp = {
-    n: 0,
-    a: new Float32Array(7 * 4096),
-    gen: 0,
-    add(i, t, e, s, n, o, a) {
-      if ((this.n + 1) * 7 > this.a.length) {
-        let r = new Float32Array(this.a.length * 2);
-        (r.set(this.a), (this.a = r));
+// Lines 139737-139982 of readable/app.pretty.js (statement-aligned).
+function Nyt(o, t, e, s, n, i) {
+  let a = o.bld,
+    r = new Map(),
+    l = 32,
+    c = (m, g) => Math.floor(m / l) * 65536 + Math.floor(g / l),
+    h = o.claims?.bSkip,
+    f = [];
+  for (let m = i.b0; m < i.b1; m++) {
+    let g = a.rStart[a.bRing[m]],
+      b = a.rStart[a.bRing[m] + 1],
+      v = 0,
+      x = 0;
+    for (let A = g; A < b; A++) ((v += a.pts[A * 2]), (x += a.pts[A * 2 + 1]));
+    if (((v /= b - g), (x /= b - g), v > -7611 && x > -2600)) continue;
+    let y = Di(v, x);
+    if (y !== "seacliff" && y !== "sausalito") continue;
+    let M = 1e9,
+      S = 1e9,
+      w = -1e9,
+      _ = -1e9;
+    for (let A = g; A < b; A++)
+      ((M = Math.min(M, a.pts[A * 2])),
+        (w = Math.max(w, a.pts[A * 2])),
+        (S = Math.min(S, a.pts[A * 2 + 1])),
+        (_ = Math.max(_, a.pts[A * 2 + 1])));
+    let z = { i: m, a: g, e: b, cx: v, cz: x, d: y, bb: [M, S, w, _] };
+    f.push(z);
+    for (let A = Math.floor((M - 2) / l); A <= Math.floor((w + 2) / l); A++)
+      for (let T = Math.floor((S - 2) / l); T <= Math.floor((_ + 2) / l); T++) {
+        let E = A * 65536 + T,
+          R = r.get(E);
+        (R || r.set(E, (R = [])), R.push(z));
       }
-      (this.a.set([i, t, e, s, n, o, a], this.n * 7), this.n++, this.gen++);
-    },
-  };
-function fxt(i, t) {
-  if (i.clearOfRoads(t.x, t.z, 0.12)) return !0;
-  for (let e = 0.5; e <= 14; e += 0.5) {
-    let s = Math.max(8, Math.round(e * 4));
-    for (let n = 0; n < s; n++) {
-      let o = (n * 2 * Math.PI) / s,
-        a = t.x + e * Math.cos(o),
-        r = t.z + e * Math.sin(o);
-      if (!(i.surfaceAt(a, r) !== "walk" || !i.clearOfRoads(a, r, 0.3)))
-        return (
-          (t.x = a),
-          (t.z = r),
-          (t.y = i.driveHeight(a, r)),
-          w_.moved++,
-          (w_.kinds[t.kind] = (w_.kinds[t.kind] || 0) + 1),
-          !0
-        );
-    }
   }
-  return (w_.dropped++, !1);
-}
-var uxt = [
-  null,
-  "tree0",
-  "tree1",
-  "tree2",
-  "palm",
-  "fpalm",
-  "qpalm",
-  "cordyline",
-  "wpalm",
-];
-function uI(i, t = null, e = null, s = null) {
-  let n = i.props,
-    o = [],
-    a = [],
-    r = {
-      lamp: 0.18,
-      tree: 0.25,
-      hydrant: 0.2,
-      stop: 0.16,
-      signal: 0.16,
-      palm: 0.45,
-      ptree: 0.4,
-    },
-    l = i.claims?.pSkip;
-  for (let c = s ? s.p0 : 0; c < (s ? s.p1 : n.n); c++) {
-    if (l && l[c]) continue;
-    let h = n.kinds[n.pk[c]],
-      f = n.pf[c * 5],
-      u = n.pf[c * 5 + 1],
-      d = n.pf[c * 5 + 2],
-      p = n.pf[c * 5 + 3],
-      m = n.pf[c * 5 + 4],
-      g = n.px[c];
-    if (e?.tree < 1 && (h === "tree" || h === "ptree") && ko(f, u, 23) > e.tree)
-      continue;
-    if (h === "car") {
-      let x = e && ko(f, u, 21) > e.car;
-      if ((x && !e.carExtra) || (t && !pxt(t, f, d, u, p, m))) continue;
-      if (x) {
-        mp.add(f, d, u, p, m, (g & 63) / 64 + 1 / 128, g >> 6);
-        continue;
+  let u = (m, g, b) => {
+      let v = !1;
+      for (let x = m.a, y = m.e - 1; x < m.e; y = x++) {
+        let M = a.pts[x * 2],
+          S = a.pts[x * 2 + 1],
+          w = a.pts[y * 2],
+          _ = a.pts[y * 2 + 1];
+        S > b != _ > b && g < ((w - M) * (b - S)) / (_ - S) + M && (v = !v);
       }
-      (o.push({
-        kind: "car",
-        x: f,
-        y: d,
-        z: u,
-        rot: p,
-        pitch: m,
-        color: (g & 63) / 64 + 1 / 128,
-        type: g >> 6,
-      }),
-        a.push({
-          t: "obb",
-          x: f,
-          z: u,
-          hx: 0.93,
-          hz: 2.35,
-          c: Math.cos(p),
-          s: Math.sin(p),
-          parked: !0,
-          type: g >> 6,
-          y0: d - 1.5,
-          y1: d + 2.5,
-        }));
-      continue;
-    }
+      return v;
+    },
+    d = (m, g, b) => {
+      for (let v of r.get(c(m, g)) || [])
+        if (!(
+          m < v.bb[0] - b ||
+          m > v.bb[2] + b ||
+          g < v.bb[1] - b ||
+          g > v.bb[3] + b
+        )) {
+          if (u(v, m, g)) return !0;
+          for (let [x, y] of [
+            [b, 0],
+            [-b, 0],
+            [0, b],
+            [0, -b],
+          ])
+            if (u(v, m + x, g + y)) return !0;
+        }
+      return !1;
+    },
+    p = 0;
+  for (let m of f) {
+    if (h?.[m.i]) continue;
+    let g = Fo(m.cx, m.cz, 31);
     if (
-      (h === "tree" && Ai(f, u) === "chinatown" && ko(f, u, 7) > 0.12) ||
-      (h === "ptree" &&
-        (f < -7611 || u < -2600) &&
-        t?.coverAt &&
-        (t.coverAt(f, u) & 7) === 3) ||
-      (h === "ptree" &&
-        f > -4150 &&
-        f < -3560 &&
-        u > -1440 &&
-        u < -1135 &&
-        ko(f, u, 11) > 0.08)
+      (m.d === "sausalito" && g > 0.7) ||
+      (n?.tree < 1 && Fo(m.cx, m.cz, 23) > n.tree)
     )
       continue;
-    let b = {
-      kind:
-        h === "ptree"
-          ? "tree"
-          : h === "signal" && (f + 1065.2) ** 2 + (u - 551.2) ** 2 < 1024
-            ? "signalp"
-            : h,
-      x: f,
-      y: d,
-      z: u,
-      rot: p,
-    };
-    if (h === "tree") {
-      b.scale = 0.7 + ((g & 255) / 255) * 0.5;
-      let x = g >> 9;
-      x && (b.sp = uxt[x]);
+    let b = 0,
+      v = 0;
+    for (let S = m.a; S < m.e; S++) {
+      if (a.front[S] !== 1) continue;
+      let w = S + 1 < m.e ? S + 1 : m.a,
+        _ = a.pts[w * 2] - a.pts[S * 2],
+        z = a.pts[w * 2 + 1] - a.pts[S * 2 + 1],
+        A = Math.hypot(_, z) || 1;
+      ((b += (-z / A) * A), (v += (_ / A) * A));
     }
-    if (
-      h === "tree" &&
-      t &&
-      f > -2250 &&
-      f < -700 &&
-      Math.abs(u - 4815 - 0.07 * (f + 2400)) < 22 &&
-      ko(f, u, 9) < 0.6
-    ) {
-      let x = t.roadAt(f, u, 14);
-      x &&
-        (x.E.name === "24th Street" || x.E.name === "Mission Street") &&
-        ((b.sp = "fpalm"), (b.scale = 1 + ((g & 255) / 255) * 0.35));
-    } else
-      h === "ptree"
-        ? ((b.scale = (g & 256 ? 1 : 0.9) + ((g & 255) / 255) * 0.5),
-          (b.sp = cxt(f, u, g & 256)),
-          (b.park = !0))
-        : h === "palm" && (b.scale = 0.85 + (g / 255) * 0.3);
-    (t && hxt.has(h) && !fxt(t, b)) ||
-      (o.push(b),
-      (h === "tree" || h === "palm") &&
-        e?.well !== !1 &&
-        o.push({
-          kind: "well",
-          x: f,
-          y: d,
-          z: u,
-          rot: p,
-          scale: h === "palm" ? 1.3 : 1,
-        }),
-      a.push({
-        t: "circ",
-        x: b.x,
-        z: b.z,
-        r: r[h] || 0.2,
-        y0: b.y - 1.5,
-        y1: b.y + 6,
-      }));
+    let x = Math.hypot(b, v);
+    if (x < 0.001) {
+      let S = g * 6.283;
+      ((b = Math.cos(S)), (v = Math.sin(S)), (x = 1));
+    }
+    ((b /= x), (v /= x));
+    let y = Math.max(m.bb[2] - m.bb[0], m.bb[3] - m.bb[1]) / 2,
+      M = 1 + (Fo(m.cx, m.cz, 32) < (m.d === "seacliff" ? 0.6 : 0.55) ? 1 : 0);
+    for (let S = 0; S < M; S++) {
+      let w = (Fo(m.cx, m.cz, 40 + S) - 0.5) * 1.6,
+        _ = y + 3 + 5 * Fo(m.cx, m.cz, 50 + S),
+        z = m.cx - b * _ - v * w * y,
+        A = m.cz - v * _ + b * w * y;
+      if (
+        d(z, A, 2.2) ||
+        !t.clearOfRoads(z, A, 3, !0) ||
+        t.terrainAt(z, A) < 0.6 ||
+        t.surfaceAt(z, A) === "sea"
+      )
+        continue;
+      let T = Fo(z, A, 60),
+        E =
+          m.d === "seacliff"
+            ? T < 0.5
+              ? "cypress"
+              : T < 0.82
+                ? "pine"
+                : T < 0.92
+                  ? "fpalm"
+                  : "tree1"
+            : T < 0.35
+              ? "tree1"
+              : T < 0.55
+                ? "pine"
+                : T < 0.72
+                  ? "euc"
+                  : T < 0.85
+                    ? "cypress"
+                    : T < 0.93
+                      ? "tree2"
+                      : "palm",
+        R = t.terrainAt(z, A),
+        P =
+          E === "fpalm" || E === "palm"
+            ? 0.85 + 0.3 * Fo(z, A, 61)
+            : 0.75 + 0.4 * Fo(z, A, 61);
+      (e.push({
+        kind: E === "palm" ? "palm" : "tree",
+        sp: E === "palm" ? void 0 : E,
+        x: z,
+        y: R,
+        z: A,
+        rot: Fo(z, A, 62) * 6.283,
+        scale: P,
+        park: !0,
+      }),
+        s.push({ t: "circ", x: z, z: A, r: 0.4, y0: R - 1.5, y1: R + 6 }),
+        p++);
+    }
   }
-  return (
-    t && dxt(i, t, o, a, e, s || { b0: 0, b1: i.bld.n }),
-    t && fI(t, o, a, !0, (c) => c.x < -7611 || c.z < -2600),
-    Mx(i, o, a),
-    s
-      ? SJ({ inst: o, colliders: a }, e)
-      : (t && mxt(i, t, o, a),
-        t &&
-          !(typeof location < "u" && /[?&]noclutter\b/.test(location.search)) &&
-          cV(i, t, o, a),
-        XW(o),
-        Mx(i, o, a),
-        SJ({ inst: o, colliders: a }, e))
-  );
+  if (f.some((m) => m.d === "sausalito")) {
+    let m = {};
+    for (let g of o.edges)
+      if (
+        !(g.name !== "Bridgeway" || g.inner || g.L < 20) &&
+        (Ot(g, g.L / 2, m), !(m.z < -7120 || m.z > -6420))
+      )
+        for (let b = 6; b < g.L - 6; b += 14) {
+          Ot(g, b, m);
+          for (let v of [1, -1]) {
+            let x = m.w + 1.7,
+              y = m.x + m.nx * x * v,
+              M = m.z + m.nz * x * v;
+            if (
+              Fo(y, M, 70) > 0.75 ||
+              t.surfaceAt(y, M) !== "walk" ||
+              d(y, M, 1.2) ||
+              !t.clearOfRoads(y, M, 1, !0)
+            )
+              continue;
+            let S = t.driveHeight(y, M, null, m.y) + 0.15;
+            (e.push({
+              kind: "palm",
+              x: y,
+              y: S,
+              z: M,
+              rot: Fo(y, M, 71) * 6.283,
+              scale: 0.95 + 0.3 * Fo(y, M, 72),
+            }),
+              s.push({
+                t: "circ",
+                x: y,
+                z: M,
+                r: 0.45,
+                y0: S - 1.5,
+                y1: S + 6,
+              }),
+              p++);
+          }
+        }
+  }
+  return p;
 }
-function SJ({ inst: i, colliders: t }, e) {
-  if (e && e.meter < 1) {
-    let s = new Set(),
-      n = (a, r) => Math.round(a * 10) + "," + Math.round(r * 10),
-      o = 0;
-    for (let a of i)
-      a.kind === "meter" && ko(a.x, a.z, 22) > e.meter
-        ? s.add(n(a.x, a.z))
-        : (i[o++] = a);
-    ((i.length = o), (o = 0));
-    for (let a of t) (a.t === "circ" && s.has(n(a.x, a.z))) || (t[o++] = a);
-    t.length = o;
+var EQ = {};
+function Hyt(o, t, e, s, n, i) {
+  if (Math.abs(i) > 0.3) return !1;
+  let a = Eh && (t < -7611 || s < -2600);
+  if (!a) {
+    let u = Math.sin(n),
+      d = Math.cos(n),
+      p = Math.tan(-i),
+      m = (b, v) => b - v > -0.32 && b - v < -0.08,
+      g = m(o.terrainAt(t, s), e) && !(o.coverAt(t, s) & 32);
+    for (let [b, v] of [
+      [1.3, 0.8],
+      [-1.3, -0.8],
+      [1.3, -0.8],
+      [-1.3, 0.8],
+    ])
+      if (g) {
+        let x = t + u * b + d * v,
+          y = s + d * b - u * v;
+        g = m(o.terrainAt(x, y), e + b * p) && !(o.coverAt(x, y) & 32);
+      }
+    if (g) return !0;
   }
-  return { inst: i, colliders: t };
+  let r = null;
+  for (let u of o.probe(t, s).all) {
+    if (u.y > e + 0.5 && u.y < e + 3.4) return !1;
+    Math.abs(u.y - e) < 0.15 &&
+      (!r || Math.abs(u.y - e) < Math.abs(r.y - e)) &&
+      (r = u);
+  }
+  if (!r) return !1;
+  let l = r.J ? null : r.E;
+  if (l) {
+    if (l.flags & 4 || l.cls === "motorway" || l.cls === "motorway_link")
+      return !1;
+    Ot(l, r.s, EQ);
+    let u = EQ.w - Math.abs(r.v);
+    if (u < -0.6 || u > 3.2) return !1;
+  }
+  let c = Math.sin(n),
+    h = Math.cos(n),
+    f = Math.tan(-i);
+  for (let [u, d] of [
+    [1.3, 0.8],
+    [1.3, -0.8],
+    [-1.3, 0.8],
+    [-1.3, -0.8],
+  ]) {
+    let p = t + c * u + h * d,
+      m = s + h * u - c * d,
+      g = e + u * f,
+      b = !1;
+    for (let v of o.probe(p, m).all) {
+      if (v.y > g + 0.5 && v.y < g + 3.4) return !1;
+      Math.abs(v.y - g) < 0.2 && (b = !0);
+    }
+    if (!b || (a && o.surfaceAt(p, m) !== "road")) return !1;
+  }
+  return !0;
 }

@@ -168,6 +168,14 @@
             : prev.tier === "mobile"
               ? "mobile"
               : "high"); // (an older flag: its tier)
+      // (2026-10-18) a phone that dies at the lightest level too (iOS reloading a killed tab: "it keeps looping the loading
+      // screen"): the second killed start in a row at Battery saver stops there - a card with Try again (main.js SF_NOMEM)
+      // instead of another load iOS kills; a start that reaches the title card clears the count
+      var NOMEM = "sf-drive.nomem",
+        nk = crashed && pl === "saver" ? (+store.getItem(NOMEM) || 0) + 1 : 0;
+      if (nk) store.setItem(NOMEM, String(nk));
+      else store.removeItem(NOMEM);
+      if (nk >= 2 && !Q.has("test")) globalThis.SF_NOMEM = true;
       if (crashed && pl !== "saver") {
         var down = LV[Math.max(0, LV.indexOf(pl) - 1)];
         store.setItem(
@@ -256,6 +264,11 @@
   globalThis.SF_BOOT = {
     ready: function () {
       // (main.js, once the title card's Drive shows)
+      try {
+        if (store) store.removeItem("sf-drive.nomem");
+      } catch (e) {
+        /* */
+      }
       put("run");
       setInterval(function () {
         if (phase === "run" && !document.hidden) put("run");
@@ -352,9 +365,35 @@
       return lvl;
     }, // (the rest of a level - the city's detail, the textures - built at the load)
   };
+  if (globalThis.SF_NOMEM) {
+    phase = "failed";
+    clear();
+    return;
+  } // (no load: main.js shows the card; Try again clears the count)
   put("load");
   // ------------------------------------------------------------ the GPU, the workers, the downloads
   // the GPU adapter and device (the renderer's init takes them: ~0.7 s of promises that waited on the main thread otherwise)
+  // (2026-10-30) Safari throws "InvalidStateError: GPUDevice.createTexture: Unable to create texture." when the request
+  // cannot be handed to its GPU process in time (the stream to it full: a burst of uploads). The texture itself is fine,
+  // so ask again before giving up; a lost device still throws after the retries and main.js's recovery takes it.
+  try {
+    var GD = globalThis.GPUDevice && GPUDevice.prototype,
+      ct = GD && GD.createTexture;
+    if (ct && !ct.sfGuard) {
+      GD.createTexture = function (desc) {
+        for (var i = 0; ; i++) {
+          try {
+            return ct.call(this, desc);
+          } catch (e) {
+            if (i >= 3 || !e || e.name !== "InvalidStateError") throw e;
+          }
+        }
+      };
+      GD.createTexture.sfGuard = true;
+    }
+  } catch (e) {
+    /* */
+  }
   if (navigator.gpu)
     globalThis.SF_GPU = navigator.gpu
       .requestAdapter({ powerPreference: "high-performance" })
